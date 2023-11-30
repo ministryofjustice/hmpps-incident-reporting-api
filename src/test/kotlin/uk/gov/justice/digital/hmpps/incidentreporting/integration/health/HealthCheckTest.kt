@@ -1,8 +1,8 @@
-package uk.gov.justice.digital.hmpps.hmppsincidentreportingapi.integration.health
+package uk.gov.justice.digital.hmpps.incidentreporting.integration.health
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.hmppsincidentreportingapi.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.function.Consumer

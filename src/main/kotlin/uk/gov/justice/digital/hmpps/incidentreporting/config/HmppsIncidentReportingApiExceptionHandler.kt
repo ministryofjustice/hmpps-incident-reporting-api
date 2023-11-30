@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsincidentreportingapi.config
+package uk.gov.justice.digital.hmpps.incidentreporting.config
 
 import jakarta.validation.ValidationException
 import org.slf4j.LoggerFactory

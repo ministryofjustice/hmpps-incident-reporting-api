@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsincidentreportingapi
+package uk.gov.justice.digital.hmpps.incidentreporting
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

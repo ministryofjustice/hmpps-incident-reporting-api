@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppsincidentreportingapi.health
+package uk.gov.justice.digital.hmpps.incidentreporting.health
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.info.Info
