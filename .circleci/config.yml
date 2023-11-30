@@ -78,7 +78,7 @@ workflows:
 #          pipeline_number: <<pipeline.number>>
 #          context:
 #            - hmpps-common-vars
-#            - hmpps-template-kotlin-preprod
+#            - hmpps-incident-reporting-api-preprod
 #          requires:
 #            - request-preprod-approval
 #          helm_timeout: 5m
@@ -97,7 +97,7 @@ workflows:
 #          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
 #          context:
 #            - hmpps-common-vars
-#            - hmpps-template-kotlin-prod
+#            - hmpps-incident-reporting-api-prod
 #          requires:
 #            - request-prod-approval
 #          helm_timeout: 5m
@@ -128,7 +128,7 @@ workflows:
   security-weekly:
     triggers:
       - schedule:
-          cron: "0 5 * * 1"
+          cron: "30 9 * * 1"
           filters:
             branches:
               only:
