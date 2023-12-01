@@ -1,5 +1,5 @@
 info.app:
-  name: Hmpps Incident Reporting Api
+  name: HMPPS Incident Reporting API
   version: 1.0
 
 spring:
