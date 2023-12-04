@@ -1,0 +1,60 @@
+generic-service:
+  nameOverride: hmpps-incident-reporting-api
+  productId: DPS021
+
+  serviceAccountName: hmpps-incident-reporting-api
+
+  replicaCount: 4
+
+  image:
+    repository: quay.io/hmpps/hmpps-incident-reporting-api
+    tag: app_version # override at deployment time
+    port: 8080
+
+  ingress:
+    enabled: true
+    host: app-hostname.local # override per environment
+    tlsSecretName: hmpps-incident-reporting-api-cert
+
+  env:
+    JAVA_OPTS: "-Xmx512m"
+    SERVER_PORT: "8080"
+    SPRING_PROFILES_ACTIVE: "logstash"
+    APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
+    APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
+    HMPPS_SQS_USE_WEB_TOKEN: "true"
+
+  namespace_secrets:
+    hmpps-incident-reporting-api:
+      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+      INCIDENT_REPORTING_API_CLIENT_ID: "INCIDENT_REPORTING_API_CLIENT_ID"
+      INCIDENT_REPORTING_API_CLIENT_SECRET: "INCIDENT_REPORTING_API_CLIENT_SECRET"
+    dps-rds-instance-output:
+      DATABASE_ENDPOINT: "rds_instance_endpoint"
+      DATABASE_NAME: "database_name"
+      DATABASE_USERNAME: "database_username"
+      DATABASE_PASSWORD: "database_password"
+      SPRING_FLYWAY_USER: "database_username"
+      SPRING_FLYWAY_PASSWORD: "database_password"
+    hmpps-domain-events-topic:
+      HMPPS_SQS_TOPICS_DOMAINEVENTS_ARN: "topic_arn"
+    sqs-hmpps-audit-secret:
+      HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME: "sqs_queue_name"
+    sqs-prisoner-event-queue-secret:
+      HMPPS_SQS_QUEUES_INCIDENTREPORTING_QUEUE_NAME: "sqs_queue_name"
+    sqs-prisoner-event-queue-dlq-secret:
+      HMPPS_SQS_QUEUES_INCIDENTREPORTING_DLQ_NAME: "sqs_queue_name"
+
+  allowlist:
+    groups:
+      - internal
+
+  modsecurity_enabled: true
+  modsecurity_snippet: |
+    SecRuleEngine DetectionOnly
+    SecRuleUpdateActionById 949110 "t:none,deny,status:406,logdata:%{SERVER_NAME}"
+    SecRuleUpdateActionById 959100 "t:none,deny,status:406,logdata:%{SERVER_NAME}"
+    SecAction "id:900000,phase:1,nolog,pass,t:none,setvar:tx.paranoia_level=2"
+
+generic-prometheus-alerts:
+  targetApplication: hmpps-incident-reporting-api

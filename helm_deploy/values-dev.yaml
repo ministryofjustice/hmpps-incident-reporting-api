@@ -1,16 +1,20 @@
 ---
-# Per environment values which override defaults in hmpps-template-kotlin/values.yaml
-
 generic-service:
   replicaCount: 2
 
+  scheduledDowntime:
+    enabled: true
+
   ingress:
-    host: hmpps-template-kotlin-dev.hmpps.service.justice.gov.uk
+    host: incident-reporting-api-dev.hmpps.service.justice.gov.uk
+
+  allowlist: null
 
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
+    API_BASE_URL_OAUTH: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+    API_BASE_URL_PRISON: https://prison-api-dev.prison.service.justice.gov.uk
+    API_BASE_URL_OFFENDER_SEARCH: https://prisoner-search-dev.prison.service.justice.gov.uk
 
-# CloudPlatform AlertManager receiver to route prometheus alerts to slack
-# See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

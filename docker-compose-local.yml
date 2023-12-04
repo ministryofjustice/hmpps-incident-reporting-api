@@ -1,0 +1,18 @@
+version: "3"
+services:
+
+  postgres:
+    image: postgres
+    networks:
+      - hmpps
+    container_name: irs-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=incident-reporting
+      - POSTGRES_USER=incident-reporting
+      - POSTGRES_DB=incident-reporting
+
+networks:
+  hmpps:

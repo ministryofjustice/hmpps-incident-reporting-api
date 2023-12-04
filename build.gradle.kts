@@ -1,6 +1,11 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import uk.gov.justice.digital.hmpps.gradle.PortForwardRDSTask
+import uk.gov.justice.digital.hmpps.gradle.PortForwardRedisTask
+import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
+
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.8.0"
-  kotlin("plugin.spring") version "1.9.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.10.0"
+  kotlin("plugin.spring") version "1.9.21"
 }
 
 configurations {
@@ -16,9 +21,21 @@ kotlin {
 }
 
 tasks {
-  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  register<PortForwardRDSTask>("portForwardRDS") {
+    namespacePrefix = "hmpps-incident-reporting"
+  }
+
+  register<PortForwardRedisTask>("portForwardRedis") {
+    namespacePrefix = "hmpps-incident-reporting"
+  }
+
+  register<RevealSecretsTask>("revealSecrets") {
+    namespacePrefix = "hmpps-incident-reporting"
+  }
+
+  withType<KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "21"
+      jvmTarget = JavaVersion.VERSION_21.toString()
     }
   }
 }
