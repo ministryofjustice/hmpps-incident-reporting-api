@@ -7,7 +7,6 @@ parameters:
   alerts-slack-channel:
     type: string
     default: dps_alerts_security
-
   releases-slack-channel:
     type: string
     default: dps-releases
@@ -15,19 +14,32 @@ parameters:
   java-version:
     type: string
     default: "21.0"
+  postgres-version:
+    type: string
+    default: "15"
+  localstack-version:
+    type: string
+    default: "3"
 
 jobs:
   validate:
     executor:
-      name: hmpps/java
-      tag: << pipeline.parameters.java-version >>
+      name: hmpps/java_localstack_postgres
+      jdk_tag: << pipeline.parameters.java-version >>
+      localstack_tag: << pipeline.parameters.localstack-version >>
+      services: "sns,sqs"
+      postgres_tag: << pipeline.parameters.postgres-version >>
+      postgres_username: "incident_reporting"
+      postgres_password: "incident_reporting"
     steps:
       - checkout
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
+      - hmpps/wait_till_ready_postgres
       - run:
+          name: Run check
           command: ./gradlew check
       - save_cache:
           paths:
