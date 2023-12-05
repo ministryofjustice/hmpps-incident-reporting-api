@@ -39,6 +39,27 @@ spring:
         - "localstack"
         - "stdout"
 
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+
+  datasource:
+    url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=verify-full'
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      pool-name: IRS-DB-CP
+      maximum-pool-size: 10
+      connection-timeout: 1000
+      validation-timeout: 500
+
 server:
   port: 8080
   servlet:

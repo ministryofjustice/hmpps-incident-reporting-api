@@ -13,3 +13,12 @@ management.endpoint:
 spring:
   devtools:
     add-properties: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/incident_reporting?sslmode=prefer
+    username: incident_reporting
+    password: incident_reporting
+
+  jpa:
+    show-sql: true
+
