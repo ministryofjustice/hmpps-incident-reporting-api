@@ -1,18 +1,33 @@
 version: "3"
 services:
 
-  postgres:
+  localstack:
+    image: localstack/localstack:3
+    networks:
+      - hmpps
+    container_name: localstack
+    ports:
+      - "4566:4566"
+      - "8999:8080"
+    environment:
+      - DEBUG=${DEBUG- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  incident-reporting-db:
     image: postgres
     networks:
       - hmpps
-    container_name: irs-postgres
+    container_name: incident-reporting-db
     restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=incident-reporting
-      - POSTGRES_USER=incident-reporting
-      - POSTGRES_DB=incident-reporting
+      - POSTGRES_PASSWORD=incident_reporting
+      - POSTGRES_USER=incident_reporting
+      - POSTGRES_DB=incident_reporting
 
 networks:
   hmpps:

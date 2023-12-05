@@ -9,3 +9,15 @@ api:
   base:
     url:
       oauth: http://localhost:8090/auth
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/incident_reporting?sslmode=prefer
+    username: incident_reporting
+    password: incident_reporting
+
+  main:
+    allow-bean-definition-overriding: true
+
+  jpa:
+    show-sql: true
