@@ -13,7 +13,17 @@ configurations {
 }
 
 dependencies {
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+  implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:2.1.1")
+
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.0")
+  implementation("io.opentelemetry:opentelemetry-api:1.32.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.32.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 }
 
 kotlin {

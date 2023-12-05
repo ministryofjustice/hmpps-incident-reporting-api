@@ -1,0 +1,7 @@
+server:
+  shutdown: immediate
+
+api:
+  base:
+    url:
+      oauth: http://localhost:9090/auth
