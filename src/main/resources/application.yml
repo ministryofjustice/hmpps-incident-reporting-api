@@ -8,6 +8,21 @@ spring:
   codec:
     max-in-memory-size: 10MB
 
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          jwk-set-uri: ${api.base.url.oauth}/.well-known/jwks.json
+      client:
+        registration:
+          INCIDENT_REPORTING_API:
+            provider: hmpps-auth
+            client-id: ${incident_reporting.api.client.id}
+            client-secret: ${incident_reporting.api.client.secret}
+            authorization-grant-type: client_credentials
+        provider:
+          hmpps-auth:
+            token-uri: ${api.base.url.oauth}/oauth/token
   jackson:
     date-format: "yyyy-MM-dd'T'HH:mm:ssZ"
     serialization:
@@ -18,7 +33,10 @@ spring:
 
   profiles:
     group:
+      dev:
+        - "localstack"
       test:
+        - "localstack"
         - "stdout"
 
 server:
