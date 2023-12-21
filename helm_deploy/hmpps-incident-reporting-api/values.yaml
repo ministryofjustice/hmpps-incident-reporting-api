@@ -24,11 +24,11 @@ generic-service:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
     HMPPS_SQS_USE_WEB_TOKEN: "true"
 
+  envFrom:
+    - secretRef:
+        name: hmpps-incident-reporting-api
+
   namespace_secrets:
-    hmpps-incident-reporting-api:
-      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
-      INCIDENT_REPORTING_API_CLIENT_ID: "INCIDENT_REPORTING_API_CLIENT_ID"
-      INCIDENT_REPORTING_API_CLIENT_SECRET: "INCIDENT_REPORTING_API_CLIENT_SECRET"
     dps-rds-instance-output:
       DATABASE_ENDPOINT: "rds_instance_endpoint"
       DATABASE_NAME: "database_name"
