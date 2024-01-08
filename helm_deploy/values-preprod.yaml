@@ -16,3 +16,6 @@ generic-prometheus-alerts:
   businessHoursOnly: true
   rdsAlertsDatabases:
     cloud-platform-aeef80d0d303f28e: incident-reporting-api
+  sqsAlertsQueueNames:
+    - hmpps-incident-reporting-preprod-prisoner-event-queue
+    - hmpps-incident-reporting-preprod-prisoner-event-dlq

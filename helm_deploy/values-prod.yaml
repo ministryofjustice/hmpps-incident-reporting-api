@@ -23,3 +23,6 @@ generic-prometheus-alerts:
   alertSeverity: digital-prison-service
   rdsAlertsDatabases:
     cloud-platform-6da4d16fce197ed0: incident-reporting-api
+  sqsAlertsQueueNames:
+    - hmpps-incident-reporting-production-prisoner-event-queue
+    - hmpps-incident-reporting-production-prisoner-event-dlq
