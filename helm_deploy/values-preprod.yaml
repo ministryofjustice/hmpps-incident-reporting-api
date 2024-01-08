@@ -1,4 +1,3 @@
----
 generic-service:
   replicaCount: 2
 
@@ -14,3 +13,9 @@ generic-service:
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
+  businessHoursOnly: true
+  rdsAlertsDatabases:
+    cloud-platform-aeef80d0d303f28e: incident-reporting-api
+  sqsAlertsQueueNames:
+    - hmpps-incident-reporting-preprod-prisoner-event-queue
+    - hmpps-incident-reporting-preprod-prisoner-event-dlq
