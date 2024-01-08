@@ -21,3 +21,5 @@ generic-service:
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service
+  rdsAlertsDatabases:
+    cloud-platform-6da4d16fce197ed0: incident-reporting-api
