@@ -18,7 +18,7 @@ Incident reports will **not** be kept in sync and **no** data will be written ba
 There will be a one-off migration of all completed incidents from NOMIS to the new service.
 
 The proposed approach will be :-
-- Migrate all incident reporting data from NOMIS to the new service in a one of process.  These records will be read only and will be used for historical reporting and analysis. Records still process will also be read only and can only be "completed" in NOMIS.
+- Migrate all incident reporting data from NOMIS to the new service in a one of process.  These records will be role protected (mainly read-only for most users) and will be used for historical reporting and analysis. Records still process will also be read only and can only be "completed" in NOMIS.
 - In NOMIS switch off the ability to create _new_ incidents of agreed types. E.g. Self harm, Assaults and Finds. No new incidents of these types will be able to be created in NOMIS. Existing records can still be edited until "Closed"
 - Incident types can be removed on a per prison basis, for example a set of prisons can only create new incidents (of certain types) in the new service (IRS).  Other prisons can continue to use NOMIS for these types. 
 - SYSCON will need to modify the incident reporting screens in NOMIS to be "edit only" for certain incident types on a per-prison basis.
@@ -26,7 +26,7 @@ The proposed approach will be :-
 - All records originating in NOMIS will **not** be editable.
 - As old reports can be altered for many years, there will be a hard cut-off of 6-12 months on how long records can be edited in NOMIS.  After this a backend admin screen will allow these changes in DPS only.  At this point NOMIS incident screens will be removed and the NOMIS -> DPS sync will be dropped.
 - The migration process will contain all the incident data, included the question and answers used at the time and all historical changes made to that incident report.
-- The migrated data will be available for searching and viewing in the new service but will be read only. (except where mentioned above for special circumstances).
+- The migrated data will be available for searching and viewing in the new service but will be generally read only. (except where mentioned above for special circumstances).
 - The new service will be the source of truth for all new incidents and will be the only place to create new incidents (of the types defined).
 - New incidents data will be ingested into the DPR system for reporting and down-steam applications to consume. 
 - Migrated incidents will also be ingested into the DPR system as we will want to move the need for DPR to go to NOMIS for incident data and occasionally old reports may require edits (after NOMIS screens have been removed).
@@ -54,22 +54,29 @@ Steps needed:
 - Remove reports, screens, data, code and tables once all incident types migrated and reports are replaced
 
 
-## Key components and their flow for incident reporting
+## Key components and their flow for incident reporting data
 ```mermaid
     
 graph TB
-    X((Prison Staff)) --> A
-    A[Incident Reporting Service] -- update IRS --> B
-    B[Incident Reporting API] -- Store locations --> D[[Incident Reporting DB]]
-    B -- Incident Report Created/Updated --> C[[Domain Events]]
-    C -- Listen to events --> E[HMPPS Prisoner to NOMIS update]
-    E -- Update NOMIS via API --> F[HMPPS NOMIS Prisoner API]
-
-    R[HMPPS Prisoner from NOMIS Migration] -- perform migration --> B
+    X((Prison Staff)) --> IRS
+    IRS[Incident Reporting Service] -- update IRS --> IRSAPI
+    IRSAPI[Incident Reporting API] -- Store locations --> IRSDB[[Incident Reporting DB]]
+    IRSAPI -- Incident Report Created/Updated --> DOM_EVT[[Domain Events]]
+    X -- Create Incident Reports --> NOMIS[NOMIS]
+    NOMIS -- Incident Report Created/Updated event--> E[HMPPS NOMIS -> DPS Sync]
+    E -- Sync Incident Report --> IRSAPI
+    F[hmpps-nomis-prisoner-api] -- get IRS details --> NOMIS
+    R[HMPPS Prisoner from NOMIS Migration] -- perform migration --> IRSAPI
     R -- record history --> H[[History Record DB]]
     K[HMPPS NOMIS Mapping Service] --> Q[[Mapping DB]]
     R -- check for existing mapping --> K
     R -- 1. find out how many to migrate, 2 get IR details --> F
+    AP[Analytics Platform] -- get data --> DPR[Digital Prison Reporting]
+    AP -- send data --> SDT[Safety Diagnostic Tool]
+    AP -- send data --> PH[Performance Hub]
+    DPR -- ingest data from --> IRSDB
+    DPR -- ingest data from --> NOMIS
+    
 ```
 
 
