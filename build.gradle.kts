@@ -30,7 +30,7 @@ dependencies {
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("org.hibernate.orm:hibernate-community-dialects:6.4.4.Final")
   implementation("com.zaxxer:HikariCP:5.1.0")
-  runtimeOnly("org.postgresql:postgresql:42.7.1")
+  runtimeOnly("org.postgresql:postgresql:42.7.2")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
