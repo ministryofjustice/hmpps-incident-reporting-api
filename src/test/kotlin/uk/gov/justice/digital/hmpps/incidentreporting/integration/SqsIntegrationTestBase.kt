@@ -7,6 +7,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.web.reactive.server.WebTestClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer.setLocalStackProperties
@@ -20,6 +21,9 @@ import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class SqsIntegrationTestBase : IntegrationTestBase() {
+
+  @Autowired
+  lateinit var webTestClient: WebTestClient
 
   @Autowired
   private lateinit var hmppsQueueService: HmppsQueueService

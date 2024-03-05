@@ -1,6 +1,6 @@
-# 1. Mastering and synchronisation of Internal location data with NOMIS
+# 3. Mastering and synchronisation of Internal location data with NOMIS
 
-[Next >>](0004-location-db-design.md)
+[Next >>](0004-modeling-irs.md)
 
 
 Date: 2024-01-23
@@ -83,4 +83,4 @@ graph TB
 
 
 
-[Next >>](9999-end.md)
+[Next >>](0004-modeling-irs.md)
