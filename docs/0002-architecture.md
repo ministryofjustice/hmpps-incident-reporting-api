@@ -1,4 +1,4 @@
-# 1. Architecture Overview
+# 2. Architecture Overview
 
 [Next >>](0003-migration.md)
 
