@@ -65,9 +65,6 @@ class IncidentReport(
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val incidentCorrectionRequests: MutableList<IncidentCorrectionRequest> = mutableListOf(),
 
-  @Enumerated(EnumType.STRING)
-  val questionSetUsed: QuestionSet,
-
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
 
@@ -127,9 +124,9 @@ class IncidentReport(
     return incidentLocation
   }
 
-  fun addResponse(question: Question, response: ResponseOption, recordedBy: String, recordedOn: LocalDateTime, comment: String? = null, moreInfo: String? = null, evidence: Evidence? = null, location: IncidentLocation? = null, otherPersonInvolvement: OtherPersonInvolvement? = null, prisonerInvolvement: PrisonerInvolvement? = null, staffInvolvement: StaffInvolvement? = null): IncidentResponse {
-    val incidentResponse = IncidentResponse(incident = this, question = question, comment = comment, evidence = evidence, location = location, otherPersonInvolvement = otherPersonInvolvement, prisonerInvolvement = prisonerInvolvement, staffInvolvement = staffInvolvement, recordedBy = recordedBy, recordedOn = recordedOn)
-    incidentResponse.addResponse(response, moreInfo)
+  fun addDataPoint(key: String, value: String, recordedBy: String, recordedOn: LocalDateTime, comment: String? = null, moreInfo: String? = null, evidence: Evidence? = null, location: IncidentLocation? = null, otherPersonInvolvement: OtherPersonInvolvement? = null, prisonerInvolvement: PrisonerInvolvement? = null, staffInvolvement: StaffInvolvement? = null): IncidentResponse {
+    val incidentResponse = IncidentResponse(incident = this, dataPointKey = key, comment = comment, evidence = evidence, location = location, otherPersonInvolvement = otherPersonInvolvement, prisonerInvolvement = prisonerInvolvement, staffInvolvement = staffInvolvement, recordedBy = recordedBy, recordedOn = recordedOn)
+    incidentResponse.addDataPointValue(value, moreInfo)
     incidentResponses.add(incidentResponse)
     return incidentResponse
   }

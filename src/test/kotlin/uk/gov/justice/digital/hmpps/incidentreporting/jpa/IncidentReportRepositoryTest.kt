@@ -40,7 +40,6 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
           createdDate = LocalDateTime.now(),
           lastModifiedDate = LocalDateTime.now(),
           lastModifiedBy = "user1",
-          questionSetUsed = QuestionSet.SELF_HARM_V1,
         ),
       )
 
@@ -49,9 +48,9 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
     incidentReport.addPrisonerInvolved("A1234AA", PrisonerRole.WITNESS)
     incidentReport.addOtherPersonInvolved("name1", PersonRole.WITNESS)
     incidentReport.addIncidentLocation("MDI-1-1-1", "CELL", "Other stuff")
-    incidentReport.addResponse(Question.WHERE_DID_THE_INCIDENT_OCCUR, ResponseOption.DETOX_UNIT, "user1", LocalDateTime.now())
-      .addResponse(ResponseOption.HEALTH_CARE_CENTRE, "some info")
-    incidentReport.addResponse(Question.WHAT_WAS_THE_CELL_TYPE, ResponseOption.ORDINARY, "user1", LocalDateTime.now())
+    incidentReport.addDataPoint("WHERE_OCCUR", "DETOX_UNIT", "user1", LocalDateTime.now())
+      .addDataPointValue("HEALTH_CARE_CENTRE", "some info")
+    incidentReport.addDataPoint("CELL_TYPE", "ORDINARY", "user1", LocalDateTime.now())
 
     TestTransaction.flagForCommit()
     TestTransaction.end()

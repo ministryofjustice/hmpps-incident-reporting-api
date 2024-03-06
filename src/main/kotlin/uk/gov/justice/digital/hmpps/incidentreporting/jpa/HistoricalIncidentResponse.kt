@@ -2,8 +2,6 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -22,11 +20,10 @@ class HistoricalIncidentResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val incident: IncidentReport,
 
-  @Enumerated(EnumType.STRING)
-  val question: Question,
+  val dataPointKey: String,
 
   @OneToMany(mappedBy = "incidentResponse", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val responses: MutableList<HistoricalResponse> = mutableListOf(),
+  val dataPointValues: MutableList<HistoricalResponse> = mutableListOf(),
 
   val comment: String,
 

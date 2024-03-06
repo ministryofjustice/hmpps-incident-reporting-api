@@ -5,27 +5,25 @@ create table incident_report
     incident_number        varchar(10)  not null
         constraint incident_report_uk unique,
     incident_type          varchar(255) not null,
-    status                 varchar(255) check (status in
-                                               ('DRAFT', 'SUBMITTED', 'CHANGES_REQUIRED', 'COMPLETE', 'REJECTED')),
-    incident_date_and_time timestamp,
-    reported_date          timestamp,
-    assigned_to            varchar(120),
-    incident_details       text,
-    prison_id              varchar(3),
-    question_set_used      varchar(80),
-    reported_by            varchar(120),
-    created_date           timestamp,
-    last_modified_by       varchar(120),
-    last_modified_date     timestamp
+    status                 varchar(255) not null,
+    incident_date_and_time timestamp    not null,
+    reported_date          timestamp    not null,
+    assigned_to            varchar(120) not null,
+    incident_details       text         not null,
+    prison_id              varchar(3)   not null,
+    reported_by            varchar(120) not null,
+    created_date           timestamp    not null,
+    last_modified_by       varchar(120) not null,
+    last_modified_date     timestamp    not null
 );
 
 create table incident_location
 (
-    id                   serial not null
+    id                   serial       not null
         constraint incident_location_pk primary key,
-    incident_id          UUID   not null,
-    location_id          varchar(210),
-    location_type        varchar(80),
+    incident_id          UUID         not null,
+    location_id          varchar(210) not null,
+    location_type        varchar(80)  not null,
     location_description varchar(255)
 );
 
@@ -45,13 +43,13 @@ alter table if exists evidence
 
 create table incident_correction_request
 (
-    id                      serial not null
+    id                      serial       not null
         constraint incident_correction_request_pk primary key,
-    incident_id             UUID   not null,
-    correction_requested_by varchar(120),
+    incident_id             UUID         not null,
+    correction_requested_by varchar(120) not null,
     description_of_change   text,
-    reason                  varchar(80),
-    correction_requested_at timestamp
+    reason                  varchar(80)  not null,
+    correction_requested_at timestamp    not null
 );
 
 alter table if exists incident_correction_request
@@ -59,18 +57,18 @@ alter table if exists incident_correction_request
 
 create table incident_response
 (
-    id                          serial  not null
+    id                          serial       not null
         constraint incident_response_pk primary key,
-    incident_id                 UUID    not null,
-    question                    varchar(120),
+    incident_id                 UUID         not null,
+    data_point_key              varchar(120),
     comment                     text,
     location_id                 bigint,
     other_person_involvement_id bigint,
     prisoner_involvement_id     bigint,
     evidence_id                 bigint,
     staff_involvement_id        bigint,
-    recorded_on                 timestamp,
-    recorded_by                 varchar(120)
+    recorded_on                 timestamp    not null,
+    recorded_by                 varchar(120) not null
 );
 
 alter table if exists incident_response
@@ -81,7 +79,7 @@ create table response
     id                   serial       not null
         constraint response_pk primary key,
     incident_response_id bigint       not null,
-    response             varchar(120) not null,
+    data_point_value     varchar(120) not null,
     more_info            text
 );
 
@@ -90,11 +88,11 @@ alter table if exists response
 
 create table other_person_involvement
 (
-    id           serial not null
+    id          serial       not null
         constraint other_person_involvement_pk primary key,
-    incident_id  UUID   not null,
-    person_name  varchar(255),
-    person_type  varchar(80)
+    incident_id UUID         not null,
+    person_name varchar(255) not null,
+    person_type varchar(80)  not null
 );
 
 alter table if exists other_person_involvement
@@ -102,11 +100,11 @@ alter table if exists other_person_involvement
 
 create table prisoner_involvement
 (
-    id                   serial not null
+    id                   serial      not null
         constraint prisoner_involvement_pk primary key,
-    incident_id          UUID   not null,
-    prisoner_number      varchar(7),
-    prisoner_involvement varchar(80) check (prisoner_involvement in ('VICTIM', 'PERPETRATOR', 'WITNESS', 'OTHER'))
+    incident_id          UUID        not null,
+    prisoner_number      varchar(7)  not null,
+    prisoner_involvement varchar(80) not null
 );
 
 alter table if exists prisoner_involvement
@@ -114,23 +112,23 @@ alter table if exists prisoner_involvement
 
 create table staff_involvement
 (
-    id             serial not null
+    id             serial       not null
         constraint staff_involvement_pk primary key,
-    incident_id    UUID   not null,
-    staff_role     varchar(80),
-    staff_username varchar(120)
+    incident_id    UUID         not null,
+    staff_role     varchar(80)  not null,
+    staff_username varchar(120) not null
 );
 alter table if exists staff_involvement
     add constraint staff_involvement_report_fk foreign key (incident_id) references incident_report;
 
 create table status_history
 (
-    id          serial not null
+    id          serial       not null
         constraint status_history_pk primary key,
-    incident_id UUID   not null,
-    set_on      timestamp,
-    set_by      varchar(120),
-    status      varchar(30) check (status in ('DRAFT', 'SUBMITTED', 'CHANGES_REQUIRED', 'COMPLETE', 'REJECTED'))
+    incident_id UUID         not null,
+    status      varchar(30)  not null,
+    set_on      timestamp    not null,
+    set_by      varchar(120) not null
 );
 
 alter table if exists status_history
@@ -139,18 +137,18 @@ alter table if exists status_history
 
 create table historical_incident_response
 (
-    id                          serial  not null
+    id                          serial       not null
         constraint historical_incident_response_pk primary key,
-    incident_id                 UUID    not null,
-    question                    varchar(120),
+    incident_id                 UUID         not null,
+    data_point_key              varchar(120) not null,
     comment                     text,
     location_id                 bigint,
     other_person_involvement_id bigint,
     prisoner_involvement_id     bigint,
     evidence_id                 bigint,
     staff_involvement_id        bigint,
-    recorded_on                 timestamp,
-    recorded_by                 varchar(120)
+    recorded_on                 timestamp    not null,
+    recorded_by                 varchar(120) not null
 );
 
 alter table if exists historical_incident_response
@@ -161,7 +159,7 @@ create table historical_response
     id                   serial       not null
         constraint historical_response_pk primary key,
     incident_response_id bigint       not null,
-    response             varchar(120) not null,
+    data_point_value     varchar(120) not null,
     more_info            text
 );
 

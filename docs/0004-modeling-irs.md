@@ -24,20 +24,20 @@ classDiagram
     }
     class HistoricalIncidentResponse {
         String comment
-        Question question
         IncidentLocation? location
         PrisonerInvolvement? prisonerInvolvement
         Long? id
+        String dataPointKey
         StaffInvolvement? staffInvolvement
         String recordedBy
-        List~HistoricalResponse~ responses
         OtherPersonInvolvement? otherPersonInvolvement
+        List~HistoricalResponse~ dataPointValues
         Evidence? evidence
         LocalDateTime recordedOn
         IncidentReport incident
     }
     class HistoricalResponse {
-        ResponseOption response
+        String dataPointValue
         Long? id
         HistoricalIncidentResponse incidentResponse
         String? moreInfo
@@ -58,7 +58,6 @@ classDiagram
         String? locationDescription
     }
     class IncidentReport {
-        QuestionSet questionSetUsed
         String prisonId
         List~Evidence~ evidence
         List~IncidentResponse~ incidentResponses
@@ -82,20 +81,16 @@ classDiagram
         String incidentNumber
         List~OtherPersonInvolvement~ otherPeopleInvolved
     }
-    class IncidentReportRepository {
-        <<Interface>>
-
-    }
     class IncidentResponse {
         String? comment
-        Question question
         IncidentLocation? location
         PrisonerInvolvement? prisonerInvolvement
         Long? id
+        String dataPointKey
         StaffInvolvement? staffInvolvement
         String recordedBy
-        List~Response~ responses
         OtherPersonInvolvement? otherPersonInvolvement
+        List~Response~ dataPointValues
         Evidence? evidence
         LocalDateTime recordedOn
         IncidentReport incident
@@ -128,23 +123,15 @@ classDiagram
         <<enumeration>>
         EnumEntries~PrisonerRole~ entries
     }
-    class Question {
-        <<enumeration>>
-        EnumEntries~Question~ entries
-    }
     class QuestionSet {
         <<enumeration>>
         EnumEntries~QuestionSet~ entries
     }
     class Response {
-        ResponseOption response
+        String dataPointValue
         Long? id
         IncidentResponse incidentResponse
         String? moreInfo
-    }
-    class ResponseOption {
-        <<enumeration>>
-        EnumEntries~ResponseOption~ entries
     }
     class StaffInvolvement {
         StaffRole staffRole
@@ -166,19 +153,17 @@ classDiagram
 
     Evidence "1" *--> "incident 1" IncidentReport
     HistoricalIncidentResponse "1" *--> "evidence 1" Evidence
-    HistoricalIncidentResponse "1" *--> "responses *" HistoricalResponse
+    HistoricalIncidentResponse "1" *--> "dataPointValues *" HistoricalResponse
     HistoricalIncidentResponse "1" *--> "location 1" IncidentLocation
     HistoricalIncidentResponse "1" *--> "incident 1" IncidentReport
     HistoricalIncidentResponse "1" *--> "otherPersonInvolvement 1" OtherPersonInvolvement
     HistoricalIncidentResponse "1" *--> "prisonerInvolvement 1" PrisonerInvolvement
-    HistoricalIncidentResponse "1" *--> "question 1" Question
     HistoricalIncidentResponse "1" *--> "staffInvolvement 1" StaffInvolvement
     HistoricalResponse "1" *--> "incidentResponse 1" HistoricalIncidentResponse
-    HistoricalResponse "1" *--> "response 1" ResponseOption
     IncidentCorrectionRequest "1" *--> "incident 1" IncidentReport
     IncidentLocation "1" *--> "incident 1" IncidentReport
-    IncidentReport  ..>  Evidence : «create»
     IncidentReport "1" *--> "evidence *" Evidence
+    IncidentReport  ..>  Evidence : «create»
     IncidentReport "1" *--> "historyOfResponses *" HistoricalIncidentResponse
     IncidentReport "1" *--> "incidentCorrectionRequests *" IncidentCorrectionRequest
     IncidentReport "1" *--> "locations *" IncidentLocation
@@ -191,25 +176,22 @@ classDiagram
     IncidentReport  ..>  OtherPersonInvolvement : «create»
     IncidentReport "1" *--> "prisonersInvolved *" PrisonerInvolvement
     IncidentReport  ..>  PrisonerInvolvement : «create»
-    IncidentReport "1" *--> "questionSetUsed 1" QuestionSet
-    IncidentReport "1" *--> "staffInvolved *" StaffInvolvement
     IncidentReport  ..>  StaffInvolvement : «create»
+    IncidentReport "1" *--> "staffInvolved *" StaffInvolvement
     IncidentReport "1" *--> "historyOfStatuses *" StatusHistory
     IncidentResponse "1" *--> "evidence 1" Evidence
     IncidentResponse "1" *--> "location 1" IncidentLocation
     IncidentResponse "1" *--> "incident 1" IncidentReport
     IncidentResponse "1" *--> "otherPersonInvolvement 1" OtherPersonInvolvement
     IncidentResponse "1" *--> "prisonerInvolvement 1" PrisonerInvolvement
-    IncidentResponse "1" *--> "question 1" Question
-    IncidentResponse "1" *--> "responses *" Response
     IncidentResponse  ..>  Response : «create»
+    IncidentResponse "1" *--> "dataPointValues *" Response
     IncidentResponse "1" *--> "staffInvolvement 1" StaffInvolvement
     OtherPersonInvolvement "1" *--> "incident 1" IncidentReport
     OtherPersonInvolvement "1" *--> "personType 1" PersonRole
     PrisonerInvolvement "1" *--> "incident 1" IncidentReport
     PrisonerInvolvement "1" *--> "prisonerInvolvement 1" PrisonerRole
     Response "1" *--> "incidentResponse 1" IncidentResponse
-    Response "1" *--> "response 1" ResponseOption
     StaffInvolvement "1" *--> "incident 1" IncidentReport
     StaffInvolvement "1" *--> "staffRole 1" StaffRole
     StatusHistory "1" *--> "incident 1" IncidentReport
@@ -229,7 +211,7 @@ classDiagram
     }
     class historical_incident_response {
         uuid incident_id
-        varchar(120) question
+        varchar(120) data_point_key
         text comment
         bigint location_id
         bigint other_person_involvement_id
@@ -242,7 +224,7 @@ classDiagram
     }
     class historical_response {
         bigint incident_response_id
-        varchar(120) response
+        varchar(120) data_point_value
         text more_info
         integer id
     }
@@ -270,7 +252,6 @@ classDiagram
         varchar(120) assigned_to
         text incident_details
         varchar(3) prison_id
-        varchar(80) question_set_used
         varchar(120) reported_by
         timestamp created_date
         varchar(120) last_modified_by
@@ -279,7 +260,7 @@ classDiagram
     }
     class incident_response {
         uuid incident_id
-        varchar(120) question
+        varchar(120) data_point_key
         text comment
         bigint location_id
         bigint other_person_involvement_id
@@ -304,7 +285,7 @@ classDiagram
     }
     class response {
         bigint incident_response_id
-        varchar(120) response
+        varchar(120) data_point_value
         text more_info
         integer id
     }
@@ -316,9 +297,9 @@ classDiagram
     }
     class status_history {
         uuid incident_id
+        varchar(30) status
         timestamp set_on
         varchar(120) set_by
-        varchar(30) status
         integer id
     }
 

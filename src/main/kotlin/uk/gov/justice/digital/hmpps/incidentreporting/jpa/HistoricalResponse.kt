@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -18,8 +16,7 @@ class HistoricalResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val incidentResponse: HistoricalIncidentResponse,
 
-  @Enumerated(EnumType.STRING)
-  val response: ResponseOption,
+  val dataPointValue: String,
 
   val moreInfo: String? = null,
 )
