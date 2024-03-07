@@ -123,10 +123,6 @@ classDiagram
         <<enumeration>>
         EnumEntries~PrisonerRole~ entries
     }
-    class QuestionSet {
-        <<enumeration>>
-        EnumEntries~QuestionSet~ entries
-    }
     class Response {
         String dataPointValue
         Long? id
