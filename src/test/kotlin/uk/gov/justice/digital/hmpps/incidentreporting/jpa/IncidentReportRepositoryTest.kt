@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
 import java.time.LocalDateTime
 
 @DataJpaTest
