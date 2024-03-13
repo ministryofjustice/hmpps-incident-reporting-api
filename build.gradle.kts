@@ -28,9 +28,9 @@ dependencies {
   implementation("com.zaxxer:HikariCP:5.1.0")
   runtimeOnly("org.postgresql:postgresql:42.7.2")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.0")
 
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
