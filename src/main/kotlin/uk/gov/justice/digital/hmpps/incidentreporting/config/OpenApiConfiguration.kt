@@ -35,9 +35,9 @@ class OpenApiConfiguration(
       ),
     )
     .info(
-      Info().title("Incident Reporting API")
+      Info().title("IncidentReport Reporting API")
         .version(version)
-        .description("API for viewing and managing incident reports")
+        .description("API for viewing and managing incidentReport reports")
         .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk")),
     )
     .components(

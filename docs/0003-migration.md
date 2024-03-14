@@ -1,4 +1,4 @@
-# 3. Mastering and synchronisation of Internal location data with NOMIS
+# 3. Mastering and synchronisation of Incident Reports
 
 [Next >>](0004-modeling-irs.md)
 
@@ -61,7 +61,7 @@ Steps needed:
 graph TB
     X((Prison Staff)) --> IRS
     IRS[Incident Reporting Service] -- update IRS --> IRSAPI
-    IRSAPI[Incident Reporting API] -- Store locations --> IRSDB[[Incident Reporting DB]]
+    IRSAPI[Incident Reporting API] -- Store incident --> IRSDB[[Incident Reporting DB]]
     IRSAPI -- Incident Report Created/Updated --> DOM_EVT[[Domain Events]]
     X -- Create Incident Reports --> NOMIS[NOMIS]
     NOMIS -- Incident Report Created/Updated event--> E[HMPPS NOMIS -> DPS Sync]
@@ -76,7 +76,6 @@ graph TB
     AP -- send data --> SDT[Safety Diagnostic Tool]
     AP -- send data --> PH[Performance Hub]
     DPR -- ingest data from --> IRSDB
-    DPR -- ingest data from --> NOMIS
     
 ```
 

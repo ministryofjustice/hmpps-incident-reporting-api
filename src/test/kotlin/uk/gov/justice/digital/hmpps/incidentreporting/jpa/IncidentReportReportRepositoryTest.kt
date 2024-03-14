@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
-class IncidentReportRepositoryTest : IntegrationTestBase() {
+class IncidentReportReportRepositoryTest : IntegrationTestBase() {
 
   @Autowired
   lateinit var repository: IncidentReportRepository
@@ -33,7 +33,7 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
           incidentDateAndTime = LocalDateTime.now(),
           incidentNumber = "A1100011",
           incidentType = IncidentType.SELF_HARM,
-          incidentDetails = "An incident occurred",
+          incidentDetails = "An incidentReport occurred",
           reportedBy = "user1",
           prisonId = "MDI",
           reportedDate = LocalDateTime.now(),

@@ -13,10 +13,14 @@ import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.io.Serializable
+import java.time.Clock
 import java.time.LocalDateTime
 import java.util.*
-
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
 @Entity
 class IncidentReport(
   @Id
@@ -35,17 +39,17 @@ class IncidentReport(
   @Enumerated(EnumType.STRING)
   val incidentType: IncidentType,
 
-  val incidentDetails: String,
+  var incidentDetails: String,
 
   val reportedBy: String,
   val reportedDate: LocalDateTime,
   @Enumerated(EnumType.STRING)
-  val status: IncidentStatus = IncidentStatus.DRAFT,
+  var status: IncidentStatus = IncidentStatus.DRAFT,
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
-  val assignedTo: String,
+  val assignedTo: String? = null,
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val staffInvolved: MutableList<StaffInvolvement> = mutableListOf(),
@@ -71,9 +75,12 @@ class IncidentReport(
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val historyOfResponses: MutableList<HistoricalIncidentResponse> = mutableListOf(),
 
+  @Enumerated(EnumType.STRING)
+  val source: InformationSource = InformationSource.DPS,
+
   val createdDate: LocalDateTime,
-  val lastModifiedDate: LocalDateTime,
-  val lastModifiedBy: String,
+  var lastModifiedDate: LocalDateTime,
+  var lastModifiedBy: String,
 
 ) : Serializable {
 
@@ -130,4 +137,43 @@ class IncidentReport(
     incidentResponses.add(incidentResponse)
     return incidentResponse
   }
+
+  fun updateWith(upsert: NomisIncidentReport, updatedBy: String, clock: Clock) {
+    this.incidentDetails = upsert.description ?: "NO DETAILS GIVEN"
+    this.status = mapIncidentStatus(upsert.status.code)
+
+    this.lastModifiedBy = updatedBy
+    this.lastModifiedDate = LocalDateTime.now(clock)
+  }
+
+  private fun mapIncidentStatus(code: String) =
+    when (code) {
+      "AWAN" -> IncidentStatus.AWAITING_ANALYSIS
+      "INAN" -> IncidentStatus.IN_ANALYSIS
+      "INREQ" -> IncidentStatus.INFORMATION_REQUIRED
+      "INAME" -> IncidentStatus.INFORMATION_AMENDED
+      "CLOSE" -> IncidentStatus.CLOSED
+      "PIU" -> IncidentStatus.POST_INCIDENT_UPDATE
+      "IUP" -> IncidentStatus.INCIDENT_UPDATED
+      "DUP" -> IncidentStatus.DUPLICATE
+      else -> throw RuntimeException("Unknown incident status: $code")
+    }
+
+  fun toDto(): IncidentReport =
+    IncidentReportDTO(
+      id = this.id!!,
+      incidentNumber = this.incidentNumber,
+      incidentDateAndTime = this.incidentDateAndTime,
+      prisonId = this.prisonId,
+      incidentType = this.incidentType,
+      incidentDetails = this.incidentDetails,
+      reportedBy = this.reportedBy,
+      reportedDate = this.reportedDate,
+      status = this.status,
+      assignedTo = this.assignedTo,
+      createdDate = this.createdDate,
+      lastModifiedDate = this.lastModifiedDate,
+      lastModifiedBy = this.lastModifiedBy,
+      createdInNomis = this.source == InformationSource.NOMIS,
+    )
 }
