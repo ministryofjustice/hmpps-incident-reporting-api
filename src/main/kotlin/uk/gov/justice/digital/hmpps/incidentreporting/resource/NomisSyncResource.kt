@@ -104,7 +104,7 @@ class NomisSyncResource(
 @Schema(description = "IncidentReport Details raised/updated in NOMIS")
 data class UpsertNomisIncident(
   @Schema(
-    description = "For updates, this value is the UUID of the existing incidentReport. For new incidents, this value is null.",
+    description = "For updates, this value is the UUID of the existing incident. For new incidents, this value is null.",
     required = false,
     example = "123e4567-e89b-12d3-a456-426614174000",
   )

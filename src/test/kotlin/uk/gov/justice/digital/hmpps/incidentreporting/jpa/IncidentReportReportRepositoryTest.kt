@@ -33,7 +33,7 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
           incidentDateAndTime = LocalDateTime.now(),
           incidentNumber = "A1100011",
           incidentType = IncidentType.SELF_HARM,
-          incidentDetails = "An incidentReport occurred",
+          incidentDetails = "An incident occurred",
           reportedBy = "user1",
           prisonId = "MDI",
           reportedDate = LocalDateTime.now(),

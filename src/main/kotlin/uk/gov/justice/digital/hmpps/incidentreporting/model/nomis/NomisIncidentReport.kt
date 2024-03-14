@@ -12,46 +12,46 @@ import java.time.LocalDateTime
 @Schema(description = "NOMIS Incident Report Details")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisIncidentReport(
-  @Schema(description = "The incidentReport id")
+  @Schema(description = "The Incident id")
   val incidentId: Long,
-  @Schema(description = "The id of the questionnaire associated with this incidentReport")
+  @Schema(description = "The id of the questionnaire associated with this incident")
   val questionnaireId: Long,
-  @Schema(description = "A summary of the incidentReport")
+  @Schema(description = "A summary of the incident")
   val title: String?,
-  @Schema(description = "The incidentReport details")
+  @Schema(description = "The incident details")
   val description: String?,
-  @Schema(description = "Prison where the incidentReport occurred")
+  @Schema(description = "Prison where the incident occurred")
   val prison: CodeDescription,
 
   @Schema(description = "Status details")
   val status: NomisIncidentStatus,
-  @Schema(description = "The incidentReport questionnaire type")
+  @Schema(description = "The incident questionnaire type")
   val type: String,
 
   @Schema(description = "If the response is locked ie if the response is completed")
   val lockedResponse: Boolean,
 
-  @Schema(description = "The date and time of the incidentReport")
+  @Schema(description = "The date and time of the incident")
   val incidentDateTime: LocalDateTime,
 
-  @Schema(description = "The staff member who reported the incidentReport")
+  @Schema(description = "The staff member who reported the incident")
   val reportingStaff: Staff,
-  @Schema(description = "The date and time the incidentReport was reported")
+  @Schema(description = "The date and time the incident was reported")
   val reportedDateTime: LocalDateTime,
 
-  @Schema(description = "Staff involved in the incidentReport")
+  @Schema(description = "Staff involved in the incident")
   val staffParties: List<StaffParty>,
 
-  @Schema(description = "Offenders involved in the incidentReport")
+  @Schema(description = "Offenders involved in the incident")
   val offenderParties: List<OffenderParty>,
 
-  @Schema(description = "Requirements for completing the incidentReport report")
+  @Schema(description = "Requirements for completing the incident report")
   val requirements: List<Requirement>,
 
-  @Schema(description = "Questions asked for the incidentReport")
+  @Schema(description = "Questions asked for the incident")
   val questions: List<Question>,
 
-  @Schema(description = "Historical questionnaire details for the incidentReport")
+  @Schema(description = "Historical questionnaire details for the incident")
   val history: List<History>,
 ) {
   fun toNewEntity(clock: Clock): IncidentReport {
@@ -115,11 +115,11 @@ data class Staff(
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class StaffParty(
-  @Schema(description = "Staff involved in the incidentReport")
+  @Schema(description = "Staff involved in the incident")
   val staff: Staff,
-  @Schema(description = "Staff role in the incidentReport")
+  @Schema(description = "Staff role in the incident")
   val role: CodeDescription,
-  @Schema(description = "General information about the incidentReport")
+  @Schema(description = "General information about the incident")
   val comment: String?,
 )
 
@@ -135,19 +135,19 @@ data class Offender(
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class OffenderParty(
-  @Schema(description = "Offender involved in the incidentReport")
+  @Schema(description = "Offender involved in the incident")
   val offender: Offender,
-  @Schema(description = "Offender role in the incidentReport")
+  @Schema(description = "Offender role in the incident")
   val role: CodeDescription,
-  @Schema(description = "The outcome of the incidentReport")
+  @Schema(description = "The outcome of the incident")
   val outcome: CodeDescription?,
-  @Schema(description = "General information about the incidentReport")
+  @Schema(description = "General information about the incident")
   val comment: String?,
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Requirement(
-  @Schema(description = "The update required to the incidentReport report")
+  @Schema(description = "The update required to the incident report")
   val comment: String?,
   @Schema(description = "Date the requirement was recorded")
   val date: LocalDate,
@@ -161,7 +161,7 @@ data class Requirement(
 data class Question(
   @Schema(description = "The questionnaire question id")
   val questionId: Long,
-  @Schema(description = "The sequence number of the question for this incidentReport")
+  @Schema(description = "The sequence number of the question for this incident")
   val sequence: Int,
   @Schema(description = "The Question being asked")
   val question: String,
@@ -173,7 +173,7 @@ data class Question(
 data class Response(
   @Schema(description = "The id of the questionnaire question answer")
   val questionResponseId: Long?,
-  @Schema(description = "The sequence number of the response for this incidentReport")
+  @Schema(description = "The sequence number of the response for this incident")
   val sequence: Int,
   @Schema(description = "The answer text")
   val answer: String?,
@@ -185,7 +185,7 @@ data class Response(
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class History(
-  @Schema(description = "The history questionnaire id for the incidentReport")
+  @Schema(description = "The history questionnaire id for the incident")
   val questionnaireId: Long,
   @Schema(description = "The questionnaire type")
   val type: String,
@@ -201,9 +201,9 @@ data class History(
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class HistoryQuestion(
-  @Schema(description = "The sequence number of the response question for this incidentReport")
+  @Schema(description = "The sequence number of the response question for this incident")
   val questionId: Long,
-  @Schema(description = "The sequence number of the question for this incidentReport")
+  @Schema(description = "The sequence number of the question for this incident")
   val sequence: Int,
   @Schema(description = "The Question being asked")
   val question: String,
@@ -215,7 +215,7 @@ data class HistoryQuestion(
 data class HistoryResponse(
   @Schema(description = "The id of the questionnaire question answer")
   val questionResponseId: Long?,
-  @Schema(description = "The sequence number of the response for this incidentReport")
+  @Schema(description = "The sequence number of the response for this incident")
   val responseSequence: Int,
   @Schema(description = "The answer text")
   val answer: String?,

@@ -89,13 +89,13 @@ data class HMPPSDomainEvent(
 
 enum class IncidentReportDomainEventType(val value: String, val description: String, val auditType: AuditType) {
   INCIDENT_REPORT_CREATED(
-    "incidentReport.report.created",
-    "An incidentReport report has been created",
+    "incident.report.created",
+    "An incident report has been created",
     AuditType.INCIDENT_REPORT_CREATED,
   ),
   INCIDENT_REPORT_AMENDED(
-    "incidentReport.report.amended",
-    "An incidentReport report has been amended",
+    "incident.report.amended",
+    "An incident report has been amended",
     AuditType.INCIDENT_REPORT_AMENDED,
   ),
 }

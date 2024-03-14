@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus
 data class ErrorResponse(
   @Schema(description = "HTTP status code", example = "500", required = true)
   val status: Int,
-  @Schema(description = "User message for the error", example = "No incidentReport report found for ID `55544222`", required = true)
+  @Schema(description = "User message for the error", example = "No incident report found for ID `55544222`", required = true)
   val userMessage: String,
   @Schema(description = "More detailed error message", example = "[Details, sometimes a stack trace]", required = true)
   val developerMessage: String,
