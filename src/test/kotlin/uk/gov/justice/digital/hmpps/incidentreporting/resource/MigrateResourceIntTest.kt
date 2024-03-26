@@ -23,7 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
 
-private const val incidentNumber: Long = 112414323
+private const val INCIDENT_NUMBER: Long = 112414323
 
 class MigrateResourceIntTest : SqsIntegrationTestBase() {
 
@@ -44,7 +44,7 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
     repository.deleteAll()
 
     existingNomisIncident = repository.save(
-      buildIncidentReport(incidentNumber = "112414323", reportTime = LocalDateTime.now(clock), source = InformationSource.NOMIS),
+      buildIncidentReport(incidentNumber = "$INCIDENT_NUMBER", reportTime = LocalDateTime.now(clock), source = InformationSource.NOMIS),
     )
   }
 
@@ -55,7 +55,7 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
     val syncRequest = UpsertNomisIncident(
       initialMigration = false,
       incidentReport = NomisIncidentReport(
-        incidentId = incidentNumber,
+        incidentId = INCIDENT_NUMBER,
         title = "An incident occurred updated",
         description = "An incident occurred updated",
         prison = CodeDescription("MDI", "Moorland"),
@@ -179,7 +179,7 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(syncRequest.copy(initialMigration = false, id = existingNomisIncident.id, incidentReport = syncRequest.incidentReport.copy(incidentId = incidentNumber, description = "Updated details"))))
+          .bodyValue(jsonString(syncRequest.copy(initialMigration = false, id = existingNomisIncident.id, incidentReport = syncRequest.incidentReport.copy(incidentId = INCIDENT_NUMBER, description = "Updated details"))))
           .exchange()
           .expectStatus().isOk
           .expectBody().json(

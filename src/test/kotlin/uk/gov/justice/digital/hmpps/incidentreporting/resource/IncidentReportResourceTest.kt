@@ -41,6 +41,113 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
     )
   }
 
+  @DisplayName("GET /incident-reports/{id}")
+  @Nested
+  inner class GetIncidentReport {
+
+    @Nested
+    inner class Security {
+      @Test
+      fun `access forbidden when no authority`() {
+        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+          .exchange()
+          .expectStatus().isUnauthorized
+      }
+
+      @Test
+      fun `access forbidden when no role`() {
+        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+          .headers(setAuthorisation(roles = listOf()))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isForbidden
+      }
+
+      @Test
+      fun `access forbidden with wrong role`() {
+        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isForbidden
+      }
+
+      @Test
+      fun `access forbidden with right role, wrong scope`() {
+        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isForbidden
+      }
+    }
+
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can get an incident by ID`() {
+        val now = LocalDateTime.now(clock)
+        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingIncident.id}",
+              "incidentType": "${existingIncident.incidentType}",
+              "incidentDateAndTime": "${existingIncident.incidentDateAndTime}",
+              "prisonId": "MDI",
+              "incidentDetails": "${existingIncident.incidentDetails}",
+              "reportedBy": "USER1",
+              "reportedDate": "$now",
+              "status": "${existingIncident.status}",
+              "assignedTo": "USER1",
+              "createdDate": "$now",
+              "lastModifiedDate": "$now",
+              "lastModifiedBy": "USER1",
+              "createdInNomis": false
+            }
+          """,
+            false,
+          )
+      }
+
+      @Test
+      fun `can get an incident by incident number`() {
+        val now = LocalDateTime.now(clock)
+        webTestClient.get().uri("/incident-reports/incident-number/${existingIncident.incidentNumber}")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingIncident.id}",
+              "incidentType": "${existingIncident.incidentType}",
+              "incidentDateAndTime": "${existingIncident.incidentDateAndTime}",
+              "prisonId": "MDI",
+              "incidentDetails": "${existingIncident.incidentDetails}",
+              "reportedBy": "USER1",
+              "reportedDate": "$now",
+              "status": "${existingIncident.status}",
+              "assignedTo": "USER1",
+              "createdDate": "$now",
+              "lastModifiedDate": "$now",
+              "lastModifiedBy": "USER1",
+              "createdInNomis": false
+            }
+          """,
+            false,
+          )
+      }
+    }
+  }
+
   @DisplayName("POST /incident-reports")
   @Nested
   inner class CreateIncidentReport {
