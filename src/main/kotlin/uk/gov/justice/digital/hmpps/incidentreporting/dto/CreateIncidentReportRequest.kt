@@ -29,7 +29,7 @@ data class CreateIncidentReportRequest(
       lastModifiedDate = LocalDateTime.now(clock),
       lastModifiedBy = createdBy,
       source = InformationSource.DPS,
-      assignedTo = reportedBy
+      assignedTo = reportedBy,
     )
   }
 }
