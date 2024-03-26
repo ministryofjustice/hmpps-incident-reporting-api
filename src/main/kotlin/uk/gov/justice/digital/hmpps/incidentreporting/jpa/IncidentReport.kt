@@ -29,7 +29,7 @@ class IncidentReport(
   @Column(name = "id", updatable = false, nullable = false)
   val id: UUID? = null,
 
-  @Column(nullable = false, unique = true, length = 10)
+  @Column(nullable = false, unique = true, length = 16)
   val incidentNumber: String,
 
   val incidentDateAndTime: LocalDateTime,

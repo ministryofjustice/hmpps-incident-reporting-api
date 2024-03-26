@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.model.nomis
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
@@ -63,7 +64,7 @@ data class NomisIncidentReport(
       incidentDetails = title ?: "NO DETAILS GIVEN\n$description",
       reportedBy = reportingStaff.username,
       reportedDate = reportedDateTime,
-      status = uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus.DRAFT,
+      status = IncidentStatus.DRAFT,
       createdDate = LocalDateTime.now(clock),
       lastModifiedDate = LocalDateTime.now(clock),
       lastModifiedBy = reportingStaff.username,

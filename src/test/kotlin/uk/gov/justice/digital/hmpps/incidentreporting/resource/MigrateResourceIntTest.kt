@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.CodeDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
@@ -18,9 +19,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Offender
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.OffenderParty
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Staff
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.StaffParty
+import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport as IncidentReportJPA
+
+private const val incidentNumber: Long = 112414323
 
 class MigrateResourceIntTest : SqsIntegrationTestBase() {
 
@@ -33,39 +36,28 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var repository: IncidentReportRepository
-  lateinit var existingIncident: IncidentReportJPA
+
+  lateinit var existingNomisIncident: IncidentReport
 
   @BeforeEach
   fun setUp() {
     repository.deleteAll()
 
-    existingIncident = repository.save(
-      IncidentReportJPA(
-        incidentDateAndTime = LocalDateTime.now(clock).minusHours(1),
-        incidentNumber = "1100011",
-        incidentType = IncidentType.SELF_HARM,
-        incidentDetails = "An self harm incident occurred",
-        reportedBy = "user1",
-        prisonId = "MDI",
-        reportedDate = LocalDateTime.now(clock),
-        assignedTo = "user2",
-        createdDate = LocalDateTime.now(clock),
-        lastModifiedDate = LocalDateTime.now(clock),
-        lastModifiedBy = "user1",
-      ),
+    existingNomisIncident = repository.save(
+      buildIncidentReport(incidentNumber = "112414323", reportTime = LocalDateTime.now(clock), source = InformationSource.NOMIS),
     )
   }
 
   @DisplayName("POST /sync/upsert")
   @Nested
-  inner class CreateLocationTest {
+  inner class MigrateIncidentReport {
     private val reportingStaff = Staff("user1", 121, "John", "Smith")
     val syncRequest = UpsertNomisIncident(
-      initialMigration = true,
+      initialMigration = false,
       incidentReport = NomisIncidentReport(
-        incidentId = 112414323,
-        title = "An Incident occurred",
-        description = "An incident occurred",
+        incidentId = incidentNumber,
+        title = "An incident occurred updated",
+        description = "An incident occurred updated",
         prison = CodeDescription("MDI", "Moorland"),
         status = NomisIncidentStatus("AWAN", "Awaiting Analysis"),
         type = "SELF_HARM",
@@ -150,37 +142,65 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
     inner class HappyPath {
       @Test
       fun `can sync a new incident`() {
+        val now = LocalDateTime.now(clock)
+
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(syncRequest))
+          .bodyValue(jsonString(syncRequest.copy(initialMigration = false, incidentReport = syncRequest.incidentReport.copy(incidentId = 112414666, description = "A New Incident From NOMIS"))))
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(
             // language=json
             """ 
-             {
-           
-            }
+          {
+            "incidentType": "SELF_HARM",
+            "incidentDateAndTime": "${syncRequest.incidentReport.incidentDateTime}",
+            "prisonId": "${syncRequest.incidentReport.prison.code}",
+            "incidentDetails": "${syncRequest.incidentReport.description}",
+            "reportedBy": "user1",
+            "reportedDate": "$now",
+            "status": "DRAFT",
+            "assignedTo": "user1",
+            "createdDate": "$now",
+            "lastModifiedDate": "$now",
+            "lastModifiedBy": "user1",
+            "createdInNomis": true
+          }
           """,
             false,
           )
       }
 
       @Test
-      fun `can sync an update to an existing incident`() {
+      fun `can sync an update to an existing incident created in NOMIS`() {
+        val now = LocalDateTime.now(clock)
+
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(syncRequest.copy(initialMigration = false, id = existingIncident.id, incidentReport = syncRequest.incidentReport.copy(description = "Updated details"))))
+          .bodyValue(jsonString(syncRequest.copy(initialMigration = false, id = existingNomisIncident.id, incidentReport = syncRequest.incidentReport.copy(incidentId = incidentNumber, description = "Updated details"))))
           .exchange()
           .expectStatus().isOk
           .expectBody().json(
             // language=json
             """ 
-             {
-             
-            }
+           {
+            "id": "${existingNomisIncident.id}",
+            "incidentNumber": "${existingNomisIncident.incidentNumber}",
+            "incidentType": "${existingNomisIncident.incidentType}",
+            "incidentDateAndTime": "${existingNomisIncident.incidentDateAndTime}",
+            "prisonId": "MDI",
+            "incidentDetails": "Updated details",
+            "reportedBy": "USER1",
+            "reportedDate": "$now",
+            "status": "AWAITING_ANALYSIS",
+            "assignedTo": "USER1",
+            "createdDate": "$now",
+            "lastModifiedDate": "$now",
+            "lastModifiedBy": "user1",
+            "createdInNomis": true
+          }
           """,
             false,
           )

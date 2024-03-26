@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateIncidentReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentReportNumber
 import java.time.Clock
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -35,10 +36,8 @@ class IncidentReportService(
 
   @Transactional
   fun createIncidentReport(incidentReportCreateRequest: CreateIncidentReportRequest): IncidentReportDTO {
-    val generatedNewIncidentNumber = "${incidentReportCreateRequest.prisonId}-${"%16d".format(incidentReportRepository.getNextIncidentNumber())}"
-
     val newIncidentReport = incidentReportCreateRequest.toNewEntity(
-      incidentNumber = generatedNewIncidentNumber,
+      incidentReportRepository.generateIncidentReportNumber(),
       createdBy = authenticationFacade.getUserOrSystemInContext(),
       clock = clock,
     )

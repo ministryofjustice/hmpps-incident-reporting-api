@@ -13,3 +13,5 @@ interface IncidentReportRepository : JpaRepository<IncidentReport, UUID> {
   @Query(value = "SELECT nextval('incident_number_sequence')", nativeQuery = true)
   fun getNextIncidentNumber(): Long
 }
+
+fun IncidentReportRepository.generateIncidentReportNumber() = "IR-%016d".format(getNextIncidentNumber())

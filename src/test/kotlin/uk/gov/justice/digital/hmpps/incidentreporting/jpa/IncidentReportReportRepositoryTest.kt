@@ -10,6 +10,7 @@ import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentReportNumber
 import java.time.LocalDateTime
 
 @DataJpaTest
@@ -30,8 +31,8 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
     val incidentReport =
       repository.save(
         IncidentReport(
+          incidentNumber = repository.generateIncidentReportNumber(),
           incidentDateAndTime = LocalDateTime.now(),
-          incidentNumber = "A1100011",
           incidentType = IncidentType.SELF_HARM,
           incidentDetails = "An incident occurred",
           reportedBy = "user1",
