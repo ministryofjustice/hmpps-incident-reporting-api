@@ -1,16 +1,20 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.integration
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.config.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer.setLocalStackProperties
+import uk.gov.justice.digital.hmpps.incidentreporting.config.SYSTEM_USERNAME
 import uk.gov.justice.hmpps.sqs.HmppsQueue
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
@@ -24,6 +28,12 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
 
   @Autowired
   lateinit var webTestClient: WebTestClient
+
+  @Autowired
+  protected lateinit var jwtAuthHelper: JwtAuthHelper
+
+  @Autowired
+  protected lateinit var objectMapper: ObjectMapper
 
   @Autowired
   private lateinit var hmppsQueueService: HmppsQueueService
@@ -52,6 +62,14 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     auditQueue.sqsClient.countMessagesOnQueue(auditQueue.queueUrl).get()
     incidentReportingQueue.sqsClient.countMessagesOnQueue(incidentReportingQueue.queueUrl).get()
   }
+
+  protected fun setAuthorisation(
+    user: String = SYSTEM_USERNAME,
+    roles: List<String> = listOf(),
+    scopes: List<String> = listOf(),
+  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
+
+  protected fun jsonString(any: Any) = objectMapper.writeValueAsString(any) as String
 
   companion object {
     private val localStackContainer = LocalStackContainer.instance

@@ -68,6 +68,7 @@ data class NomisIncidentReport(
       lastModifiedDate = LocalDateTime.now(clock),
       lastModifiedBy = reportingStaff.username,
       source = InformationSource.NOMIS,
+      assignedTo = reportingStaff.username,
     )
   }
 

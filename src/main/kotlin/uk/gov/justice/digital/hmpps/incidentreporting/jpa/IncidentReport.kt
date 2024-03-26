@@ -49,7 +49,7 @@ class IncidentReport(
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
-  val assignedTo: String? = null,
+  val assignedTo: String,
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val staffInvolved: MutableList<StaffInvolvement> = mutableListOf(),
