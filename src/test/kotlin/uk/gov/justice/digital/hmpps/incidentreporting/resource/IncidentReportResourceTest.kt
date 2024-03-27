@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
+import io.opentelemetry.sdk.testing.assertj.OpenTelemetryAssertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -15,6 +16,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentReportNumber
+import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
 
@@ -245,6 +247,13 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
           """,
             false,
           )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.created" to InformationSource.DPS,
+            )
+        }
       }
     }
   }

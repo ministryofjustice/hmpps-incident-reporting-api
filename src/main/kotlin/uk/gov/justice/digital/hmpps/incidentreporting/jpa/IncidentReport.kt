@@ -15,6 +15,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.mapIncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.io.Serializable
 import java.time.Clock
@@ -29,7 +30,7 @@ class IncidentReport(
   @Column(name = "id", updatable = false, nullable = false)
   val id: UUID? = null,
 
-  @Column(nullable = false, unique = true, length = 16)
+  @Column(nullable = false, unique = true, length = 25)
   val incidentNumber: String,
 
   val incidentDateAndTime: LocalDateTime,
@@ -145,19 +146,6 @@ class IncidentReport(
     this.lastModifiedBy = updatedBy
     this.lastModifiedDate = LocalDateTime.now(clock)
   }
-
-  private fun mapIncidentStatus(code: String) =
-    when (code) {
-      "AWAN" -> IncidentStatus.AWAITING_ANALYSIS
-      "INAN" -> IncidentStatus.IN_ANALYSIS
-      "INREQ" -> IncidentStatus.INFORMATION_REQUIRED
-      "INAME" -> IncidentStatus.INFORMATION_AMENDED
-      "CLOSE" -> IncidentStatus.CLOSED
-      "PIU" -> IncidentStatus.POST_INCIDENT_UPDATE
-      "IUP" -> IncidentStatus.INCIDENT_UPDATED
-      "DUP" -> IncidentStatus.DUPLICATE
-      else -> throw RuntimeException("Unknown incident status: $code")
-    }
 
   fun toDto(): IncidentReport =
     IncidentReportDTO(

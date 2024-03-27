@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
+import io.opentelemetry.sdk.testing.assertj.OpenTelemetryAssertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -11,6 +12,8 @@ import org.springframework.context.annotation.Primary
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.CodeDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
@@ -141,13 +144,20 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can sync a new incident`() {
+      fun `can migrate an incident`() {
         val now = LocalDateTime.now(clock)
 
+        val updatedSyncRequest = syncRequest.copy(
+          initialMigration = true,
+          incidentReport = syncRequest.incidentReport.copy(
+            incidentId = 112414666,
+            description = "A New Incident From NOMIS",
+          ),
+        )
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(syncRequest.copy(initialMigration = false, incidentReport = syncRequest.incidentReport.copy(incidentId = 112414666, description = "A New Incident From NOMIS"))))
+          .bodyValue(jsonString(updatedSyncRequest))
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(
@@ -155,12 +165,12 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
             """ 
           {
             "incidentType": "SELF_HARM",
-            "incidentDateAndTime": "${syncRequest.incidentReport.incidentDateTime}",
-            "prisonId": "${syncRequest.incidentReport.prison.code}",
-            "incidentDetails": "${syncRequest.incidentReport.description}",
+            "incidentDateAndTime": "${updatedSyncRequest.incidentReport.incidentDateTime}",
+            "prisonId": "${updatedSyncRequest.incidentReport.prison.code}",
+            "incidentDetails": "${updatedSyncRequest.incidentReport.description}",
             "reportedBy": "user1",
             "reportedDate": "$now",
-            "status": "DRAFT",
+            "status": "${IncidentStatus.AWAITING_ANALYSIS.name}",
             "assignedTo": "user1",
             "createdDate": "$now",
             "lastModifiedDate": "$now",
@@ -173,13 +183,68 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `can sync an update to an existing incident created in NOMIS`() {
+      fun `can sync an new incident after migration created in NOMIS`() {
         val now = LocalDateTime.now(clock)
 
+        val newIncident = syncRequest.copy(
+          initialMigration = false,
+          incidentReport = syncRequest.incidentReport.copy(
+            incidentId = INCIDENT_NUMBER + 1,
+            description = "New NOMIS incident",
+            type = "ASSAULTS3",
+          ),
+        )
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(syncRequest.copy(initialMigration = false, id = existingNomisIncident.id, incidentReport = syncRequest.incidentReport.copy(incidentId = INCIDENT_NUMBER, description = "Updated details"))))
+          .bodyValue(jsonString(newIncident))
+          .exchange()
+          .expectStatus().isCreated
+          .expectBody().json(
+            // language=json
+            """ 
+           {
+            "incidentNumber": "${newIncident.incidentReport.incidentId}",
+            "incidentType": "${IncidentType.ASSAULT.name}",
+            "incidentDateAndTime": "${newIncident.incidentReport.incidentDateTime}",
+            "prisonId": "MDI",
+            "incidentDetails": "New NOMIS incident",
+            "reportedBy": "user1",
+            "reportedDate": "$now",
+            "status": "${IncidentStatus.AWAITING_ANALYSIS.name}",
+            "assignedTo": "user1",
+            "createdDate": "$now",
+            "lastModifiedDate": "$now",
+            "lastModifiedBy": "user1",
+            "createdInNomis": true
+          }
+          """,
+            false,
+          )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source }).containsExactlyInAnyOrder(
+            "incident.report.created" to InformationSource.NOMIS,
+          )
+        }
+      }
+
+      @Test
+      fun `can sync an update to an existing incident created in NOMIS`() {
+        val now = LocalDateTime.now(clock)
+
+        val upsertMigration = syncRequest.copy(
+          initialMigration = false,
+          id = existingNomisIncident.id,
+          incidentReport = syncRequest.incidentReport.copy(
+            incidentId = INCIDENT_NUMBER,
+            description = "Updated details",
+          ),
+        )
+        webTestClient.post().uri("/sync/upsert")
+          .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(jsonString(upsertMigration))
           .exchange()
           .expectStatus().isOk
           .expectBody().json(
@@ -191,7 +256,7 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
             "incidentType": "${existingNomisIncident.incidentType}",
             "incidentDateAndTime": "${existingNomisIncident.incidentDateAndTime}",
             "prisonId": "MDI",
-            "incidentDetails": "Updated details",
+            "incidentDetails": "${upsertMigration.incidentReport.description}",
             "reportedBy": "USER1",
             "reportedDate": "$now",
             "status": "AWAITING_ANALYSIS",
@@ -204,6 +269,12 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
           """,
             false,
           )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to Pair(message.additionalInformation?.id, message.additionalInformation?.source) }).containsExactlyInAnyOrder(
+            "incident.report.amended" to Pair(existingNomisIncident.id, InformationSource.NOMIS),
+          )
+        }
       }
     }
   }

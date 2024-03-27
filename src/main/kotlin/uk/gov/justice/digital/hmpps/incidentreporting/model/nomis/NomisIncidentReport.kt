@@ -58,48 +58,19 @@ data class NomisIncidentReport(
   fun toNewEntity(clock: Clock): IncidentReport {
     return IncidentReport(
       incidentNumber = incidentId.toString(),
-      incidentType = convertIncidentType(),
+      incidentType = convertIncidentType(type),
       incidentDateAndTime = incidentDateTime,
       prisonId = prison.code,
-      incidentDetails = title ?: "NO DETAILS GIVEN\n$description",
+      incidentDetails = description ?: "NO DETAILS GIVEN",
       reportedBy = reportingStaff.username,
       reportedDate = reportedDateTime,
-      status = IncidentStatus.DRAFT,
+      status = mapIncidentStatus(status.code),
       createdDate = LocalDateTime.now(clock),
       lastModifiedDate = LocalDateTime.now(clock),
       lastModifiedBy = reportingStaff.username,
       source = InformationSource.NOMIS,
       assignedTo = reportingStaff.username,
     )
-  }
-
-  private fun convertIncidentType() = when (type) {
-    "SELF_HARM" -> IncidentType.SELF_HARM
-    "MISC" -> IncidentType.MISCELLANEOUS
-    "ASSAULTS3" -> IncidentType.ASSAULT
-    "DAMAGE" -> IncidentType.DAMAGE
-    "FIND0422" -> IncidentType.FINDS
-    "KEY_LOCKNEW" -> IncidentType.KEY_LOCK_INCIDENT
-    "DISORDER1" -> IncidentType.DISORDER
-    "FIRE" -> IncidentType.FIRE
-    "TOOL_LOSS" -> IncidentType.TOOL_LOSS
-    "FOOD_REF" -> IncidentType.FOOD_REFUSAL
-    "DEATH" -> IncidentType.DEATH_IN_CUSTODY
-    "TRF3" -> IncidentType.TEMPORARY_RELEASE_FAILURE
-    "RADIO_COMP" -> IncidentType.RADIO_COMPROMISE
-    "DRONE1" -> IncidentType.DRONE_SIGHTING
-    "ABSCOND" -> IncidentType.ABSCONDER
-    "REL_ERROR" -> IncidentType.RELEASED_IN_ERROR
-    "BOMB" -> IncidentType.BOMB_THREAT
-    "CLOSE_DOWN" -> IncidentType.FULL_CLOSE_DOWN_SEARCH
-    "BREACH" -> IncidentType.BREACH_OF_SECURITY
-    "DEATH_NI" -> IncidentType.DEATH_OTHER
-    "ESCAPE_EST" -> IncidentType.ESCAPE_FROM_CUSTODY
-    "ATT_ESCAPE" -> IncidentType.ATTEMPTED_ESCAPE_FROM_CUSTODY
-    "ESCAPE_ESC" -> IncidentType.ESCAPE_FROM_ESCORT
-    "ATT_ESC_E" -> IncidentType.ATTEMPTED_ESCAPE_FROM_ESCORT
-
-    else -> throw RuntimeException("Unknown incident type: $type")
   }
 }
 
@@ -242,3 +213,45 @@ data class NomisIncidentStatus(
   @Schema(description = "Status Description")
   val description: String,
 )
+
+fun mapIncidentStatus(code: String) =
+  when (code) {
+    "AWAN" -> IncidentStatus.AWAITING_ANALYSIS
+    "INAN" -> IncidentStatus.IN_ANALYSIS
+    "INREQ" -> IncidentStatus.INFORMATION_REQUIRED
+    "INAME" -> IncidentStatus.INFORMATION_AMENDED
+    "CLOSE" -> IncidentStatus.CLOSED
+    "PIU" -> IncidentStatus.POST_INCIDENT_UPDATE
+    "IUP" -> IncidentStatus.INCIDENT_UPDATED
+    "DUP" -> IncidentStatus.DUPLICATE
+    else -> throw RuntimeException("Unknown incident status: $code")
+  }
+
+fun convertIncidentType(type: String) = when (type) {
+  "SELF_HARM" -> IncidentType.SELF_HARM
+  "MISC" -> IncidentType.MISCELLANEOUS
+  "ASSAULTS3" -> IncidentType.ASSAULT
+  "DAMAGE" -> IncidentType.DAMAGE
+  "FIND0422" -> IncidentType.FINDS
+  "KEY_LOCKNEW" -> IncidentType.KEY_LOCK_INCIDENT
+  "DISORDER1" -> IncidentType.DISORDER
+  "FIRE" -> IncidentType.FIRE
+  "TOOL_LOSS" -> IncidentType.TOOL_LOSS
+  "FOOD_REF" -> IncidentType.FOOD_REFUSAL
+  "DEATH" -> IncidentType.DEATH_IN_CUSTODY
+  "TRF3" -> IncidentType.TEMPORARY_RELEASE_FAILURE
+  "RADIO_COMP" -> IncidentType.RADIO_COMPROMISE
+  "DRONE1" -> IncidentType.DRONE_SIGHTING
+  "ABSCOND" -> IncidentType.ABSCONDER
+  "REL_ERROR" -> IncidentType.RELEASED_IN_ERROR
+  "BOMB" -> IncidentType.BOMB_THREAT
+  "CLOSE_DOWN" -> IncidentType.FULL_CLOSE_DOWN_SEARCH
+  "BREACH" -> IncidentType.BREACH_OF_SECURITY
+  "DEATH_NI" -> IncidentType.DEATH_OTHER
+  "ESCAPE_EST" -> IncidentType.ESCAPE_FROM_CUSTODY
+  "ATT_ESCAPE" -> IncidentType.ATTEMPTED_ESCAPE_FROM_CUSTODY
+  "ESCAPE_ESC" -> IncidentType.ESCAPE_FROM_ESCORT
+  "ATT_ESC_E" -> IncidentType.ATTEMPTED_ESCAPE_FROM_ESCORT
+
+  else -> throw RuntimeException("Unknown incident type: $type")
+}

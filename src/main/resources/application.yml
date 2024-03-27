@@ -36,7 +36,6 @@ spring:
       dev:
         - "localstack"
       test:
-        - "localstack"
         - "stdout"
 
   jpa:
