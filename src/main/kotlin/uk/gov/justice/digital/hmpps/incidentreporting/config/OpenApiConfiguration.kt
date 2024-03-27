@@ -1,4 +1,4 @@
-ipackage uk.gov.justice.digital.hmpps.incidentreporting.config
+package uk.gov.justice.digital.hmpps.incidentreporting.config
 
 import io.swagger.v3.core.util.PrimitiveType
 import io.swagger.v3.oas.models.Components
