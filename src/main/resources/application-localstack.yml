@@ -1,14 +1,13 @@
 hmpps.sqs:
-  reactiveApi: true
   provider: localstack
   queues:
     audit:
       queueName: ${random.uuid}
     incidentreporting:
-      queueName: incident-reporting-event-queue
-      dlqName: incident-reporting-event-dlq
+      queueName: ${random.uuid}
+      dlqName: ${random.uuid}
       subscribeTopicId: domainevents
       subscribeFilter: '{"eventType":[ "prison-offender-events.prisoner.merged" ] }'
   topics:
     domainevents:
-      arn: arn:aws:sns:eu-west-2:000000000000:11111111-2222-3333-4444-555555555555
+      arn: arn:aws:sns:eu-west-2:000000000000:${random.uuid}

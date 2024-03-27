@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInv
 import uk.gov.justice.hmpps.kotlin.sar.HmppsPrisonSubjectAccessRequestService
 import uk.gov.justice.hmpps.kotlin.sar.HmppsSubjectAccessRequestContent
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Service
 class SubjectAccessRequestService(
@@ -16,20 +15,10 @@ class SubjectAccessRequestService(
     val content = incidentReports
       .filter { it.incident.reportedDate.isAfter(fromDate?.atStartOfDay()) && it.incident.reportedDate.isBefore(toDate?.atStartOfDay()) }
       .map {
-        IncidentDTO(
-          prisonerNumber = it.prisonerNumber,
-          incidentNumber = it.incident.incidentNumber,
-          reportedDate = it.incident.reportedDate,
-        )
+        it.incident.toDto()
       }
     return HmppsSubjectAccessRequestContent(
       content = content,
     )
   }
 }
-
-data class IncidentDTO(
-  val prisonerNumber: String,
-  val incidentNumber: String,
-  val reportedDate: LocalDateTime,
-)

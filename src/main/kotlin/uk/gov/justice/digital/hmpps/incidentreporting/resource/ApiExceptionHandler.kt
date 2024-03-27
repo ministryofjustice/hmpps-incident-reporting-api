@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.incidentreporting.config
+package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
 import jakarta.validation.ValidationException
 import org.apache.commons.lang3.StringUtils
@@ -17,8 +17,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.resource.NoResourceFoundException
-import uk.gov.justice.digital.hmpps.incidentreporting.resource.ErrorCode
-import uk.gov.justice.digital.hmpps.incidentreporting.resource.ErrorResponse
 
 @RestControllerAdvice
 class ApiExceptionHandler {
@@ -172,7 +170,40 @@ class ApiExceptionHandler {
       )
   }
 
+  @ExceptionHandler(IncidentReportNotFoundException::class)
+  fun handleIncidentReportNotFound(e: IncidentReportNotFoundException): ResponseEntity<ErrorResponse?>? {
+    log.debug("IncidentReport not found exception caught: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.NOT_FOUND)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.NOT_FOUND,
+          errorCode = ErrorCode.IncidentReportNotFound,
+          userMessage = "IncidentReport not found: ${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(IncidentReportAlreadyExistsException::class)
+  fun handleIncidentReportAlreadyExists(e: IncidentReportAlreadyExistsException): ResponseEntity<ErrorResponse?>? {
+    log.debug("IncidentReport already exists exception caught: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.CONFLICT)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.CONFLICT,
+          errorCode = ErrorCode.IncidentReportAlreadyExists,
+          userMessage = "IncidentReport already exists: ${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
   }
 }
+
+class IncidentReportNotFoundException(id: String) : Exception("There is no incident report found for ID = $id")
+class IncidentReportAlreadyExistsException(key: String) : Exception("IncidentReport Report already exists = $key")

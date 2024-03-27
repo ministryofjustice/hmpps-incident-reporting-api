@@ -12,6 +12,8 @@ import java.util.stream.Collectors
 @Component
 class AuthenticationFacade {
 
+  fun getUserOrSystemInContext() = currentUsername ?: SYSTEM_USERNAME
+
   val authentication: Authentication
     get() = SecurityContextHolder.getContext().authentication
   val currentUsername: String?
@@ -55,3 +57,5 @@ class AuthenticationFacade {
     }
   }
 }
+
+const val SYSTEM_USERNAME = "INCIDENT_REPORTING_API"
