@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.incidentreporting.config
+ipackage uk.gov.justice.digital.hmpps.incidentreporting.config
 
 import io.swagger.v3.core.util.PrimitiveType
 import io.swagger.v3.oas.models.Components
@@ -36,7 +36,7 @@ class OpenApiConfiguration(
       ),
     )
     .info(
-      Info().title("IncidentReport Reporting API")
+      Info().title("Incident Reporting API")
         .version(version)
         .description("API for viewing and managing incident reports")
         .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk"))
