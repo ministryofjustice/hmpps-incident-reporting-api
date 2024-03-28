@@ -61,6 +61,7 @@ data class NomisIncidentReport(
       incidentType = convertIncidentType(type),
       incidentDateAndTime = incidentDateTime,
       prisonId = prison.code,
+      summary = title,
       incidentDetails = description ?: "NO DETAILS GIVEN",
       reportedBy = reportingStaff.username,
       reportedDate = reportedDateTime,

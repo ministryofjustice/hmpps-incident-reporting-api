@@ -205,5 +205,6 @@ class ApiExceptionHandler {
   }
 }
 
+class IncidentEventNotFoundException(id: String) : Exception("There is no event found for ID = $id")
 class IncidentReportNotFoundException(id: String) : Exception("There is no incident report found for ID = $id")
 class IncidentReportAlreadyExistsException(key: String) : Exception("IncidentReport Report already exists = $key")

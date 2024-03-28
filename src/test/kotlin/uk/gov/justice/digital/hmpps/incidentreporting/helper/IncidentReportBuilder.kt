@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.helper
 
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
@@ -13,11 +14,13 @@ fun buildIncidentReport(
   incidentNumber: String,
   source: InformationSource = InformationSource.DPS,
 ): IncidentReport {
+  val eventDateAndTime = reportTime.minusHours(1)
   return IncidentReport(
     incidentNumber = incidentNumber,
     prisonId = prisonId,
-    incidentDateAndTime = reportTime.minusHours(1),
+    incidentDateAndTime = eventDateAndTime,
     incidentType = incidentType,
+    summary = "Incident Report $incidentNumber",
     incidentDetails = "A new incident created in the new service of type ${incidentType.description}",
     reportedDate = reportTime,
     createdDate = reportTime,
@@ -26,5 +29,15 @@ fun buildIncidentReport(
     assignedTo = reportingUsername,
     lastModifiedBy = reportingUsername,
     source = source,
+    event = IncidentEvent(
+      eventId = "EVENT-$incidentNumber",
+      eventDateAndTime = eventDateAndTime,
+      prisonId = prisonId,
+      summary = "Event for Incident $incidentNumber",
+      eventDetails = "An event occurred",
+      createdDate = reportTime,
+      lastModifiedDate = reportTime,
+      lastModifiedBy = reportingUsername,
+    ),
   )
 }

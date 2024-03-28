@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
@@ -40,12 +41,16 @@ class IncidentReport(
   @Enumerated(EnumType.STRING)
   val incidentType: IncidentType,
 
+  var summary: String?,
   var incidentDetails: String,
 
   val reportedBy: String,
   val reportedDate: LocalDateTime,
   @Enumerated(EnumType.STRING)
   var status: IncidentStatus = IncidentStatus.DRAFT,
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  val event: IncidentEvent? = null,
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
@@ -142,7 +147,7 @@ class IncidentReport(
   fun updateWith(upsert: NomisIncidentReport, updatedBy: String, clock: Clock) {
     this.incidentDetails = upsert.description ?: "NO DETAILS GIVEN"
     this.status = mapIncidentStatus(upsert.status.code)
-
+    this.summary = upsert.title
     this.lastModifiedBy = updatedBy
     this.lastModifiedDate = LocalDateTime.now(clock)
   }
@@ -154,6 +159,7 @@ class IncidentReport(
       incidentDateAndTime = this.incidentDateAndTime,
       prisonId = this.prisonId,
       incidentType = this.incidentType,
+      summary = this.summary,
       incidentDetails = this.incidentDetails,
       reportedBy = this.reportedBy,
       reportedDate = this.reportedDate,
@@ -163,5 +169,6 @@ class IncidentReport(
       lastModifiedDate = this.lastModifiedDate,
       lastModifiedBy = this.lastModifiedBy,
       createdInNomis = this.source == InformationSource.NOMIS,
+      event = this.event?.toDto(),
     )
 }
