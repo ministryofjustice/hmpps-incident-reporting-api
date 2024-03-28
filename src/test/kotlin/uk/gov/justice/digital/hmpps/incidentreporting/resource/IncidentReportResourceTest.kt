@@ -226,7 +226,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can sync a new incident`() {
+      fun `can add a new incident`() {
         val now = LocalDateTime.now(clock)
         webTestClient.post().uri("/incident-reports")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -254,6 +254,50 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
                 "eventDateAndTime": "${createIncidentReportRequest.incidentDateAndTime}",
                 "prisonId": "MDI",
                 "eventDetails": "An incident occurred"
+              }
+            }
+          """,
+            false,
+          )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.created" to InformationSource.DPS,
+            )
+        }
+      }
+
+      @Test
+      fun `can add a new incident linked to an existing event`() {
+        val now = LocalDateTime.now(clock)
+        webTestClient.post().uri("/incident-reports")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(jsonString(createIncidentReportRequest.copy(createNewEvent = false, linkedEventId = existingIncident.event?.eventId)))
+          .exchange()
+          .expectStatus().isCreated
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "incidentType": "SELF_HARM",
+              "incidentDateAndTime": "${createIncidentReportRequest.incidentDateAndTime}",
+              "prisonId": "MDI",
+              "incidentDetails": "An incident occurred",
+              "reportedBy": "user1",
+              "reportedDate": "$now",
+              "status": "DRAFT",
+              "assignedTo": "user1",
+              "createdDate": "$now",
+              "lastModifiedDate": "$now",
+              "lastModifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false,
+              "event": {
+                "eventId": "${existingIncident.event?.eventId}",
+                "eventDateAndTime": "${existingIncident.event?.eventDateAndTime}",
+                "prisonId": "MDI",
+                "eventDetails": "An event occurred"
               }
             }
           """,
