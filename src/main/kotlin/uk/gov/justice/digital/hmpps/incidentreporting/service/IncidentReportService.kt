@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateIncidentReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentEventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentReportNumber
+import uk.gov.justice.digital.hmpps.incidentreporting.resource.IncidentEventNotFoundException
 import java.time.Clock
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -18,6 +21,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as Inci
 @Transactional(readOnly = true)
 class IncidentReportService(
   private val incidentReportRepository: IncidentReportRepository,
+  private val eventRepository: IncidentEventRepository,
   private val telemetryClient: TelemetryClient,
   private val authenticationFacade: AuthenticationFacade,
   private val clock: Clock,
@@ -36,11 +40,26 @@ class IncidentReportService(
 
   @Transactional
   fun createIncidentReport(incidentReportCreateRequest: CreateIncidentReportRequest): IncidentReportDTO {
+    val event = if (incidentReportCreateRequest.createNewEvent) {
+      incidentReportCreateRequest.toNewEvent(
+        eventRepository.generateEventId(),
+        createdBy = authenticationFacade.getUserOrSystemInContext(),
+        clock = clock,
+      )
+    } else if (incidentReportCreateRequest.linkedEventId != null) {
+      eventRepository.findOneByEventId(incidentReportCreateRequest.linkedEventId)
+        ?: throw IncidentEventNotFoundException("Event with ID [${incidentReportCreateRequest.linkedEventId}] not found")
+    } else {
+      null
+    }
+
     val newIncidentReport = incidentReportCreateRequest.toNewEntity(
       incidentReportRepository.generateIncidentReportNumber(),
       createdBy = authenticationFacade.getUserOrSystemInContext(),
       clock = clock,
+      event = event,
     )
+
     val createdIncident = incidentReportRepository.save(newIncidentReport).toDto()
 
     log.info("Created Incident Report [${createdIncident.id}]")

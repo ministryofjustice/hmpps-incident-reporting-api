@@ -141,7 +141,13 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
               "createdDate": "$now",
               "lastModifiedDate": "$now",
               "lastModifiedBy": "USER1",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "event": {
+                "summary": "Event for Incident ${existingIncident.incidentNumber}",
+                "eventDateAndTime": "${existingIncident.incidentDateAndTime}",
+                "prisonId": "MDI",
+                "eventDetails": "An event occurred"
+              }
             }
           """,
             false,
@@ -161,6 +167,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
       prisonId = "MDI",
       reportedBy = "user1",
       reportedDate = LocalDateTime.now(clock),
+      createNewEvent = true,
     )
 
     @Nested
@@ -242,7 +249,12 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
               "createdDate": "$now",
               "lastModifiedDate": "$now",
               "lastModifiedBy": "INCIDENT_REPORTING_API",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "event": {
+                "eventDateAndTime": "${createIncidentReportRequest.incidentDateAndTime}",
+                "prisonId": "MDI",
+                "eventDetails": "An incident occurred"
+              }
             }
           """,
             false,
