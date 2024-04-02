@@ -9,7 +9,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentEventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentReportNumber
 import java.time.LocalDateTime
 
@@ -20,6 +22,9 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
 
   @Autowired
   lateinit var repository: IncidentReportRepository
+
+  @Autowired
+  lateinit var eventRepository: IncidentEventRepository
 
   @BeforeEach
   fun setUp() {
@@ -34,9 +39,20 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
           incidentNumber = repository.generateIncidentReportNumber(),
           incidentDateAndTime = LocalDateTime.now(),
           incidentType = IncidentType.SELF_HARM,
+          summary = "A Summary",
           incidentDetails = "An incident occurred",
           reportedBy = "user1",
           prisonId = "MDI",
+          event = IncidentEvent(
+            eventId = eventRepository.generateEventId(),
+            eventDateAndTime = LocalDateTime.now(),
+            prisonId = "MDI",
+            summary = "An event summary",
+            eventDetails = "An event occurred",
+            createdDate = LocalDateTime.now(),
+            lastModifiedDate = LocalDateTime.now(),
+            lastModifiedBy = "user1",
+          ),
           reportedDate = LocalDateTime.now(),
           assignedTo = "user2",
           createdDate = LocalDateTime.now(),

@@ -13,8 +13,9 @@ data class IncidentReport(
   val incidentType: IncidentType,
   val incidentDateAndTime: LocalDateTime,
   val prisonId: String,
-
+  val summary: String? = null,
   val incidentDetails: String,
+  val event: EventDetail? = null,
 
   val reportedBy: String,
   val reportedDate: LocalDateTime,
@@ -27,4 +28,13 @@ data class IncidentReport(
 
   val createdInNomis: Boolean = false,
 
+)
+
+@Schema(description = "Event Details linked to Incident Report")
+data class EventDetail(
+  val eventId: String,
+  val eventDateAndTime: LocalDateTime,
+  val prisonId: String,
+  val summary: String,
+  val eventDetails: String,
 )
