@@ -28,7 +28,7 @@ dependencies {
   implementation("com.zaxxer:HikariCP:5.1.0")
   runtimeOnly("org.postgresql:postgresql:42.7.3")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.0")
 
@@ -36,7 +36,7 @@ dependencies {
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.4.2")
+  testImplementation("org.wiremock:wiremock-standalone:3.5.2")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
