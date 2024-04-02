@@ -35,6 +35,5 @@ data class EventDetail(
   val eventId: String,
   val eventDateAndTime: LocalDateTime,
   val prisonId: String,
-  val summary: String,
   val eventDetails: String,
 )

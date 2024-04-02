@@ -47,7 +47,6 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
             eventId = eventRepository.generateEventId(),
             eventDateAndTime = LocalDateTime.now(),
             prisonId = "MDI",
-            summary = "An event summary",
             eventDetails = "An event occurred",
             createdDate = LocalDateTime.now(),
             lastModifiedDate = LocalDateTime.now(),
@@ -62,13 +61,18 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
       )
 
     incidentReport.addEvidence("evidence2", "description2")
-    incidentReport.addStaffInvolved(StaffRole.FOS, "user1")
-    incidentReport.addPrisonerInvolved("A1234AA", PrisonerRole.VICT)
+    incidentReport.addStaffInvolved(StaffRole.FIRST_ON_SCENE, "user1")
+    incidentReport.addPrisonerInvolved("A1234AA", PrisonerRole.VICTIM)
     incidentReport.addOtherPersonInvolved("name1", PersonRole.WITNESS)
     incidentReport.addIncidentLocation("MDI-1-1-1", "CELL", "Other stuff")
-    incidentReport.addDataPoint("WHERE_OCCUR", "DETOX_UNIT", "user1", LocalDateTime.now())
-      .addDataPointValue("HEALTH_CARE_CENTRE", "some info")
-    incidentReport.addDataPoint("CELL_TYPE", "ORDINARY", "user1", LocalDateTime.now())
+
+    incidentReport.addIncidentData("WHERE_OCCURRED", "Where did this occur?")
+      .addDataItem("DETOX_UNIT", "They hurt themselves", "user1", LocalDateTime.now())
+      .addDataItem("CELL", "In the cell", "user1", LocalDateTime.now())
+
+    incidentReport.addIncidentData("METHOD", "Method Used to hurt themselves?")
+      .addDataItem("KNIFE", "They used a knife", "user1", LocalDateTime.now())
+      .addDataItem("OTHER", "They used something else", "user1", LocalDateTime.now())
 
     TestTransaction.flagForCommit()
     TestTransaction.end()

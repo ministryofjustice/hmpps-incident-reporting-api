@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
 import org.slf4j.Logger
@@ -77,6 +78,7 @@ class IncidentReport(
   val incidentCorrectionRequests: MutableList<IncidentCorrectionRequest> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OrderColumn(name = "sequence")
   val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
@@ -103,11 +105,11 @@ class IncidentReport(
 
     other as IncidentReport
 
-    return id == other.id
+    return incidentNumber == other.incidentNumber
   }
 
   override fun hashCode(): Int {
-    return id.hashCode()
+    return incidentNumber.hashCode()
   }
 
   fun addEvidence(typeOfEvidence: String, evidenceDescription: String): Evidence {
@@ -162,32 +164,26 @@ class IncidentReport(
     return incidentLocation
   }
 
-  fun addDataPoint(
-    key: String,
-    value: String,
-    recordedBy: String,
-    recordedOn: LocalDateTime,
-    comment: String? = null,
-    moreInfo: String? = null,
-    evidence: Evidence? = null,
-    location: IncidentLocation? = null,
-    otherPersonInvolvement: OtherPersonInvolvement? = null,
-    prisonerInvolvement: PrisonerInvolvement? = null,
-    staffInvolvement: StaffInvolvement? = null,
+  fun addCorrectionRequest(correctionRequestedBy: String, correctionRequestedAt: LocalDateTime, reason: CorrectionReason, descriptionOfChange: String?) {
+    val correctionRequest = IncidentCorrectionRequest(
+      incident = this,
+      correctionRequestedBy = correctionRequestedBy,
+      correctionRequestedAt = correctionRequestedAt,
+      reason = reason,
+      descriptionOfChange = descriptionOfChange,
+    )
+    incidentCorrectionRequests.add(correctionRequest)
+  }
+
+  fun addIncidentData(
+    dataItem: String,
+    dataItemDescription: String? = null,
   ): IncidentResponse {
     val incidentResponse = IncidentResponse(
       incident = this,
-      dataPointKey = key,
-      comment = comment,
-      evidence = evidence,
-      location = location,
-      otherPersonInvolvement = otherPersonInvolvement,
-      prisonerInvolvement = prisonerInvolvement,
-      staffInvolvement = staffInvolvement,
-      recordedBy = recordedBy,
-      recordedOn = recordedOn,
+      dataItem = dataItem,
+      dataItemDescription = dataItemDescription,
     )
-    incidentResponse.addDataPointValue(value, moreInfo)
     incidentResponses.add(incidentResponse)
     return incidentResponse
   }

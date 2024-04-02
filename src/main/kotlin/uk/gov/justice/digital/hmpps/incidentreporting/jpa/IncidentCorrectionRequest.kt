@@ -21,7 +21,14 @@ class IncidentCorrectionRequest(
 
   val correctionRequestedAt: LocalDateTime,
 
-  val reason: String,
+  val reason: CorrectionReason,
 
-  val descriptionOfChange: String,
+  val descriptionOfChange: String? = null,
 )
+
+enum class CorrectionReason {
+  MISTAKE,
+  INCORRECT_INFORMATION,
+  MISSING_INFORMATION,
+  OTHER,
+}

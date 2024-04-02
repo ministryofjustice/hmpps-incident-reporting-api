@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import org.hibernate.Hibernate
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.EventDetail
@@ -25,7 +26,6 @@ class IncidentEvent(
   val eventId: String,
   val eventDateAndTime: LocalDateTime,
   val prisonId: String,
-  var summary: String,
   var eventDetails: String,
 
   @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
@@ -41,9 +41,13 @@ class IncidentEvent(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  fun addIncidentReport(incidentReport: IncidentReport): IncidentReport {
+    return incidents.add(incidentReport).let { incidentReport }
+  }
+
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (javaClass != other?.javaClass) return false
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
     other as IncidentEvent
 
@@ -58,7 +62,6 @@ class IncidentEvent(
     eventId = eventId,
     prisonId = prisonId,
     eventDateAndTime = eventDateAndTime,
-    summary = summary,
     eventDetails = eventDetails,
   )
 }

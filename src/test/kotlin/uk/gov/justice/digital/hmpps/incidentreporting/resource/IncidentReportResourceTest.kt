@@ -143,7 +143,6 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedBy": "USER1",
               "createdInNomis": false,
               "event": {
-                "summary": "Event for Incident ${existingIncident.incidentNumber}",
                 "eventDateAndTime": "${existingIncident.incidentDateAndTime}",
                 "prisonId": "MDI",
                 "eventDetails": "An event occurred"

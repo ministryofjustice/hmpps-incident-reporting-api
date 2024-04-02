@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.incidentreporting.model.nomis
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.CorrectionReason
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
@@ -75,6 +77,15 @@ data class NomisIncidentReport(
       lastModifiedBy = reportingStaff.username,
       source = InformationSource.NOMIS,
       assignedTo = reportingStaff.username,
+      event = IncidentEvent(
+        eventId = "$incidentId",
+        eventDateAndTime = incidentDateTime,
+        prisonId = prison.code,
+        eventDetails = description ?: "NO DETAILS GIVEN",
+        createdDate = LocalDateTime.now(clock),
+        lastModifiedDate = LocalDateTime.now(clock),
+        lastModifiedBy = reportingStaff.username,
+      ),
     )
 
     staffParties.forEach {
@@ -92,6 +103,33 @@ data class NomisIncidentReport(
         prisonerOutcome = it.outcome?.let { prisonerOutcome -> mapPrisonerOutcome(prisonerOutcome.code) },
         comment = it.comment,
       )
+    }
+
+    requirements.forEach {
+      ir.addCorrectionRequest(
+        correctionRequestedBy = it.staff.username,
+        correctionRequestedAt = it.date.atStartOfDay(),
+        descriptionOfChange = it.comment,
+        reason = CorrectionReason.OTHER,
+      )
+    }
+
+    questions.sortedBy { it.sequence }.forEach { question ->
+      val dataItem = ir.addIncidentData(
+        dataItem = "QID-%012d".format(question.questionId),
+        dataItemDescription = question.question,
+      )
+      question.answers
+        .sortedBy { it.sequence }
+        .filter { it.answer != null }
+        .forEach { answer ->
+          dataItem.addDataItem(
+            itemValue = answer.answer!!,
+            additionalInformation = answer.comment,
+            recordedBy = answer.recordingStaff.username,
+            recordedOn = ir.reportedDate,
+          )
+        }
     }
     return ir
   }
@@ -240,21 +278,21 @@ data class NomisIncidentStatus(
 fun mapStaffRole(code: String) =
   when (code) {
     "AI" -> StaffRole.ACTIVELY_INVOLVED
-    "AO" -> StaffRole.AUTH_OFFICER
-    "CRH" -> StaffRole.HEAD
-    "CRL" -> StaffRole.LEFT_ARM
-    "CRLG" -> StaffRole.LEGS
-    "CRR" -> StaffRole.RIGHT_ARM
-    "CRS" -> StaffRole.SUPER
-    "DEC" -> StaffRole.DECEASED
-    "FOS" -> StaffRole.FOS
+    "AO" -> StaffRole.AUTHORISING_OFFICER
+    "CRH" -> StaffRole.CR_HEAD
+    "CRS" -> StaffRole.CR_SUPERVISOR
+    "CRLG" -> StaffRole.CR_LEGS
+    "CRL" -> StaffRole.CR_LEFT_ARM
+    "CRR" -> StaffRole.CR_RIGHT_ARM
+    "DECEASED" -> StaffRole.DECEASED
+    "FOS" -> StaffRole.FIRST_ON_SCENE
     "HEALTH" -> StaffRole.HEALTHCARE
     "HOST" -> StaffRole.HOSTAGE
-    "INPOS" -> StaffRole.POSSESSION
+    "INPOS" -> StaffRole.IN_POSSESSION
     "INV" -> StaffRole.ACTIVELY_INVOLVED
-    "NEG" -> StaffRole.NEG
-    "PAS" -> StaffRole.PRESENT
-    "SUSIN" -> StaffRole.SUS
+    "NEG" -> StaffRole.NEGOTIATOR
+    "PAS" -> StaffRole.PRESENT_AT_SCENE
+    "SUSIN" -> StaffRole.SUSPECTED_INVOLVEMENT
     "VICT" -> StaffRole.VICTIM
     "WIT" -> StaffRole.WITNESS
     else -> throw RuntimeException("Unknown staff code: $code")
@@ -302,25 +340,6 @@ fun convertIncidentType(type: String) = when (type) {
   else -> throw RuntimeException("Unknown incident type: $type")
 }
 
-/**
- * ACCT	ACCT
- * CBP	Charged by Police
- * CON	Convicted
- * CORIN	Coroner Informed
- * DEA	Death
- * DUTGOV	Seen by Duty Governor
- * FCHRG	Further charges
- * HELTH	Seen by Healthcare
- * ILOC	Investigation (Local)
- * IMB	Seen by IMB
- * IPOL	Investigation (Police)
- * NKI	Next of kin Informed
- * OUTH	Seen by Outside Hospital
- * POR	Placed on Report
- * RMND	Remand
- * TRL	Trial
- * TRN	Transfer
- */
 fun mapPrisonerOutcome(code: String) = when (code) {
   "ACCT" -> PrisonerOutcome.ACCT
   "CBP" -> PrisonerOutcome.CHARGED_BY_POLICE
@@ -343,44 +362,24 @@ fun mapPrisonerOutcome(code: String) = when (code) {
   else -> throw RuntimeException("Unknown prisoner outcome: $code")
 }
 
-/**
- * ABS	Abscondee
- * ACTINV	Active Involvement
- * ASSIAL	Assailant
- * ASSIST	Assisted Staff
- * DEC	Deceased
- * ESC	Escapee
- * FIGHT	Fighter
- * HOST	Hostage
- * IMPED	Impeded Staff
- * INPOSS	In Possession
- * INREC	Intended Recipient
- * LICFAIL	License Failure
- * PERP	Perpetrator
- * PRESENT	Present at scene
- * SUSASS	Suspected Assailant
- * SUSINV	Suspected Involved
- * TRF	Temporary Release Failure
- * VICT	Victim
- */
 fun mapPrisonerRole(code: String): PrisonerRole = when (code) {
-  "ABS" -> PrisonerRole.ABS
-  "ACTINV" -> PrisonerRole.ACTINV
-  "ASSIAL" -> PrisonerRole.ASSIAL
-  "ASSIST" -> PrisonerRole.ASSIST
-  "DEC" -> PrisonerRole.DEC
-  "ESC" -> PrisonerRole.ESC
-  "FIGHT" -> PrisonerRole.FIGHT
-  "HOST" -> PrisonerRole.HOST
-  "IMPED" -> PrisonerRole.IMPED
-  "INPOSS" -> PrisonerRole.INPOSS
-  "INREC" -> PrisonerRole.INREC
-  "LICFAIL" -> PrisonerRole.LICFAIL
-  "PERP" -> PrisonerRole.PERP
-  "PRESENT" -> PrisonerRole.PRESENT
-  "SUSASS" -> PrisonerRole.SUSASS
-  "SUSINV" -> PrisonerRole.SUSINV
-  "TRF" -> PrisonerRole.TRF
-  "VICT" -> PrisonerRole.VICT
+  "ABSCONDEE" -> PrisonerRole.ABSCONDER
+  "ACTIVE_INVOLVEMENT" -> PrisonerRole.ACTIVE_INVOLVEMENT
+  "ASSAILANT" -> PrisonerRole.ASSAILANT
+  "ASSISTED_STAFF" -> PrisonerRole.ASSISTED_STAFF
+  "DECEASED" -> PrisonerRole.DECEASED
+  "ESCAPE" -> PrisonerRole.ESCAPE
+  "FIGHT" -> PrisonerRole.FIGHTER
+  "HOST" -> PrisonerRole.HOSTAGE
+  "IMPED" -> PrisonerRole.IMPEDED_STAFF
+  "INPOSS" -> PrisonerRole.IN_POSSESSION
+  "INREC" -> PrisonerRole.INTENDED_RECIPIENT
+  "LICFAIL" -> PrisonerRole.LICENSE_FAILURE
+  "PERP" -> PrisonerRole.PERPETRATOR
+  "PRESENT" -> PrisonerRole.PRESENT_AT_SCENE
+  "SUSASS" -> PrisonerRole.SUSPECTED_ASSAILANT
+  "SUSINV" -> PrisonerRole.SUSPECTED_INVOLVED
+  "TRF" -> PrisonerRole.TEMPORARY_RELEASE_FAILURE
+  "VICT" -> PrisonerRole.VICTIM
   else -> throw RuntimeException("Unknown prisoner role: $code")
 }
