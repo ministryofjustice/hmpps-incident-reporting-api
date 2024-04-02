@@ -22,4 +22,6 @@ class StaffInvolvement(
 
   @Enumerated(EnumType.STRING)
   val staffRole: StaffRole,
+
+  val comment: String? = null,
 )

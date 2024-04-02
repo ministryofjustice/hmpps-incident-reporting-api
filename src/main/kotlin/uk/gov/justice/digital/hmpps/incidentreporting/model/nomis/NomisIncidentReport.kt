@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.PrisonerOutcome
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDate
@@ -56,7 +59,7 @@ data class NomisIncidentReport(
   val history: List<History>,
 ) {
   fun toNewEntity(clock: Clock): IncidentReport {
-    return IncidentReport(
+    val ir = IncidentReport(
       incidentNumber = incidentId.toString(),
       incidentType = convertIncidentType(type),
       incidentDateAndTime = incidentDateTime,
@@ -66,12 +69,31 @@ data class NomisIncidentReport(
       reportedBy = reportingStaff.username,
       reportedDate = reportedDateTime,
       status = mapIncidentStatus(status.code),
+      questionSetId = questionnaireId.toString(),
       createdDate = LocalDateTime.now(clock),
       lastModifiedDate = LocalDateTime.now(clock),
       lastModifiedBy = reportingStaff.username,
       source = InformationSource.NOMIS,
       assignedTo = reportingStaff.username,
     )
+
+    staffParties.forEach {
+      ir.addStaffInvolved(
+        staffRole = mapStaffRole(it.role.code),
+        username = it.staff.username,
+        comment = it.comment,
+      )
+    }
+
+    offenderParties.forEach {
+      ir.addPrisonerInvolved(
+        prisonerNumber = it.offender.offenderNo,
+        prisonerInvolvement = mapPrisonerRole(it.role.code),
+        prisonerOutcome = it.outcome?.let { prisonerOutcome -> mapPrisonerOutcome(prisonerOutcome.code) },
+        comment = it.comment,
+      )
+    }
+    return ir
   }
 }
 
@@ -215,6 +237,29 @@ data class NomisIncidentStatus(
   val description: String,
 )
 
+fun mapStaffRole(code: String) =
+  when (code) {
+    "AI" -> StaffRole.ACTIVELY_INVOLVED
+    "AO" -> StaffRole.AUTH_OFFICER
+    "CRH" -> StaffRole.HEAD
+    "CRL" -> StaffRole.LEFT_ARM
+    "CRLG" -> StaffRole.LEGS
+    "CRR" -> StaffRole.RIGHT_ARM
+    "CRS" -> StaffRole.SUPER
+    "DEC" -> StaffRole.DECEASED
+    "FOS" -> StaffRole.FOS
+    "HEALTH" -> StaffRole.HEALTHCARE
+    "HOST" -> StaffRole.HOSTAGE
+    "INPOS" -> StaffRole.POSSESSION
+    "INV" -> StaffRole.ACTIVELY_INVOLVED
+    "NEG" -> StaffRole.NEG
+    "PAS" -> StaffRole.PRESENT
+    "SUSIN" -> StaffRole.SUS
+    "VICT" -> StaffRole.VICTIM
+    "WIT" -> StaffRole.WITNESS
+    else -> throw RuntimeException("Unknown staff code: $code")
+  }
+
 fun mapIncidentStatus(code: String) =
   when (code) {
     "AWAN" -> IncidentStatus.AWAITING_ANALYSIS
@@ -255,4 +300,87 @@ fun convertIncidentType(type: String) = when (type) {
   "ATT_ESC_E" -> IncidentType.ATTEMPTED_ESCAPE_FROM_ESCORT
 
   else -> throw RuntimeException("Unknown incident type: $type")
+}
+
+/**
+ * ACCT	ACCT
+ * CBP	Charged by Police
+ * CON	Convicted
+ * CORIN	Coroner Informed
+ * DEA	Death
+ * DUTGOV	Seen by Duty Governor
+ * FCHRG	Further charges
+ * HELTH	Seen by Healthcare
+ * ILOC	Investigation (Local)
+ * IMB	Seen by IMB
+ * IPOL	Investigation (Police)
+ * NKI	Next of kin Informed
+ * OUTH	Seen by Outside Hospital
+ * POR	Placed on Report
+ * RMND	Remand
+ * TRL	Trial
+ * TRN	Transfer
+ */
+fun mapPrisonerOutcome(code: String) = when (code) {
+  "ACCT" -> PrisonerOutcome.ACCT
+  "CBP" -> PrisonerOutcome.CHARGED_BY_POLICE
+  "CON" -> PrisonerOutcome.CONVICTED
+  "CORIN" -> PrisonerOutcome.CORONER_INFORMED
+  "DEA" -> PrisonerOutcome.DEATH
+  "DUTGOV" -> PrisonerOutcome.SEEN_DUTY_GOV
+  "FCHRG" -> PrisonerOutcome.FURTHER_CHARGES
+  "HELTH" -> PrisonerOutcome.SEEN_HEALTHCARE
+  "ILOC" -> PrisonerOutcome.LOCAL_INVESTIGATION
+  "IMB" -> PrisonerOutcome.SEEN_IMB
+  "IPOL" -> PrisonerOutcome.POLICE_INVESTIGATION
+  "NKI" -> PrisonerOutcome.NEXT_OF_KIN_INFORMED
+  "OUTH" -> PrisonerOutcome.SEEN_OUTSIDE_HOSP
+  "POR" -> PrisonerOutcome.PLACED_ON_REPORT
+  "RMND" -> PrisonerOutcome.REMAND
+  "TRL" -> PrisonerOutcome.TRIAL
+  "TRN" -> PrisonerOutcome.TRANSFER
+
+  else -> throw RuntimeException("Unknown prisoner outcome: $code")
+}
+
+/**
+ * ABS	Abscondee
+ * ACTINV	Active Involvement
+ * ASSIAL	Assailant
+ * ASSIST	Assisted Staff
+ * DEC	Deceased
+ * ESC	Escapee
+ * FIGHT	Fighter
+ * HOST	Hostage
+ * IMPED	Impeded Staff
+ * INPOSS	In Possession
+ * INREC	Intended Recipient
+ * LICFAIL	License Failure
+ * PERP	Perpetrator
+ * PRESENT	Present at scene
+ * SUSASS	Suspected Assailant
+ * SUSINV	Suspected Involved
+ * TRF	Temporary Release Failure
+ * VICT	Victim
+ */
+fun mapPrisonerRole(code: String): PrisonerRole = when (code) {
+  "ABS" -> PrisonerRole.ABS
+  "ACTINV" -> PrisonerRole.ACTINV
+  "ASSIAL" -> PrisonerRole.ASSIAL
+  "ASSIST" -> PrisonerRole.ASSIST
+  "DEC" -> PrisonerRole.DEC
+  "ESC" -> PrisonerRole.ESC
+  "FIGHT" -> PrisonerRole.FIGHT
+  "HOST" -> PrisonerRole.HOST
+  "IMPED" -> PrisonerRole.IMPED
+  "INPOSS" -> PrisonerRole.INPOSS
+  "INREC" -> PrisonerRole.INREC
+  "LICFAIL" -> PrisonerRole.LICFAIL
+  "PERP" -> PrisonerRole.PERP
+  "PRESENT" -> PrisonerRole.PRESENT
+  "SUSASS" -> PrisonerRole.SUSASS
+  "SUSINV" -> PrisonerRole.SUSINV
+  "TRF" -> PrisonerRole.TRF
+  "VICT" -> PrisonerRole.VICT
+  else -> throw RuntimeException("Unknown prisoner role: $code")
 }

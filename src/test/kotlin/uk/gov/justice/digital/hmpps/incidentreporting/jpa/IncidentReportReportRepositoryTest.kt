@@ -62,8 +62,8 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
       )
 
     incidentReport.addEvidence("evidence2", "description2")
-    incidentReport.addStaffInvolved(StaffRole.REPORTER, "user1")
-    incidentReport.addPrisonerInvolved("A1234AA", PrisonerRole.WITNESS)
+    incidentReport.addStaffInvolved(StaffRole.FOS, "user1")
+    incidentReport.addPrisonerInvolved("A1234AA", PrisonerRole.VICT)
     incidentReport.addOtherPersonInvolved("name1", PersonRole.WITNESS)
     incidentReport.addIncidentLocation("MDI-1-1-1", "CELL", "Other stuff")
     incidentReport.addDataPoint("WHERE_OCCUR", "DETOX_UNIT", "user1", LocalDateTime.now())
