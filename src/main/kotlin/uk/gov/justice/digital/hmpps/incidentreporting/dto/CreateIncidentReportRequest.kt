@@ -44,7 +44,6 @@ data class CreateIncidentReportRequest(
       eventId = generateEventId,
       eventDateAndTime = incidentDateAndTime,
       prisonId = prisonId,
-      summary = summary ?: "Event ID $generateEventId",
       eventDetails = incidentDetails,
       createdDate = LocalDateTime.now(clock),
       lastModifiedDate = LocalDateTime.now(clock),

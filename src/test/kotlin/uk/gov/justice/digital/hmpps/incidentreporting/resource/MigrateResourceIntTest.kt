@@ -68,7 +68,7 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
         incidentDateTime = LocalDateTime.now(clock).minusHours(1),
         reportingStaff = reportingStaff,
         reportedDateTime = LocalDateTime.now(clock),
-        staffParties = listOf(StaffParty(reportingStaff, CodeDescription("PRESENT", "Present at scene"), "REPORTER")),
+        staffParties = listOf(StaffParty(reportingStaff, CodeDescription("PAS", "Present at scene"), "REPORTER")),
         offenderParties = listOf(
           OffenderParty(
             offender = Offender(
@@ -77,7 +77,7 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
               lastName = "Smith",
             ),
             role = CodeDescription("PERP", "Perpetrator"),
-            outcome = CodeDescription("XXXX", "XXXX"),
+            outcome = CodeDescription("ACCT", "ACCT"),
             comment = "Comment",
           ),
         ),

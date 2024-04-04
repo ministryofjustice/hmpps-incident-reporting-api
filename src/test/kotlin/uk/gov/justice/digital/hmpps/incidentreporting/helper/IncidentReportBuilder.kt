@@ -33,7 +33,6 @@ fun buildIncidentReport(
       eventId = "EVENT-$incidentNumber",
       eventDateAndTime = eventDateAndTime,
       prisonId = prisonId,
-      summary = "Event for Incident $incidentNumber",
       eventDetails = "An event occurred",
       createdDate = reportTime,
       lastModifiedDate = reportTime,

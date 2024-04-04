@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import java.time.LocalDateTime
 
 @Entity
 class HistoricalResponse(
@@ -16,7 +17,11 @@ class HistoricalResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val incidentResponse: HistoricalIncidentResponse,
 
-  val dataPointValue: String,
+  val itemValue: String,
 
-  val moreInfo: String? = null,
+  val recordedBy: String,
+
+  val recordedOn: LocalDateTime,
+
+  val additionalInformation: String? = null,
 )

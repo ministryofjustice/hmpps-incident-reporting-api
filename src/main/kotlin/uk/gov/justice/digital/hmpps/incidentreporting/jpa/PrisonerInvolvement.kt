@@ -22,4 +22,9 @@ class PrisonerInvolvement(
 
   @Enumerated(EnumType.STRING)
   val prisonerInvolvement: PrisonerRole,
+
+  @Enumerated(EnumType.STRING)
+  val outcome: PrisonerOutcome? = null,
+
+  val comment: String? = null,
 )

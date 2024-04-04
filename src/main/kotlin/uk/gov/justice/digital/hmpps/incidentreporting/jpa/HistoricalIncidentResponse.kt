@@ -9,7 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
-import java.time.LocalDateTime
+import jakarta.persistence.OrderColumn
 
 @Entity
 class HistoricalIncidentResponse(
@@ -20,12 +20,13 @@ class HistoricalIncidentResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val incident: IncidentReport,
 
-  val dataPointKey: String,
+  val dataItem: String,
+
+  val dataItemDescription: String? = null,
 
   @OneToMany(mappedBy = "incidentResponse", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val dataPointValues: MutableList<HistoricalResponse> = mutableListOf(),
-
-  val comment: String,
+  @OrderColumn(name = "sequence")
+  val responses: MutableList<HistoricalResponse> = mutableListOf(),
 
   @OneToOne(fetch = FetchType.LAZY)
   val evidence: Evidence? = null,
@@ -41,9 +42,5 @@ class HistoricalIncidentResponse(
 
   @OneToOne(fetch = FetchType.LAZY)
   val staffInvolvement: StaffInvolvement? = null,
-
-  val recordedBy: String,
-
-  val recordedOn: LocalDateTime,
 
 )

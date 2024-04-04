@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
 import org.slf4j.Logger
@@ -23,6 +24,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.util.*
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
+
 @Entity
 class IncidentReport(
   @Id
@@ -76,6 +78,7 @@ class IncidentReport(
   val incidentCorrectionRequests: MutableList<IncidentCorrectionRequest> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OrderColumn(name = "sequence")
   val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
@@ -83,6 +86,8 @@ class IncidentReport(
 
   @Enumerated(EnumType.STRING)
   val source: InformationSource = InformationSource.DPS,
+
+  val questionSetId: String? = null,
 
   val createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,
@@ -100,46 +105,85 @@ class IncidentReport(
 
     other as IncidentReport
 
-    return id == other.id
+    return incidentNumber == other.incidentNumber
   }
 
   override fun hashCode(): Int {
-    return id.hashCode()
+    return incidentNumber.hashCode()
   }
 
   fun addEvidence(typeOfEvidence: String, evidenceDescription: String): Evidence {
-    val evidenceItem = Evidence(incident = this, typeOfEvidence = typeOfEvidence, descriptionOfEvidence = evidenceDescription)
+    val evidenceItem =
+      Evidence(incident = this, typeOfEvidence = typeOfEvidence, descriptionOfEvidence = evidenceDescription)
     evidence.add(evidenceItem)
     return evidenceItem
   }
 
-  fun addStaffInvolved(staffRole: StaffRole, username: String): StaffInvolvement {
-    val staff = StaffInvolvement(incident = this, staffUsername = username, staffRole = staffRole)
+  fun addStaffInvolved(staffRole: StaffRole, username: String, comment: String? = null): StaffInvolvement {
+    val staff = StaffInvolvement(incident = this, staffUsername = username, staffRole = staffRole, comment = comment)
     staffInvolved.add(staff)
     return staff
   }
 
-  fun addPrisonerInvolved(prisonerNumber: String, prisonerInvolvement: PrisonerRole): PrisonerInvolvement {
-    val prisoner = PrisonerInvolvement(incident = this, prisonerNumber = prisonerNumber, prisonerInvolvement = prisonerInvolvement)
+  fun addPrisonerInvolved(
+    prisonerNumber: String,
+    prisonerInvolvement: PrisonerRole,
+    prisonerOutcome: PrisonerOutcome? = null,
+    comment: String? = null,
+  ): PrisonerInvolvement {
+    val prisoner = PrisonerInvolvement(
+      incident = this,
+      prisonerNumber = prisonerNumber,
+      prisonerInvolvement = prisonerInvolvement,
+      outcome = prisonerOutcome,
+      comment = comment,
+    )
     prisonersInvolved.add(prisoner)
     return prisoner
   }
 
   fun addOtherPersonInvolved(personName: String, otherPersonType: PersonRole): OtherPersonInvolvement {
-    val otherPersonInvolved = OtherPersonInvolvement(incident = this, personName = personName, personType = otherPersonType)
+    val otherPersonInvolved =
+      OtherPersonInvolvement(incident = this, personName = personName, personType = otherPersonType)
     otherPeopleInvolved.add(otherPersonInvolved)
     return otherPersonInvolved
   }
 
-  fun addIncidentLocation(locationId: String, locationType: String, locationDescription: String? = null): IncidentLocation {
-    val incidentLocation = IncidentLocation(incident = this, locationId = locationId, locationType = locationType, locationDescription = locationDescription)
+  fun addIncidentLocation(
+    locationId: String,
+    locationType: String,
+    locationDescription: String? = null,
+  ): IncidentLocation {
+    val incidentLocation = IncidentLocation(
+      incident = this,
+      locationId = locationId,
+      locationType = locationType,
+      locationDescription = locationDescription,
+    )
     locations.add(incidentLocation)
     return incidentLocation
   }
 
-  fun addDataPoint(key: String, value: String, recordedBy: String, recordedOn: LocalDateTime, comment: String? = null, moreInfo: String? = null, evidence: Evidence? = null, location: IncidentLocation? = null, otherPersonInvolvement: OtherPersonInvolvement? = null, prisonerInvolvement: PrisonerInvolvement? = null, staffInvolvement: StaffInvolvement? = null): IncidentResponse {
-    val incidentResponse = IncidentResponse(incident = this, dataPointKey = key, comment = comment, evidence = evidence, location = location, otherPersonInvolvement = otherPersonInvolvement, prisonerInvolvement = prisonerInvolvement, staffInvolvement = staffInvolvement, recordedBy = recordedBy, recordedOn = recordedOn)
-    incidentResponse.addDataPointValue(value, moreInfo)
+  fun addCorrectionRequest(correctionRequestedBy: String, correctionRequestedAt: LocalDateTime, reason: CorrectionReason, descriptionOfChange: String?) {
+    val correctionRequest = IncidentCorrectionRequest(
+      incident = this,
+      correctionRequestedBy = correctionRequestedBy,
+      correctionRequestedAt = correctionRequestedAt,
+      reason = reason,
+      descriptionOfChange = descriptionOfChange,
+    )
+    incidentCorrectionRequests.add(correctionRequest)
+  }
+
+  fun addIncidentData(
+    dataItem: String,
+    dataItemDescription: String? = null,
+  ): IncidentResponse {
+    val incidentResponse = IncidentResponse(
+      incident = this,
+      dataItem = dataItem,
+      dataItemDescription = dataItemDescription,
+    )
     incidentResponses.add(incidentResponse)
     return incidentResponse
   }
