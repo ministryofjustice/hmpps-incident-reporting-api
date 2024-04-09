@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
+import jakarta.validation.ValidationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -50,7 +51,7 @@ class IncidentReportService(
       eventRepository.findOneByEventId(incidentReportCreateRequest.linkedEventId)
         ?: throw IncidentEventNotFoundException("Event with ID [${incidentReportCreateRequest.linkedEventId}] not found")
     } else {
-      null
+      throw ValidationException("Either createNewEvent or linkedEventId must be provided")
     }
 
     val newIncidentReport = incidentReportCreateRequest.toNewEntity(

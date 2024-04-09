@@ -16,6 +16,10 @@ This document details the new design of Incident Reports that will support old N
 
 classDiagram
     direction BT
+    class CorrectionReason {
+        <<enumeration>>
+        EnumEntries~CorrectionReason~ entries
+    }
     class Evidence {
         String descriptionOfEvidence
         Long? id
@@ -23,32 +27,43 @@ classDiagram
         IncidentReport incident
     }
     class HistoricalIncidentResponse {
-        String comment
         IncidentLocation? location
         PrisonerInvolvement? prisonerInvolvement
         Long? id
-        String dataPointKey
         StaffInvolvement? staffInvolvement
-        String recordedBy
+        List~HistoricalResponse~ responses
         OtherPersonInvolvement? otherPersonInvolvement
-        List~HistoricalResponse~ dataPointValues
         Evidence? evidence
-        LocalDateTime recordedOn
         IncidentReport incident
+        String dataItem
+        String? dataItemDescription
     }
     class HistoricalResponse {
-        String dataPointValue
+        String? additionalInformation
         Long? id
         HistoricalIncidentResponse incidentResponse
-        String? moreInfo
+        LocalDateTime recordedOn
+        String recordedBy
+        String itemValue
     }
     class IncidentCorrectionRequest {
-        String reason
+        CorrectionReason reason
         String correctionRequestedBy
-        String descriptionOfChange
+        String? descriptionOfChange
         Long? id
         IncidentReport incident
         LocalDateTime correctionRequestedAt
+    }
+    class IncidentEvent {
+        String eventDetails
+        String prisonId
+        String eventId
+        Long? id
+        String lastModifiedBy
+        LocalDateTime createdDate
+        LocalDateTime lastModifiedDate
+        List~IncidentReport~ incidents
+        LocalDateTime eventDateAndTime
     }
     class IncidentLocation {
         String locationType
@@ -60,40 +75,42 @@ classDiagram
     class IncidentReport {
         String prisonId
         List~Evidence~ evidence
+        String? summary
+        LocalDateTime reportedDate
+        List~PrisonerInvolvement~ prisonersInvolved
+        String incidentDetails
+        IncidentEvent event
+        List~IncidentCorrectionRequest~ incidentCorrectionRequests
+        LocalDateTime incidentDateAndTime
+        List~StaffInvolvement~ staffInvolved
+        String? questionSetId
+        String incidentNumber
+        List~OtherPersonInvolvement~ otherPeopleInvolved
         List~IncidentResponse~ incidentResponses
         List~HistoricalIncidentResponse~ historyOfResponses
-        List~PrisonerInvolvement~ prisonersInvolved
         String assignedTo
-        LocalDateTime reportedDate
-        String incidentDetails
         UUID? id
         List~IncidentLocation~ locations
         String reportedBy
         String lastModifiedBy
-        LocalDateTime lastModifiedDate
         List~StatusHistory~ historyOfStatuses
+        LocalDateTime lastModifiedDate
         LocalDateTime createdDate
-        List~IncidentCorrectionRequest~ incidentCorrectionRequests
-        LocalDateTime incidentDateAndTime
-        List~StaffInvolvement~ staffInvolved
         IncidentStatus status
         IncidentType incidentType
-        String incidentNumber
-        List~OtherPersonInvolvement~ otherPeopleInvolved
+        InformationSource source
     }
     class IncidentResponse {
-        String? comment
         IncidentLocation? location
         PrisonerInvolvement? prisonerInvolvement
         Long? id
-        String dataPointKey
         StaffInvolvement? staffInvolvement
-        String recordedBy
+        List~Response~ responses
         OtherPersonInvolvement? otherPersonInvolvement
-        List~Response~ dataPointValues
         Evidence? evidence
-        LocalDateTime recordedOn
         IncidentReport incident
+        String dataItem
+        String? dataItemDescription
     }
     class IncidentStatus {
         <<enumeration>>
@@ -101,6 +118,7 @@ classDiagram
     }
     class IncidentType {
         <<enumeration>>
+        String description
         EnumEntries~IncidentType~ entries
     }
     class OtherPersonInvolvement {
@@ -116,20 +134,31 @@ classDiagram
     class PrisonerInvolvement {
         PrisonerRole prisonerInvolvement
         String prisonerNumber
+        String? comment
         Long? id
         IncidentReport incident
+        PrisonerOutcome? outcome
+    }
+    class PrisonerOutcome {
+        <<enumeration>>
+        String description
+        EnumEntries~PrisonerOutcome~ entries
     }
     class PrisonerRole {
         <<enumeration>>
+        String description
         EnumEntries~PrisonerRole~ entries
     }
     class Response {
-        String dataPointValue
+        String? additionalInformation
         Long? id
         IncidentResponse incidentResponse
-        String? moreInfo
+        LocalDateTime recordedOn
+        String recordedBy
+        String itemValue
     }
     class StaffInvolvement {
+        String? comment
         StaffRole staffRole
         Long? id
         String staffUsername
@@ -137,6 +166,7 @@ classDiagram
     }
     class StaffRole {
         <<enumeration>>
+        String description
         EnumEntries~StaffRole~ entries
     }
     class StatusHistory {
@@ -149,43 +179,48 @@ classDiagram
 
     Evidence "1" *--> "incident 1" IncidentReport
     HistoricalIncidentResponse "1" *--> "evidence 1" Evidence
-    HistoricalIncidentResponse "1" *--> "dataPointValues *" HistoricalResponse
+    HistoricalIncidentResponse "1" *--> "responses *" HistoricalResponse
     HistoricalIncidentResponse "1" *--> "location 1" IncidentLocation
     HistoricalIncidentResponse "1" *--> "incident 1" IncidentReport
     HistoricalIncidentResponse "1" *--> "otherPersonInvolvement 1" OtherPersonInvolvement
     HistoricalIncidentResponse "1" *--> "prisonerInvolvement 1" PrisonerInvolvement
     HistoricalIncidentResponse "1" *--> "staffInvolvement 1" StaffInvolvement
     HistoricalResponse "1" *--> "incidentResponse 1" HistoricalIncidentResponse
+    IncidentCorrectionRequest "1" *--> "reason 1" CorrectionReason
     IncidentCorrectionRequest "1" *--> "incident 1" IncidentReport
+    IncidentEvent "1" *--> "incidents *" IncidentReport
     IncidentLocation "1" *--> "incident 1" IncidentReport
-    IncidentReport "1" *--> "evidence *" Evidence
     IncidentReport  ..>  Evidence : «create»
+    IncidentReport "1" *--> "evidence *" Evidence
     IncidentReport "1" *--> "historyOfResponses *" HistoricalIncidentResponse
+    IncidentReport  ..>  IncidentCorrectionRequest : «create»
     IncidentReport "1" *--> "incidentCorrectionRequests *" IncidentCorrectionRequest
-    IncidentReport "1" *--> "locations *" IncidentLocation
+    IncidentReport "1" *--> "event 1" IncidentEvent
     IncidentReport  ..>  IncidentLocation : «create»
-    IncidentReport  ..>  IncidentResponse : «create»
+    IncidentReport "1" *--> "locations *" IncidentLocation
     IncidentReport "1" *--> "incidentResponses *" IncidentResponse
+    IncidentReport  ..>  IncidentResponse : «create»
     IncidentReport "1" *--> "status 1" IncidentStatus
     IncidentReport "1" *--> "incidentType 1" IncidentType
-    IncidentReport "1" *--> "otherPeopleInvolved *" OtherPersonInvolvement
     IncidentReport  ..>  OtherPersonInvolvement : «create»
-    IncidentReport "1" *--> "prisonersInvolved *" PrisonerInvolvement
+    IncidentReport "1" *--> "otherPeopleInvolved *" OtherPersonInvolvement
     IncidentReport  ..>  PrisonerInvolvement : «create»
-    IncidentReport  ..>  StaffInvolvement : «create»
+    IncidentReport "1" *--> "prisonersInvolved *" PrisonerInvolvement
     IncidentReport "1" *--> "staffInvolved *" StaffInvolvement
+    IncidentReport  ..>  StaffInvolvement : «create»
     IncidentReport "1" *--> "historyOfStatuses *" StatusHistory
     IncidentResponse "1" *--> "evidence 1" Evidence
     IncidentResponse "1" *--> "location 1" IncidentLocation
     IncidentResponse "1" *--> "incident 1" IncidentReport
     IncidentResponse "1" *--> "otherPersonInvolvement 1" OtherPersonInvolvement
     IncidentResponse "1" *--> "prisonerInvolvement 1" PrisonerInvolvement
+    IncidentResponse "1" *--> "responses *" Response
     IncidentResponse  ..>  Response : «create»
-    IncidentResponse "1" *--> "dataPointValues *" Response
     IncidentResponse "1" *--> "staffInvolvement 1" StaffInvolvement
     OtherPersonInvolvement "1" *--> "incident 1" IncidentReport
     OtherPersonInvolvement "1" *--> "personType 1" PersonRole
     PrisonerInvolvement "1" *--> "incident 1" IncidentReport
+    PrisonerInvolvement "1" *--> "outcome 1" PrisonerOutcome
     PrisonerInvolvement "1" *--> "prisonerInvolvement 1" PrisonerRole
     Response "1" *--> "incidentResponse 1" IncidentResponse
     StaffInvolvement "1" *--> "incident 1" IncidentReport
@@ -207,21 +242,24 @@ classDiagram
     }
     class historical_incident_response {
         uuid incident_id
-        varchar(120) data_point_key
-        text comment
+        varchar(120) data_item
+        text additional_information
         bigint location_id
         bigint other_person_involvement_id
         bigint prisoner_involvement_id
         bigint evidence_id
         bigint staff_involvement_id
-        timestamp recorded_on
-        varchar(120) recorded_by
+        varchar(500) data_item_description
+        integer sequence
         integer id
     }
     class historical_response {
         bigint incident_response_id
-        varchar(120) data_point_value
-        text more_info
+        varchar(120) item_value
+        text additional_information
+        timestamp recorded_on
+        varchar(120) recorded_by
+        integer sequence
         integer id
     }
     class incident_correction_request {
@@ -232,6 +270,16 @@ classDiagram
         timestamp correction_requested_at
         integer id
     }
+    class incident_event {
+        varchar(25) event_id
+        varchar(3) prison_id
+        timestamp event_date_and_time
+        text event_details
+        timestamp created_date
+        varchar(120) last_modified_by
+        timestamp last_modified_date
+        integer id
+    }
     class incident_location {
         uuid incident_id
         varchar(210) location_id
@@ -240,7 +288,7 @@ classDiagram
         integer id
     }
     class incident_report {
-        varchar(10) incident_number
+        varchar(25) incident_number
         varchar(255) incident_type
         varchar(255) status
         timestamp incident_date_and_time
@@ -252,19 +300,23 @@ classDiagram
         timestamp created_date
         varchar(120) last_modified_by
         timestamp last_modified_date
+        varchar(5) source
+        varchar(240) summary
+        bigint event_id
+        varchar(20) question_set_id
         uuid id
     }
     class incident_response {
         uuid incident_id
-        varchar(120) data_point_key
-        text comment
+        varchar(120) data_item
+        text additional_information
         bigint location_id
         bigint other_person_involvement_id
         bigint prisoner_involvement_id
         bigint evidence_id
         bigint staff_involvement_id
-        timestamp recorded_on
-        varchar(120) recorded_by
+        varchar(500) data_item_description
+        integer sequence
         integer id
     }
     class other_person_involvement {
@@ -277,18 +329,24 @@ classDiagram
         uuid incident_id
         varchar(7) prisoner_number
         varchar(80) prisoner_involvement
+        text comment
+        varchar(30) outcome
         integer id
     }
     class response {
         bigint incident_response_id
-        varchar(120) data_point_value
-        text more_info
+        varchar(120) item_value
+        text additional_information
+        timestamp recorded_on
+        varchar(120) recorded_by
+        integer sequence
         integer id
     }
     class staff_involvement {
         uuid incident_id
         varchar(80) staff_role
         varchar(120) staff_username
+        text comment
         integer id
     }
     class status_history {
@@ -310,6 +368,7 @@ classDiagram
     historical_response  -->  incident_response : incident_response_id
     incident_correction_request  -->  incident_report : incident_id
     incident_location  -->  incident_report : incident_id
+    incident_report  -->  incident_event : event_id
     incident_response  -->  evidence : evidence_id
     incident_response  -->  incident_location : location_id
     incident_response  -->  incident_report : incident_id
@@ -321,6 +380,5 @@ classDiagram
     response  -->  incident_response : incident_response_id
     staff_involvement  -->  incident_report : incident_id
     status_history  -->  incident_report : incident_id
-
 
 ```

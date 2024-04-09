@@ -19,7 +19,7 @@ data class CreateIncidentReportRequest(
   val reportedBy: String,
   val reportedDate: LocalDateTime,
 ) {
-  fun toNewEntity(incidentNumber: String, event: IncidentEvent? = null, createdBy: String, clock: Clock): IncidentReport {
+  fun toNewEntity(incidentNumber: String, event: IncidentEvent, createdBy: String, clock: Clock): IncidentReport {
     return IncidentReport(
       incidentNumber = incidentNumber,
       incidentType = incidentType,
