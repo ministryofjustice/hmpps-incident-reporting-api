@@ -51,8 +51,8 @@ class IncidentReport(
   @Enumerated(EnumType.STRING)
   var status: IncidentStatus = IncidentStatus.DRAFT,
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val event: IncidentEvent? = null,
+  @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
+  val event: IncidentEvent,
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
