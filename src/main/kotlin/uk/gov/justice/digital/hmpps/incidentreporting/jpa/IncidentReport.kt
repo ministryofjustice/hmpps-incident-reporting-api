@@ -17,7 +17,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.mapIncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.io.Serializable
 import java.time.Clock
@@ -82,7 +81,7 @@ class IncidentReport(
   val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val historyOfResponses: MutableList<HistoricalIncidentResponse> = mutableListOf(),
+  val history: MutableList<IncidentHistory> = mutableListOf(),
 
   @Enumerated(EnumType.STRING)
   val source: InformationSource = InformationSource.DPS,
@@ -188,6 +187,18 @@ class IncidentReport(
     return incidentResponse
   }
 
+  fun addIncidentHistory(incidentType: IncidentType, incidentChangeDate: LocalDateTime, staffChanged: String): IncidentHistory {
+    val incidentHistory = IncidentHistory(
+      incident = this,
+      incidentType = incidentType,
+      incidentChangeDate = incidentChangeDate,
+      incidentChangeStaffUsername = staffChanged,
+    )
+
+    history.add(incidentHistory)
+    return incidentHistory
+  }
+
   fun updateWith(upsert: NomisIncidentReport, updatedBy: String, clock: Clock) {
     this.incidentDetails = upsert.description ?: "NO DETAILS GIVEN"
     this.status = mapIncidentStatus(upsert.status.code)
@@ -213,6 +224,6 @@ class IncidentReport(
       lastModifiedDate = this.lastModifiedDate,
       lastModifiedBy = this.lastModifiedBy,
       createdInNomis = this.source == InformationSource.NOMIS,
-      event = this.event?.toDto(),
+      event = this.event.toDto(),
     )
 }

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
+import jakarta.validation.ValidationException
+
 enum class PrisonerRole(
   val description: String,
 ) {
@@ -21,4 +23,26 @@ enum class PrisonerRole(
   SUSPECTED_ASSAILANT("Suspected Assailant"),
   SUSPECTED_INVOLVED("Suspected Involved"),
   TEMPORARY_RELEASE_FAILURE("Temporary Release Failure"),
+}
+
+fun mapPrisonerRole(code: String): PrisonerRole = when (code) {
+  "ABSCONDEE" -> PrisonerRole.ABSCONDER
+  "ACTIVE_INVOLVEMENT" -> PrisonerRole.ACTIVE_INVOLVEMENT
+  "ASSAILANT" -> PrisonerRole.ASSAILANT
+  "ASSISTED_STAFF" -> PrisonerRole.ASSISTED_STAFF
+  "DECEASED" -> PrisonerRole.DECEASED
+  "ESCAPE" -> PrisonerRole.ESCAPE
+  "FIGHT" -> PrisonerRole.FIGHTER
+  "HOST" -> PrisonerRole.HOSTAGE
+  "IMPED" -> PrisonerRole.IMPEDED_STAFF
+  "INPOSS" -> PrisonerRole.IN_POSSESSION
+  "INREC" -> PrisonerRole.INTENDED_RECIPIENT
+  "LICFAIL" -> PrisonerRole.LICENSE_FAILURE
+  "PERP" -> PrisonerRole.PERPETRATOR
+  "PRESENT" -> PrisonerRole.PRESENT_AT_SCENE
+  "SUSASS" -> PrisonerRole.SUSPECTED_ASSAILANT
+  "SUSINV" -> PrisonerRole.SUSPECTED_INVOLVED
+  "TRF" -> PrisonerRole.TEMPORARY_RELEASE_FAILURE
+  "VICT" -> PrisonerRole.VICTIM
+  else -> throw ValidationException("Unknown prisoner role: $code")
 }

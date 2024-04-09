@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
+import jakarta.validation.ValidationException
+
 enum class PrisonerOutcome(
   val description: String,
 ) {
@@ -20,4 +22,26 @@ enum class PrisonerOutcome(
   REMAND("Remand"),
   TRIAL("Trial"),
   TRANSFER("Transfer"),
+}
+
+fun mapPrisonerOutcome(code: String) = when (code) {
+  "ACCT" -> PrisonerOutcome.ACCT
+  "CBP" -> PrisonerOutcome.CHARGED_BY_POLICE
+  "CON" -> PrisonerOutcome.CONVICTED
+  "CORIN" -> PrisonerOutcome.CORONER_INFORMED
+  "DEA" -> PrisonerOutcome.DEATH
+  "DUTGOV" -> PrisonerOutcome.SEEN_DUTY_GOV
+  "FCHRG" -> PrisonerOutcome.FURTHER_CHARGES
+  "HELTH" -> PrisonerOutcome.SEEN_HEALTHCARE
+  "ILOC" -> PrisonerOutcome.LOCAL_INVESTIGATION
+  "IMB" -> PrisonerOutcome.SEEN_IMB
+  "IPOL" -> PrisonerOutcome.POLICE_INVESTIGATION
+  "NKI" -> PrisonerOutcome.NEXT_OF_KIN_INFORMED
+  "OUTH" -> PrisonerOutcome.SEEN_OUTSIDE_HOSP
+  "POR" -> PrisonerOutcome.PLACED_ON_REPORT
+  "RMND" -> PrisonerOutcome.REMAND
+  "TRL" -> PrisonerOutcome.TRIAL
+  "TRN" -> PrisonerOutcome.TRANSFER
+
+  else -> throw ValidationException("Unknown prisoner outcome: $code")
 }

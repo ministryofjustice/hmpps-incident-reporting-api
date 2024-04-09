@@ -74,6 +74,17 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
       .addDataItem("KNIFE", "They used a knife", "user1", LocalDateTime.now())
       .addDataItem("OTHER", "They used something else", "user1", LocalDateTime.now())
 
+    incidentReport.addIncidentHistory(IncidentType.FINDS, LocalDateTime.now().minusHours(1), "user2")
+      .addHistoricalResponse("dataItem3", "dataItemDescription3")
+      .addDataItem("response1", "Some information", "user1", LocalDateTime.now())
+      .addDataItem("response2", "Some information", "user1", LocalDateTime.now())
+      .addDataItem("response3", "Some information", "user1", LocalDateTime.now())
+
+    incidentReport.addIncidentHistory(IncidentType.ASSAULT, LocalDateTime.now(), "user1")
+      .addHistoricalResponse("dataItem1", "dataItemDescription1")
+      .addDataItem("response1", "Some information", "user1", LocalDateTime.now())
+      .addDataItem("response2", "Some information", "user1", LocalDateTime.now())
+
     TestTransaction.flagForCommit()
     TestTransaction.end()
     TestTransaction.start()

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.toNewEntity
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.IncidentReportNotFoundException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.UpsertNomisIncident
 import java.time.Clock
