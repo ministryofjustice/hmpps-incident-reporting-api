@@ -16,14 +16,21 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.CodeDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.History
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.HistoryQuestion
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.HistoryResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Offender
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.OffenderParty
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Question
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Requirement
+import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Response
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Staff
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.StaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 private const val INCIDENT_NUMBER: Long = 112414323
@@ -81,9 +88,83 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
             comment = "Comment",
           ),
         ),
-        requirements = listOf(),
-        questions = listOf(),
-        history = listOf(),
+        requirements = listOf(
+          Requirement("Change 1", LocalDate.now(clock), reportingStaff, "MDI"),
+          Requirement("Change 2", LocalDate.now(clock).minusWeeks(1), reportingStaff, "MDI"),
+        ),
+        questions = listOf(
+          Question(
+            1,
+            1,
+            "Question 1",
+            listOf(
+              Response(1, 1, "Answer 1", "comment 1", reportingStaff),
+              Response(1, 2, "Answer 2", "comment 2", reportingStaff),
+              Response(1, 3, "Answer 3", "comment 3", reportingStaff),
+            ),
+          ),
+          Question(
+            2,
+            2,
+            "Question 2",
+            listOf(
+              Response(2, 1, "Answer 1", "comment 1", reportingStaff),
+              Response(2, 2, "Answer 2", "comment 2", reportingStaff),
+              Response(2, 3, "Answer 3", "comment 3", reportingStaff),
+            ),
+          ),
+          Question(
+            3,
+            3,
+            "Question 3",
+            listOf(
+              Response(3, 1, "Answer 1", "comment 1", reportingStaff),
+              Response(3, 2, "Answer 2", "comment 2", reportingStaff),
+              Response(3, 3, "Answer 3", "comment 3", reportingStaff),
+            ),
+          ),
+        ),
+        history = listOf(
+          History(
+            1,
+            "DAMAGE",
+            "Damage",
+            incidentChangeDate = LocalDate.now(),
+            incidentChangeStaff = reportingStaff,
+            questions = listOf(
+              HistoryQuestion(
+                1,
+                1,
+                "Question 1",
+                listOf(
+                  HistoryResponse(1, 1, "Answer 1", "comment 1", reportingStaff),
+                  HistoryResponse(1, 2, "Answer 2", "comment 2", reportingStaff),
+                  HistoryResponse(1, 3, "Answer 3", "comment 3", reportingStaff),
+                ),
+              ),
+              HistoryQuestion(
+                2,
+                2,
+                "Question 2",
+                listOf(
+                  HistoryResponse(2, 1, "Answer 1", "comment 1", reportingStaff),
+                  HistoryResponse(2, 2, "Answer 2", "comment 2", reportingStaff),
+                  HistoryResponse(2, 3, "Answer 3", "comment 3", reportingStaff),
+                ),
+              ),
+              HistoryQuestion(
+                3,
+                3,
+                "Question 3",
+                listOf(
+                  HistoryResponse(3, 1, "Answer 1", "comment 1", reportingStaff),
+                  HistoryResponse(3, 2, "Answer 2", "comment 2", reportingStaff),
+                  HistoryResponse(3, 3, "Answer 3", "comment 3", reportingStaff),
+                ),
+              ),
+            ),
+          ),
+        ),
         questionnaireId = 1,
       ),
     )
