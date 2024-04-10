@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.service.IncidentReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.service.SyncService
-import java.util.*
+import java.util.UUID
 
 @RestController
 @Validated

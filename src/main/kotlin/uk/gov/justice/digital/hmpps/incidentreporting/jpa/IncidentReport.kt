@@ -15,13 +15,12 @@ import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.io.Serializable
 import java.time.Clock
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
 
 @Entity
@@ -207,7 +206,7 @@ class IncidentReport(
     this.lastModifiedDate = LocalDateTime.now(clock)
   }
 
-  fun toDto(): IncidentReport =
+  fun toDto(): IncidentReportDTO =
     IncidentReportDTO(
       id = this.id!!,
       incidentNumber = this.incidentNumber,
