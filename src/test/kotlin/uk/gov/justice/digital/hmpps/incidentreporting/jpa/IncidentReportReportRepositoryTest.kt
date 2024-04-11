@@ -63,7 +63,6 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
     incidentReport.addEvidence("evidence2", "description2")
     incidentReport.addStaffInvolved(StaffRole.FIRST_ON_SCENE, "user1")
     incidentReport.addPrisonerInvolved("A1234AA", PrisonerRole.VICTIM)
-    incidentReport.addOtherPersonInvolved("name1", PersonRole.WITNESS)
     incidentReport.addIncidentLocation("MDI-1-1-1", "CELL", "Other stuff")
 
     incidentReport.addIncidentData("WHERE_OCCURRED", "Where did this occur?")

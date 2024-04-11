@@ -37,9 +37,6 @@ class IncidentResponse(
   val location: IncidentLocation? = null,
 
   @OneToOne(fetch = FetchType.LAZY)
-  val otherPersonInvolvement: OtherPersonInvolvement? = null,
-
-  @OneToOne(fetch = FetchType.LAZY)
   val prisonerInvolvement: PrisonerInvolvement? = null,
 
   @OneToOne(fetch = FetchType.LAZY)

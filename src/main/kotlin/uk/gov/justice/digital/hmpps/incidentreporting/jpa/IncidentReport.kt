@@ -64,9 +64,6 @@ class IncidentReport(
   val prisonersInvolved: MutableList<PrisonerInvolvement> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val otherPeopleInvolved: MutableList<OtherPersonInvolvement> = mutableListOf(),
-
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val locations: MutableList<IncidentLocation> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
@@ -138,13 +135,6 @@ class IncidentReport(
     )
     prisonersInvolved.add(prisoner)
     return prisoner
-  }
-
-  fun addOtherPersonInvolved(personName: String, otherPersonType: PersonRole): OtherPersonInvolvement {
-    val otherPersonInvolved =
-      OtherPersonInvolvement(incident = this, personName = personName, personType = otherPersonType)
-    otherPeopleInvolved.add(otherPersonInvolved)
-    return otherPersonInvolved
   }
 
   fun addIncidentLocation(
