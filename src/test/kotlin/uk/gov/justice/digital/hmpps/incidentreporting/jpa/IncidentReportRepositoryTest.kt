@@ -26,6 +26,9 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
   @Autowired
   lateinit var eventRepository: IncidentEventRepository
 
+  private val now = LocalDateTime.now(clock)
+  private val whenIncidentHappened = now.minusHours(1)
+
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
@@ -33,12 +36,12 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
   }
 
   @Test
-  fun `Create an incident report`() {
+  fun `create an incident report`() {
     val incidentReport =
       reportRepository.save(
         IncidentReport(
           incidentNumber = reportRepository.generateIncidentReportNumber(),
-          incidentDateAndTime = LocalDateTime.now(),
+          incidentDateAndTime = whenIncidentHappened,
           incidentType = IncidentType.SELF_HARM,
           summary = "A Summary",
           incidentDetails = "An incident occurred",
@@ -46,17 +49,17 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
           prisonId = "MDI",
           event = IncidentEvent(
             eventId = eventRepository.generateEventId(),
-            eventDateAndTime = LocalDateTime.now(),
+            eventDateAndTime = whenIncidentHappened,
             prisonId = "MDI",
             eventDetails = "An event occurred",
-            createdDate = LocalDateTime.now(),
-            lastModifiedDate = LocalDateTime.now(),
+            createdDate = now,
+            lastModifiedDate = now,
             lastModifiedBy = "user1",
           ),
-          reportedDate = LocalDateTime.now(),
+          reportedDate = now,
           assignedTo = "user2",
-          createdDate = LocalDateTime.now(),
-          lastModifiedDate = LocalDateTime.now(),
+          createdDate = now,
+          lastModifiedDate = now,
           lastModifiedBy = "user1",
         ),
       )
@@ -67,23 +70,25 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
     incidentReport.addIncidentLocation("MDI-1-1-1", "CELL", "Other stuff")
 
     incidentReport.addIncidentData("WHERE_OCCURRED", "Where did this occur?")
-      .addDataItem("DETOX_UNIT", "They hurt themselves", "user1", LocalDateTime.now())
-      .addDataItem("CELL", "In the cell", "user1", LocalDateTime.now())
+      .addDataItem("DETOX_UNIT", "They hurt themselves", "user1", now)
+      .addDataItem("CELL", "In the cell", "user1", now)
 
     incidentReport.addIncidentData("METHOD", "Method Used to hurt themselves?")
-      .addDataItem("KNIFE", "They used a knife", "user1", LocalDateTime.now())
-      .addDataItem("OTHER", "They used something else", "user1", LocalDateTime.now())
+      .addDataItem("KNIFE", "They used a knife", "user1", now)
+      .addDataItem("OTHER", "They used something else", "user1", now)
 
-    incidentReport.addIncidentHistory(IncidentType.FINDS, LocalDateTime.now().minusHours(1), "user2")
+    val before1 = now.minusMinutes(5)
+    incidentReport.addIncidentHistory(IncidentType.FINDS, before1, "user2")
       .addHistoricalResponse("dataItem3", "dataItemDescription3")
-      .addDataItem("response1", "Some information", "user1", LocalDateTime.now())
-      .addDataItem("response2", "Some information", "user1", LocalDateTime.now())
-      .addDataItem("response3", "Some information", "user1", LocalDateTime.now())
+      .addDataItem("response1", "Some information", "user1", before1)
+      .addDataItem("response2", "Some information", "user1", before1)
+      .addDataItem("response3", "Some information", "user1", before1)
 
-    incidentReport.addIncidentHistory(IncidentType.ASSAULT, LocalDateTime.now(), "user1")
+    val before2 = now.minusMinutes(2)
+    incidentReport.addIncidentHistory(IncidentType.ASSAULT, before2, "user1")
       .addHistoricalResponse("dataItem1", "dataItemDescription1")
-      .addDataItem("response1", "Some information", "user1", LocalDateTime.now())
-      .addDataItem("response2", "Some information", "user1", LocalDateTime.now())
+      .addDataItem("response1", "Some information", "user1", before2)
+      .addDataItem("response2", "Some information", "user1", before2)
 
     TestTransaction.flagForCommit()
     TestTransaction.end()
