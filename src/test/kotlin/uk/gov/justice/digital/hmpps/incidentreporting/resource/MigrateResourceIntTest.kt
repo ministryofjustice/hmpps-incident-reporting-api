@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
-import io.opentelemetry.sdk.testing.assertj.OpenTelemetryAssertions.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -12,8 +12,7 @@ import org.springframework.context.annotation.Primary
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentEventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.CodeDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.History
@@ -45,29 +44,37 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
   }
 
   @Autowired
-  lateinit var repository: IncidentReportRepository
+  lateinit var reportRepository: IncidentReportRepository
+
+  @Autowired
+  lateinit var eventRepository: IncidentEventRepository
 
   lateinit var existingNomisIncident: IncidentReport
 
   @BeforeEach
   fun setUp() {
-    repository.deleteAll()
+    reportRepository.deleteAll()
+    eventRepository.deleteAll()
 
-    existingNomisIncident = repository.save(
-      buildIncidentReport(incidentNumber = "$INCIDENT_NUMBER", reportTime = LocalDateTime.now(clock), source = InformationSource.NOMIS),
+    existingNomisIncident = reportRepository.save(
+      buildIncidentReport(
+        incidentNumber = "$INCIDENT_NUMBER",
+        reportTime = LocalDateTime.now(clock),
+        source = InformationSource.NOMIS,
+      ),
     )
   }
 
   @DisplayName("POST /sync/upsert")
   @Nested
   inner class MigrateIncidentReport {
-    private val reportingStaff = Staff("user1", 121, "John", "Smith")
+    private val reportingStaff = Staff("user2", 121, "John", "Smith")
     val syncRequest = UpsertNomisIncident(
       initialMigration = false,
       incidentReport = NomisIncidentReport(
         incidentId = INCIDENT_NUMBER,
         title = "An incident occurred updated",
-        description = "An incident occurred updated",
+        description = "More details about the incident",
         prison = CodeDescription("MDI", "Moorland"),
         status = NomisIncidentStatus("AWAN", "Awaiting Analysis"),
         type = "SELF_HARM",
@@ -226,8 +233,6 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
     inner class HappyPath {
       @Test
       fun `can migrate an incident`() {
-        val now = LocalDateTime.now(clock)
-
         val updatedSyncRequest = syncRequest.copy(
           initialMigration = true,
           incidentReport = syncRequest.incidentReport.copy(
@@ -244,33 +249,40 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
           .expectBody().json(
             // language=json
             """ 
-          {
-            "incidentType": "SELF_HARM",
-            "incidentDateAndTime": "${updatedSyncRequest.incidentReport.incidentDateTime}",
-            "prisonId": "${updatedSyncRequest.incidentReport.prison.code}",
-            "incidentDetails": "${updatedSyncRequest.incidentReport.description}",
-            "reportedBy": "user1",
-            "reportedDate": "$now",
-            "status": "${IncidentStatus.AWAITING_ANALYSIS.name}",
-            "assignedTo": "user1",
-            "createdDate": "$now",
-            "lastModifiedDate": "$now",
-            "lastModifiedBy": "user1",
-            "createdInNomis": true
-          }
-          """,
+            {
+              "incidentNumber": "112414666",
+              "incidentType": "SELF_HARM",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "summary": "An incident occurred updated",
+              "incidentDetails": "A New Incident From NOMIS",
+              "event": {
+                "eventId": "112414666",
+                "eventDateAndTime": "2023-12-05T11:34:56",
+                "prisonId": "MDI",
+                "eventDetails": "A New Incident From NOMIS"
+              },
+              "reportedBy": "user2",
+              "reportedDate": "2023-12-05T12:34:56",
+              "status": "AWAITING_ANALYSIS",
+              "assignedTo": "user2",
+              "createdDate": "2023-12-05T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:34:56",
+              "lastModifiedBy": "user2",
+              "createdInNomis": true
+            }
+            """,
             false,
           )
       }
 
       @Test
       fun `can sync an new incident after migration created in NOMIS`() {
-        val now = LocalDateTime.now(clock)
-
+        val newIncidentId = INCIDENT_NUMBER + 1
         val newIncident = syncRequest.copy(
           initialMigration = false,
           incidentReport = syncRequest.incidentReport.copy(
-            incidentId = INCIDENT_NUMBER + 1,
+            incidentId = newIncidentId,
             description = "New NOMIS incident",
             type = "ASSAULTS3",
           ),
@@ -284,22 +296,29 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
           .expectBody().json(
             // language=json
             """ 
-           {
-            "incidentNumber": "${newIncident.incidentReport.incidentId}",
-            "incidentType": "${IncidentType.ASSAULT.name}",
-            "incidentDateAndTime": "${newIncident.incidentReport.incidentDateTime}",
-            "prisonId": "MDI",
-            "incidentDetails": "New NOMIS incident",
-            "reportedBy": "user1",
-            "reportedDate": "$now",
-            "status": "${IncidentStatus.AWAITING_ANALYSIS.name}",
-            "assignedTo": "user1",
-            "createdDate": "$now",
-            "lastModifiedDate": "$now",
-            "lastModifiedBy": "user1",
-            "createdInNomis": true
-          }
-          """,
+            {
+              "incidentNumber": "$newIncidentId",
+              "incidentType": "ASSAULT",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "summary": "An incident occurred updated",
+              "incidentDetails": "New NOMIS incident",
+              "event": {
+                "eventId": "$newIncidentId",
+                "eventDateAndTime": "2023-12-05T11:34:56",
+                "prisonId": "MDI",
+                "eventDetails": "New NOMIS incident"
+              },
+              "reportedBy": "user2",
+              "reportedDate": "2023-12-05T12:34:56",
+              "status": "AWAITING_ANALYSIS",
+              "assignedTo": "user2",
+              "createdDate": "2023-12-05T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:34:56",
+              "lastModifiedBy": "user2",
+              "createdInNomis": true
+            }
+            """,
             false,
           )
 
@@ -312,8 +331,6 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
 
       @Test
       fun `can sync an update to an existing incident created in NOMIS`() {
-        val now = LocalDateTime.now(clock)
-
         val upsertMigration = syncRequest.copy(
           initialMigration = false,
           id = existingNomisIncident.id,
@@ -331,24 +348,31 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
           .expectBody().json(
             // language=json
             """ 
-           {
-            "id": "${existingNomisIncident.id}",
-            "incidentNumber": "${existingNomisIncident.incidentNumber}",
-            "incidentType": "${existingNomisIncident.incidentType}",
-            "incidentDateAndTime": "${existingNomisIncident.incidentDateAndTime}",
-            "prisonId": "MDI",
-            "incidentDetails": "${upsertMigration.incidentReport.description}",
-            "reportedBy": "USER1",
-            "reportedDate": "$now",
-            "status": "AWAITING_ANALYSIS",
-            "assignedTo": "USER1",
-            "createdDate": "$now",
-            "lastModifiedDate": "$now",
-            "lastModifiedBy": "user1",
-            "createdInNomis": true
-          }
-          """,
-            false,
+             {
+              "id": "${existingNomisIncident.id}",
+              "incidentNumber": "$INCIDENT_NUMBER",
+              "incidentType": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "summary": "An incident occurred updated",
+              "incidentDetails": "Updated details",
+              "event": {
+                "eventId": "$INCIDENT_NUMBER",
+                "eventDateAndTime": "2023-12-05T11:34:56",
+                "prisonId": "MDI",
+                "eventDetails": "An event occurred"
+              },
+              "reportedBy": "USER1",
+              "reportedDate": "2023-12-05T12:34:56",
+              "status": "AWAITING_ANALYSIS",
+              "assignedTo": "USER1",
+              "createdDate": "2023-12-05T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:34:56",
+              "lastModifiedBy": "user2",
+              "createdInNomis": true
+            }
+            """,
+            true,
           )
 
         getDomainEvents(1).let {

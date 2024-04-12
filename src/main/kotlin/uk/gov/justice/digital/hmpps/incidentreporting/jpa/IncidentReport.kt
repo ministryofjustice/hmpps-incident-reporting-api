@@ -31,6 +31,11 @@ class IncidentReport(
   @Column(name = "id", updatable = false, nullable = false)
   val id: UUID? = null,
 
+  /**
+   * Human readable ID.
+   * A number when sourced from NOMIS.
+   * Prefixed with “IR-” when sourced from DPS.
+   */
   @Column(nullable = false, unique = true, length = 25)
   val incidentNumber: String,
 

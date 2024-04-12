@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 
 fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
   val ir = IncidentReport(
-    incidentNumber = incidentId.toString(),
+    incidentNumber = "$incidentId",
     incidentType = convertIncidentType(type),
     incidentDateAndTime = incidentDateTime,
     prisonId = prison.code,
@@ -23,7 +23,7 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
     reportedBy = reportingStaff.username,
     reportedDate = reportedDateTime,
     status = mapIncidentStatus(status.code),
-    questionSetId = questionnaireId.toString(),
+    questionSetId = "$questionnaireId",
     createdDate = LocalDateTime.now(clock),
     lastModifiedDate = LocalDateTime.now(clock),
     lastModifiedBy = reportingStaff.username,

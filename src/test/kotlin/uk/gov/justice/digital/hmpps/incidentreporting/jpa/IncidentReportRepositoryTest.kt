@@ -18,25 +18,26 @@ import java.time.LocalDateTime
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
-class IncidentReportReportRepositoryTest : IntegrationTestBase() {
+class IncidentReportRepositoryTest : IntegrationTestBase() {
 
   @Autowired
-  lateinit var repository: IncidentReportRepository
+  lateinit var reportRepository: IncidentReportRepository
 
   @Autowired
   lateinit var eventRepository: IncidentEventRepository
 
   @BeforeEach
   fun setUp() {
-    repository.deleteAll()
+    reportRepository.deleteAll()
+    eventRepository.deleteAll()
   }
 
   @Test
   fun `Create an incident report`() {
     val incidentReport =
-      repository.save(
+      reportRepository.save(
         IncidentReport(
-          incidentNumber = repository.generateIncidentReportNumber(),
+          incidentNumber = reportRepository.generateIncidentReportNumber(),
           incidentDateAndTime = LocalDateTime.now(),
           incidentType = IncidentType.SELF_HARM,
           summary = "A Summary",
@@ -88,7 +89,7 @@ class IncidentReportReportRepositoryTest : IntegrationTestBase() {
     TestTransaction.end()
     TestTransaction.start()
 
-    val ir1 = repository.findOneByIncidentNumber(incidentReport.incidentNumber)
+    val ir1 = reportRepository.findOneByIncidentNumber(incidentReport.incidentNumber)
     assertThat(ir1).isNotNull
   }
 }

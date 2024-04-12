@@ -30,7 +30,10 @@ fun buildIncidentReport(
     lastModifiedBy = reportingUsername,
     source = source,
     event = IncidentEvent(
-      eventId = "EVENT-$incidentNumber",
+      eventId = when (source) {
+        InformationSource.DPS -> "IE-${incidentNumber.removePrefix("IR-")}"
+        InformationSource.NOMIS -> incidentNumber
+      },
       eventDateAndTime = eventDateAndTime,
       prisonId = prisonId,
       eventDetails = "An event occurred",

@@ -22,8 +22,14 @@ class IncidentEvent(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
+  /**
+   * Human readable ID.
+   * Matches incident report number when sourced from NOMIS.
+   * Prefixed with “IE-” when sourced from DPS.
+   */
   @Column(nullable = false, unique = true, length = 25)
   val eventId: String,
+
   val eventDateAndTime: LocalDateTime,
   val prisonId: String,
   var eventDetails: String,
