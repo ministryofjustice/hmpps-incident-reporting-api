@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
+import jakarta.validation.ValidationException
+
 enum class StaffRole(
   val description: String,
 ) {
@@ -21,3 +23,26 @@ enum class StaffRole(
   VICTIM("Victim"),
   WITNESS("Witness"),
 }
+
+fun mapStaffRole(code: String) =
+  when (code) {
+    "AI" -> StaffRole.ACTIVELY_INVOLVED
+    "AO" -> StaffRole.AUTHORISING_OFFICER
+    "CRH" -> StaffRole.CR_HEAD
+    "CRS" -> StaffRole.CR_SUPERVISOR
+    "CRLG" -> StaffRole.CR_LEGS
+    "CRL" -> StaffRole.CR_LEFT_ARM
+    "CRR" -> StaffRole.CR_RIGHT_ARM
+    "DECEASED" -> StaffRole.DECEASED
+    "FOS" -> StaffRole.FIRST_ON_SCENE
+    "HEALTH" -> StaffRole.HEALTHCARE
+    "HOST" -> StaffRole.HOSTAGE
+    "INPOS" -> StaffRole.IN_POSSESSION
+    "INV" -> StaffRole.ACTIVELY_INVOLVED
+    "NEG" -> StaffRole.NEGOTIATOR
+    "PAS" -> StaffRole.PRESENT_AT_SCENE
+    "SUSIN" -> StaffRole.SUSPECTED_INVOLVEMENT
+    "VICT" -> StaffRole.VICTIM
+    "WIT" -> StaffRole.WITNESS
+    else -> throw ValidationException("Unknown staff code: $code")
+  }

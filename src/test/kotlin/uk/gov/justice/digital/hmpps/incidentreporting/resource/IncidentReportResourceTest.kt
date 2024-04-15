@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
-import io.opentelemetry.sdk.testing.assertj.OpenTelemetryAssertions.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -14,8 +14,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentEventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentReportNumber
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
@@ -30,16 +30,23 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
   }
 
   @Autowired
-  lateinit var repository: IncidentReportRepository
+  lateinit var reportRepository: IncidentReportRepository
+
+  @Autowired
+  lateinit var eventRepository: IncidentEventRepository
 
   lateinit var existingIncident: IncidentReport
 
   @BeforeEach
   fun setUp() {
-    repository.deleteAll()
+    reportRepository.deleteAll()
+    eventRepository.deleteAll()
 
-    existingIncident = repository.save(
-      buildIncidentReport(incidentNumber = repository.generateIncidentReportNumber(), reportTime = LocalDateTime.now(clock)),
+    existingIncident = reportRepository.save(
+      buildIncidentReport(
+        incidentNumber = "IR-0000000001124143",
+        reportTime = LocalDateTime.now(clock),
+      ),
     )
   }
 
@@ -77,7 +84,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `access forbidden with right role, wrong scope`() {
         webTestClient.get().uri("/incident-reports/${existingIncident.id}")
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isForbidden
@@ -88,7 +95,6 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
     inner class HappyPath {
       @Test
       fun `can get an incident by ID`() {
-        val now = LocalDateTime.now(clock)
         webTestClient.get().uri("/incident-reports/${existingIncident.id}")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
@@ -99,27 +105,34 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingIncident.id}",
-              "incidentType": "${existingIncident.incidentType}",
-              "incidentDateAndTime": "${existingIncident.incidentDateAndTime}",
+              "incidentNumber": "IR-0000000001124143",
+              "incidentType": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "incidentDetails": "${existingIncident.incidentDetails}",
+              "summary": "Incident Report IR-0000000001124143",
+              "incidentDetails": "A new incident created in the new service of type Finds",
+              "event": {
+                "eventId": "IE-0000000001124143",
+                "eventDateAndTime": "2023-12-05T11:34:56",
+                "prisonId": "MDI",
+                "eventDetails": "An event occurred"
+              },
               "reportedBy": "USER1",
-              "reportedDate": "$now",
-              "status": "${existingIncident.status}",
+              "reportedDate": "2023-12-05T12:34:56",
+              "status": "DRAFT",
               "assignedTo": "USER1",
-              "createdDate": "$now",
-              "lastModifiedDate": "$now",
+              "createdDate": "2023-12-05T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:34:56",
               "lastModifiedBy": "USER1",
               "createdInNomis": false
             }
-          """,
-            false,
+            """,
+            true,
           )
       }
 
       @Test
       fun `can get an incident by incident number`() {
-        val now = LocalDateTime.now(clock)
         webTestClient.get().uri("/incident-reports/incident-number/${existingIncident.incidentNumber}")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
@@ -130,26 +143,29 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingIncident.id}",
-              "incidentType": "${existingIncident.incidentType}",
-              "incidentDateAndTime": "${existingIncident.incidentDateAndTime}",
+              "incidentNumber": "IR-0000000001124143",
+              "incidentType": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "incidentDetails": "${existingIncident.incidentDetails}",
-              "reportedBy": "USER1",
-              "reportedDate": "$now",
-              "status": "${existingIncident.status}",
-              "assignedTo": "USER1",
-              "createdDate": "$now",
-              "lastModifiedDate": "$now",
-              "lastModifiedBy": "USER1",
-              "createdInNomis": false,
+              "summary": "Incident Report IR-0000000001124143",
+              "incidentDetails": "A new incident created in the new service of type Finds",
               "event": {
-                "eventDateAndTime": "${existingIncident.incidentDateAndTime}",
+                "eventId": "IE-0000000001124143",
+                "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "eventDetails": "An event occurred"
-              }
+              },
+              "reportedBy": "USER1",
+              "reportedDate": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdDate": "2023-12-05T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:34:56",
+              "lastModifiedBy": "USER1",
+              "createdInNomis": false
             }
-          """,
-            false,
+            """,
+            true,
           )
       }
     }
@@ -160,11 +176,11 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
   inner class CreateIncidentReport {
 
     val createIncidentReportRequest = CreateIncidentReportRequest(
-      incidentDateAndTime = LocalDateTime.now(clock),
+      incidentDateAndTime = LocalDateTime.now(clock).minusHours(1),
       incidentDetails = "An incident occurred",
       incidentType = IncidentType.SELF_HARM,
       prisonId = "MDI",
-      reportedBy = "user1",
+      reportedBy = "user2",
       reportedDate = LocalDateTime.now(clock),
       createNewEvent = true,
     )
@@ -201,7 +217,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `access forbidden with right role, wrong scope`() {
         webTestClient.post().uri("/incident-reports")
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .bodyValue(jsonString(createIncidentReportRequest))
           .exchange()
@@ -226,7 +242,6 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
     inner class HappyPath {
       @Test
       fun `can add a new incident`() {
-        val now = LocalDateTime.now(clock)
         webTestClient.post().uri("/incident-reports")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
@@ -238,24 +253,24 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "incidentType": "SELF_HARM",
-              "incidentDateAndTime": "${createIncidentReportRequest.incidentDateAndTime}",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "incidentDetails": "An incident occurred",
-              "reportedBy": "user1",
-              "reportedDate": "$now",
-              "status": "DRAFT",
-              "assignedTo": "user1",
-              "createdDate": "$now",
-              "lastModifiedDate": "$now",
-              "lastModifiedBy": "INCIDENT_REPORTING_API",
-              "createdInNomis": false,
               "event": {
-                "eventDateAndTime": "${createIncidentReportRequest.incidentDateAndTime}",
+                "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "eventDetails": "An incident occurred"
-              }
+              },
+              "reportedBy": "user2",
+              "reportedDate": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "user2",
+              "createdDate": "2023-12-05T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:34:56",
+              "lastModifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false
             }
-          """,
+            """,
             false,
           )
 
@@ -269,11 +284,10 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
 
       @Test
       fun `can add a new incident linked to an existing event`() {
-        val now = LocalDateTime.now(clock)
         webTestClient.post().uri("/incident-reports")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createIncidentReportRequest.copy(createNewEvent = false, linkedEventId = existingIncident.event?.eventId)))
+          .bodyValue(jsonString(createIncidentReportRequest.copy(createNewEvent = false, linkedEventId = existingIncident.event.eventId)))
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(
@@ -281,25 +295,25 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "incidentType": "SELF_HARM",
-              "incidentDateAndTime": "${createIncidentReportRequest.incidentDateAndTime}",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "incidentDetails": "An incident occurred",
-              "reportedBy": "user1",
-              "reportedDate": "$now",
-              "status": "DRAFT",
-              "assignedTo": "user1",
-              "createdDate": "$now",
-              "lastModifiedDate": "$now",
-              "lastModifiedBy": "INCIDENT_REPORTING_API",
-              "createdInNomis": false,
               "event": {
-                "eventId": "${existingIncident.event?.eventId}",
-                "eventDateAndTime": "${existingIncident.event?.eventDateAndTime}",
+                "eventId": "${existingIncident.event.eventId}",
+                "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "eventDetails": "An event occurred"
-              }
+              },
+              "reportedBy": "user2",
+              "reportedDate": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "user2",
+              "createdDate": "2023-12-05T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:34:56",
+              "lastModifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false
             }
-          """,
+            """,
             false,
           )
 

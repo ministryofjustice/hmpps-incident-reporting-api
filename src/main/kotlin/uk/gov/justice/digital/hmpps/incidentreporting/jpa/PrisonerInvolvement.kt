@@ -16,7 +16,7 @@ class PrisonerInvolvement(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val incident: IncidentReport,
+  private val incident: IncidentReport,
 
   val prisonerNumber: String,
 
@@ -27,4 +27,6 @@ class PrisonerInvolvement(
   val outcome: PrisonerOutcome? = null,
 
   val comment: String? = null,
-)
+) {
+  fun getIncident() = incident
+}

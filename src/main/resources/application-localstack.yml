@@ -7,7 +7,10 @@ hmpps.sqs:
       queueName: ${random.uuid}
       dlqName: ${random.uuid}
       subscribeTopicId: domainevents
-      subscribeFilter: '{"eventType":[ "prison-offender-events.prisoner.merged" ] }'
+      subscribeFilter: >-
+        {"eventType": [
+          "prison-offender-events.prisoner.merged"
+        ]}
   topics:
     domainevents:
       arn: arn:aws:sns:eu-west-2:000000000000:${random.uuid}

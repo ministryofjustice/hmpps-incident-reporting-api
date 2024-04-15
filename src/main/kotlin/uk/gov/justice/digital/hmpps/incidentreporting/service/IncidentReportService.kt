@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEve
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentReportNumber
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.IncidentEventNotFoundException
 import java.time.Clock
-import java.util.*
+import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
 

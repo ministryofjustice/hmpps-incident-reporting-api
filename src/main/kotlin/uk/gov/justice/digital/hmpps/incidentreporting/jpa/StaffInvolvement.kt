@@ -16,7 +16,7 @@ class StaffInvolvement(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val incident: IncidentReport,
+  private val incident: IncidentReport,
 
   val staffUsername: String,
 
@@ -24,4 +24,6 @@ class StaffInvolvement(
   val staffRole: StaffRole,
 
   val comment: String? = null,
-)
+) {
+  fun getIncident() = incident
+}

@@ -15,14 +15,12 @@ import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.mapIncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.io.Serializable
 import java.time.Clock
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
 
 @Entity
@@ -33,6 +31,11 @@ class IncidentReport(
   @Column(name = "id", updatable = false, nullable = false)
   val id: UUID? = null,
 
+  /**
+   * Human readable ID.
+   * A number when sourced from NOMIS.
+   * Prefixed with “IR-” when sourced from DPS.
+   */
   @Column(nullable = false, unique = true, length = 25)
   val incidentNumber: String,
 
@@ -41,7 +44,7 @@ class IncidentReport(
   val prisonId: String,
 
   @Enumerated(EnumType.STRING)
-  val incidentType: IncidentType,
+  private var incidentType: IncidentType,
 
   var summary: String?,
   var incidentDetails: String,
@@ -66,9 +69,6 @@ class IncidentReport(
   val prisonersInvolved: MutableList<PrisonerInvolvement> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val otherPeopleInvolved: MutableList<OtherPersonInvolvement> = mutableListOf(),
-
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val locations: MutableList<IncidentLocation> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
@@ -77,12 +77,12 @@ class IncidentReport(
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val incidentCorrectionRequests: MutableList<IncidentCorrectionRequest> = mutableListOf(),
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  @OrderColumn(name = "sequence")
-  val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
+  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderColumn(name = "sequence", nullable = false)
+  private val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val historyOfResponses: MutableList<HistoricalIncidentResponse> = mutableListOf(),
+  val history: MutableList<IncidentHistory> = mutableListOf(),
 
   @Enumerated(EnumType.STRING)
   val source: InformationSource = InformationSource.DPS,
@@ -110,6 +110,16 @@ class IncidentReport(
 
   override fun hashCode(): Int {
     return incidentNumber.hashCode()
+  }
+
+  fun getIncidentData(): List<IncidentQuestion> = incidentResponses
+
+  fun getIncidentType() = incidentType
+
+  fun changeIncidentType(newIncidentType: IncidentType, changedDate: LocalDateTime, staffChanged: String) {
+    copyToHistory(changedDate, staffChanged)
+    incidentResponses.clear()
+    incidentType = newIncidentType
   }
 
   fun addEvidence(typeOfEvidence: String, evidenceDescription: String): Evidence {
@@ -142,13 +152,6 @@ class IncidentReport(
     return prisoner
   }
 
-  fun addOtherPersonInvolved(personName: String, otherPersonType: PersonRole): OtherPersonInvolvement {
-    val otherPersonInvolved =
-      OtherPersonInvolvement(incident = this, personName = personName, personType = otherPersonType)
-    otherPeopleInvolved.add(otherPersonInvolved)
-    return otherPersonInvolved
-  }
-
   fun addIncidentLocation(
     locationId: String,
     locationType: String,
@@ -178,7 +181,7 @@ class IncidentReport(
   fun addIncidentData(
     dataItem: String,
     dataItemDescription: String? = null,
-  ): IncidentResponse {
+  ): IncidentQuestion {
     val incidentResponse = IncidentResponse(
       incident = this,
       dataItem = dataItem,
@@ -186,6 +189,31 @@ class IncidentReport(
     )
     incidentResponses.add(incidentResponse)
     return incidentResponse
+  }
+
+  fun addIncidentHistory(incidentType: IncidentType, incidentChangeDate: LocalDateTime, staffChanged: String): IncidentHistory {
+    val incidentHistory = IncidentHistory(
+      incident = this,
+      incidentType = incidentType,
+      incidentChangeDate = incidentChangeDate,
+      incidentChangeStaffUsername = staffChanged,
+    )
+
+    history.add(incidentHistory)
+    return incidentHistory
+  }
+
+  fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): IncidentHistory {
+    val history = addIncidentHistory(incidentType, changedDate, staffChanged)
+
+    getIncidentData().filterNotNull().forEach { question ->
+      val hr = history.addHistoricalResponse(question.dataItem, question.dataItemDescription)
+      question.getEvidence()?.let { hr.attachEvidence(it) }
+      question.getLocation()?.let { hr.attachLocation(it) }
+      question.getStaffInvolvement()?.let { hr.attachStaffInvolvement(it) }
+      question.getPrisonerInvolvement()?.let { hr.attachPrisonerInvolvement(it) }
+    }
+    return history
   }
 
   fun updateWith(upsert: NomisIncidentReport, updatedBy: String, clock: Clock) {
@@ -196,7 +224,7 @@ class IncidentReport(
     this.lastModifiedDate = LocalDateTime.now(clock)
   }
 
-  fun toDto(): IncidentReport =
+  fun toDto(): IncidentReportDTO =
     IncidentReportDTO(
       id = this.id!!,
       incidentNumber = this.incidentNumber,
@@ -213,6 +241,6 @@ class IncidentReport(
       lastModifiedDate = this.lastModifiedDate,
       lastModifiedBy = this.lastModifiedBy,
       createdInNomis = this.source == InformationSource.NOMIS,
-      event = this.event?.toDto(),
+      event = this.event.toDto(),
     )
 }

@@ -13,7 +13,6 @@ Accepted
 This document details the new design of Incident Reports that will support old NOMIS model and a new more flexible model for the Incident Reporting Service.
 
 ```mermaid
-
 classDiagram
     direction BT
     class CorrectionReason {
@@ -29,12 +28,11 @@ classDiagram
     class HistoricalIncidentResponse {
         IncidentLocation? location
         PrisonerInvolvement? prisonerInvolvement
+        IncidentHistory incidentHistory
         Long? id
         StaffInvolvement? staffInvolvement
         List~HistoricalResponse~ responses
-        OtherPersonInvolvement? otherPersonInvolvement
         Evidence? evidence
-        IncidentReport incident
         String dataItem
         String? dataItemDescription
     }
@@ -65,6 +63,14 @@ classDiagram
         List~IncidentReport~ incidents
         LocalDateTime eventDateAndTime
     }
+    class IncidentHistory {
+        LocalDateTime incidentChangeDate
+        List~HistoricalIncidentResponse~ historyOfResponses
+        Long? id
+        IncidentType incidentType
+        String incidentChangeStaffUsername
+        IncidentReport incident
+    }
     class IncidentLocation {
         String locationType
         String locationId
@@ -79,15 +85,14 @@ classDiagram
         LocalDateTime reportedDate
         List~PrisonerInvolvement~ prisonersInvolved
         String incidentDetails
+        List~IncidentHistory~ history
         IncidentEvent event
         List~IncidentCorrectionRequest~ incidentCorrectionRequests
         LocalDateTime incidentDateAndTime
         List~StaffInvolvement~ staffInvolved
         String? questionSetId
         String incidentNumber
-        List~OtherPersonInvolvement~ otherPeopleInvolved
         List~IncidentResponse~ incidentResponses
-        List~HistoricalIncidentResponse~ historyOfResponses
         String assignedTo
         UUID? id
         List~IncidentLocation~ locations
@@ -106,7 +111,6 @@ classDiagram
         Long? id
         StaffInvolvement? staffInvolvement
         List~Response~ responses
-        OtherPersonInvolvement? otherPersonInvolvement
         Evidence? evidence
         IncidentReport incident
         String dataItem
@@ -120,16 +124,6 @@ classDiagram
         <<enumeration>>
         String description
         EnumEntries~IncidentType~ entries
-    }
-    class OtherPersonInvolvement {
-        PersonRole personType
-        Long? id
-        String personName
-        IncidentReport incident
-    }
-    class PersonRole {
-        <<enumeration>>
-        EnumEntries~PersonRole~ entries
     }
     class PrisonerInvolvement {
         PrisonerRole prisonerInvolvement
@@ -180,45 +174,45 @@ classDiagram
     Evidence "1" *--> "incident 1" IncidentReport
     HistoricalIncidentResponse "1" *--> "evidence 1" Evidence
     HistoricalIncidentResponse "1" *--> "responses *" HistoricalResponse
+    HistoricalIncidentResponse  ..>  HistoricalResponse : «create»
+    HistoricalIncidentResponse "1" *--> "incidentHistory 1" IncidentHistory
     HistoricalIncidentResponse "1" *--> "location 1" IncidentLocation
-    HistoricalIncidentResponse "1" *--> "incident 1" IncidentReport
-    HistoricalIncidentResponse "1" *--> "otherPersonInvolvement 1" OtherPersonInvolvement
     HistoricalIncidentResponse "1" *--> "prisonerInvolvement 1" PrisonerInvolvement
     HistoricalIncidentResponse "1" *--> "staffInvolvement 1" StaffInvolvement
     HistoricalResponse "1" *--> "incidentResponse 1" HistoricalIncidentResponse
     IncidentCorrectionRequest "1" *--> "reason 1" CorrectionReason
     IncidentCorrectionRequest "1" *--> "incident 1" IncidentReport
     IncidentEvent "1" *--> "incidents *" IncidentReport
+    IncidentHistory  ..>  HistoricalIncidentResponse : «create»
+    IncidentHistory "1" *--> "historyOfResponses *" HistoricalIncidentResponse
+    IncidentHistory "1" *--> "incident 1" IncidentReport
+    IncidentHistory "1" *--> "incidentType 1" IncidentType
     IncidentLocation "1" *--> "incident 1" IncidentReport
     IncidentReport  ..>  Evidence : «create»
     IncidentReport "1" *--> "evidence *" Evidence
-    IncidentReport "1" *--> "historyOfResponses *" HistoricalIncidentResponse
-    IncidentReport  ..>  IncidentCorrectionRequest : «create»
     IncidentReport "1" *--> "incidentCorrectionRequests *" IncidentCorrectionRequest
+    IncidentReport  ..>  IncidentCorrectionRequest : «create»
     IncidentReport "1" *--> "event 1" IncidentEvent
+    IncidentReport "1" *--> "history *" IncidentHistory
+    IncidentReport  ..>  IncidentHistory : «create»
     IncidentReport  ..>  IncidentLocation : «create»
     IncidentReport "1" *--> "locations *" IncidentLocation
-    IncidentReport "1" *--> "incidentResponses *" IncidentResponse
     IncidentReport  ..>  IncidentResponse : «create»
+    IncidentReport "1" *--> "incidentResponses *" IncidentResponse
     IncidentReport "1" *--> "status 1" IncidentStatus
     IncidentReport "1" *--> "incidentType 1" IncidentType
-    IncidentReport  ..>  OtherPersonInvolvement : «create»
-    IncidentReport "1" *--> "otherPeopleInvolved *" OtherPersonInvolvement
-    IncidentReport  ..>  PrisonerInvolvement : «create»
     IncidentReport "1" *--> "prisonersInvolved *" PrisonerInvolvement
+    IncidentReport  ..>  PrisonerInvolvement : «create»
     IncidentReport "1" *--> "staffInvolved *" StaffInvolvement
     IncidentReport  ..>  StaffInvolvement : «create»
     IncidentReport "1" *--> "historyOfStatuses *" StatusHistory
     IncidentResponse "1" *--> "evidence 1" Evidence
     IncidentResponse "1" *--> "location 1" IncidentLocation
     IncidentResponse "1" *--> "incident 1" IncidentReport
-    IncidentResponse "1" *--> "otherPersonInvolvement 1" OtherPersonInvolvement
     IncidentResponse "1" *--> "prisonerInvolvement 1" PrisonerInvolvement
     IncidentResponse "1" *--> "responses *" Response
     IncidentResponse  ..>  Response : «create»
     IncidentResponse "1" *--> "staffInvolvement 1" StaffInvolvement
-    OtherPersonInvolvement "1" *--> "incident 1" IncidentReport
-    OtherPersonInvolvement "1" *--> "personType 1" PersonRole
     PrisonerInvolvement "1" *--> "incident 1" IncidentReport
     PrisonerInvolvement "1" *--> "outcome 1" PrisonerOutcome
     PrisonerInvolvement "1" *--> "prisonerInvolvement 1" PrisonerRole
@@ -227,7 +221,6 @@ classDiagram
     StaffInvolvement "1" *--> "staffRole 1" StaffRole
     StatusHistory "1" *--> "incident 1" IncidentReport
     StatusHistory "1" *--> "status 1" IncidentStatus
-
 ```
 
 ### ER Schema
@@ -241,16 +234,15 @@ classDiagram
         integer id
     }
     class historical_incident_response {
-        uuid incident_id
         varchar(120) data_item
         text additional_information
         bigint location_id
-        bigint other_person_involvement_id
         bigint prisoner_involvement_id
         bigint evidence_id
         bigint staff_involvement_id
         varchar(500) data_item_description
         integer sequence
+        bigint incident_history_id
         integer id
     }
     class historical_response {
@@ -278,6 +270,13 @@ classDiagram
         timestamp created_date
         varchar(120) last_modified_by
         timestamp last_modified_date
+        integer id
+    }
+    class incident_history {
+        uuid incident_id
+        varchar(255) incident_type
+        timestamp incident_change_date
+        varchar(120) incident_change_staff_username
         integer id
     }
     class incident_location {
@@ -311,18 +310,11 @@ classDiagram
         varchar(120) data_item
         text additional_information
         bigint location_id
-        bigint other_person_involvement_id
         bigint prisoner_involvement_id
         bigint evidence_id
         bigint staff_involvement_id
         varchar(500) data_item_description
         integer sequence
-        integer id
-    }
-    class other_person_involvement {
-        uuid incident_id
-        varchar(255) person_name
-        varchar(80) person_type
         integer id
     }
     class prisoner_involvement {
@@ -357,28 +349,25 @@ classDiagram
         integer id
     }
 
-    evidence  -->  incident_report : incident_id
-    historical_incident_response  -->  evidence : evidence_id
-    historical_incident_response  -->  incident_location : location_id
-    historical_incident_response  -->  incident_report : incident_id
-    historical_incident_response  -->  other_person_involvement : other_person_involvement_id
-    historical_incident_response  -->  prisoner_involvement : prisoner_involvement_id
-    historical_incident_response  -->  staff_involvement : staff_involvement_id
-    historical_response  -->  historical_incident_response : incident_response_id
-    historical_response  -->  incident_response : incident_response_id
-    incident_correction_request  -->  incident_report : incident_id
-    incident_location  -->  incident_report : incident_id
-    incident_report  -->  incident_event : event_id
-    incident_response  -->  evidence : evidence_id
-    incident_response  -->  incident_location : location_id
-    incident_response  -->  incident_report : incident_id
-    incident_response  -->  other_person_involvement : other_person_involvement_id
-    incident_response  -->  prisoner_involvement : prisoner_involvement_id
-    incident_response  -->  staff_involvement : staff_involvement_id
-    other_person_involvement  -->  incident_report : incident_id
-    prisoner_involvement  -->  incident_report : incident_id
-    response  -->  incident_response : incident_response_id
-    staff_involvement  -->  incident_report : incident_id
-    status_history  -->  incident_report : incident_id
-
+    evidence  -->  incident_report : incident_id--id
+    historical_incident_response  -->  evidence : evidence_id--id
+    historical_incident_response  -->  incident_history : incident_history_id--id
+    historical_incident_response  -->  incident_location : location_id--id
+    historical_incident_response  -->  prisoner_involvement : prisoner_involvement_id--id
+    historical_incident_response  -->  staff_involvement : staff_involvement_id--id
+    historical_response  -->  historical_incident_response : incident_response_id--id
+    historical_response  -->  incident_response : incident_response_id--id
+    incident_correction_request  -->  incident_report : incident_id--id
+    incident_history  -->  incident_report : incident_id--id
+    incident_location  -->  incident_report : incident_id--id
+    incident_report  -->  incident_event : event_id--id
+    incident_response  -->  evidence : evidence_id--id
+    incident_response  -->  incident_location : location_id--id
+    incident_response  -->  incident_report : incident_id--id
+    incident_response  -->  prisoner_involvement : prisoner_involvement_id--id
+    incident_response  -->  staff_involvement : staff_involvement_id--id
+    prisoner_involvement  -->  incident_report : incident_id--id
+    response  -->  incident_response : incident_response_id--id
+    staff_involvement  -->  incident_report : incident_id--id
+    status_history  -->  incident_report : incident_id--id
 ```

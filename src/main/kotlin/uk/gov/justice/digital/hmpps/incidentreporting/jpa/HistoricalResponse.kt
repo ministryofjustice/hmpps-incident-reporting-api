@@ -1,11 +1,9 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
 import java.time.LocalDateTime
 
 @Entity
@@ -14,14 +12,11 @@ class HistoricalResponse(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  val incidentResponse: HistoricalIncidentResponse,
+  override val itemValue: String,
 
-  val itemValue: String,
+  override val recordedBy: String,
 
-  val recordedBy: String,
+  override val recordedOn: LocalDateTime,
 
-  val recordedOn: LocalDateTime,
-
-  val additionalInformation: String? = null,
-)
+  override val additionalInformation: String? = null,
+) : IncidentAnswer

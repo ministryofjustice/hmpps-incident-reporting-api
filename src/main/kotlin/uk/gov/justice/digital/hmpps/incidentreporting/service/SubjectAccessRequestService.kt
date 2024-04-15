@@ -13,9 +13,9 @@ class SubjectAccessRequestService(
   override fun getPrisonContentFor(prn: String, fromDate: LocalDate?, toDate: LocalDate?): HmppsSubjectAccessRequestContent {
     val incidentReports = prisonerInvolvementRepository.findAllByPrisonerNumber(prn)
     val content = incidentReports
-      .filter { it.incident.reportedDate.isAfter(fromDate?.atStartOfDay()) && it.incident.reportedDate.isBefore(toDate?.atStartOfDay()) }
+      .filter { it.getIncident().reportedDate.isAfter(fromDate?.atStartOfDay()) && it.getIncident().reportedDate.isBefore(toDate?.atStartOfDay()) }
       .map {
-        it.incident.toDto()
+        it.getIncident().toDto()
       }
     return HmppsSubjectAccessRequestContent(
       content = content,

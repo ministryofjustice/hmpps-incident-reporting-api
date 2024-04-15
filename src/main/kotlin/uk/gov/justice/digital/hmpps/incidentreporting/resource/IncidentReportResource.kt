@@ -20,7 +20,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateIncidentReportRe
 import uk.gov.justice.digital.hmpps.incidentreporting.service.IncidentReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.IncidentReportService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
-import java.util.*
+import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
 
 @RestController
