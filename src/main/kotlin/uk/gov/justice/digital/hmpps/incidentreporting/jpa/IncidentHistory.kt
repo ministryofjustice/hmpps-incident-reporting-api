@@ -20,7 +20,7 @@ class IncidentHistory(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val incident: IncidentReport,
+  private val incident: IncidentReport,
 
   @Enumerated(EnumType.STRING)
   val incidentType: IncidentType,
@@ -36,7 +36,7 @@ class IncidentHistory(
   fun addHistoricalResponse(
     dataItem: String,
     dataItemDescription: String? = null,
-  ): HistoricalIncidentResponse {
+  ): IncidentQuestion {
     val historicalResponse = HistoricalIncidentResponse(
       incidentHistory = this,
       dataItem = dataItem,
@@ -45,6 +45,8 @@ class IncidentHistory(
     historyOfResponses.add(historicalResponse)
     return historicalResponse
   }
+
+  fun getIncident() = incident
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

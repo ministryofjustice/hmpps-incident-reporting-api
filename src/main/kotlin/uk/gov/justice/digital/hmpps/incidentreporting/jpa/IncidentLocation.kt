@@ -14,11 +14,13 @@ class IncidentLocation(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val incident: IncidentReport,
+  private val incident: IncidentReport,
 
   val locationType: String,
 
   val locationId: String,
 
   val locationDescription: String? = null,
-)
+) {
+  fun getIncident() = incident
+}

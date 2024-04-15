@@ -44,7 +44,7 @@ class IncidentReport(
   val prisonId: String,
 
   @Enumerated(EnumType.STRING)
-  val incidentType: IncidentType,
+  private var incidentType: IncidentType,
 
   var summary: String?,
   var incidentDetails: String,
@@ -77,9 +77,9 @@ class IncidentReport(
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val incidentCorrectionRequests: MutableList<IncidentCorrectionRequest> = mutableListOf(),
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  @OrderColumn(name = "sequence")
-  val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
+  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderColumn(name = "sequence", nullable = false)
+  private val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
 
   @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val history: MutableList<IncidentHistory> = mutableListOf(),
@@ -110,6 +110,16 @@ class IncidentReport(
 
   override fun hashCode(): Int {
     return incidentNumber.hashCode()
+  }
+
+  fun getIncidentData(): List<IncidentQuestion> = incidentResponses
+
+  fun getIncidentType() = incidentType
+
+  fun changeIncidentType(newIncidentType: IncidentType, changedDate: LocalDateTime, staffChanged: String) {
+    copyToHistory(changedDate, staffChanged)
+    incidentResponses.clear()
+    incidentType = newIncidentType
   }
 
   fun addEvidence(typeOfEvidence: String, evidenceDescription: String): Evidence {
@@ -171,7 +181,7 @@ class IncidentReport(
   fun addIncidentData(
     dataItem: String,
     dataItemDescription: String? = null,
-  ): IncidentResponse {
+  ): IncidentQuestion {
     val incidentResponse = IncidentResponse(
       incident = this,
       dataItem = dataItem,
@@ -191,6 +201,19 @@ class IncidentReport(
 
     history.add(incidentHistory)
     return incidentHistory
+  }
+
+  fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): IncidentHistory {
+    val history = addIncidentHistory(incidentType, changedDate, staffChanged)
+
+    getIncidentData().filterNotNull().forEach { question ->
+      val hr = history.addHistoricalResponse(question.dataItem, question.dataItemDescription)
+      question.getEvidence()?.let { hr.attachEvidence(it) }
+      question.getLocation()?.let { hr.attachLocation(it) }
+      question.getStaffInvolvement()?.let { hr.attachStaffInvolvement(it) }
+      question.getPrisonerInvolvement()?.let { hr.attachPrisonerInvolvement(it) }
+    }
+    return history
   }
 
   fun updateWith(upsert: NomisIncidentReport, updatedBy: String, clock: Clock) {

@@ -14,9 +14,11 @@ class Evidence(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val incident: IncidentReport,
+  private val incident: IncidentReport,
 
   val typeOfEvidence: String,
 
   val descriptionOfEvidence: String,
-)
+) {
+  fun getIncident() = incident
+}

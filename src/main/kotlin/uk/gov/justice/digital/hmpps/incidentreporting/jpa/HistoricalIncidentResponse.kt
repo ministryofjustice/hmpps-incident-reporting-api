@@ -6,10 +6,12 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.OrderColumn
+import jakarta.validation.ValidationException
 import org.hibernate.Hibernate
 import java.time.LocalDateTime
 
@@ -22,31 +24,31 @@ class HistoricalIncidentResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val incidentHistory: IncidentHistory,
 
-  val dataItem: String,
+  override val dataItem: String,
 
-  val dataItemDescription: String? = null,
+  override val dataItemDescription: String? = null,
 
-  @OneToMany(mappedBy = "incidentResponse", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
-  val responses: MutableList<HistoricalResponse> = mutableListOf(),
+  @JoinColumn(name = "incident_response_id", nullable = false)
+  private val responses: MutableList<HistoricalResponse> = mutableListOf(),
 
   @OneToOne(fetch = FetchType.LAZY)
-  val evidence: Evidence? = null,
+  private var evidence: Evidence? = null,
 
   @OneToOne(fetch = FetchType.LAZY)
-  val location: IncidentLocation? = null,
+  private var location: IncidentLocation? = null,
 
   @OneToOne(fetch = FetchType.LAZY)
-  val prisonerInvolvement: PrisonerInvolvement? = null,
+  private var prisonerInvolvement: PrisonerInvolvement? = null,
 
   @OneToOne(fetch = FetchType.LAZY)
-  val staffInvolvement: StaffInvolvement? = null,
+  private var staffInvolvement: StaffInvolvement? = null,
 
-) {
-  fun addDataItem(itemValue: String, additionalInformation: String? = null, recordedBy: String, recordedOn: LocalDateTime): HistoricalIncidentResponse {
+) : IncidentQuestion {
+  override fun addAnswer(itemValue: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): IncidentQuestion {
     responses.add(
       HistoricalResponse(
-        incidentResponse = this,
         itemValue = itemValue,
         recordedBy = recordedBy,
         recordedOn = recordedOn,
@@ -54,6 +56,42 @@ class HistoricalIncidentResponse(
       ),
     )
     return this
+  }
+
+  override fun getEvidence() = evidence
+
+  override fun getStaffInvolvement() = staffInvolvement
+
+  override fun getPrisonerInvolvement() = prisonerInvolvement
+
+  override fun getLocation() = location
+
+  override fun attachEvidence(evidence: Evidence) {
+    if (evidence.getIncident() != incidentHistory.getIncident()) {
+      throw ValidationException("Cannot attach evidence from a different incident report")
+    }
+    this.evidence = evidence
+  }
+
+  override fun attachStaffInvolvement(staffInvolvement: StaffInvolvement) {
+    if (staffInvolvement.getIncident() != incidentHistory.getIncident()) {
+      throw ValidationException("Cannot attach staff involvement from a different incident report")
+    }
+    this.staffInvolvement = staffInvolvement
+  }
+
+  override fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement) {
+    if (prisonerInvolvement.getIncident() != incidentHistory.getIncident()) {
+      throw ValidationException("Cannot attach prisoner involvement from a different incident report")
+    }
+    this.prisonerInvolvement = prisonerInvolvement
+  }
+
+  override fun attachLocation(location: IncidentLocation) {
+    if (location.getIncident() != incidentHistory.getIncident()) {
+      throw ValidationException("Cannot attach a location from a different incident report")
+    }
+    this.location = location
   }
 
   override fun equals(other: Any?): Boolean {

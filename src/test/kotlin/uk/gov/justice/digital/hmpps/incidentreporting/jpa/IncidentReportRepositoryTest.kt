@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
+import jakarta.persistence.EntityNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -37,7 +38,7 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
 
   @Test
   fun `create an incident report`() {
-    val incidentReport =
+    var incidentReport =
       reportRepository.save(
         IncidentReport(
           incidentNumber = reportRepository.generateIncidentReportNumber(),
@@ -69,32 +70,66 @@ class IncidentReportRepositoryTest : IntegrationTestBase() {
     incidentReport.addPrisonerInvolved("A1234AA", PrisonerRole.VICTIM)
     incidentReport.addIncidentLocation("MDI-1-1-1", "CELL", "Other stuff")
 
-    incidentReport.addIncidentData("WHERE_OCCURRED", "Where did this occur?")
-      .addDataItem("DETOX_UNIT", "They hurt themselves", "user1", now)
-      .addDataItem("CELL", "In the cell", "user1", now)
+    TestTransaction.flagForCommit()
+    TestTransaction.end()
+    TestTransaction.start()
+
+    incidentReport = reportRepository.findOneByIncidentNumber(incidentReport.incidentNumber) ?: throw EntityNotFoundException()
+
+    val incidentData1 = incidentReport.addIncidentData("WHERE_OCCURRED", "Where did this occur?")
+    incidentData1
+      .addAnswer("DETOX_UNIT", "They hurt themselves", "user1", now)
+      .addAnswer("CELL", "In the cell", "user1", now)
+
+    incidentData1.attachLocation(incidentReport.locations[0])
+    incidentData1.attachPrisonerInvolvement(incidentReport.prisonersInvolved[0])
+    incidentData1.attachStaffInvolvement(incidentReport.staffInvolved[0])
+    incidentData1.attachEvidence(incidentReport.evidence[0])
 
     incidentReport.addIncidentData("METHOD", "Method Used to hurt themselves?")
-      .addDataItem("KNIFE", "They used a knife", "user1", now)
-      .addDataItem("OTHER", "They used something else", "user1", now)
+      .addAnswer("KNIFE", "They used a knife", "user1", now)
+      .addAnswer("OTHER", "They used something else", "user1", now)
+
+    incidentReport.addIncidentData("BLAH", "Blah?")
+      .addAnswer("HEAD", "Head", "user1", now)
+      .addAnswer("ARM", "Arm", "user1", now)
 
     val before1 = now.minusMinutes(5)
     incidentReport.addIncidentHistory(IncidentType.FINDS, before1, "user2")
       .addHistoricalResponse("dataItem3", "dataItemDescription3")
-      .addDataItem("response1", "Some information", "user1", before1)
-      .addDataItem("response2", "Some information", "user1", before1)
-      .addDataItem("response3", "Some information", "user1", before1)
+      .addAnswer("response1", "Some information", "user1", before1)
+      .addAnswer("response2", "Some information", "user1", before1)
+      .addAnswer("response3", "Some information", "user1", before1)
 
     val before2 = now.minusMinutes(2)
     incidentReport.addIncidentHistory(IncidentType.ASSAULT, before2, "user1")
       .addHistoricalResponse("dataItem1", "dataItemDescription1")
-      .addDataItem("response1", "Some information", "user1", before2)
-      .addDataItem("response2", "Some information", "user1", before2)
+      .addAnswer("response1", "Some information", "user1", before2)
+      .addAnswer("response2", "Some information", "user1", before2)
 
     TestTransaction.flagForCommit()
     TestTransaction.end()
     TestTransaction.start()
 
-    val ir1 = reportRepository.findOneByIncidentNumber(incidentReport.incidentNumber)
-    assertThat(ir1).isNotNull
+    incidentReport = reportRepository.findOneByIncidentNumber(incidentReport.incidentNumber) ?: throw EntityNotFoundException()
+    incidentReport.changeIncidentType(IncidentType.ASSAULT, LocalDateTime.now(clock), "user5")
+
+    incidentReport.addIncidentData("SOME_QUESTION", "Another question?")
+      .addAnswer("YES", "Yes", "user1", now)
+      .addAnswer("NO", "No", "user1", now)
+      .addAnswer("MAYBE", "Maybe", "user1", now)
+      .addAnswer("OTHER", "Other", "user1", now)
+
+    TestTransaction.flagForCommit()
+    TestTransaction.end()
+    TestTransaction.start()
+
+    incidentReport = reportRepository.findOneByIncidentNumber(incidentReport.incidentNumber) ?: throw EntityNotFoundException()
+    assertThat(incidentReport).isNotNull
+
+    assertThat(incidentReport.getIncidentType()).isEqualTo(IncidentType.ASSAULT)
+    assertThat(incidentReport.getIncidentData()).hasSize(1)
+    assertThat(incidentReport.history).hasSize(3)
+    assertThat(incidentReport.history[2].historyOfResponses).hasSize(3)
   }
 }

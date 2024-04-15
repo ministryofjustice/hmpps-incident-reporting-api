@@ -75,7 +75,7 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
       .sortedBy { it.sequence }
       .filter { it.answer != null }
       .forEach { answer ->
-        dataItem.addDataItem(
+        dataItem.addAnswer(
           itemValue = answer.answer!!,
           additionalInformation = answer.comment,
           recordedBy = answer.recordingStaff.username,
@@ -100,7 +100,7 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
         .sortedBy { it.responseSequence }
         .filter { it.answer != null }
         .forEach { answer ->
-          dataItem.addDataItem(
+          dataItem.addAnswer(
             itemValue = answer.answer!!,
             additionalInformation = answer.comment,
             recordedBy = answer.recordingStaff.username,

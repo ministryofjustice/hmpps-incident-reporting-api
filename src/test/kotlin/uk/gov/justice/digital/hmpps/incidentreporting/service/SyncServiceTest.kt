@@ -123,7 +123,7 @@ class SyncServiceTest {
     return report.id == expectedId &&
       report.incidentNumber == sampleReport.incidentNumber &&
       report.incidentDateAndTime == sampleReport.incidentDateAndTime &&
-      report.incidentType == sampleReport.incidentType &&
+      report.getIncidentType() == sampleReport.getIncidentType() &&
       report.summary == sampleReport.summary &&
       report.incidentDetails == sampleReport.incidentDetails &&
       report.prisonId == sampleReport.prisonId &&
