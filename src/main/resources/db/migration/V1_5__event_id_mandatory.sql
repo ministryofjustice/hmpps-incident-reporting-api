@@ -1,1 +1,0 @@
-alter table incident_report alter column event_id set not null;
