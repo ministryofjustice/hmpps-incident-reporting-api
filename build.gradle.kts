@@ -22,7 +22,7 @@ dependencies {
 
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:3.1.2")
   implementation("io.opentelemetry:opentelemetry-api:1.37.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.2.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.3.0")
 
   implementation("org.flywaydb:flyway-core")
   implementation("com.zaxxer:HikariCP:5.1.0")
@@ -36,7 +36,7 @@ dependencies {
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.5.2")
+  testImplementation("org.wiremock:wiremock-standalone:3.5.3")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
