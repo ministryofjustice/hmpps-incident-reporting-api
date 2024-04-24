@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.model.nomis
 
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.CorrectionReason
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentEvent
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.convertIncidentType
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.mapIncidentStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.mapPrisonerOutcome
@@ -12,14 +12,14 @@ import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
 
-fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
-  val ir = IncidentReport(
+fun NomisIncidentReport.toNewEntity(clock: Clock): Report {
+  val report = Report(
     incidentNumber = "$incidentId",
-    incidentType = convertIncidentType(type),
+    type = convertIncidentType(type),
     incidentDateAndTime = incidentDateTime,
     prisonId = prison.code,
-    summary = title,
-    incidentDetails = description ?: "NO DETAILS GIVEN",
+    title = title ?: "NO DETAILS GIVEN",
+    description = description ?: "NO DETAILS GIVEN",
     reportedBy = reportingStaff.username,
     reportedDate = reportedDateTime,
     status = mapIncidentStatus(status.code),
@@ -29,11 +29,12 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
     lastModifiedBy = reportingStaff.username,
     source = InformationSource.NOMIS,
     assignedTo = reportingStaff.username,
-    event = IncidentEvent(
+    event = Event(
       eventId = "$incidentId",
       eventDateAndTime = incidentDateTime,
       prisonId = prison.code,
-      eventDetails = description ?: "NO DETAILS GIVEN",
+      title = title ?: "NO DETAILS GIVEN",
+      description = description ?: "NO DETAILS GIVEN",
       createdDate = LocalDateTime.now(clock),
       lastModifiedDate = LocalDateTime.now(clock),
       lastModifiedBy = reportingStaff.username,
@@ -41,7 +42,7 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
   )
 
   staffParties.forEach {
-    ir.addStaffInvolved(
+    report.addStaffInvolved(
       staffRole = mapStaffRole(it.role.code),
       username = it.staff.username,
       comment = it.comment,
@@ -49,7 +50,7 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
   }
 
   offenderParties.forEach {
-    ir.addPrisonerInvolved(
+    report.addPrisonerInvolved(
       prisonerNumber = it.offender.offenderNo,
       prisonerInvolvement = mapPrisonerRole(it.role.code),
       prisonerOutcome = it.outcome?.let { prisonerOutcome -> mapPrisonerOutcome(prisonerOutcome.code) },
@@ -58,56 +59,56 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): IncidentReport {
   }
 
   requirements.forEach {
-    ir.addCorrectionRequest(
+    report.addCorrectionRequest(
       correctionRequestedBy = it.staff.username,
       correctionRequestedAt = it.date.atStartOfDay(),
-      descriptionOfChange = it.comment,
+      descriptionOfChange = it.comment ?: "NO DETAILS GIVEN",
       reason = CorrectionReason.OTHER,
     )
   }
 
   questions.sortedBy { it.sequence }.forEach { question ->
-    val dataItem = ir.addIncidentData(
+    val dataItem = report.addQuestion(
       dataItem = "QID-%012d".format(question.questionId),
       dataItemDescription = question.question,
     )
     question.answers
-      .sortedBy { it.sequence }
       .filter { it.answer != null }
+      .sortedBy { it.sequence }
       .forEach { answer ->
-        dataItem.addAnswer(
+        dataItem.addResponse(
           itemValue = answer.answer!!,
           additionalInformation = answer.comment,
           recordedBy = answer.recordingStaff.username,
-          recordedOn = ir.reportedDate,
+          recordedOn = report.reportedDate,
         )
       }
   }
 
   history.forEach { history ->
-    val historyRecord = ir.addIncidentHistory(
-      incidentType = convertIncidentType(history.type),
+    val historyRecord = report.addHistory(
+      type = convertIncidentType(history.type),
       incidentChangeDate = history.incidentChangeDate.atStartOfDay(),
       staffChanged = history.incidentChangeStaff.username,
     )
 
     history.questions.sortedBy { it.sequence }.forEach { question ->
-      val dataItem = historyRecord.addHistoricalResponse(
+      val dataItem = historyRecord.addQuestion(
         dataItem = "QID-%012d".format(question.questionId),
         dataItemDescription = question.question,
       )
       question.answers
-        .sortedBy { it.responseSequence }
         .filter { it.answer != null }
+        .sortedBy { it.responseSequence }
         .forEach { answer ->
-          dataItem.addAnswer(
+          dataItem.addResponse(
             itemValue = answer.answer!!,
             additionalInformation = answer.comment,
             recordedBy = answer.recordingStaff.username,
-            recordedOn = ir.reportedDate,
+            recordedOn = report.reportedDate,
           )
         }
     }
   }
-  return ir
+  return report
 }

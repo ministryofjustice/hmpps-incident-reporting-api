@@ -29,7 +29,7 @@ class SnsService(hmppsQueueService: HmppsQueueService, private val objectMapper:
 
   @WithSpan(value = "hmpps-domain-events-topic", kind = SpanKind.PRODUCER)
   fun publishDomainEvent(
-    eventType: IncidentReportDomainEventType,
+    eventType: ReportDomainEventType,
     description: String,
     occurredAt: LocalDateTime,
     additionalInformation: AdditionalInformation? = null,
@@ -87,7 +87,7 @@ data class HMPPSDomainEvent(
   )
 }
 
-enum class IncidentReportDomainEventType(val value: String, val description: String, val auditType: AuditType) {
+enum class ReportDomainEventType(val value: String, val description: String, val auditType: AuditType) {
   INCIDENT_REPORT_CREATED(
     "incident.report.created",
     "An incident report has been created",

@@ -9,15 +9,12 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.EventDetail
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event
 import java.io.Serializable
 import java.time.LocalDateTime
 
 @Entity
-class IncidentEvent(
-
+class Event(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
@@ -32,30 +29,26 @@ class IncidentEvent(
 
   val eventDateAndTime: LocalDateTime,
   val prisonId: String,
-  var eventDetails: String,
+
+  var title: String,
+  var description: String,
 
   @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val incidents: MutableList<IncidentReport> = mutableListOf(),
+  val reports: MutableList<Report> = mutableListOf(),
 
   val createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
-
 ) : Serializable {
-
-  companion object {
-    val log: Logger = LoggerFactory.getLogger(this::class.java)
-  }
-
-  fun addIncidentReport(incidentReport: IncidentReport): IncidentReport {
-    return incidents.add(incidentReport).let { incidentReport }
+  fun addReport(report: Report): Report {
+    return reports.add(report).let { report }
   }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
-    other as IncidentEvent
+    other as Event
 
     return eventId == other.eventId
   }
@@ -64,10 +57,11 @@ class IncidentEvent(
     return eventId.hashCode()
   }
 
-  fun toDto() = EventDetail(
+  fun toDto() = Event(
     eventId = eventId,
     prisonId = prisonId,
     eventDateAndTime = eventDateAndTime,
-    eventDetails = eventDetails,
+    title = title,
+    description = description,
   )
 }

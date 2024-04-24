@@ -1,27 +1,27 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.helper
 
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentEvent
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.LocalDateTime
 
 fun buildIncidentReport(
-  incidentType: IncidentType = IncidentType.FINDS,
+  type: Type = Type.FINDS,
   reportingUsername: String = "USER1",
   prisonId: String = "MDI",
   reportTime: LocalDateTime,
   incidentNumber: String,
   source: InformationSource = InformationSource.DPS,
-): IncidentReport {
+): Report {
   val eventDateAndTime = reportTime.minusHours(1)
-  return IncidentReport(
+  return Report(
     incidentNumber = incidentNumber,
     prisonId = prisonId,
     incidentDateAndTime = eventDateAndTime,
-    incidentType = incidentType,
-    summary = "Incident Report $incidentNumber",
-    incidentDetails = "A new incident created in the new service of type ${incidentType.description}",
+    type = type,
+    title = "Incident Report $incidentNumber",
+    description = "A new incident created in the new service of type ${type.description}",
     reportedDate = reportTime,
     createdDate = reportTime,
     lastModifiedDate = reportTime,
@@ -29,14 +29,15 @@ fun buildIncidentReport(
     assignedTo = reportingUsername,
     lastModifiedBy = reportingUsername,
     source = source,
-    event = IncidentEvent(
+    event = Event(
       eventId = when (source) {
         InformationSource.DPS -> "IE-${incidentNumber.removePrefix("IR-")}"
         InformationSource.NOMIS -> incidentNumber
       },
       eventDateAndTime = eventDateAndTime,
       prisonId = prisonId,
-      eventDetails = "An event occurred",
+      title = "An event occurred",
+      description = "Details of the event",
       createdDate = reportTime,
       lastModifiedDate = reportTime,
       lastModifiedBy = reportingUsername,

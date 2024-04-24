@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import jakarta.validation.ValidationException
 
-enum class IncidentStatus {
+enum class Status {
   DRAFT,
   AWAITING_ANALYSIS,
   IN_ANALYSIS,
@@ -16,13 +16,13 @@ enum class IncidentStatus {
 
 fun mapIncidentStatus(code: String) =
   when (code) {
-    "AWAN" -> IncidentStatus.AWAITING_ANALYSIS
-    "INAN" -> IncidentStatus.IN_ANALYSIS
-    "INREQ" -> IncidentStatus.INFORMATION_REQUIRED
-    "INAME" -> IncidentStatus.INFORMATION_AMENDED
-    "CLOSE" -> IncidentStatus.CLOSED
-    "PIU" -> IncidentStatus.POST_INCIDENT_UPDATE
-    "IUP" -> IncidentStatus.INCIDENT_UPDATED
-    "DUP" -> IncidentStatus.DUPLICATE
+    "AWAN" -> Status.AWAITING_ANALYSIS
+    "INAN" -> Status.IN_ANALYSIS
+    "INREQ" -> Status.INFORMATION_REQUIRED
+    "INAME" -> Status.INFORMATION_AMENDED
+    "CLOSE" -> Status.CLOSED
+    "PIU" -> Status.POST_INCIDENT_UPDATE
+    "IUP" -> Status.INCIDENT_UPDATED
+    "DUP" -> Status.DUPLICATE
     else -> throw ValidationException("Unknown incident status: $code")
   }

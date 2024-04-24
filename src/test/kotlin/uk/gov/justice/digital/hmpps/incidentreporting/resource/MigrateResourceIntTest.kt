@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentEventRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.CodeDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.History
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.HistoryQuestion
@@ -44,19 +44,19 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
   }
 
   @Autowired
-  lateinit var reportRepository: IncidentReportRepository
+  lateinit var reportRepository: ReportRepository
 
   @Autowired
-  lateinit var eventRepository: IncidentEventRepository
+  lateinit var eventRepository: EventRepository
 
-  lateinit var existingNomisIncident: IncidentReport
+  lateinit var existingNomisReport: Report
 
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
     eventRepository.deleteAll()
 
-    existingNomisIncident = reportRepository.save(
+    existingNomisReport = reportRepository.save(
       buildIncidentReport(
         incidentNumber = "$INCIDENT_NUMBER",
         reportTime = LocalDateTime.now(clock),
@@ -67,9 +67,9 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
 
   @DisplayName("POST /sync/upsert")
   @Nested
-  inner class MigrateIncidentReport {
+  inner class MigrateReport {
     private val reportingStaff = Staff("user2", 121, "John", "Smith")
-    val syncRequest = UpsertNomisIncident(
+    val syncRequest = NomisSyncRequest(
       initialMigration = false,
       incidentReport = NomisIncidentReport(
         incidentId = INCIDENT_NUMBER,
@@ -251,16 +251,17 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
             """ 
             {
               "incidentNumber": "112414666",
-              "incidentType": "SELF_HARM",
+              "type": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "summary": "An incident occurred updated",
-              "incidentDetails": "A New Incident From NOMIS",
+              "title": "An incident occurred updated",
+              "description": "A New Incident From NOMIS",
               "event": {
                 "eventId": "112414666",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "eventDetails": "A New Incident From NOMIS"
+                "title": "An incident occurred updated",
+                "description": "A New Incident From NOMIS"
               },
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",
@@ -298,16 +299,17 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
             """ 
             {
               "incidentNumber": "$newIncidentId",
-              "incidentType": "ASSAULT",
+              "type": "ASSAULT",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "summary": "An incident occurred updated",
-              "incidentDetails": "New NOMIS incident",
+              "title": "An incident occurred updated",
+              "description": "New NOMIS incident",
               "event": {
                 "eventId": "$newIncidentId",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "eventDetails": "New NOMIS incident"
+                "title": "An incident occurred updated",
+                "description": "New NOMIS incident"
               },
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",
@@ -333,7 +335,7 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
       fun `can sync an update to an existing incident created in NOMIS`() {
         val upsertMigration = syncRequest.copy(
           initialMigration = false,
-          id = existingNomisIncident.id,
+          id = existingNomisReport.id,
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = INCIDENT_NUMBER,
             description = "Updated details",
@@ -349,18 +351,19 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
             // language=json
             """ 
              {
-              "id": "${existingNomisIncident.id}",
+              "id": "${existingNomisReport.id}",
               "incidentNumber": "$INCIDENT_NUMBER",
-              "incidentType": "FINDS",
+              "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "summary": "An incident occurred updated",
-              "incidentDetails": "Updated details",
+              "title": "An incident occurred updated",
+              "description": "Updated details",
               "event": {
                 "eventId": "$INCIDENT_NUMBER",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "eventDetails": "An event occurred"
+                "title": "An event occurred",
+                "description": "Details of the event"
               },
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
@@ -377,7 +380,7 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
 
         getDomainEvents(1).let {
           assertThat(it.map { message -> message.eventType to Pair(message.additionalInformation?.id, message.additionalInformation?.source) }).containsExactlyInAnyOrder(
-            "incident.report.amended" to Pair(existingNomisIncident.id, InformationSource.NOMIS),
+            "incident.report.amended" to Pair(existingNomisReport.id, InformationSource.NOMIS),
           )
         }
       }

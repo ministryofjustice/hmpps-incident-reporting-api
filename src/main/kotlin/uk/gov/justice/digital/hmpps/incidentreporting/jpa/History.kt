@@ -14,57 +14,56 @@ import org.hibernate.Hibernate
 import java.time.LocalDateTime
 
 @Entity
-class IncidentHistory(
+class History(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private val incident: IncidentReport,
+  private val report: Report,
 
   @Enumerated(EnumType.STRING)
-  val incidentType: IncidentType,
+  val type: Type,
 
-  val incidentChangeDate: LocalDateTime,
+  val changeDate: LocalDateTime,
+  val changeStaffUsername: String,
 
-  val incidentChangeStaffUsername: String,
-
-  @OneToMany(mappedBy = "incidentHistory", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val historyOfResponses: MutableList<HistoricalIncidentResponse> = mutableListOf(),
+  @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  val questions: MutableList<HistoricalQuestion> = mutableListOf(),
 ) {
 
-  fun addHistoricalResponse(
+  fun addQuestion(
     dataItem: String,
     dataItemDescription: String? = null,
-  ): GenericQuestion {
-    val historicalResponse = HistoricalIncidentResponse(
-      incidentHistory = this,
+  ): HistoricalQuestion {
+    val historicalQuestion = HistoricalQuestion(
+      history = this,
       dataItem = dataItem,
       dataItemDescription = dataItemDescription,
     )
-    historyOfResponses.add(historicalResponse)
-    return historicalResponse
+    questions.add(historicalQuestion)
+    return historicalQuestion
   }
 
-  fun getIncident() = incident
+  fun getReport() = report
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
-    other as IncidentHistory
+    other as History
 
-    if (incident != other.incident) return false
-    if (incidentType != other.incidentType) return false
-    if (incidentChangeDate != other.incidentChangeDate) return false
+    if (report != other.report) return false
+    if (type != other.type) return false
+    if (changeDate != other.changeDate) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = incident.hashCode()
-    result = 31 * result + incidentType.hashCode()
-    result = 31 * result + incidentChangeDate.hashCode()
+    var result = report.hashCode()
+    result = 31 * result + type.hashCode()
+    result = 31 * result + changeDate.hashCode()
     return result
   }
 }

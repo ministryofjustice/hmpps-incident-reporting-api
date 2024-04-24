@@ -13,18 +13,16 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.io.Serializable
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDTO
 
 @Entity
-class IncidentReport(
+class Report(
   @Id
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -44,66 +42,60 @@ class IncidentReport(
   val prisonId: String,
 
   @Enumerated(EnumType.STRING)
-  private var incidentType: IncidentType,
+  private var type: Type,
 
-  var summary: String?,
-  var incidentDetails: String,
+  var title: String,
+  var description: String,
 
   val reportedBy: String,
   val reportedDate: LocalDateTime,
   @Enumerated(EnumType.STRING)
-  var status: IncidentStatus = IncidentStatus.DRAFT,
+  var status: Status = Status.DRAFT,
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
-  val event: IncidentEvent,
+  val event: Event,
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
   val assignedTo: String,
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val staffInvolved: MutableList<StaffInvolvement> = mutableListOf(),
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val prisonersInvolved: MutableList<PrisonerInvolvement> = mutableListOf(),
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val locations: MutableList<IncidentLocation> = mutableListOf(),
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  val locations: MutableList<Location> = mutableListOf(),
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val evidence: MutableList<Evidence> = mutableListOf(),
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val incidentCorrectionRequests: MutableList<IncidentCorrectionRequest> = mutableListOf(),
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  val correctionRequests: MutableList<CorrectionRequest> = mutableListOf(),
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
-  private val incidentResponses: MutableList<IncidentResponse> = mutableListOf(),
+  private val questions: MutableList<Question> = mutableListOf(),
 
-  @OneToMany(mappedBy = "incident", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  val history: MutableList<IncidentHistory> = mutableListOf(),
+  val questionSetId: String? = null,
+
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  val history: MutableList<History> = mutableListOf(),
 
   @Enumerated(EnumType.STRING)
   val source: InformationSource = InformationSource.DPS,
 
-  val questionSetId: String? = null,
-
   val createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
-
 ) : Serializable {
-
-  companion object {
-    val log: Logger = LoggerFactory.getLogger(this::class.java)
-  }
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
-    other as IncidentReport
+    other as Report
 
     return incidentNumber == other.incidentNumber
   }
@@ -112,25 +104,25 @@ class IncidentReport(
     return incidentNumber.hashCode()
   }
 
-  fun getIncidentData(): List<GenericQuestion> = incidentResponses
+  fun getQuestions(): List<Question> = questions
 
-  fun getIncidentType() = incidentType
+  fun getType() = type
 
-  fun changeIncidentType(newIncidentType: IncidentType, changedDate: LocalDateTime, staffChanged: String) {
+  fun changeType(newType: Type, changedDate: LocalDateTime, staffChanged: String) {
     copyToHistory(changedDate, staffChanged)
-    incidentResponses.clear()
-    incidentType = newIncidentType
+    questions.clear()
+    type = newType
   }
 
-  fun addEvidence(typeOfEvidence: String, evidenceDescription: String): Evidence {
+  fun addEvidence(type: String, description: String): Evidence {
     val evidenceItem =
-      Evidence(incident = this, typeOfEvidence = typeOfEvidence, descriptionOfEvidence = evidenceDescription)
+      Evidence(report = this, type = type, description = description)
     evidence.add(evidenceItem)
     return evidenceItem
   }
 
   fun addStaffInvolved(staffRole: StaffRole, username: String, comment: String? = null): StaffInvolvement {
-    val staff = StaffInvolvement(incident = this, staffUsername = username, staffRole = staffRole, comment = comment)
+    val staff = StaffInvolvement(report = this, staffUsername = username, staffRole = staffRole, comment = comment)
     staffInvolved.add(staff)
     return staff
   }
@@ -142,7 +134,7 @@ class IncidentReport(
     comment: String? = null,
   ): PrisonerInvolvement {
     val prisoner = PrisonerInvolvement(
-      incident = this,
+      report = this,
       prisonerNumber = prisonerNumber,
       prisonerInvolvement = prisonerInvolvement,
       outcome = prisonerOutcome,
@@ -152,87 +144,91 @@ class IncidentReport(
     return prisoner
   }
 
-  fun addIncidentLocation(
+  fun addLocation(
     locationId: String,
     locationType: String,
-    locationDescription: String? = null,
-  ): IncidentLocation {
-    val incidentLocation = IncidentLocation(
-      incident = this,
+    description: String,
+  ): Location {
+    val location = Location(
+      report = this,
       locationId = locationId,
-      locationType = locationType,
-      locationDescription = locationDescription,
+      type = locationType,
+      description = description,
     )
-    locations.add(incidentLocation)
-    return incidentLocation
+    locations.add(location)
+    return location
   }
 
-  fun addCorrectionRequest(correctionRequestedBy: String, correctionRequestedAt: LocalDateTime, reason: CorrectionReason, descriptionOfChange: String?) {
-    val correctionRequest = IncidentCorrectionRequest(
-      incident = this,
+  fun addCorrectionRequest(
+    correctionRequestedBy: String,
+    correctionRequestedAt: LocalDateTime,
+    reason: CorrectionReason,
+    descriptionOfChange: String,
+  ): CorrectionRequest {
+    val correctionRequest = CorrectionRequest(
+      report = this,
       correctionRequestedBy = correctionRequestedBy,
       correctionRequestedAt = correctionRequestedAt,
       reason = reason,
       descriptionOfChange = descriptionOfChange,
     )
-    incidentCorrectionRequests.add(correctionRequest)
+    correctionRequests.add(correctionRequest)
+    return correctionRequest
   }
 
-  fun addIncidentData(
+  fun addQuestion(
     dataItem: String,
     dataItemDescription: String? = null,
-  ): GenericQuestion {
-    val incidentResponse = IncidentResponse(
-      incident = this,
+  ): Question {
+    val question = Question(
+      report = this,
       dataItem = dataItem,
       dataItemDescription = dataItemDescription,
     )
-    incidentResponses.add(incidentResponse)
-    return incidentResponse
+    questions.add(question)
+    return question
   }
 
-  fun addIncidentHistory(incidentType: IncidentType, incidentChangeDate: LocalDateTime, staffChanged: String): IncidentHistory {
-    val incidentHistory = IncidentHistory(
-      incident = this,
-      incidentType = incidentType,
-      incidentChangeDate = incidentChangeDate,
-      incidentChangeStaffUsername = staffChanged,
+  fun addHistory(type: Type, incidentChangeDate: LocalDateTime, staffChanged: String): History {
+    val historyItem = History(
+      report = this,
+      type = type,
+      changeDate = incidentChangeDate,
+      changeStaffUsername = staffChanged,
     )
-
-    history.add(incidentHistory)
-    return incidentHistory
+    history.add(historyItem)
+    return historyItem
   }
 
-  fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): IncidentHistory {
-    val history = addIncidentHistory(incidentType, changedDate, staffChanged)
-
-    getIncidentData().filterNotNull().forEach { question ->
-      val hr = history.addHistoricalResponse(question.dataItem, question.dataItemDescription)
-      question.getEvidence()?.let { hr.attachEvidence(it) }
-      question.getLocation()?.let { hr.attachLocation(it) }
-      question.getStaffInvolvement()?.let { hr.attachStaffInvolvement(it) }
-      question.getPrisonerInvolvement()?.let { hr.attachPrisonerInvolvement(it) }
+  fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
+    val history = addHistory(type, changedDate, staffChanged)
+    getQuestions().filterNotNull().forEach { question ->
+      val historicalQuestion = history.addQuestion(question.dataItem, question.dataItemDescription)
+      question.getEvidence()?.let { historicalQuestion.attachEvidence(it) }
+      question.getLocation()?.let { historicalQuestion.attachLocation(it) }
+      question.getStaffInvolvement()?.let { historicalQuestion.attachStaffInvolvement(it) }
+      question.getPrisonerInvolvement()?.let { historicalQuestion.attachPrisonerInvolvement(it) }
     }
     return history
   }
 
   fun updateWith(upsert: NomisIncidentReport, updatedBy: String, clock: Clock) {
-    this.incidentDetails = upsert.description ?: "NO DETAILS GIVEN"
+    this.title = upsert.title ?: "NO DETAILS GIVEN"
+    this.description = upsert.description ?: "NO DETAILS GIVEN"
     this.status = mapIncidentStatus(upsert.status.code)
-    this.summary = upsert.title
     this.lastModifiedBy = updatedBy
     this.lastModifiedDate = LocalDateTime.now(clock)
   }
 
-  fun toDto(): IncidentReportDTO =
-    IncidentReportDTO(
+  fun toDto(): ReportDTO =
+    ReportDTO(
       id = this.id!!,
       incidentNumber = this.incidentNumber,
       incidentDateAndTime = this.incidentDateAndTime,
       prisonId = this.prisonId,
-      incidentType = this.incidentType,
-      summary = this.summary,
-      incidentDetails = this.incidentDetails,
+      type = this.type,
+      title = this.title,
+      description = this.description,
       reportedBy = this.reportedBy,
       reportedDate = this.reportedDate,
       status = this.status,

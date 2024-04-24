@@ -16,13 +16,13 @@ import org.hibernate.Hibernate
 import java.time.LocalDateTime
 
 @Entity
-class HistoricalIncidentResponse(
+class Question(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val incidentHistory: IncidentHistory,
+  private val report: Report,
 
   override val dataItem: String,
 
@@ -30,14 +30,14 @@ class HistoricalIncidentResponse(
 
   @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
-  @JoinColumn(name = "incident_response_id", nullable = false)
-  private val responses: MutableList<HistoricalResponse> = mutableListOf(),
+  @JoinColumn(name = "question_id", nullable = false)
+  private val responses: MutableList<Response> = mutableListOf(),
 
   @OneToOne(fetch = FetchType.LAZY)
   private var evidence: Evidence? = null,
 
   @OneToOne(fetch = FetchType.LAZY)
-  private var location: IncidentLocation? = null,
+  private var location: Location? = null,
 
   @OneToOne(fetch = FetchType.LAZY)
   private var prisonerInvolvement: PrisonerInvolvement? = null,
@@ -47,9 +47,11 @@ class HistoricalIncidentResponse(
 
 ) : GenericQuestion {
 
-  override fun addAnswer(itemValue: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): HistoricalIncidentResponse {
+  fun getReport() = report
+
+  override fun addResponse(itemValue: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): Question {
     responses.add(
-      HistoricalResponse(
+      Response(
         itemValue = itemValue,
         recordedBy = recordedBy,
         recordedOn = recordedOn,
@@ -61,59 +63,63 @@ class HistoricalIncidentResponse(
 
   override fun getLocation() = location
 
-  override fun attachLocation(location: IncidentLocation) {
-    if (location.getIncident() != incidentHistory.getIncident()) {
+  override fun attachLocation(location: Location): Question {
+    if (location.getReport() != getReport()) {
       throw ValidationException("Cannot attach a location from a different incident report")
     }
     this.location = location
+    return this
   }
 
   override fun getPrisonerInvolvement() = prisonerInvolvement
 
-  override fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement) {
-    if (prisonerInvolvement.getIncident() != incidentHistory.getIncident()) {
+  override fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement): Question {
+    if (prisonerInvolvement.getReport() != getReport()) {
       throw ValidationException("Cannot attach prisoner involvement from a different incident report")
     }
     this.prisonerInvolvement = prisonerInvolvement
+    return this
   }
 
   override fun getStaffInvolvement() = staffInvolvement
 
-  override fun attachStaffInvolvement(staffInvolvement: StaffInvolvement) {
-    if (staffInvolvement.getIncident() != incidentHistory.getIncident()) {
+  override fun attachStaffInvolvement(staffInvolvement: StaffInvolvement): Question {
+    if (staffInvolvement.getReport() != getReport()) {
       throw ValidationException("Cannot attach staff involvement from a different incident report")
     }
     this.staffInvolvement = staffInvolvement
+    return this
   }
 
   override fun getEvidence() = evidence
 
-  override fun attachEvidence(evidence: Evidence) {
-    if (evidence.getIncident() != incidentHistory.getIncident()) {
+  override fun attachEvidence(evidence: Evidence): Question {
+    if (evidence.getReport() != getReport()) {
       throw ValidationException("Cannot attach evidence from a different incident report")
     }
     this.evidence = evidence
+    return this
   }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
-    other as HistoricalIncidentResponse
+    other as Question
 
-    if (incidentHistory != other.incidentHistory) return false
+    if (report != other.report) return false
     if (dataItem != other.dataItem) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = incidentHistory.hashCode()
+    var result = report.hashCode()
     result = 31 * result + dataItem.hashCode()
     return result
   }
 
   override fun toString(): String {
-    return "HistoricalIncidentResponse(dataItem='$dataItem', responses=$responses)"
+    return "Question(dataItem='$dataItem', responses=$responses)"
   }
 }

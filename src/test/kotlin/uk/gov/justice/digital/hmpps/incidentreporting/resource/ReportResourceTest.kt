@@ -9,18 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateIncidentReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentEventRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
 
-class IncidentReportResourceTest : SqsIntegrationTestBase() {
+class ReportResourceTest : SqsIntegrationTestBase() {
 
   @TestConfiguration
   class FixedClockConfig {
@@ -30,19 +30,19 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
   }
 
   @Autowired
-  lateinit var reportRepository: IncidentReportRepository
+  lateinit var reportRepository: ReportRepository
 
   @Autowired
-  lateinit var eventRepository: IncidentEventRepository
+  lateinit var eventRepository: EventRepository
 
-  lateinit var existingIncident: IncidentReport
+  lateinit var existingReport: Report
 
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
     eventRepository.deleteAll()
 
-    existingIncident = reportRepository.save(
+    existingReport = reportRepository.save(
       buildIncidentReport(
         incidentNumber = "IR-0000000001124143",
         reportTime = LocalDateTime.now(clock),
@@ -52,20 +52,20 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("GET /incident-reports/{id}")
   @Nested
-  inner class GetIncidentReport {
+  inner class GetReport {
 
     @Nested
     inner class Security {
       @Test
       fun `access forbidden when no authority`() {
-        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+        webTestClient.get().uri("/incident-reports/${existingReport.id}")
           .exchange()
           .expectStatus().isUnauthorized
       }
 
       @Test
       fun `access forbidden when no role`() {
-        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+        webTestClient.get().uri("/incident-reports/${existingReport.id}")
           .headers(setAuthorisation(roles = listOf()))
           .header("Content-Type", "application/json")
           .exchange()
@@ -74,7 +74,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
 
       @Test
       fun `access forbidden with wrong role`() {
-        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+        webTestClient.get().uri("/incident-reports/${existingReport.id}")
           .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -83,7 +83,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
 
       @Test
       fun `access forbidden with right role, wrong scope`() {
-        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+        webTestClient.get().uri("/incident-reports/${existingReport.id}")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -95,7 +95,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
     inner class HappyPath {
       @Test
       fun `can get an incident by ID`() {
-        webTestClient.get().uri("/incident-reports/${existingIncident.id}")
+        webTestClient.get().uri("/incident-reports/${existingReport.id}")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -104,18 +104,19 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
             // language=json
             """ 
             {
-              "id": "${existingIncident.id}",
+              "id": "${existingReport.id}",
               "incidentNumber": "IR-0000000001124143",
-              "incidentType": "FINDS",
+              "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "summary": "Incident Report IR-0000000001124143",
-              "incidentDetails": "A new incident created in the new service of type Finds",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
               "event": {
                 "eventId": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "eventDetails": "An event occurred"
+                "title": "An event occurred",
+                "description": "Details of the event"
               },
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
@@ -133,7 +134,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
 
       @Test
       fun `can get an incident by incident number`() {
-        webTestClient.get().uri("/incident-reports/incident-number/${existingIncident.incidentNumber}")
+        webTestClient.get().uri("/incident-reports/incident-number/${existingReport.incidentNumber}")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -142,18 +143,19 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
             // language=json
             """ 
             {
-              "id": "${existingIncident.id}",
+              "id": "${existingReport.id}",
               "incidentNumber": "IR-0000000001124143",
-              "incidentType": "FINDS",
+              "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "summary": "Incident Report IR-0000000001124143",
-              "incidentDetails": "A new incident created in the new service of type Finds",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
               "event": {
                 "eventId": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "eventDetails": "An event occurred"
+                "title": "An event occurred",
+                "description": "Details of the event"
               },
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
@@ -173,12 +175,13 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("POST /incident-reports")
   @Nested
-  inner class CreateIncidentReport {
+  inner class CreateReport {
 
-    val createIncidentReportRequest = CreateIncidentReportRequest(
+    val createReportRequest = CreateReportRequest(
       incidentDateAndTime = LocalDateTime.now(clock).minusHours(1),
-      incidentDetails = "An incident occurred",
-      incidentType = IncidentType.SELF_HARM,
+      title = "An incident occurred",
+      description = "Longer explanation of incident",
+      type = Type.SELF_HARM,
       prisonId = "MDI",
       reportedBy = "user2",
       reportedDate = LocalDateTime.now(clock),
@@ -199,7 +202,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/incident-reports")
           .headers(setAuthorisation(roles = listOf()))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createIncidentReportRequest))
+          .bodyValue(jsonString(createReportRequest))
           .exchange()
           .expectStatus().isForbidden
       }
@@ -209,7 +212,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/incident-reports")
           .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createIncidentReportRequest))
+          .bodyValue(jsonString(createReportRequest))
           .exchange()
           .expectStatus().isForbidden
       }
@@ -219,7 +222,7 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/incident-reports")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createIncidentReportRequest))
+          .bodyValue(jsonString(createReportRequest))
           .exchange()
           .expectStatus().isForbidden
       }
@@ -245,21 +248,23 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/incident-reports")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createIncidentReportRequest))
+          .bodyValue(jsonString(createReportRequest))
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(
             // language=json
             """ 
             {
-              "incidentType": "SELF_HARM",
+              "type": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "incidentDetails": "An incident occurred",
+              "title": "An incident occurred",
+              "description": "Longer explanation of incident",
               "event": {
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "eventDetails": "An incident occurred"
+                "title": "An incident occurred",
+                "description": "Longer explanation of incident"
               },
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",
@@ -287,22 +292,24 @@ class IncidentReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/incident-reports")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createIncidentReportRequest.copy(createNewEvent = false, linkedEventId = existingIncident.event.eventId)))
+          .bodyValue(jsonString(createReportRequest.copy(createNewEvent = false, linkedEventId = existingReport.event.eventId)))
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(
             // language=json
             """ 
             {
-              "incidentType": "SELF_HARM",
+              "type": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
-              "incidentDetails": "An incident occurred",
+              "title": "An incident occurred",
+              "description": "Longer explanation of incident",
               "event": {
-                "eventId": "${existingIncident.event.eventId}",
+                "eventId": "${existingReport.event.eventId}",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "eventDetails": "An event occurred"
+                "title": "An event occurred",
+                "description": "Details of the event"
               },
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",

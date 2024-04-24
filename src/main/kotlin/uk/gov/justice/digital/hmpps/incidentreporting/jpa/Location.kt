@@ -8,19 +8,18 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 
 @Entity
-class IncidentLocation(
+class Location(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private val incident: IncidentReport,
-
-  val locationType: String,
+  private val report: Report,
 
   val locationId: String,
 
-  val locationDescription: String? = null,
+  val type: String,
+  val description: String,
 ) {
-  fun getIncident() = incident
+  fun getReport() = report
 }

@@ -170,31 +170,46 @@ class ApiExceptionHandler {
       )
   }
 
-  @ExceptionHandler(IncidentReportNotFoundException::class)
-  fun handleIncidentReportNotFound(e: IncidentReportNotFoundException): ResponseEntity<ErrorResponse?>? {
-    log.debug("IncidentReport not found exception caught: {}", e.message)
+  @ExceptionHandler(EventNotFoundException::class)
+  fun handleEventNotFound(e: EventNotFoundException): ResponseEntity<ErrorResponse?>? {
+    log.debug("Event not found exception caught: {}", e.message)
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
       .body(
         ErrorResponse(
           status = HttpStatus.NOT_FOUND,
-          errorCode = ErrorCode.IncidentReportNotFound,
-          userMessage = "IncidentReport not found: ${e.message}",
+          errorCode = ErrorCode.EventNotFound,
+          userMessage = "Event not found: ${e.message}",
           developerMessage = e.message,
         ),
       )
   }
 
-  @ExceptionHandler(IncidentReportAlreadyExistsException::class)
-  fun handleIncidentReportAlreadyExists(e: IncidentReportAlreadyExistsException): ResponseEntity<ErrorResponse?>? {
-    log.debug("IncidentReport already exists exception caught: {}", e.message)
+  @ExceptionHandler(ReportNotFoundException::class)
+  fun handleReportNotFound(e: ReportNotFoundException): ResponseEntity<ErrorResponse?>? {
+    log.debug("Report not found exception caught: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.NOT_FOUND)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.NOT_FOUND,
+          errorCode = ErrorCode.ReportNotFound,
+          userMessage = "Report not found: ${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(ReportAlreadyExistsException::class)
+  fun handleReportAlreadyExists(e: ReportAlreadyExistsException): ResponseEntity<ErrorResponse?>? {
+    log.debug("Report already exists exception caught: {}", e.message)
     return ResponseEntity
       .status(HttpStatus.CONFLICT)
       .body(
         ErrorResponse(
           status = HttpStatus.CONFLICT,
-          errorCode = ErrorCode.IncidentReportAlreadyExists,
-          userMessage = "IncidentReport already exists: ${e.message}",
+          errorCode = ErrorCode.ReportAlreadyExists,
+          userMessage = "Report already exists: ${e.message}",
           developerMessage = e.message,
         ),
       )
@@ -205,6 +220,6 @@ class ApiExceptionHandler {
   }
 }
 
-class IncidentEventNotFoundException(id: String) : Exception("There is no event found for ID = $id")
-class IncidentReportNotFoundException(id: String) : Exception("There is no incident report found for ID = $id")
-class IncidentReportAlreadyExistsException(key: String) : Exception("IncidentReport Report already exists = $key")
+class EventNotFoundException(id: String) : Exception("There is no event found for ID = $id")
+class ReportNotFoundException(id: String) : Exception("There is no incident report found for ID = $id")
+class ReportAlreadyExistsException(key: String) : Exception("Report already exists = $key")

@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import jakarta.validation.ValidationException
 
-enum class IncidentType(
+enum class Type(
   val description: String,
 ) {
   SELF_HARM("Self Harm"),
@@ -32,30 +32,30 @@ enum class IncidentType(
 }
 
 fun convertIncidentType(type: String) = when (type) {
-  "SELF_HARM" -> IncidentType.SELF_HARM
-  "MISC" -> IncidentType.MISCELLANEOUS
-  "ASSAULTS3" -> IncidentType.ASSAULT
-  "DAMAGE" -> IncidentType.DAMAGE
-  "FIND0422" -> IncidentType.FINDS
-  "KEY_LOCKNEW" -> IncidentType.KEY_LOCK_INCIDENT
-  "DISORDER1" -> IncidentType.DISORDER
-  "FIRE" -> IncidentType.FIRE
-  "TOOL_LOSS" -> IncidentType.TOOL_LOSS
-  "FOOD_REF" -> IncidentType.FOOD_REFUSAL
-  "DEATH" -> IncidentType.DEATH_IN_CUSTODY
-  "TRF3" -> IncidentType.TEMPORARY_RELEASE_FAILURE
-  "RADIO_COMP" -> IncidentType.RADIO_COMPROMISE
-  "DRONE1" -> IncidentType.DRONE_SIGHTING
-  "ABSCOND" -> IncidentType.ABSCONDER
-  "REL_ERROR" -> IncidentType.RELEASED_IN_ERROR
-  "BOMB" -> IncidentType.BOMB_THREAT
-  "CLOSE_DOWN" -> IncidentType.FULL_CLOSE_DOWN_SEARCH
-  "BREACH" -> IncidentType.BREACH_OF_SECURITY
-  "DEATH_NI" -> IncidentType.DEATH_OTHER
-  "ESCAPE_EST" -> IncidentType.ESCAPE_FROM_CUSTODY
-  "ATT_ESCAPE" -> IncidentType.ATTEMPTED_ESCAPE_FROM_CUSTODY
-  "ESCAPE_ESC" -> IncidentType.ESCAPE_FROM_ESCORT
-  "ATT_ESC_E" -> IncidentType.ATTEMPTED_ESCAPE_FROM_ESCORT
+  "SELF_HARM" -> Type.SELF_HARM
+  "MISC" -> Type.MISCELLANEOUS
+  "ASSAULTS3" -> Type.ASSAULT
+  "DAMAGE" -> Type.DAMAGE
+  "FIND0422" -> Type.FINDS
+  "KEY_LOCKNEW" -> Type.KEY_LOCK_INCIDENT
+  "DISORDER1" -> Type.DISORDER
+  "FIRE" -> Type.FIRE
+  "TOOL_LOSS" -> Type.TOOL_LOSS
+  "FOOD_REF" -> Type.FOOD_REFUSAL
+  "DEATH" -> Type.DEATH_IN_CUSTODY
+  "TRF3" -> Type.TEMPORARY_RELEASE_FAILURE
+  "RADIO_COMP" -> Type.RADIO_COMPROMISE
+  "DRONE1" -> Type.DRONE_SIGHTING
+  "ABSCOND" -> Type.ABSCONDER
+  "REL_ERROR" -> Type.RELEASED_IN_ERROR
+  "BOMB" -> Type.BOMB_THREAT
+  "CLOSE_DOWN" -> Type.FULL_CLOSE_DOWN_SEARCH
+  "BREACH" -> Type.BREACH_OF_SECURITY
+  "DEATH_NI" -> Type.DEATH_OTHER
+  "ESCAPE_EST" -> Type.ESCAPE_FROM_CUSTODY
+  "ATT_ESCAPE" -> Type.ATTEMPTED_ESCAPE_FROM_CUSTODY
+  "ESCAPE_ESC" -> Type.ESCAPE_FROM_ESCORT
+  "ATT_ESC_E" -> Type.ATTEMPTED_ESCAPE_FROM_ESCORT
 
   else -> throw ValidationException("Unknown incident type: $type")
 }

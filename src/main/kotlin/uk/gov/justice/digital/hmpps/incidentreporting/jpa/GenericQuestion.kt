@@ -6,22 +6,22 @@ interface GenericQuestion {
   val dataItem: String
   val dataItemDescription: String?
 
-  fun addAnswer(
+  fun addResponse(
     itemValue: String,
     additionalInformation: String?,
     recordedBy: String,
     recordedOn: LocalDateTime,
   ): GenericQuestion
 
-  fun getLocation(): IncidentLocation?
-  fun attachLocation(location: IncidentLocation)
+  fun getLocation(): Location?
+  fun attachLocation(location: Location): GenericQuestion
 
   fun getPrisonerInvolvement(): PrisonerInvolvement?
-  fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement)
+  fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement): GenericQuestion
 
   fun getStaffInvolvement(): StaffInvolvement?
-  fun attachStaffInvolvement(staffInvolvement: StaffInvolvement)
+  fun attachStaffInvolvement(staffInvolvement: StaffInvolvement): GenericQuestion
 
   fun getEvidence(): Evidence?
-  fun attachEvidence(evidence: Evidence)
+  fun attachEvidence(evidence: Evidence): GenericQuestion
 }

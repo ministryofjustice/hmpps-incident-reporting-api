@@ -16,22 +16,22 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateIncidentReportRequest
-import uk.gov.justice.digital.hmpps.incidentreporting.service.IncidentReportDomainEventType
-import uk.gov.justice.digital.hmpps.incidentreporting.service.IncidentReportService
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as IncidentReportDTO
 
 @RestController
 @Validated
 @RequestMapping("/incident-reports", produces = [MediaType.APPLICATION_JSON_VALUE])
 @Tag(
-  name = "Incident Reports",
-  description = "Returns incident report information",
+  name = "Incident reports",
+  description = "Retrieve and create incident reports",
 )
-class IncidentReportResource(
-  private val incidentReportService: IncidentReportService,
+class ReportResource(
+  private val reportService: ReportService,
 ) : EventBaseResource() {
 
   @GetMapping("/{id}")
@@ -62,12 +62,12 @@ class IncidentReportResource(
       ),
     ],
   )
-  fun getIncidentReport(
+  fun getReport(
     @Schema(description = "The incident report Id", example = "de91dfa7-821f-4552-a427-bf2f32eafeb0", required = true)
     @PathVariable
     id: UUID,
   ): IncidentReportDTO {
-    return incidentReportService.getIncidentReportById(id = id) ?: throw IncidentReportNotFoundException(id.toString())
+    return reportService.getReportById(id = id) ?: throw ReportNotFoundException(id.toString())
   }
 
   @GetMapping("/incident-number/{incidentNumber}")
@@ -98,12 +98,12 @@ class IncidentReportResource(
       ),
     ],
   )
-  fun getIncidentReportByNumber(
+  fun getReportByNumber(
     @Schema(description = "The incident report number", example = "2342341242", required = true)
     @PathVariable
     incidentNumber: String,
   ): IncidentReportDTO {
-    return incidentReportService.getIncidentReportByIncidentNumber(incidentNumber) ?: throw IncidentReportNotFoundException(incidentNumber)
+    return reportService.getReportByIncidentNumber(incidentNumber) ?: throw ReportNotFoundException(incidentNumber)
   }
 
   @PostMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -144,15 +144,15 @@ class IncidentReportResource(
       ),
     ],
   )
-  fun createIncidentReport(
+  fun createReport(
     @RequestBody
     @Validated
-    incidentReportCreateRequest: CreateIncidentReportRequest,
+    createReportRequest: CreateReportRequest,
   ): IncidentReportDTO {
     return eventPublishAndAudit(
-      IncidentReportDomainEventType.INCIDENT_REPORT_CREATED,
+      ReportDomainEventType.INCIDENT_REPORT_CREATED,
       {
-        incidentReportService.createIncidentReport(incidentReportCreateRequest)
+        reportService.createReport(createReportRequest)
       },
       InformationSource.DPS,
     )

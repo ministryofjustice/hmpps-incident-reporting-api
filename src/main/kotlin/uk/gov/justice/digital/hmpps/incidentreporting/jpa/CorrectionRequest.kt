@@ -9,13 +9,13 @@ import jakarta.persistence.ManyToOne
 import java.time.LocalDateTime
 
 @Entity
-class IncidentCorrectionRequest(
+class CorrectionRequest(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val incident: IncidentReport,
+  val report: Report,
 
   val correctionRequestedBy: String,
 
@@ -23,7 +23,7 @@ class IncidentCorrectionRequest(
 
   val reason: CorrectionReason,
 
-  val descriptionOfChange: String? = null,
+  val descriptionOfChange: String,
 )
 
 enum class CorrectionReason {

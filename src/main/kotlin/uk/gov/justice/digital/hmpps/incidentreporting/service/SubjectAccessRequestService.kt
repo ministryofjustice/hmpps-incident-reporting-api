@@ -11,12 +11,12 @@ class SubjectAccessRequestService(
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository,
 ) : HmppsPrisonSubjectAccessRequestService {
   override fun getPrisonContentFor(prn: String, fromDate: LocalDate?, toDate: LocalDate?): HmppsSubjectAccessRequestContent {
-    val incidentReports = prisonerInvolvementRepository.findAllByPrisonerNumber(prn)
-    val content = incidentReports
-      .filter { it.getIncident().reportedDate.isAfter(fromDate?.atStartOfDay()) && it.getIncident().reportedDate.isBefore(toDate?.atStartOfDay()) }
-      .map {
-        it.getIncident().toDto()
-      }
+    val prisonerInvolvementList = prisonerInvolvementRepository.findAllByPrisonerNumber(prn)
+    val content = prisonerInvolvementList
+      .map { it.getReport() }
+      .distinctBy { it.id }
+      .filter { it.reportedDate.isAfter(fromDate?.atStartOfDay()) && it.reportedDate.isBefore(toDate?.atStartOfDay()) }
+      .map { it.toDto() }
     return HmppsSubjectAccessRequestContent(
       content = content,
     )

@@ -1,25 +1,25 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Type
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Schema(description = "Incident Report Details")
-data class IncidentReport(
+@Schema(description = "Incident report")
+data class Report(
   val id: UUID,
   val incidentNumber: String,
-  val incidentType: IncidentType,
+  val type: Type,
   val incidentDateAndTime: LocalDateTime,
   val prisonId: String,
-  val summary: String? = null,
-  val incidentDetails: String,
-  val event: EventDetail,
+  val title: String,
+  val description: String,
+  val event: Event,
 
   val reportedBy: String,
   val reportedDate: LocalDateTime,
-  val status: IncidentStatus,
+  val status: Status,
   val assignedTo: String? = null,
 
   val createdDate: LocalDateTime,
@@ -29,10 +29,11 @@ data class IncidentReport(
   val createdInNomis: Boolean = false,
 )
 
-@Schema(description = "Event Details linked to Incident Report")
-data class EventDetail(
+@Schema(description = "Event linking multiple incident reports")
+data class Event(
   val eventId: String,
   val eventDateAndTime: LocalDateTime,
   val prisonId: String,
-  val eventDetails: String,
+  val title: String,
+  val description: String,
 )
