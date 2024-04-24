@@ -19,4 +19,4 @@ class Response(
   override val recordedOn: LocalDateTime,
 
   override val additionalInformation: String? = null,
-) : IncidentAnswer
+) : GenericResponse

@@ -36,7 +36,7 @@ class IncidentHistory(
   fun addHistoricalResponse(
     dataItem: String,
     dataItemDescription: String? = null,
-  ): IncidentQuestion {
+  ): GenericQuestion {
     val historicalResponse = HistoricalIncidentResponse(
       incidentHistory = this,
       dataItem = dataItem,

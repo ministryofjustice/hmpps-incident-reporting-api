@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import java.time.LocalDateTime
 
-interface IncidentAnswer {
+interface GenericResponse {
   val itemValue: String
   val recordedBy: String
   val recordedOn: LocalDateTime

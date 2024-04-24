@@ -45,8 +45,9 @@ class HistoricalIncidentResponse(
   @OneToOne(fetch = FetchType.LAZY)
   private var staffInvolvement: StaffInvolvement? = null,
 
-) : IncidentQuestion {
-  override fun addAnswer(itemValue: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): IncidentQuestion {
+) : GenericQuestion {
+
+  override fun addAnswer(itemValue: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): HistoricalIncidentResponse {
     responses.add(
       HistoricalResponse(
         itemValue = itemValue,
@@ -58,27 +59,16 @@ class HistoricalIncidentResponse(
     return this
   }
 
-  override fun getEvidence() = evidence
-
-  override fun getStaffInvolvement() = staffInvolvement
-
-  override fun getPrisonerInvolvement() = prisonerInvolvement
-
   override fun getLocation() = location
 
-  override fun attachEvidence(evidence: Evidence) {
-    if (evidence.getIncident() != incidentHistory.getIncident()) {
-      throw ValidationException("Cannot attach evidence from a different incident report")
+  override fun attachLocation(location: IncidentLocation) {
+    if (location.getIncident() != incidentHistory.getIncident()) {
+      throw ValidationException("Cannot attach a location from a different incident report")
     }
-    this.evidence = evidence
+    this.location = location
   }
 
-  override fun attachStaffInvolvement(staffInvolvement: StaffInvolvement) {
-    if (staffInvolvement.getIncident() != incidentHistory.getIncident()) {
-      throw ValidationException("Cannot attach staff involvement from a different incident report")
-    }
-    this.staffInvolvement = staffInvolvement
-  }
+  override fun getPrisonerInvolvement() = prisonerInvolvement
 
   override fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement) {
     if (prisonerInvolvement.getIncident() != incidentHistory.getIncident()) {
@@ -87,11 +77,22 @@ class HistoricalIncidentResponse(
     this.prisonerInvolvement = prisonerInvolvement
   }
 
-  override fun attachLocation(location: IncidentLocation) {
-    if (location.getIncident() != incidentHistory.getIncident()) {
-      throw ValidationException("Cannot attach a location from a different incident report")
+  override fun getStaffInvolvement() = staffInvolvement
+
+  override fun attachStaffInvolvement(staffInvolvement: StaffInvolvement) {
+    if (staffInvolvement.getIncident() != incidentHistory.getIncident()) {
+      throw ValidationException("Cannot attach staff involvement from a different incident report")
     }
-    this.location = location
+    this.staffInvolvement = staffInvolvement
+  }
+
+  override fun getEvidence() = evidence
+
+  override fun attachEvidence(evidence: Evidence) {
+    if (evidence.getIncident() != incidentHistory.getIncident()) {
+      throw ValidationException("Cannot attach evidence from a different incident report")
+    }
+    this.evidence = evidence
   }
 
   override fun equals(other: Any?): Boolean {

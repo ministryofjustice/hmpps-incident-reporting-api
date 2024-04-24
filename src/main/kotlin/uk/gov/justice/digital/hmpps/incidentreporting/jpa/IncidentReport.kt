@@ -112,7 +112,7 @@ class IncidentReport(
     return incidentNumber.hashCode()
   }
 
-  fun getIncidentData(): List<IncidentQuestion> = incidentResponses
+  fun getIncidentData(): List<GenericQuestion> = incidentResponses
 
   fun getIncidentType() = incidentType
 
@@ -181,7 +181,7 @@ class IncidentReport(
   fun addIncidentData(
     dataItem: String,
     dataItemDescription: String? = null,
-  ): IncidentQuestion {
+  ): GenericQuestion {
     val incidentResponse = IncidentResponse(
       incident = this,
       dataItem = dataItem,
