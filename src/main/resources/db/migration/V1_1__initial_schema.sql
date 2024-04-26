@@ -134,13 +134,13 @@ create table response
 (
     id                     serial
         constraint response_pk primary key,
-    question_id            bigint                                           not null
+    question_id            bigint                                 not null
         constraint response_question_fk references question (id) on delete cascade,
-    sequence               integer      default 0                           not null,
-    response               text                                             not null,
+    sequence               integer      default 0                 not null,
+    response               text                                   not null,
     additional_information text,
-    recorded_on            timestamp    default CURRENT_TIMESTAMP           not null,
-    recorded_by            varchar(120) default 'system'::character varying not null
+    recorded_on            timestamp    default CURRENT_TIMESTAMP not null,
+    recorded_by            varchar(120) default 'system'          not null
 );
 
 create table history
@@ -178,11 +178,11 @@ create table historical_response
 (
     id                     serial
         constraint historical_response_pk primary key,
-    historical_question_id bigint                                           not null
+    historical_question_id bigint                                 not null
         constraint historical_response_historical_question_fk references historical_question (id) on delete cascade,
-    sequence               integer      default 0                           not null,
-    response               text                                             not null,
+    sequence               integer      default 0                 not null,
+    response               text                                   not null,
     additional_information text,
-    recorded_on            timestamp    default CURRENT_TIMESTAMP           not null,
-    recorded_by            varchar(120) default 'system'::character varying not null
+    recorded_on            timestamp    default CURRENT_TIMESTAMP not null,
+    recorded_by            varchar(120) default 'system'          not null
 );
