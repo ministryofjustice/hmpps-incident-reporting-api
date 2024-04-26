@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDTO
@@ -74,9 +75,4 @@ class EventPublishAndAuditService(
       details = auditData,
     )
   }
-}
-
-enum class InformationSource {
-  DPS,
-  NOMIS,
 }

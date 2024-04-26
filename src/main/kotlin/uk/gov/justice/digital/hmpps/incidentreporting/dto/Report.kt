@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Status
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import java.time.LocalDateTime
 import java.util.UUID
 

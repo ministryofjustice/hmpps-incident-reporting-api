@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.helper
 
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Type
-import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.LocalDateTime
 
 fun buildIncidentReport(

@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 
 @Entity
 class PrisonerInvolvement(

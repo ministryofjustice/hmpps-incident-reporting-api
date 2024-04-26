@@ -13,8 +13,15 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
-import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.mapIncidentStatus
 import java.io.Serializable
 import java.time.Clock
 import java.time.LocalDateTime
