@@ -13,7 +13,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.io.Serializable
 import java.time.Clock
@@ -212,7 +212,7 @@ class Report(
     return history
   }
 
-  fun updateWith(upsert: NomisIncidentReport, updatedBy: String, clock: Clock) {
+  fun updateWith(upsert: NomisReport, updatedBy: String, clock: Clock) {
     this.title = upsert.title ?: "NO DETAILS GIVEN"
     this.description = upsert.description ?: "NO DETAILS GIVEN"
     this.status = mapIncidentStatus(upsert.status.code)

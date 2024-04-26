@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.SyncService
@@ -111,5 +111,5 @@ data class NomisSyncRequest(
   @Schema(description = "For initial migration this is true", required = false, defaultValue = "false")
   val initialMigration: Boolean = false,
   @Schema(description = "IncidentReport Details raised/updated in NOMIS", required = true)
-  val incidentReport: NomisIncidentReport,
+  val incidentReport: NomisReport,
 )

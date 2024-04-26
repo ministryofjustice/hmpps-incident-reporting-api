@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
 
-fun NomisIncidentReport.toNewEntity(clock: Clock): Report {
+fun NomisReport.toNewEntity(clock: Clock): Report {
   val report = Report(
     incidentNumber = "$incidentId",
     type = convertIncidentType(type),

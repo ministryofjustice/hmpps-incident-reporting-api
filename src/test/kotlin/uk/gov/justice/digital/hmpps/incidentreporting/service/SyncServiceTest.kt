@@ -13,19 +13,19 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffender
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffenderParty
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.CodeDescription
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisIncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisIncidentStatus
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.Offender
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.OffenderParty
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.Staff
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.StaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.time.LocalDateTime
@@ -50,34 +50,34 @@ class SyncServiceTest {
 
   /** incident report sync request – copied with modifications in tests */
   private val sampleSyncRequest = NomisSyncRequest(
-    incidentReport = NomisIncidentReport(
+    incidentReport = NomisReport(
       incidentId = 112414323,
       questionnaireId = 2124,
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
-      prison = CodeDescription("MDI", "Moorland (HMP)"),
-      status = NomisIncidentStatus("AWAN", "Awaiting Analysis"),
+      prison = NomisCode("MDI", "Moorland (HMP)"),
+      status = NomisStatus("AWAN", "Awaiting Analysis"),
       type = "SELF_HARM",
       lockedResponse = false,
       incidentDateTime = whenIncidentHappened,
-      reportingStaff = Staff(reportedBy, 121, "John", "Smith"),
+      reportingStaff = NomisStaff(reportedBy, 121, "John", "Smith"),
       reportedDateTime = now,
       staffParties = listOf(
-        StaffParty(
-          Staff("user3", 124, "Mary", "Jones"),
-          CodeDescription("PAS", "Present at scene"),
+        NomisStaffParty(
+          NomisStaff("user3", 124, "Mary", "Jones"),
+          NomisCode("PAS", "Present at scene"),
           "Found offender in cell",
         ),
       ),
       offenderParties = listOf(
-        OffenderParty(
-          offender = Offender(
+        NomisOffenderParty(
+          offender = NomisOffender(
             offenderNo = "A1234AA",
             firstName = "Trevor",
             lastName = "Smith",
           ),
-          role = CodeDescription("PERP", "Perpetrator"),
-          outcome = CodeDescription("HELTH", "ACCT"),
+          role = NomisCode("PERP", "Perpetrator"),
+          outcome = NomisCode("HELTH", "ACCT"),
           comment = "First time self-harming",
         ),
       ),
