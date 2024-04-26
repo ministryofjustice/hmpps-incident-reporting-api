@@ -117,7 +117,8 @@ create table question
     report_id               uuid              not null
         constraint question_report_fk references report (id) on delete cascade,
     sequence                integer default 0 not null,
-    data_item               varchar(120),
+    code                    varchar(120),
+    question                text,
     additional_information  text,
     location_id             bigint
         constraint question_location_fk references location (id) on delete cascade,
@@ -126,8 +127,7 @@ create table question
     evidence_id             bigint
         constraint question_evidence_fk references evidence (id) on delete cascade,
     staff_involvement_id    bigint
-        constraint question_staff_involvement_fk references staff_involvement (id) on delete cascade,
-    data_item_description   varchar(500)
+        constraint question_staff_involvement_fk references staff_involvement (id) on delete cascade
 );
 
 create table response
@@ -137,7 +137,7 @@ create table response
     question_id            bigint                                           not null
         constraint response_question_fk references question (id) on delete cascade,
     sequence               integer      default 0                           not null,
-    item_value             varchar(120)                                     not null,
+    response               text                                             not null,
     additional_information text,
     recorded_on            timestamp    default CURRENT_TIMESTAMP           not null,
     recorded_by            varchar(120) default 'system'::character varying not null
@@ -161,8 +161,8 @@ create table historical_question
     history_id              bigint            not null
         constraint historical_question_history_fk references history (id) on delete cascade,
     sequence                integer default 0 not null,
-    data_item               varchar(120)      not null,
-    data_item_description   varchar(500),
+    code                    varchar(120)      not null,
+    question                text,
     additional_information  text,
     location_id             bigint
         constraint historical_question_location_fk references location (id) on delete cascade,
@@ -181,7 +181,7 @@ create table historical_response
     historical_question_id bigint                                           not null
         constraint historical_response_historical_question_fk references historical_question (id) on delete cascade,
     sequence               integer      default 0                           not null,
-    item_value             varchar(120)                                     not null,
+    response               text                                             not null,
     additional_information text,
     recorded_on            timestamp    default CURRENT_TIMESTAMP           not null,
     recorded_by            varchar(120) default 'system'::character varying not null

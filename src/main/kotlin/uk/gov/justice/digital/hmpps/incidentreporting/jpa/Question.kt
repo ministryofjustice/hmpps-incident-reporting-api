@@ -24,9 +24,8 @@ class Question(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
-  override val dataItem: String,
-
-  override val dataItemDescription: String? = null,
+  override val code: String,
+  override val question: String? = null,
 
   @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
@@ -49,10 +48,10 @@ class Question(
 
   fun getReport() = report
 
-  override fun addResponse(itemValue: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): Question {
+  override fun addResponse(response: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): Question {
     responses.add(
       Response(
-        itemValue = itemValue,
+        response = response,
         recordedBy = recordedBy,
         recordedOn = recordedOn,
         additionalInformation = additionalInformation,
@@ -108,18 +107,18 @@ class Question(
     other as Question
 
     if (report != other.report) return false
-    if (dataItem != other.dataItem) return false
+    if (code != other.code) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = report.hashCode()
-    result = 31 * result + dataItem.hashCode()
+    result = 31 * result + code.hashCode()
     return result
   }
 
   override fun toString(): String {
-    return "Question(dataItem='$dataItem', responses=$responses)"
+    return "Question(code='$code', responses=$responses)"
   }
 }

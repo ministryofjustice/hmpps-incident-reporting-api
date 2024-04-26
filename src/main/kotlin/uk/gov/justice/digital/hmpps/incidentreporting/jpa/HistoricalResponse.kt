@@ -12,7 +12,7 @@ class HistoricalResponse(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
-  override val itemValue: String,
+  override val response: String,
 
   override val recordedBy: String,
 

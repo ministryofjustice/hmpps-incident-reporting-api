@@ -33,13 +33,13 @@ class History(
 ) {
 
   fun addQuestion(
-    dataItem: String,
-    dataItemDescription: String? = null,
+    code: String,
+    question: String? = null,
   ): HistoricalQuestion {
     val historicalQuestion = HistoricalQuestion(
       history = this,
-      dataItem = dataItem,
-      dataItemDescription = dataItemDescription,
+      code = code,
+      question = question,
     )
     questions.add(historicalQuestion)
     return historicalQuestion

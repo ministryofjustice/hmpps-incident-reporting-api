@@ -177,16 +177,16 @@ class Report(
   }
 
   fun addQuestion(
-    dataItem: String,
-    dataItemDescription: String? = null,
+    code: String,
+    question: String? = null,
   ): Question {
-    val question = Question(
+    val questionItem = Question(
       report = this,
-      dataItem = dataItem,
-      dataItemDescription = dataItemDescription,
+      code = code,
+      question = question,
     )
-    questions.add(question)
-    return question
+    questions.add(questionItem)
+    return questionItem
   }
 
   fun addHistory(type: Type, incidentChangeDate: LocalDateTime, staffChanged: String): History {
@@ -203,7 +203,7 @@ class Report(
   fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
     val history = addHistory(type, changedDate, staffChanged)
     getQuestions().filterNotNull().forEach { question ->
-      val historicalQuestion = history.addQuestion(question.dataItem, question.dataItemDescription)
+      val historicalQuestion = history.addQuestion(question.code, question.question)
       question.getEvidence()?.let { historicalQuestion.attachEvidence(it) }
       question.getLocation()?.let { historicalQuestion.attachLocation(it) }
       question.getStaffInvolvement()?.let { historicalQuestion.attachStaffInvolvement(it) }

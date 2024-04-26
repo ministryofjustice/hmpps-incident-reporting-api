@@ -24,9 +24,8 @@ class HistoricalQuestion(
   @ManyToOne(fetch = FetchType.LAZY)
   val history: History,
 
-  override val dataItem: String,
-
-  override val dataItemDescription: String? = null,
+  override val code: String,
+  override val question: String? = null,
 
   @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
@@ -46,10 +45,15 @@ class HistoricalQuestion(
   private var staffInvolvement: StaffInvolvement? = null,
 ) : GenericQuestion {
 
-  override fun addResponse(itemValue: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): HistoricalQuestion {
+  override fun addResponse(
+    response: String,
+    additionalInformation: String?,
+    recordedBy: String,
+    recordedOn: LocalDateTime,
+  ): HistoricalQuestion {
     responses.add(
       HistoricalResponse(
-        itemValue = itemValue,
+        response = response,
         recordedBy = recordedBy,
         recordedOn = recordedOn,
         additionalInformation = additionalInformation,
@@ -105,18 +109,18 @@ class HistoricalQuestion(
     other as HistoricalQuestion
 
     if (history != other.history) return false
-    if (dataItem != other.dataItem) return false
+    if (code != other.code) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = history.hashCode()
-    result = 31 * result + dataItem.hashCode()
+    result = 31 * result + code.hashCode()
     return result
   }
 
   override fun toString(): String {
-    return "HistoricalQuestion(dataItem='$dataItem', responses=$responses)"
+    return "HistoricalQuestion(code='$code', responses=$responses)"
   }
 }

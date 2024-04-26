@@ -3,11 +3,11 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 import java.time.LocalDateTime
 
 interface GenericQuestion {
-  val dataItem: String
-  val dataItemDescription: String?
+  val code: String
+  val question: String?
 
   fun addResponse(
-    itemValue: String,
+    response: String,
     additionalInformation: String?,
     recordedBy: String,
     recordedOn: LocalDateTime,

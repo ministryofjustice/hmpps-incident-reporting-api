@@ -69,15 +69,15 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): Report {
 
   questions.sortedBy { it.sequence }.forEach { question ->
     val dataItem = report.addQuestion(
-      dataItem = "QID-%012d".format(question.questionId),
-      dataItemDescription = question.question,
+      code = "QID-%012d".format(question.questionId),
+      question = question.question,
     )
     question.answers
       .filter { it.answer != null }
       .sortedBy { it.sequence }
       .forEach { answer ->
         dataItem.addResponse(
-          itemValue = answer.answer!!,
+          response = answer.answer!!,
           additionalInformation = answer.comment,
           recordedBy = answer.recordingStaff.username,
           recordedOn = report.reportedDate,
@@ -94,15 +94,15 @@ fun NomisIncidentReport.toNewEntity(clock: Clock): Report {
 
     history.questions.sortedBy { it.sequence }.forEach { question ->
       val dataItem = historyRecord.addQuestion(
-        dataItem = "QID-%012d".format(question.questionId),
-        dataItemDescription = question.question,
+        code = "QID-%012d".format(question.questionId),
+        question = question.question,
       )
       question.answers
         .filter { it.answer != null }
         .sortedBy { it.responseSequence }
         .forEach { answer ->
           dataItem.addResponse(
-            itemValue = answer.answer!!,
+            response = answer.answer!!,
             additionalInformation = answer.comment,
             recordedBy = answer.recordingStaff.username,
             recordedOn = report.reportedDate,
