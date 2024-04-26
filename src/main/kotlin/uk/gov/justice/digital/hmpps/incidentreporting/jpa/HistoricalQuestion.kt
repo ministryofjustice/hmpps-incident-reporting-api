@@ -14,6 +14,7 @@ import jakarta.persistence.OrderColumn
 import jakarta.validation.ValidationException
 import org.hibernate.Hibernate
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.HistoricalQuestion as HistoricalQuestionDto
 
 @Entity
 class HistoricalQuestion(
@@ -123,4 +124,10 @@ class HistoricalQuestion(
   override fun toString(): String {
     return "HistoricalQuestion(code='$code', responses=$responses)"
   }
+
+  fun toDto() = HistoricalQuestionDto(
+    code = code,
+    question = question,
+    responses = responses.map { it.toDto() },
+  )
 }

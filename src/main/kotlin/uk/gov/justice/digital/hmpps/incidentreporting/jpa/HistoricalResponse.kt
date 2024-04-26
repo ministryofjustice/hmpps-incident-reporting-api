@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.HistoricalResponse as HistoricalResponseDto
 
 @Entity
 class HistoricalResponse(
@@ -19,4 +20,11 @@ class HistoricalResponse(
   override val recordedOn: LocalDateTime,
 
   override val additionalInformation: String? = null,
-) : GenericResponse
+) : GenericResponse {
+  fun toDto() = HistoricalResponseDto(
+    response = response,
+    recordedBy = recordedBy,
+    recordedOn = recordedOn,
+    additionalInformation = additionalInformation,
+  )
+}

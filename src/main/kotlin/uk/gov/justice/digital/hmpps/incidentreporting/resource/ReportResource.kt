@@ -21,7 +21,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as IncidentReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @RestController
 @Validated
@@ -66,7 +66,7 @@ class ReportResource(
     @Schema(description = "The incident report Id", example = "de91dfa7-821f-4552-a427-bf2f32eafeb0", required = true)
     @PathVariable
     id: UUID,
-  ): IncidentReportDTO {
+  ): ReportDto {
     return reportService.getReportById(id = id) ?: throw ReportNotFoundException(id.toString())
   }
 
@@ -102,7 +102,7 @@ class ReportResource(
     @Schema(description = "The incident report number", example = "2342341242", required = true)
     @PathVariable
     incidentNumber: String,
-  ): IncidentReportDTO {
+  ): ReportDto {
     return reportService.getReportByIncidentNumber(incidentNumber) ?: throw ReportNotFoundException(incidentNumber)
   }
 
@@ -148,7 +148,7 @@ class ReportResource(
     @RequestBody
     @Validated
     createReportRequest: CreateReportRequest,
-  ): IncidentReportDTO {
+  ): ReportDto {
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_CREATED,
       {

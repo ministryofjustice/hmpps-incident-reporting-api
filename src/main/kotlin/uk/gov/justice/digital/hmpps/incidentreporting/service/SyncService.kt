@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.resource.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.time.Clock
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Service
 @Transactional
@@ -24,7 +24,7 @@ class SyncService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun upsert(syncRequest: NomisSyncRequest): ReportDTO {
+  fun upsert(syncRequest: NomisSyncRequest): ReportDto {
     val report = if (syncRequest.id != null) {
       updateExistingReport(syncRequest.id, syncRequest)
     } else {
@@ -45,7 +45,7 @@ class SyncService(
     return report
   }
 
-  private fun updateExistingReport(reportId: UUID, syncRequest: NomisSyncRequest): ReportDTO {
+  private fun updateExistingReport(reportId: UUID, syncRequest: NomisSyncRequest): ReportDto {
     val reportToUpdate = reportRepository.findById(reportId)
       .orElseThrow { ReportNotFoundException(reportId.toString()) }
 
@@ -53,7 +53,7 @@ class SyncService(
     return reportToUpdate.toDto()
   }
 
-  private fun createNewReport(syncRequest: NomisSyncRequest): ReportDTO {
+  private fun createNewReport(syncRequest: NomisSyncRequest): ReportDto {
     val reportToCreate = syncRequest.incidentReport.toNewEntity(clock)
     return reportRepository.save(reportToCreate).toDto()
   }

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Service
 class EventPublishAndAuditService(
@@ -15,7 +15,7 @@ class EventPublishAndAuditService(
 
   fun publishEvent(
     eventType: ReportDomainEventType,
-    reports: List<ReportDTO>,
+    reports: List<ReportDto>,
     auditData: Any? = null,
     source: InformationSource = InformationSource.DPS,
   ) {
@@ -31,7 +31,7 @@ class EventPublishAndAuditService(
 
   fun publishEvent(
     eventType: ReportDomainEventType,
-    report: ReportDTO,
+    report: ReportDto,
     auditData: Any? = null,
     source: InformationSource = InformationSource.DPS,
   ) {
@@ -49,7 +49,7 @@ class EventPublishAndAuditService(
 
   private fun publishEvent(
     event: ReportDomainEventType,
-    report: ReportDTO,
+    report: ReportDto,
     source: InformationSource,
   ) {
     snsService.publishDomainEvent(

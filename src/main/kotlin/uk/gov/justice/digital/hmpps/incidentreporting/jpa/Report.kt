@@ -26,7 +26,7 @@ import java.io.Serializable
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Entity
 class Report(
@@ -225,25 +225,33 @@ class Report(
     this.status = mapIncidentStatus(upsert.status.code)
     this.lastModifiedBy = updatedBy
     this.lastModifiedDate = LocalDateTime.now(clock)
+    // TODO: need to compare and update other fields and related entities
   }
 
-  fun toDto(): ReportDTO =
-    ReportDTO(
-      id = id!!,
-      incidentNumber = incidentNumber,
-      incidentDateAndTime = incidentDateAndTime,
-      prisonId = prisonId,
-      type = type,
-      title = title,
-      description = description,
-      reportedBy = reportedBy,
-      reportedDate = reportedDate,
-      status = status,
-      assignedTo = assignedTo,
-      createdDate = createdDate,
-      lastModifiedDate = lastModifiedDate,
-      lastModifiedBy = lastModifiedBy,
-      createdInNomis = source == InformationSource.NOMIS,
-      event = event.toDto(),
-    )
+  fun toDto() = ReportDto(
+    id = id!!,
+    incidentNumber = incidentNumber,
+    incidentDateAndTime = incidentDateAndTime,
+    prisonId = prisonId,
+    type = type,
+    title = title,
+    description = description,
+    reportedBy = reportedBy,
+    reportedDate = reportedDate,
+    status = status,
+    assignedTo = assignedTo,
+    createdDate = createdDate,
+    lastModifiedDate = lastModifiedDate,
+    lastModifiedBy = lastModifiedBy,
+    createdInNomis = source == InformationSource.NOMIS,
+    event = event.toDto(),
+    questions = questions.map { it.toDto() },
+    history = history.map { it.toDto() },
+    historyOfStatuses = historyOfStatuses.map { it.toDto() },
+    staffInvolved = staffInvolved.map { it.toDto() },
+    prisonersInvolved = prisonersInvolved.map { it.toDto() },
+    locations = locations.map { it.toDto() },
+    evidence = evidence.map { it.toDto() },
+    correctionRequests = correctionRequests.map { it.toDto() },
+  )
 }

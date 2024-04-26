@@ -22,6 +22,16 @@ data class Report(
   val status: Status,
   val assignedTo: String? = null,
 
+  val questions: List<Question> = emptyList(),
+  val history: List<History> = emptyList(),
+  val historyOfStatuses: List<StatusHistory> = emptyList(),
+
+  val staffInvolved: List<StaffInvolvement> = emptyList(),
+  val prisonersInvolved: List<PrisonerInvolvement> = emptyList(),
+  val locations: List<Location> = emptyList(),
+  val evidence: List<Evidence> = emptyList(),
+  val correctionRequests: List<CorrectionRequest> = emptyList(),
+
   val createdDate: LocalDateTime,
   val lastModifiedDate: LocalDateTime,
   val lastModifiedBy: String,

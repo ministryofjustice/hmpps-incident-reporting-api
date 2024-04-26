@@ -1,13 +1,15 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
-enum class Status {
-  DRAFT,
-  AWAITING_ANALYSIS,
-  IN_ANALYSIS,
-  INFORMATION_REQUIRED,
-  INFORMATION_AMENDED,
-  CLOSED,
-  POST_INCIDENT_UPDATE,
-  INCIDENT_UPDATED,
-  DUPLICATE,
+enum class Status(
+  val description: String,
+) {
+  DRAFT("Draft"),
+  AWAITING_ANALYSIS("Awaiting analysis"),
+  IN_ANALYSIS("In analysis"),
+  INFORMATION_REQUIRED("Information required"),
+  INFORMATION_AMENDED("Information amened"),
+  CLOSED("Closed"),
+  POST_INCIDENT_UPDATE("Post-incident update"),
+  INCIDENT_UPDATED("Incident updated"),
+  DUPLICATE("Duplicate"),
 }

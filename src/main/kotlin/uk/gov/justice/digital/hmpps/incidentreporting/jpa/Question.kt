@@ -14,6 +14,7 @@ import jakarta.persistence.OrderColumn
 import jakarta.validation.ValidationException
 import org.hibernate.Hibernate
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
 
 @Entity
 class Question(
@@ -48,7 +49,12 @@ class Question(
 
   fun getReport() = report
 
-  override fun addResponse(response: String, additionalInformation: String?, recordedBy: String, recordedOn: LocalDateTime): Question {
+  override fun addResponse(
+    response: String,
+    additionalInformation: String?,
+    recordedBy: String,
+    recordedOn: LocalDateTime,
+  ): Question {
     responses.add(
       Response(
         response = response,
@@ -121,4 +127,10 @@ class Question(
   override fun toString(): String {
     return "Question(code='$code', responses=$responses)"
   }
+
+  fun toDto() = QuestionDto(
+    code = code,
+    question = question,
+    responses = responses.map { it.toDto() },
+  )
 }

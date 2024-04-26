@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundExce
 import java.time.Clock
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Service
 @Transactional(readOnly = true)
@@ -31,16 +31,16 @@ class ReportService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun getReportById(id: UUID): ReportDTO? {
+  fun getReportById(id: UUID): ReportDto? {
     return reportRepository.findById(id).getOrNull()?.toDto()
   }
 
-  fun getReportByIncidentNumber(incidentNumber: String): ReportDTO? {
+  fun getReportByIncidentNumber(incidentNumber: String): ReportDto? {
     return reportRepository.findOneByIncidentNumber(incidentNumber)?.toDto()
   }
 
   @Transactional
-  fun createReport(createReportRequest: CreateReportRequest): ReportDTO {
+  fun createReport(createReportRequest: CreateReportRequest): ReportDto {
     val event = if (createReportRequest.createNewEvent) {
       createReportRequest.toNewEvent(
         eventRepository.generateEventId(),
