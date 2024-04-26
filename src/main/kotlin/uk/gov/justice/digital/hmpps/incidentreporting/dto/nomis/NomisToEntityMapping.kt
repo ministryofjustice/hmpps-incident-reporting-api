@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.incidentreporting.model.nomis
+package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event

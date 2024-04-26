@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.SyncService

@@ -13,7 +13,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.io.Serializable
 import java.time.Clock
