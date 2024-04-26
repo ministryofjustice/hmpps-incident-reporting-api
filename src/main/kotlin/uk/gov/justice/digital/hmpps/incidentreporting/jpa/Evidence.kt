@@ -14,11 +14,10 @@ class Evidence(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private val incident: IncidentReport,
+  private val report: Report,
 
-  val typeOfEvidence: String,
-
-  val descriptionOfEvidence: String,
+  val type: String,
+  val description: String,
 ) {
-  fun getIncident() = incident
+  fun getReport() = report
 }

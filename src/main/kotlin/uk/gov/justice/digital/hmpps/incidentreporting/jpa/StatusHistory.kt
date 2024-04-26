@@ -17,10 +17,10 @@ class StatusHistory(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val incident: IncidentReport,
+  val report: Report,
 
   @Enumerated(EnumType.STRING)
-  val status: IncidentStatus,
+  val status: Status,
 
   val setOn: LocalDateTime,
 

@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.service
 import org.springframework.stereotype.Service
 import java.time.Clock
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDTO
 
 @Service
 class EventPublishAndAuditService(
@@ -13,28 +13,33 @@ class EventPublishAndAuditService(
 ) {
 
   fun publishEvent(
-    eventType: IncidentReportDomainEventType,
-    incidentReport: List<IncidentReportDTO>,
+    eventType: ReportDomainEventType,
+    reports: List<ReportDTO>,
     auditData: Any? = null,
     source: InformationSource = InformationSource.DPS,
   ) {
-    incidentReport.forEach {
-      publishEvent(eventType = eventType, incidentReport = it, auditData = it, source = source)
+    reports.forEach {
+      publishEvent(
+        eventType = eventType,
+        report = it,
+        auditData = it,
+        source = source,
+      )
     }
   }
 
   fun publishEvent(
-    eventType: IncidentReportDomainEventType,
-    incidentReport: IncidentReportDTO,
+    eventType: ReportDomainEventType,
+    report: ReportDTO,
     auditData: Any? = null,
     source: InformationSource = InformationSource.DPS,
   ) {
-    publishEvent(event = eventType, incidentReport = incidentReport, source = source)
+    publishEvent(event = eventType, report = report, source = source)
 
     auditData?.let {
       auditEvent(
         auditType = eventType.auditType,
-        id = incidentReport.id.toString(),
+        id = report.id.toString(),
         auditData = it,
         source = source,
       )
@@ -42,16 +47,16 @@ class EventPublishAndAuditService(
   }
 
   private fun publishEvent(
-    event: IncidentReportDomainEventType,
-    incidentReport: IncidentReportDTO,
+    event: ReportDomainEventType,
+    report: ReportDTO,
     source: InformationSource,
   ) {
     snsService.publishDomainEvent(
       eventType = event,
-      description = "${incidentReport.id} ${event.description}",
+      description = "${report.id} ${event.description}",
       occurredAt = LocalDateTime.now(clock),
       additionalInformation = AdditionalInformation(
-        id = incidentReport.id,
+        id = report.id,
         source = source,
       ),
     )

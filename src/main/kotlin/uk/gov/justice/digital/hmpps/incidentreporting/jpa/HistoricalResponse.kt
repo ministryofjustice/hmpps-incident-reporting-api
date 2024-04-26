@@ -12,11 +12,11 @@ class HistoricalResponse(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
-  override val itemValue: String,
+  override val response: String,
 
   override val recordedBy: String,
 
   override val recordedOn: LocalDateTime,
 
   override val additionalInformation: String? = null,
-) : IncidentAnswer
+) : GenericResponse

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.service.IncidentReportDomainEventType
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.SyncService
 import java.util.UUID
 
@@ -70,17 +70,17 @@ class NomisSyncResource(
   fun upsertIncidentReport(
     @RequestBody
     @Validated
-    syncRequest: UpsertNomisIncident,
-  ): ResponseEntity<uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport> {
+    syncRequest: NomisSyncRequest,
+  ): ResponseEntity<uk.gov.justice.digital.hmpps.incidentreporting.dto.Report> {
     val result = syncService.upsert(syncRequest)
     return ResponseEntity(
       if (syncRequest.initialMigration) {
         result
       } else {
         val eventType = if (syncRequest.id != null) {
-          IncidentReportDomainEventType.INCIDENT_REPORT_AMENDED
+          ReportDomainEventType.INCIDENT_REPORT_AMENDED
         } else {
-          IncidentReportDomainEventType.INCIDENT_REPORT_CREATED
+          ReportDomainEventType.INCIDENT_REPORT_CREATED
         }
         eventPublishAndAudit(
           eventType,
@@ -101,7 +101,7 @@ class NomisSyncResource(
 }
 
 @Schema(description = "IncidentReport Details raised/updated in NOMIS")
-data class UpsertNomisIncident(
+data class NomisSyncRequest(
   @Schema(
     description = "For updates, this value is the UUID of the existing incident. For new incidents, this value is null.",
     required = false,
@@ -111,5 +111,5 @@ data class UpsertNomisIncident(
   @Schema(description = "For initial migration this is true", required = false, defaultValue = "false")
   val initialMigration: Boolean = false,
   @Schema(description = "IncidentReport Details raised/updated in NOMIS", required = true)
-  val incidentReport: NomisIncidentReport,
+  val incidentReport: NomisReport,
 )

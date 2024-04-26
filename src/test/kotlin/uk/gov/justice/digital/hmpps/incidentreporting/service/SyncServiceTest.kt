@@ -13,28 +13,28 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffender
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffenderParty
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentEvent
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentStatus
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.IncidentType
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.IncidentReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.CodeDescription
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentReport
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.NomisIncidentStatus
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Offender
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.OffenderParty
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.Staff
-import uk.gov.justice.digital.hmpps.incidentreporting.model.nomis.StaffParty
-import uk.gov.justice.digital.hmpps.incidentreporting.resource.IncidentReportNotFoundException
-import uk.gov.justice.digital.hmpps.incidentreporting.resource.UpsertNomisIncident
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.resource.NomisSyncRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.time.LocalDateTime
 import java.util.Optional
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentReport as IncidentReportDto
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 class SyncServiceTest {
-  private val reportRepository: IncidentReportRepository = mock()
+  private val reportRepository: ReportRepository = mock()
   private val telemetryClient: TelemetryClient = mock()
 
   private val syncService = SyncService(
@@ -48,36 +48,36 @@ class SyncServiceTest {
 
   private val reportedBy = "user2"
 
-  /** incident report upsert request – copied with modifications in tests */
-  private val sampleUpsert = UpsertNomisIncident(
-    incidentReport = NomisIncidentReport(
+  /** incident report sync request – copied with modifications in tests */
+  private val sampleSyncRequest = NomisSyncRequest(
+    incidentReport = NomisReport(
       incidentId = 112414323,
       questionnaireId = 2124,
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
-      prison = CodeDescription("MDI", "Moorland (HMP)"),
-      status = NomisIncidentStatus("AWAN", "Awaiting Analysis"),
+      prison = NomisCode("MDI", "Moorland (HMP)"),
+      status = NomisStatus("AWAN", "Awaiting Analysis"),
       type = "SELF_HARM",
       lockedResponse = false,
       incidentDateTime = whenIncidentHappened,
-      reportingStaff = Staff(reportedBy, 121, "John", "Smith"),
+      reportingStaff = NomisStaff(reportedBy, 121, "John", "Smith"),
       reportedDateTime = now,
       staffParties = listOf(
-        StaffParty(
-          Staff("user3", 124, "Mary", "Jones"),
-          CodeDescription("PAS", "Present at scene"),
+        NomisStaffParty(
+          NomisStaff("user3", 124, "Mary", "Jones"),
+          NomisCode("PAS", "Present at scene"),
           "Found offender in cell",
         ),
       ),
       offenderParties = listOf(
-        OffenderParty(
-          offender = Offender(
+        NomisOffenderParty(
+          offender = NomisOffender(
             offenderNo = "A1234AA",
             firstName = "Trevor",
             lastName = "Smith",
           ),
-          role = CodeDescription("PERP", "Perpetrator"),
-          outcome = CodeDescription("HELTH", "ACCT"),
+          role = NomisCode("PERP", "Perpetrator"),
+          outcome = NomisCode("HELTH", "ACCT"),
           comment = "First time self-harming",
         ),
       ),
@@ -89,27 +89,28 @@ class SyncServiceTest {
 
   private val sampleReportId = UUID.fromString("11111111-2222-3333-4444-555555555555")
 
-  /** saved entity based on successful `sampleUpsert` */
-  private val sampleReport = IncidentReport(
+  /** saved entity based on successful `sampleSyncRequest` */
+  private val sampleReport = Report(
     id = sampleReportId,
     incidentNumber = "112414323",
     incidentDateAndTime = whenIncidentHappened,
-    incidentType = IncidentType.SELF_HARM,
-    summary = "Cutting",
-    incidentDetails = "Offender was found in own cell with a razor",
+    type = Type.SELF_HARM,
+    title = "Cutting",
+    description = "Offender was found in own cell with a razor",
     prisonId = "MDI",
-    event = IncidentEvent(
+    event = Event(
       eventId = "112414323",
       eventDateAndTime = whenIncidentHappened,
       prisonId = "MDI",
-      eventDetails = "Offender was found in own cell with a razor",
+      title = "Cutting",
+      description = "Offender was found in own cell with a razor",
       createdDate = now,
       lastModifiedDate = now,
       lastModifiedBy = reportedBy,
     ),
     reportedBy = reportedBy,
     reportedDate = now,
-    status = IncidentStatus.AWAITING_ANALYSIS,
+    status = Status.AWAITING_ANALYSIS,
     assignedTo = reportedBy,
     source = InformationSource.NOMIS,
     createdDate = now,
@@ -118,14 +119,14 @@ class SyncServiceTest {
   )
 
   /** compare report entity about to be saved with the mocked response */
-  private fun isEqualToSampleReport(report: IncidentReport, expectedId: UUID?): Boolean {
+  private fun isEqualToSampleReport(report: Report, expectedId: UUID?): Boolean {
     // NB: cannot compare arg to sampleReport because IncidentReport.equals only compares incidentNumber
     return report.id == expectedId &&
       report.incidentNumber == sampleReport.incidentNumber &&
       report.incidentDateAndTime == sampleReport.incidentDateAndTime &&
-      report.getIncidentType() == sampleReport.getIncidentType() &&
-      report.summary == sampleReport.summary &&
-      report.incidentDetails == sampleReport.incidentDetails &&
+      report.getType() == sampleReport.getType() &&
+      report.title == sampleReport.title &&
+      report.description == sampleReport.description &&
       report.prisonId == sampleReport.prisonId &&
       report.reportedBy == sampleReport.reportedBy &&
       report.reportedDate == sampleReport.reportedDate &&
@@ -139,33 +140,36 @@ class SyncServiceTest {
   }
 
   /** compare event entity about to be saved with the mocked response */
-  private fun isEqualToSampleEvent(event: IncidentEvent): Boolean {
+  private fun isEqualToSampleEvent(event: Event): Boolean {
     // NB: cannot compare arg to sampleReport because IncidentEvent.equals only compares eventId
     val sampleEvent = sampleReport.event
     return event.eventId == sampleEvent.eventId &&
       event.eventDateAndTime == sampleEvent.eventDateAndTime &&
       event.prisonId == sampleEvent.prisonId &&
-      event.eventDetails == sampleEvent.eventDetails &&
+      event.description == sampleEvent.description &&
       event.createdDate == sampleEvent.createdDate &&
       event.lastModifiedDate == sampleEvent.lastModifiedDate &&
       event.lastModifiedBy == sampleEvent.lastModifiedBy
   }
 
-  private fun assertSampleReportConvertedToDto(report: IncidentReportDto) {
+  private fun assertSampleReportConvertedToDto(report: ReportDto) {
     assertThat(report.id).isEqualTo(sampleReportId)
     assertThat(report.incidentNumber).isEqualTo("112414323")
-    assertThat(report.incidentType).isEqualTo(IncidentType.SELF_HARM)
+    assertThat(report.type).isEqualTo(Type.SELF_HARM)
     assertThat(report.incidentDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.prisonId).isEqualTo("MDI")
-    assertThat(report.summary).isEqualTo("Cutting")
-    assertThat(report.incidentDetails).isEqualTo("Offender was found in own cell with a razor")
+    assertThat(report.title).isEqualTo("Cutting")
+    assertThat(report.description).isEqualTo("Offender was found in own cell with a razor")
     assertThat(report.event.eventId).isEqualTo("112414323")
     assertThat(report.event.eventDateAndTime).isEqualTo(whenIncidentHappened)
-    assertThat(report.event.eventDetails).isEqualTo("Offender was found in own cell with a razor")
+    assertThat(report.event.description).isEqualTo("Offender was found in own cell with a razor")
     assertThat(report.event.prisonId).isEqualTo("MDI")
+    assertThat(report.event.createdDate.toString()).isEqualTo("2023-12-05T12:34:56")
+    assertThat(report.event.lastModifiedBy).isEqualTo("user2")
+    assertThat(report.event.lastModifiedDate.toString()).isEqualTo("2023-12-05T12:34:56")
     assertThat(report.reportedBy).isEqualTo(reportedBy)
     assertThat(report.reportedDate).isEqualTo(now)
-    assertThat(report.status).isEqualTo(IncidentStatus.AWAITING_ANALYSIS)
+    assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
     assertThat(report.assignedTo).isEqualTo(reportedBy)
     assertThat(report.createdDate).isEqualTo(now)
     assertThat(report.lastModifiedDate).isEqualTo(now)
@@ -183,14 +187,14 @@ class SyncServiceTest {
   @ParameterizedTest(name = "can sync a new report during initial migration: {0}")
   @ValueSource(booleans = [true, false])
   fun `can sync a new report during initial migration`(initialMigration: Boolean) {
-    val upsert = sampleUpsert.copy(
+    val syncRequest = sampleSyncRequest.copy(
       id = null,
       initialMigration = initialMigration,
     )
 
     whenever(reportRepository.save(any())).thenReturn(sampleReport)
 
-    val report = syncService.upsert(upsert)
+    val report = syncService.upsert(syncRequest)
 
     // verify that correct entity was to be saved
     verify(reportRepository).save(
@@ -215,14 +219,14 @@ class SyncServiceTest {
 
   @Test
   fun `can update existing report`() {
-    val upsert = sampleUpsert.copy(
+    val syncRequest = sampleSyncRequest.copy(
       id = sampleReportId,
       initialMigration = false,
     )
 
     whenever(reportRepository.findById(sampleReportId)).thenReturn(Optional.of(sampleReport))
 
-    val report = syncService.upsert(upsert)
+    val report = syncService.upsert(syncRequest)
 
     // TODO: CANNOT verify that correct entity was to be saved,
     //   `reportRepository.save` not explicitly called
@@ -246,7 +250,7 @@ class SyncServiceTest {
   @Test
   fun `cannot update missing report`() {
     val missingId = UUID.fromString("00000000-0000-0000-0000-000000000000")
-    val upsert = sampleUpsert.copy(
+    val syncRequest = sampleSyncRequest.copy(
       id = missingId,
       initialMigration = false,
     )
@@ -254,8 +258,8 @@ class SyncServiceTest {
     whenever(reportRepository.findById(missingId)).thenReturn(Optional.empty())
 
     assertThatThrownBy {
-      syncService.upsert(upsert)
-    }.isInstanceOf(IncidentReportNotFoundException::class.java)
+      syncService.upsert(syncRequest)
+    }.isInstanceOf(ReportNotFoundException::class.java)
 
     // verify entity not saved
     verify(reportRepository, never()).save(any())

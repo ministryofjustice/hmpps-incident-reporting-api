@@ -1,32 +1,34 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import java.time.LocalDateTime
 
 @Entity
-class PrisonerInvolvement(
+class CorrectionRequest(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private val report: Report,
+  val report: Report,
 
-  val prisonerNumber: String,
+  val correctionRequestedBy: String,
 
-  @Enumerated(EnumType.STRING)
-  val prisonerInvolvement: PrisonerRole,
+  val correctionRequestedAt: LocalDateTime,
 
-  @Enumerated(EnumType.STRING)
-  val outcome: PrisonerOutcome? = null,
+  val reason: CorrectionReason,
 
-  val comment: String? = null,
-) {
-  fun getReport() = report
+  val descriptionOfChange: String,
+)
+
+enum class CorrectionReason {
+  MISTAKE,
+  INCORRECT_INFORMATION,
+  MISSING_INFORMATION,
+  OTHER,
 }
