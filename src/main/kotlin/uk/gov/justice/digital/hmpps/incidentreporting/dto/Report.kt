@@ -28,12 +28,3 @@ data class Report(
 
   val createdInNomis: Boolean = false,
 )
-
-@Schema(description = "Event linking multiple incident reports")
-data class Event(
-  val eventId: String,
-  val eventDateAndTime: LocalDateTime,
-  val prisonId: String,
-  val title: String,
-  val description: String,
-)

@@ -23,7 +23,7 @@ data class CreateReportRequest(
     return Report(
       incidentNumber = incidentNumber,
       type = type,
-      title = title ?: "Incident Report $incidentNumber",
+      title = title,
       incidentDateAndTime = incidentDateAndTime,
       prisonId = prisonId,
       description = description,

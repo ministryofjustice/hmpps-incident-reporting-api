@@ -9,9 +9,9 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event
 import java.io.Serializable
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
 
 @Entity
 class Event(
@@ -57,11 +57,14 @@ class Event(
     return eventId.hashCode()
   }
 
-  fun toDto() = Event(
+  fun toDto() = EventDto(
     eventId = eventId,
     prisonId = prisonId,
     eventDateAndTime = eventDateAndTime,
     title = title,
     description = description,
+    createdDate = createdDate,
+    lastModifiedDate = lastModifiedDate,
+    lastModifiedBy = lastModifiedBy,
   )
 }

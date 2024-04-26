@@ -31,7 +31,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundExc
 import java.time.LocalDateTime
 import java.util.Optional
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as IncidentReportDto
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 class SyncServiceTest {
   private val reportRepository: ReportRepository = mock()
@@ -152,7 +152,7 @@ class SyncServiceTest {
       event.lastModifiedBy == sampleEvent.lastModifiedBy
   }
 
-  private fun assertSampleReportConvertedToDto(report: IncidentReportDto) {
+  private fun assertSampleReportConvertedToDto(report: ReportDto) {
     assertThat(report.id).isEqualTo(sampleReportId)
     assertThat(report.incidentNumber).isEqualTo("112414323")
     assertThat(report.type).isEqualTo(Type.SELF_HARM)
@@ -164,6 +164,9 @@ class SyncServiceTest {
     assertThat(report.event.eventDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.event.description).isEqualTo("Offender was found in own cell with a razor")
     assertThat(report.event.prisonId).isEqualTo("MDI")
+    assertThat(report.event.createdDate.toString()).isEqualTo("2023-12-05T12:34:56")
+    assertThat(report.event.lastModifiedBy).isEqualTo("user2")
+    assertThat(report.event.lastModifiedDate.toString()).isEqualTo("2023-12-05T12:34:56")
     assertThat(report.reportedBy).isEqualTo(reportedBy)
     assertThat(report.reportedDate).isEqualTo(now)
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)

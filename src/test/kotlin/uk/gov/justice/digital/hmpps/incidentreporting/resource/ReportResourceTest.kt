@@ -116,7 +116,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
-                "description": "Details of the event"
+                "description": "Details of the event",
+                "createdDate": "2023-12-05T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:34:56",
+                "lastModifiedBy": "USER1"
               },
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
@@ -155,7 +158,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
-                "description": "Details of the event"
+                "description": "Details of the event",
+                "createdDate": "2023-12-05T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:34:56",
+                "lastModifiedBy": "USER1"
               },
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
@@ -264,7 +270,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An incident occurred",
-                "description": "Longer explanation of incident"
+                "description": "Longer explanation of incident",
+                "createdDate": "2023-12-05T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:34:56",
+                "lastModifiedBy": "INCIDENT_REPORTING_API"
               },
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",
@@ -309,7 +318,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
-                "description": "Details of the event"
+                "description": "Details of the event",
+                "createdDate": "2023-12-05T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:34:56",
+                "lastModifiedBy": "USER1"
               },
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",

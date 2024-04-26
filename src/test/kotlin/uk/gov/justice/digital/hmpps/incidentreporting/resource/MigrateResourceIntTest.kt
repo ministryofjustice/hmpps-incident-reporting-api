@@ -261,7 +261,10 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
-                "description": "A New Incident From NOMIS"
+                "description": "A New Incident From NOMIS",
+                "createdDate": "2023-12-05T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:34:56",
+                "lastModifiedBy": "user2"
               },
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",
@@ -309,7 +312,10 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
-                "description": "New NOMIS incident"
+                "description": "New NOMIS incident",
+                "createdDate": "2023-12-05T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:34:56",
+                "lastModifiedBy": "user2"
               },
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",
@@ -363,7 +369,10 @@ class MigrateResourceIntTest : SqsIntegrationTestBase() {
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
-                "description": "Details of the event"
+                "description": "Details of the event",
+                "createdDate": "2023-12-05T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:34:56",
+                "lastModifiedBy": "USER1"
               },
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
