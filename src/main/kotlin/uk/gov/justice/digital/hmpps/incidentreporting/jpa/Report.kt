@@ -21,7 +21,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.mapIncidentStatus
 import java.io.Serializable
 import java.time.Clock
 import java.time.LocalDateTime
@@ -223,7 +222,7 @@ class Report(
   fun updateWith(upsert: NomisReport, updatedBy: String, clock: Clock) {
     this.title = upsert.title ?: "NO DETAILS GIVEN"
     this.description = upsert.description ?: "NO DETAILS GIVEN"
-    this.status = mapIncidentStatus(upsert.status.code)
+    this.status = Status.fromNomisCode(upsert.status.code)
     this.lastModifiedBy = updatedBy
     this.lastModifiedDate = LocalDateTime.now(clock)
     // TODO: need to compare and update other fields and related entities
