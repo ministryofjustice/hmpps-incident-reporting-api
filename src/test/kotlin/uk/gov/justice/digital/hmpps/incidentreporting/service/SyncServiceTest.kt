@@ -126,6 +126,7 @@ class SyncServiceTest {
   init {
     sampleReport.addQuestion("IMPL", "What implement was used?")
       .addResponse("Razor", null, reportedBy, now)
+    sampleReport.addLocation("MDI-1-029", "CELL", "Wing 1, cell 029")
     sampleReport.addStaffInvolved(StaffRole.FIRST_ON_SCENE, reportedBy)
     sampleReport.addPrisonerInvolved("A1234AA", PrisonerRole.PERPETRATOR, PrisonerOutcome.SEEN_HEALTHCARE)
     sampleReport.addEvidence("CAM", "Body worn camera")
@@ -196,6 +197,7 @@ class SyncServiceTest {
     assertThat(report.createdInNomis).isTrue()
 
     assertThat(report.history).isEmpty()
+    assertThat(report.historyOfStatuses).isEmpty()
 
     assertThat(report.questions).hasSize(1)
     val question = report.questions[0]
@@ -207,6 +209,12 @@ class SyncServiceTest {
     assertThat(response.recordedBy).isEqualTo(reportedBy)
     assertThat(response.recordedOn).isEqualTo(now)
     assertThat(response.additionalInformation).isNull()
+
+    assertThat(report.locations).hasSize(1)
+    val location = report.locations[0]
+    assertThat(location.locationId).isEqualTo("MDI-1-029")
+    assertThat(location.type).isEqualTo("CELL")
+    assertThat(location.description).isEqualTo("Wing 1, cell 029")
 
     assertThat(report.prisonersInvolved).hasSize(1)
     val prisonerInvolved = report.prisonersInvolved[0]
