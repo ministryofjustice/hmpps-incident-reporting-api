@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -7,6 +9,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Schema(description = "Incident report")
+@JsonInclude(JsonInclude.Include.ALWAYS)
 data class Report(
   @Schema(description = "The internal ID of this report", required = true)
   val id: UUID,
@@ -59,6 +62,7 @@ data class Report(
   @Schema(description = "Username of the person who last changed this report", required = true)
   val lastModifiedBy: String,
 
-  @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", required = true)
+  @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", required = false, defaultValue = "false")
+  @JsonProperty(required = false, access = JsonProperty.Access.READ_ONLY)
   val createdInNomis: Boolean = false,
 )
