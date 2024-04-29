@@ -13,7 +13,11 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
@@ -119,6 +123,20 @@ class SyncServiceTest {
     lastModifiedBy = reportedBy,
   )
 
+  init {
+    sampleReport.addQuestion("IMPL", "What implement was used?")
+      .addResponse("Razor", null, reportedBy, now)
+    sampleReport.addStaffInvolved(StaffRole.FIRST_ON_SCENE, reportedBy)
+    sampleReport.addPrisonerInvolved("A1234AA", PrisonerRole.PERPETRATOR, PrisonerOutcome.SEEN_HEALTHCARE)
+    sampleReport.addEvidence("CAM", "Body worn camera")
+    sampleReport.addCorrectionRequest(
+      "checking-user",
+      now,
+      CorrectionReason.MISSING_INFORMATION,
+      "Title should include prisoner number",
+    )
+  }
+
   /** compare report entity about to be saved with the mocked response */
   private fun isEqualToSampleReport(report: Report, expectedId: UUID?): Boolean {
     // NB: cannot compare arg to sampleReport because IncidentReport.equals only compares incidentNumber
@@ -177,12 +195,43 @@ class SyncServiceTest {
     assertThat(report.lastModifiedBy).isEqualTo(reportedBy)
     assertThat(report.createdInNomis).isTrue()
 
-    // TODO: compare more DTO properties once implemented in IR-196:
-    //   • staff & prisoner involvement
-    //   • questions & responses
-    //   • evidence
-    //   • corrections
-    //   • history
+    assertThat(report.history).isEmpty()
+
+    assertThat(report.questions).hasSize(1)
+    val question = report.questions[0]
+    assertThat(question.code).isEqualTo("IMPL")
+    assertThat(question.question).isEqualTo("What implement was used?")
+    assertThat(question.responses).hasSize(1)
+    val response = question.responses[0]
+    assertThat(response.response).isEqualTo("Razor")
+    assertThat(response.recordedBy).isEqualTo(reportedBy)
+    assertThat(response.recordedOn).isEqualTo(now)
+    assertThat(response.additionalInformation).isNull()
+
+    assertThat(report.prisonersInvolved).hasSize(1)
+    val prisonerInvolved = report.prisonersInvolved[0]
+    assertThat(prisonerInvolved.prisonerNumber).isEqualTo("A1234AA")
+    assertThat(prisonerInvolved.prisonerInvolvement).isEqualTo(PrisonerRole.PERPETRATOR)
+    assertThat(prisonerInvolved.outcome).isEqualTo(PrisonerOutcome.SEEN_HEALTHCARE)
+    assertThat(prisonerInvolved.comment).isNull()
+
+    assertThat(report.staffInvolved).hasSize(1)
+    val staffInvolved = report.staffInvolved[0]
+    assertThat(staffInvolved.staffUsername).isEqualTo(reportedBy)
+    assertThat(staffInvolved.staffRole).isEqualTo(StaffRole.FIRST_ON_SCENE)
+    assertThat(staffInvolved.comment).isNull()
+
+    assertThat(report.evidence).hasSize(1)
+    val evidence = report.evidence[0]
+    assertThat(evidence.type).isEqualTo("CAM")
+    assertThat(evidence.description).isEqualTo("Body worn camera")
+
+    assertThat(report.correctionRequests).hasSize(1)
+    val correctionRequest = report.correctionRequests[0]
+    assertThat(correctionRequest.correctionRequestedBy).isEqualTo("checking-user")
+    assertThat(correctionRequest.correctionRequestedAt).isEqualTo(now)
+    assertThat(correctionRequest.reason).isEqualTo(CorrectionReason.MISSING_INFORMATION)
+    assertThat(correctionRequest.descriptionOfChange).isEqualTo("Title should include prisoner number")
   }
 
   @ParameterizedTest(name = "can sync a new report during initial migration: {0}")
