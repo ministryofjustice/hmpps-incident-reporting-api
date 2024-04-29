@@ -19,6 +19,7 @@ class Location(
 
   val locationId: String,
 
+  // TODO: should `type` be an enum?
   val type: String,
   val description: String,
 ) {

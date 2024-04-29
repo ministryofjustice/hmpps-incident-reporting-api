@@ -13,13 +13,13 @@ class HistoricalResponse(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
+  // TODO: should we add a `val code: String` like in Question?
   override val response: String,
 
-  override val recordedBy: String,
-
-  override val recordedOn: LocalDateTime,
-
   override val additionalInformation: String? = null,
+
+  override val recordedBy: String,
+  override val recordedOn: LocalDateTime,
 ) : GenericResponse {
   fun toDto() = HistoricalResponseDto(
     response = response,

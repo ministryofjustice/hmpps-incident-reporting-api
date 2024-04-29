@@ -65,6 +65,7 @@ class Report(
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
+  // TODO: what's this for?
   val assignedTo: String,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])

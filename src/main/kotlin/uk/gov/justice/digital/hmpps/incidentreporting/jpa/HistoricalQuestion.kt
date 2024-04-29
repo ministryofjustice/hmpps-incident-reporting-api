@@ -26,6 +26,7 @@ class HistoricalQuestion(
   val history: History,
 
   override val code: String,
+  // TODO: should we force `question` to be non-null?
   override val question: String? = null,
 
   @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)

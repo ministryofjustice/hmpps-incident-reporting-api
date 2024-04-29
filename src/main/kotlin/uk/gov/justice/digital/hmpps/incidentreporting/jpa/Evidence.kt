@@ -17,6 +17,7 @@ class Evidence(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
+  // TODO: should `type` be an enum?
   val type: String,
   val description: String,
 ) {
