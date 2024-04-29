@@ -27,11 +27,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.resource.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.time.LocalDateTime
 import java.util.Optional

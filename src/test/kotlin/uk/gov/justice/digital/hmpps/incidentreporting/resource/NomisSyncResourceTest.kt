@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report

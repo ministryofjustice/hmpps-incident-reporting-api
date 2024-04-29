@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.incidentreporting.dto
+package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
