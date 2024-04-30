@@ -83,10 +83,6 @@ class ReportRepositoryTest : IntegrationTestBase() {
     report.addQuestion("WHERE_OCCURRED", "Where did this occur?")
       .addResponse("DETOX_UNIT", "They hurt themselves", "user1", now)
       .addResponse("CELL", "In the cell", "user1", now)
-      .attachLocation(report.locations[0])
-      .attachPrisonerInvolvement(report.prisonersInvolved[0])
-      .attachStaffInvolvement(report.staffInvolved[0])
-      .attachEvidence(report.evidence[0])
 
     report.addQuestion("METHOD", "Method Used to hurt themselves?")
       .addResponse("KNIFE", "They used a knife", "user1", now)

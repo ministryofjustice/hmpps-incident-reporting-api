@@ -8,22 +8,12 @@ interface GenericQuestion {
   // TODO: should we force `question` to be non-null?
   val question: String?
 
+  fun getResponses(): List<GenericResponse>
+
   fun addResponse(
     response: String,
     additionalInformation: String?,
     recordedBy: String,
     recordedOn: LocalDateTime,
   ): GenericQuestion
-
-  fun getLocation(): Location?
-  fun attachLocation(location: Location): GenericQuestion
-
-  fun getPrisonerInvolvement(): PrisonerInvolvement?
-  fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement): GenericQuestion
-
-  fun getStaffInvolvement(): StaffInvolvement?
-  fun attachStaffInvolvement(staffInvolvement: StaffInvolvement): GenericQuestion
-
-  fun getEvidence(): Evidence?
-  fun attachEvidence(evidence: Evidence): GenericQuestion
 }

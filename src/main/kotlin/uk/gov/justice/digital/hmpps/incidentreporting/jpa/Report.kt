@@ -122,8 +122,7 @@ class Report(
   }
 
   fun addEvidence(type: String, description: String): Evidence {
-    val evidenceItem =
-      Evidence(report = this, type = type, description = description)
+    val evidenceItem = Evidence(report = this, type = type, description = description)
     evidence.add(evidenceItem)
     return evidenceItem
   }
@@ -210,11 +209,7 @@ class Report(
   fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
     val history = addHistory(type, changedDate, staffChanged)
     getQuestions().filterNotNull().forEach { question ->
-      val historicalQuestion = history.addQuestion(question.code, question.question)
-      question.getEvidence()?.let { historicalQuestion.attachEvidence(it) }
-      question.getLocation()?.let { historicalQuestion.attachLocation(it) }
-      question.getStaffInvolvement()?.let { historicalQuestion.attachStaffInvolvement(it) }
-      question.getPrisonerInvolvement()?.let { historicalQuestion.attachPrisonerInvolvement(it) }
+      history.addQuestion(question.code, question.question)
     }
     return history
   }

@@ -33,6 +33,7 @@ class History(
   @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
 ) {
+  fun getReport() = report
 
   fun addQuestion(
     code: String,
@@ -46,8 +47,6 @@ class History(
     questions.add(historicalQuestion)
     return historicalQuestion
   }
-
-  fun getReport() = report
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

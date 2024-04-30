@@ -19,7 +19,7 @@ class StatusHistory(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val report: Report,
+  private val report: Report,
 
   @Enumerated(EnumType.STRING)
   val status: Status,
@@ -27,6 +27,8 @@ class StatusHistory(
   val setOn: LocalDateTime,
   val setBy: String,
 ) {
+  fun getReport() = report
+
   fun toDto() = StatusHistoryDto(
     status = status,
     setOn = setOn,

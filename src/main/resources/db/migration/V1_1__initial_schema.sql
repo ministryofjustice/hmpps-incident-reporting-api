@@ -112,22 +112,14 @@ create table location
 
 create table question
 (
-    id                      serial
+    id                     serial
         constraint question_pk primary key,
-    report_id               uuid              not null
+    report_id              uuid              not null
         constraint question_report_fk references report (id) on delete cascade,
-    sequence                integer default 0 not null,
-    code                    varchar(120),
-    question                text,
-    additional_information  text,
-    location_id             bigint
-        constraint question_location_fk references location (id) on delete cascade,
-    prisoner_involvement_id bigint
-        constraint question_prisoner_involvement_fk references prisoner_involvement (id) on delete cascade,
-    evidence_id             bigint
-        constraint question_evidence_fk references evidence (id) on delete cascade,
-    staff_involvement_id    bigint
-        constraint question_staff_involvement_fk references staff_involvement (id) on delete cascade
+    sequence               integer default 0 not null,
+    code                   varchar(120),
+    question               text,
+    additional_information text
 );
 
 create table response
@@ -156,22 +148,14 @@ create table history
 
 create table historical_question
 (
-    id                      serial
+    id                     serial
         constraint historical_question_pk primary key,
-    history_id              bigint            not null
+    history_id             bigint            not null
         constraint historical_question_history_fk references history (id) on delete cascade,
-    sequence                integer default 0 not null,
-    code                    varchar(120)      not null,
-    question                text,
-    additional_information  text,
-    location_id             bigint
-        constraint historical_question_location_fk references location (id) on delete cascade,
-    prisoner_involvement_id bigint
-        constraint historical_question_prisoner_involvement_fk references prisoner_involvement (id) on delete cascade,
-    evidence_id             bigint
-        constraint historical_question_evidence_fk references evidence (id) on delete cascade,
-    staff_involvement_id    bigint
-        constraint historical_question_staff_involvement_fk references staff_involvement (id) on delete cascade
+    sequence               integer default 0 not null,
+    code                   varchar(120)      not null,
+    question               text,
+    additional_information text
 );
 
 create table historical_response

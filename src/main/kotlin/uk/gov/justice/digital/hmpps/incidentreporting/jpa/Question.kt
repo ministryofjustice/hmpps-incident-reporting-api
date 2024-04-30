@@ -9,9 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
 import jakarta.persistence.OrderColumn
-import jakarta.validation.ValidationException
 import org.hibernate.Hibernate
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
@@ -33,22 +31,10 @@ class Question(
   @OrderColumn(name = "sequence")
   @JoinColumn(name = "question_id", nullable = false)
   private val responses: MutableList<Response> = mutableListOf(),
-
-  @OneToOne(fetch = FetchType.LAZY)
-  private var evidence: Evidence? = null,
-
-  @OneToOne(fetch = FetchType.LAZY)
-  private var location: Location? = null,
-
-  @OneToOne(fetch = FetchType.LAZY)
-  private var prisonerInvolvement: PrisonerInvolvement? = null,
-
-  @OneToOne(fetch = FetchType.LAZY)
-  private var staffInvolvement: StaffInvolvement? = null,
-
 ) : GenericQuestion {
-
   fun getReport() = report
+
+  override fun getResponses(): List<Response> = responses
 
   override fun addResponse(
     response: String,
@@ -64,46 +50,6 @@ class Question(
         additionalInformation = additionalInformation,
       ),
     )
-    return this
-  }
-
-  override fun getLocation() = location
-
-  override fun attachLocation(location: Location): Question {
-    if (location.getReport() != getReport()) {
-      throw ValidationException("Cannot attach a location from a different incident report")
-    }
-    this.location = location
-    return this
-  }
-
-  override fun getPrisonerInvolvement() = prisonerInvolvement
-
-  override fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement): Question {
-    if (prisonerInvolvement.getReport() != getReport()) {
-      throw ValidationException("Cannot attach prisoner involvement from a different incident report")
-    }
-    this.prisonerInvolvement = prisonerInvolvement
-    return this
-  }
-
-  override fun getStaffInvolvement() = staffInvolvement
-
-  override fun attachStaffInvolvement(staffInvolvement: StaffInvolvement): Question {
-    if (staffInvolvement.getReport() != getReport()) {
-      throw ValidationException("Cannot attach staff involvement from a different incident report")
-    }
-    this.staffInvolvement = staffInvolvement
-    return this
-  }
-
-  override fun getEvidence() = evidence
-
-  override fun attachEvidence(evidence: Evidence): Question {
-    if (evidence.getReport() != getReport()) {
-      throw ValidationException("Cannot attach evidence from a different incident report")
-    }
-    this.evidence = evidence
     return this
   }
 
