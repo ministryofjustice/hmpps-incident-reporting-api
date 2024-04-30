@@ -116,17 +116,9 @@ classDiagram
 
 CorrectionRequest "1..*" <--> "1" Report
 Evidence "1..*" <--> "1" Report
-HistoricalQuestion "0..1" --> "0..1" Evidence
 HistoricalQuestion "0..1" --> "0..*" HistoricalResponse
 HistoricalQuestion "1..*" <--> "1" History
-HistoricalQuestion "0..1" --> "0..1" Location
-HistoricalQuestion "0..1" --> "0..1" PrisonerInvolvement
-HistoricalQuestion "0..1" --> "0..1" StaffInvolvement
-Question "0..1" --> "0..1" Evidence
-Question "0..1" --> "0..1" Location
-Question "0..1" --> "0..1" PrisonerInvolvement
 Question "0..1" --> "0..*" Response
-Question "0..1" --> "0..1" StaffInvolvement
 Report "1..*" <--> "1" Event
 Report "1" <--> "1..*" History
 Report "1" <--> "1..*" Location
@@ -172,10 +164,6 @@ classDiagram
        varchar(120) code
        text question
        text additional_information
-       bigint location_id
-       bigint prisoner_involvement_id
-       bigint evidence_id
-       bigint staff_involvement_id
        integer id
     }
     class historical_response {
@@ -215,10 +203,6 @@ classDiagram
        varchar(120) code
        text question
        text additional_information
-       bigint location_id
-       bigint prisoner_involvement_id
-       bigint evidence_id
-       bigint staff_involvement_id
        integer id
     }
     class report {
@@ -266,20 +250,12 @@ classDiagram
 
 correction_request  -->  report : report_id
 evidence  -->  report : report_id
-historical_question  -->  evidence : evidence_id
 historical_question  -->  history : history_id
-historical_question  -->  location : location_id
-historical_question  -->  prisoner_involvement : prisoner_involvement_id
-historical_question  -->  staff_involvement : staff_involvement_id
 historical_response  -->  historical_question : historical_question_id
 history  -->  report : report_id
 location  -->  report : report_id
 prisoner_involvement  -->  report : report_id
-question  -->  evidence : evidence_id
-question  -->  location : location_id
-question  -->  prisoner_involvement : prisoner_involvement_id
 question  -->  report : report_id
-question  -->  staff_involvement : staff_involvement_id
 report  -->  event : event_id
 response  -->  question : question_id
 staff_involvement  -->  report : report_id
