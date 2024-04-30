@@ -209,7 +209,15 @@ class Report(
   fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
     val history = addHistory(type, changedDate, staffChanged)
     getQuestions().filterNotNull().forEach { question ->
-      history.addQuestion(question.code, question.question)
+      val historicalQuestion = history.addQuestion(question.code, question.question)
+      question.getResponses().forEach { response ->
+        historicalQuestion.addResponse(
+          response.response,
+          response.additionalInformation,
+          response.recordedBy,
+          response.recordedOn,
+        )
+      }
     }
     return history
   }
