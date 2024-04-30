@@ -117,10 +117,22 @@ class Report(
 
   fun getType() = type
 
-  fun changeType(newType: Type, changedDate: LocalDateTime, staffChanged: String) {
+  fun changeType(newType: Type, changedDate: LocalDateTime, staffChanged: String): Report {
     copyToHistory(changedDate, staffChanged)
     questions.clear()
     type = newType
+    return this
+  }
+
+  fun addStatusHistory(status: Status, setOn: LocalDateTime, setBy: String): StatusHistory {
+    val statusHistory = StatusHistory(
+      report = this,
+      status = status,
+      setOn = setOn,
+      setBy = setBy,
+    )
+    historyOfStatuses.add(statusHistory)
+    return statusHistory
   }
 
   fun addEvidence(type: String, description: String): Evidence {
@@ -208,7 +220,7 @@ class Report(
     return historyItem
   }
 
-  fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
+  private fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
     val history = addHistory(type, changedDate, staffChanged)
     getQuestions().filterNotNull().forEach { question ->
       val historicalQuestion = history.addQuestion(question.code, question.question)
