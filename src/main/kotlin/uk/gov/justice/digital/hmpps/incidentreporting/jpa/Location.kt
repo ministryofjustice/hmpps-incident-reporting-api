@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Location as LocationDto
 
 @Entity
 class Location(
@@ -18,8 +19,15 @@ class Location(
 
   val locationId: String,
 
+  // TODO: should `type` be an enum?
   val type: String,
   val description: String,
 ) {
   fun getReport() = report
+
+  fun toDto() = LocationDto(
+    locationId = locationId,
+    type = type,
+    description = description,
+  )
 }

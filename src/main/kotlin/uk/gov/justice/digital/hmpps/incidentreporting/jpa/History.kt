@@ -11,7 +11,9 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.History as HistoryDto
 
 @Entity
 class History(
@@ -66,4 +68,11 @@ class History(
     result = 31 * result + changeDate.hashCode()
     return result
   }
+
+  fun toDto() = HistoryDto(
+    type = type,
+    changeDate = changeDate,
+    changeStaffUsername = changeStaffUsername,
+    questions = questions.map { it.toDto() },
+  )
 }

@@ -4,6 +4,8 @@ import java.time.LocalDateTime
 
 interface GenericQuestion {
   val code: String
+
+  // TODO: should we force `question` to be non-null?
   val question: String?
 
   fun addResponse(

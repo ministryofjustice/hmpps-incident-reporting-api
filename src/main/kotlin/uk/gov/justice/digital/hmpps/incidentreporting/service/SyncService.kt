@@ -5,13 +5,14 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.toNewEntity
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.resource.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.time.Clock
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDTO
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Service
 @Transactional
@@ -24,11 +25,11 @@ class SyncService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun upsert(syncRequest: NomisSyncRequest): ReportDTO {
+  fun upsert(syncRequest: NomisSyncRequest): ReportDto {
     val report = if (syncRequest.id != null) {
-      updateExistingReport(syncRequest.id, syncRequest)
+      updateExistingReport(syncRequest.id, syncRequest.incidentReport)
     } else {
-      createNewReport(syncRequest)
+      createNewReport(syncRequest.incidentReport)
     }
 
     log.info("Synchronised Incident Report: ${report.id} (created: ${syncRequest.id == null}, updated: ${syncRequest.id != null})")
@@ -45,16 +46,15 @@ class SyncService(
     return report
   }
 
-  private fun updateExistingReport(reportId: UUID, syncRequest: NomisSyncRequest): ReportDTO {
+  private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportDto {
     val reportToUpdate = reportRepository.findById(reportId)
       .orElseThrow { ReportNotFoundException(reportId.toString()) }
-
-    reportToUpdate.updateWith(syncRequest.incidentReport, syncRequest.incidentReport.reportingStaff.username, clock)
+    reportToUpdate.updateWith(incidentReport, incidentReport.reportingStaff.username, clock)
     return reportToUpdate.toDto()
   }
 
-  private fun createNewReport(syncRequest: NomisSyncRequest): ReportDTO {
-    val reportToCreate = syncRequest.incidentReport.toNewEntity(clock)
+  private fun createNewReport(incidentReport: NomisReport): ReportDto {
+    val reportToCreate = incidentReport.toNewEntity(clock)
     return reportRepository.save(reportToCreate).toDto()
   }
 }

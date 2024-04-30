@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Evidence as EvidenceDto
 
 @Entity
 class Evidence(
@@ -16,8 +17,14 @@ class Evidence(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
+  // TODO: should `type` be an enum?
   val type: String,
   val description: String,
 ) {
   fun getReport() = report
+
+  fun toDto() = EvidenceDto(
+    type = type,
+    description = description,
+  )
 }

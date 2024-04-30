@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Response as ResponseDto
 
 @Entity
 class Response(
@@ -12,11 +13,18 @@ class Response(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
+  // TODO: should we add a `val code: String` like in Question?
   override val response: String,
 
-  override val recordedBy: String,
-
-  override val recordedOn: LocalDateTime,
-
   override val additionalInformation: String? = null,
-) : GenericResponse
+
+  override val recordedBy: String,
+  override val recordedOn: LocalDateTime,
+) : GenericResponse {
+  fun toDto() = ResponseDto(
+    response = response,
+    recordedBy = recordedBy,
+    recordedOn = recordedOn,
+    additionalInformation = additionalInformation,
+  )
+}

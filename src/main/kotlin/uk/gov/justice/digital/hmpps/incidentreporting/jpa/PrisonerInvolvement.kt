@@ -8,6 +8,9 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.PrisonerInvolvement as PrisonerInvolvementDto
 
 @Entity
 class PrisonerInvolvement(
@@ -29,4 +32,11 @@ class PrisonerInvolvement(
   val comment: String? = null,
 ) {
   fun getReport() = report
+
+  fun toDto() = PrisonerInvolvementDto(
+    prisonerNumber = prisonerNumber,
+    prisonerInvolvement = prisonerInvolvement,
+    outcome = outcome,
+    comment = comment,
+  )
 }

@@ -1,28 +1,28 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.CorrectionReason
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.convertIncidentType
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.mapIncidentStatus
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.mapPrisonerOutcome
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.mapPrisonerRole
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.mapStaffRole
-import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
 
 fun NomisReport.toNewEntity(clock: Clock): Report {
   val report = Report(
     incidentNumber = "$incidentId",
-    type = convertIncidentType(type),
+    type = Type.fromNomisCode(type),
     incidentDateAndTime = incidentDateTime,
     prisonId = prison.code,
     title = title ?: "NO DETAILS GIVEN",
     description = description ?: "NO DETAILS GIVEN",
     reportedBy = reportingStaff.username,
     reportedDate = reportedDateTime,
-    status = mapIncidentStatus(status.code),
+    status = Status.fromNomisCode(status.code),
     questionSetId = "$questionnaireId",
     createdDate = LocalDateTime.now(clock),
     lastModifiedDate = LocalDateTime.now(clock),
@@ -43,7 +43,7 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
 
   staffParties.forEach {
     report.addStaffInvolved(
-      staffRole = mapStaffRole(it.role.code),
+      staffRole = StaffRole.fromNomisCode(it.role.code),
       username = it.staff.username,
       comment = it.comment,
     )
@@ -52,8 +52,8 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
   offenderParties.forEach {
     report.addPrisonerInvolved(
       prisonerNumber = it.offender.offenderNo,
-      prisonerInvolvement = mapPrisonerRole(it.role.code),
-      prisonerOutcome = it.outcome?.let { prisonerOutcome -> mapPrisonerOutcome(prisonerOutcome.code) },
+      prisonerInvolvement = PrisonerRole.fromNomisCode(it.role.code),
+      prisonerOutcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
       comment = it.comment,
     )
   }
@@ -87,7 +87,7 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
 
   history.forEach { history ->
     val historyRecord = report.addHistory(
-      type = convertIncidentType(history.type),
+      type = Type.fromNomisCode(history.type),
       incidentChangeDate = history.incidentChangeDate.atStartOfDay(),
       staffChanged = history.incidentChangeStaff.username,
     )
@@ -110,5 +110,6 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
         }
     }
   }
+
   return report
 }

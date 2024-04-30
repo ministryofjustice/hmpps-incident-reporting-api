@@ -9,14 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.service.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
 
@@ -121,6 +121,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "lastModifiedDate": "2023-12-05T12:34:56",
                 "lastModifiedBy": "USER1"
               },
+              "questions": [],
+              "history": [],
+              "historyOfStatuses": [],
+              "staffInvolved": [],
+              "prisonersInvolved": [],
+              "locations": [],
+              "evidence": [],
+              "correctionRequests": [],
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -163,6 +171,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "lastModifiedDate": "2023-12-05T12:34:56",
                 "lastModifiedBy": "USER1"
               },
+              "questions": [],
+              "history": [],
+              "historyOfStatuses": [],
+              "staffInvolved": [],
+              "prisonersInvolved": [],
+              "locations": [],
+              "evidence": [],
+              "correctionRequests": [],
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -275,6 +291,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "lastModifiedDate": "2023-12-05T12:34:56",
                 "lastModifiedBy": "INCIDENT_REPORTING_API"
               },
+              "questions": [],
+              "history": [],
+              "historyOfStatuses": [],
+              "staffInvolved": [],
+              "prisonersInvolved": [],
+              "locations": [],
+              "evidence": [],
+              "correctionRequests": [],
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -323,6 +347,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "lastModifiedDate": "2023-12-05T12:34:56",
                 "lastModifiedBy": "USER1"
               },
+              "questions": [],
+              "history": [],
+              "historyOfStatuses": [],
+              "staffInvolved": [],
+              "prisonersInvolved": [],
+              "locations": [],
+              "evidence": [],
+              "correctionRequests": [],
               "reportedBy": "user2",
               "reportedDate": "2023-12-05T12:34:56",
               "status": "DRAFT",
