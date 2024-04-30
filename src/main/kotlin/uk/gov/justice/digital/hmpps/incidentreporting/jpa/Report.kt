@@ -125,26 +125,29 @@ class Report(
   }
 
   fun addStatusHistory(status: Status, setOn: LocalDateTime, setBy: String): StatusHistory {
-    val statusHistory = StatusHistory(
+    return StatusHistory(
       report = this,
       status = status,
       setOn = setOn,
       setBy = setBy,
-    )
-    historyOfStatuses.add(statusHistory)
-    return statusHistory
+    ).also { historyOfStatuses.add(it) }
   }
 
   fun addEvidence(type: String, description: String): Evidence {
-    val evidenceItem = Evidence(report = this, type = type, description = description)
-    evidence.add(evidenceItem)
-    return evidenceItem
+    return Evidence(
+      report = this,
+      type = type,
+      description = description,
+    ).also { evidence.add(it) }
   }
 
   fun addStaffInvolved(staffRole: StaffRole, username: String, comment: String? = null): StaffInvolvement {
-    val staff = StaffInvolvement(report = this, staffUsername = username, staffRole = staffRole, comment = comment)
-    staffInvolved.add(staff)
-    return staff
+    return StaffInvolvement(
+      report = this,
+      staffUsername = username,
+      staffRole = staffRole,
+      comment = comment,
+    ).also { staffInvolved.add(it) }
   }
 
   fun addPrisonerInvolved(
@@ -153,15 +156,13 @@ class Report(
     prisonerOutcome: PrisonerOutcome? = null,
     comment: String? = null,
   ): PrisonerInvolvement {
-    val prisoner = PrisonerInvolvement(
+    return PrisonerInvolvement(
       report = this,
       prisonerNumber = prisonerNumber,
       prisonerInvolvement = prisonerInvolvement,
       outcome = prisonerOutcome,
       comment = comment,
-    )
-    prisonersInvolved.add(prisoner)
-    return prisoner
+    ).also { prisonersInvolved.add(it) }
   }
 
   fun addLocation(
@@ -169,14 +170,12 @@ class Report(
     locationType: String,
     description: String,
   ): Location {
-    val location = Location(
+    return Location(
       report = this,
       locationId = locationId,
       type = locationType,
       description = description,
-    )
-    locations.add(location)
-    return location
+    ).also { locations.add(it) }
   }
 
   fun addCorrectionRequest(
@@ -185,39 +184,33 @@ class Report(
     reason: CorrectionReason,
     descriptionOfChange: String,
   ): CorrectionRequest {
-    val correctionRequest = CorrectionRequest(
+    return CorrectionRequest(
       report = this,
       correctionRequestedBy = correctionRequestedBy,
       correctionRequestedAt = correctionRequestedAt,
       reason = reason,
       descriptionOfChange = descriptionOfChange,
-    )
-    correctionRequests.add(correctionRequest)
-    return correctionRequest
+    ).also { correctionRequests.add(it) }
   }
 
   fun addQuestion(
     code: String,
     question: String? = null,
   ): Question {
-    val questionItem = Question(
+    return Question(
       report = this,
       code = code,
       question = question,
-    )
-    questions.add(questionItem)
-    return questionItem
+    ).also { questions.add(it) }
   }
 
   fun addHistory(type: Type, incidentChangeDate: LocalDateTime, staffChanged: String): History {
-    val historyItem = History(
+    return History(
       report = this,
       type = type,
       changeDate = incidentChangeDate,
       changeStaffUsername = staffChanged,
-    )
-    history.add(historyItem)
-    return historyItem
+    ).also { history.add(it) }
   }
 
   private fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {

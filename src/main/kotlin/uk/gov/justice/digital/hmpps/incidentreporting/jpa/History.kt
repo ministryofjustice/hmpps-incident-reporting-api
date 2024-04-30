@@ -39,13 +39,11 @@ class History(
     code: String,
     question: String? = null,
   ): HistoricalQuestion {
-    val historicalQuestion = HistoricalQuestion(
+    return HistoricalQuestion(
       history = this,
       code = code,
       question = question,
-    )
-    questions.add(historicalQuestion)
-    return historicalQuestion
+    ).also { questions.add(it) }
   }
 
   override fun equals(other: Any?): Boolean {
