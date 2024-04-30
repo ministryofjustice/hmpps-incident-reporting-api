@@ -6,7 +6,6 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
@@ -27,9 +26,8 @@ class Question(
   // TODO: should we force `question` to be non-null?
   override val question: String? = null,
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
-  @JoinColumn(name = "question_id", nullable = false)
   private val responses: MutableList<Response> = mutableListOf(),
 ) : GenericQuestion {
   fun getReport() = report
@@ -44,6 +42,7 @@ class Question(
   ): Question {
     responses.add(
       Response(
+        question = this,
         response = response,
         recordedBy = recordedBy,
         recordedOn = recordedOn,
