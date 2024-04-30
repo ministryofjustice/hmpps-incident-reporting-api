@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderBy
 import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
@@ -89,6 +90,7 @@ class Report(
   val questionSetId: String? = null,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OrderBy("change_date ASC")
   val history: MutableList<History> = mutableListOf(),
 
   @Enumerated(EnumType.STRING)
