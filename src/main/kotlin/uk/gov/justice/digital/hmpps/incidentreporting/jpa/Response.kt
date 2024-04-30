@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import org.hibernate.Hibernate
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Response as ResponseDto
 
@@ -26,6 +27,20 @@ class Response(
   override val recordedBy: String,
   override val recordedOn: LocalDateTime,
 ) : GenericResponse {
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as Response
+
+    return question == other.question && response == other.response
+  }
+
+  override fun hashCode(): Int {
+    return question.hashCode() * 31 + response.hashCode()
+  }
+
   fun toDto() = ResponseDto(
     response = response,
     recordedBy = recordedBy,

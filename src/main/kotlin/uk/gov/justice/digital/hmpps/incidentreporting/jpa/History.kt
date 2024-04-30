@@ -54,11 +54,7 @@ class History(
 
     other as History
 
-    if (report != other.report) return false
-    if (type != other.type) return false
-    if (changeDate != other.changeDate) return false
-
-    return true
+    return report == other.report && type == other.type && changeDate == other.changeDate
   }
 
   override fun hashCode(): Int {

@@ -56,10 +56,7 @@ class HistoricalQuestion(
 
     other as HistoricalQuestion
 
-    if (history != other.history) return false
-    if (code != other.code) return false
-
-    return true
+    return history == other.history && code == other.code
   }
 
   override fun hashCode(): Int {

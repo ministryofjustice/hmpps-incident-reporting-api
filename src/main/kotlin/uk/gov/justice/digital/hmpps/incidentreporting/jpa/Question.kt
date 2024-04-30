@@ -58,10 +58,7 @@ class Question(
 
     other as Question
 
-    if (report != other.report) return false
-    if (code != other.code) return false
-
-    return true
+    return report == other.report && code == other.code
   }
 
   override fun hashCode(): Int {
