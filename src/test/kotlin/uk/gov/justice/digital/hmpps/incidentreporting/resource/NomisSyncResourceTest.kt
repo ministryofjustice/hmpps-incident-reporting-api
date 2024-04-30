@@ -424,7 +424,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   ]
                 }
               ],
-              "historyOfStatuses": [],
+              "historyOfStatuses": [
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "setOn": "2023-12-05T12:34:56",
+                  "setBy": "user2"
+                }
+              ],
               "staffInvolved": [
                 {
                   "staffUsername": "user2",
@@ -507,7 +513,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "lastModifiedDate": "2023-12-05T12:34:56",
                 "lastModifiedBy": "user2"
               },
-              
               "questions": [
                 {
                   "code": "QID-000000000004",
@@ -663,7 +668,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   ]
                 }
               ],
-              "historyOfStatuses": [],
+              "historyOfStatuses": [
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "setOn": "2023-12-05T12:34:56",
+                  "setBy": "user2"
+                }
+              ],
               "staffInvolved": [
                 {
                   "staffUsername": "user2",
@@ -754,7 +765,18 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               },
               "questions": [],
               "history": [],
-              "historyOfStatuses": [],
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "setOn": "2023-12-05T12:34:56",
+                  "setBy": "USER1"
+                },
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "setOn": "2023-12-05T12:34:56",
+                  "setBy": "user2"
+                }
+              ],
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],

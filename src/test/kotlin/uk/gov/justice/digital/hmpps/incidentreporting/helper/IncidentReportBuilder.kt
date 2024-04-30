@@ -15,7 +15,7 @@ fun buildIncidentReport(
   source: InformationSource = InformationSource.DPS,
 ): Report {
   val eventDateAndTime = reportTime.minusHours(1)
-  return Report(
+  val report = Report(
     incidentNumber = incidentNumber,
     prisonId = prisonId,
     incidentDateAndTime = eventDateAndTime,
@@ -43,4 +43,6 @@ fun buildIncidentReport(
       lastModifiedBy = reportingUsername,
     ),
   )
+  report.addStatusHistory(report.status, reportTime, reportingUsername)
+  return report
 }

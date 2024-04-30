@@ -13,6 +13,9 @@ import java.time.Clock
 import java.time.LocalDateTime
 
 fun NomisReport.toNewEntity(clock: Clock): Report {
+  val now = LocalDateTime.now(clock)
+
+  val status = Status.fromNomisCode(status.code)
   val report = Report(
     incidentNumber = "$incidentId",
     type = Type.fromNomisCode(type),
@@ -22,10 +25,10 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
     description = description ?: "NO DETAILS GIVEN",
     reportedBy = reportingStaff.username,
     reportedDate = reportedDateTime,
-    status = Status.fromNomisCode(status.code),
+    status = status,
     questionSetId = "$questionnaireId",
-    createdDate = LocalDateTime.now(clock),
-    lastModifiedDate = LocalDateTime.now(clock),
+    createdDate = now,
+    lastModifiedDate = now,
     lastModifiedBy = reportingStaff.username,
     source = InformationSource.NOMIS,
     assignedTo = reportingStaff.username,
@@ -35,11 +38,12 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
       prisonId = prison.code,
       title = title ?: "NO DETAILS GIVEN",
       description = description ?: "NO DETAILS GIVEN",
-      createdDate = LocalDateTime.now(clock),
-      lastModifiedDate = LocalDateTime.now(clock),
+      createdDate = now,
+      lastModifiedDate = now,
       lastModifiedBy = reportingStaff.username,
     ),
   )
+  report.addStatusHistory(status, reportedDateTime, reportingStaff.username)
 
   staffParties.forEach {
     report.addStaffInvolved(

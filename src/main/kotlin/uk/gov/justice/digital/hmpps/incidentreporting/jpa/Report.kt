@@ -237,11 +237,20 @@ class Report(
   }
 
   fun updateWith(upsert: NomisReport, updatedBy: String, clock: Clock) {
-    this.title = upsert.title ?: "NO DETAILS GIVEN"
-    this.description = upsert.description ?: "NO DETAILS GIVEN"
-    this.status = Status.fromNomisCode(upsert.status.code)
-    this.lastModifiedBy = updatedBy
-    this.lastModifiedDate = LocalDateTime.now(clock)
+    val now = LocalDateTime.now(clock)
+
+    lastModifiedDate = now
+    lastModifiedBy = updatedBy
+
+    title = upsert.title ?: "NO DETAILS GIVEN"
+    description = upsert.description ?: "NO DETAILS GIVEN"
+
+    val newStatus = Status.fromNomisCode(upsert.status.code)
+    if (newStatus != status) {
+      status = newStatus
+      addStatusHistory(newStatus, now, updatedBy)
+    }
+
     // TODO: need to compare and update other fields and related entities
   }
 

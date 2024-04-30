@@ -123,7 +123,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               },
               "questions": [],
               "history": [],
-              "historyOfStatuses": [],
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "setOn": "2023-12-05T12:34:56",
+                  "setBy": "USER1"
+                }
+              ],
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],
@@ -173,7 +179,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               },
               "questions": [],
               "history": [],
-              "historyOfStatuses": [],
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "setOn": "2023-12-05T12:34:56",
+                  "setBy": "USER1"
+                }
+              ],
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],
@@ -293,7 +305,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               },
               "questions": [],
               "history": [],
-              "historyOfStatuses": [],
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "setOn": "2023-12-05T12:34:56",
+                  "setBy": "INCIDENT_REPORTING_API"
+                }
+              ],
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],
@@ -349,7 +367,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               },
               "questions": [],
               "history": [],
-              "historyOfStatuses": [],
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "setOn": "2023-12-05T12:34:56",
+                  "setBy": "INCIDENT_REPORTING_API"
+                }
+              ],
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],
