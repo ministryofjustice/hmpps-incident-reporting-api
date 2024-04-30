@@ -17,7 +17,7 @@ class CorrectionRequest(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val report: Report,
+  private val report: Report,
 
   val reason: CorrectionReason,
   val descriptionOfChange: String,
@@ -25,6 +25,8 @@ class CorrectionRequest(
   val correctionRequestedBy: String,
   val correctionRequestedAt: LocalDateTime,
 ) {
+  fun getReport() = report
+
   fun toDto() = CorrectionRequestDto(
     reason = reason,
     descriptionOfChange = descriptionOfChange,
