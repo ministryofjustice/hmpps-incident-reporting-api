@@ -65,4 +65,4 @@ data class Report(
   @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", required = false, defaultValue = "false")
   @JsonProperty(required = false, access = JsonProperty.Access.READ_ONLY)
   val createdInNomis: Boolean = false,
-)
+) : Dto

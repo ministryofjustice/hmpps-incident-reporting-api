@@ -12,4 +12,4 @@ data class Location(
   val type: String,
   @Schema(description = "Description of location", required = true)
   val description: String,
-)
+) : Dto

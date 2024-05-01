@@ -27,7 +27,7 @@ class StaffInvolvement(
   val staffRole: StaffRole,
 
   val comment: String? = null,
-) {
+) : DtoConvertible {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -47,7 +47,7 @@ class StaffInvolvement(
 
   fun getReport() = report
 
-  fun toDto() = StaffInvolvementDto(
+  override fun toDto() = StaffInvolvementDto(
     staffUsername = staffUsername,
     staffRole = staffRole,
     comment = comment,

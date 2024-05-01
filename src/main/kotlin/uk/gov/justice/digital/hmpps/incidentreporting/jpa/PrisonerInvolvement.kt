@@ -31,7 +31,7 @@ class PrisonerInvolvement(
   val outcome: PrisonerOutcome? = null,
 
   val comment: String? = null,
-) {
+) : DtoConvertible {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -51,7 +51,7 @@ class PrisonerInvolvement(
 
   fun getReport() = report
 
-  fun toDto() = PrisonerInvolvementDto(
+  override fun toDto() = PrisonerInvolvementDto(
     prisonerNumber = prisonerNumber,
     prisonerInvolvement = prisonerInvolvement,
     outcome = outcome,

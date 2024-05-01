@@ -14,4 +14,4 @@ data class StatusHistory(
   val setOn: LocalDateTime,
   @Schema(description = "The member of staff who changed the report status", required = true)
   val setBy: String,
-)
+) : Dto

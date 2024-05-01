@@ -16,4 +16,4 @@ data class History(
   val changeStaffUsername: String,
   @Schema(description = "Previous set of question-response pairs", required = true)
   val questions: List<HistoricalQuestion> = emptyList(),
-)
+) : Dto

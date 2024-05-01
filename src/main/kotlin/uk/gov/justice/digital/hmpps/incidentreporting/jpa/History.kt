@@ -32,7 +32,7 @@ class History(
 
   @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
-) {
+) : DtoConvertible {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -63,7 +63,7 @@ class History(
     ).also { questions.add(it) }
   }
 
-  fun toDto() = HistoryDto(
+  override fun toDto() = HistoryDto(
     type = type,
     changeDate = changeDate,
     changeStaffUsername = changeStaffUsername,

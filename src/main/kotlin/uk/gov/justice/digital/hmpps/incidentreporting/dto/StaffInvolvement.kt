@@ -13,4 +13,4 @@ data class StaffInvolvement(
   val staffRole: StaffRole,
   @Schema(description = "Optional comment on staff member involvement", required = false, defaultValue = "null")
   val comment: String? = null,
-)
+) : Dto

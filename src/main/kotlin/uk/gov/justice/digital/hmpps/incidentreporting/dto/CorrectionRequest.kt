@@ -16,4 +16,4 @@ data class CorrectionRequest(
   val correctionRequestedBy: String,
   @Schema(description = "When the changes were requested", required = true, example = "2024-04-29T12:34:56.789012")
   val correctionRequestedAt: LocalDateTime,
-)
+) : Dto

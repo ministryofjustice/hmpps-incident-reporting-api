@@ -12,4 +12,4 @@ data class Question(
   val question: String? = null,
   @Schema(description = "The responses to this question", required = true)
   val responses: List<Response> = emptyList(),
-)
+) : Dto

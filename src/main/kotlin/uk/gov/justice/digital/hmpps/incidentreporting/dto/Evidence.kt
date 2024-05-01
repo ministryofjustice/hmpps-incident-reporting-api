@@ -10,4 +10,4 @@ data class Evidence(
   val type: String,
   @Schema(description = "Description of evidence", required = true)
   val description: String,
-)
+) : Dto

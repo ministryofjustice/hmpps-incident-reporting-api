@@ -29,7 +29,7 @@ class Question(
   @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
   private val responses: MutableList<Response> = mutableListOf(),
-) : GenericQuestion {
+) : DtoConvertible, GenericQuestion {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -69,7 +69,7 @@ class Question(
     return this
   }
 
-  fun toDto() = QuestionDto(
+  override fun toDto() = QuestionDto(
     code = code,
     question = question,
     responses = responses.map { it.toDto() },

@@ -23,7 +23,7 @@ class Location(
   // TODO: should `type` be an enum?
   val type: String,
   val description: String,
-) {
+) : DtoConvertible {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -43,7 +43,7 @@ class Location(
 
   fun getReport() = report
 
-  fun toDto() = LocationDto(
+  override fun toDto() = LocationDto(
     locationId = locationId,
     type = type,
     description = description,

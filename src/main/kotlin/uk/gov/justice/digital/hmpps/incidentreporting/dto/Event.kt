@@ -25,4 +25,4 @@ data class Event(
   val lastModifiedDate: LocalDateTime,
   @Schema(description = "Username of the person who last changed this report", required = true)
   val lastModifiedBy: String,
-)
+) : Dto

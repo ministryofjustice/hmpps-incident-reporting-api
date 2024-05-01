@@ -15,4 +15,4 @@ data class Response(
   val recordedOn: LocalDateTime,
   @Schema(description = "Optional additional information", required = false, defaultValue = "null")
   val additionalInformation: String? = null,
-)
+) : Dto

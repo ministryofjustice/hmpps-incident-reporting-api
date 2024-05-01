@@ -27,7 +27,7 @@ class StatusHistory(
 
   val setOn: LocalDateTime,
   val setBy: String,
-) {
+) : DtoConvertible {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -47,7 +47,7 @@ class StatusHistory(
 
   fun getReport() = report
 
-  fun toDto() = StatusHistoryDto(
+  override fun toDto() = StatusHistoryDto(
     status = status,
     setOn = setOn,
     setBy = setBy,

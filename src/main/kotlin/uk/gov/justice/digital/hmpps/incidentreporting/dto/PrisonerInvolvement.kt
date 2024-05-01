@@ -16,4 +16,4 @@ data class PrisonerInvolvement(
   val outcome: PrisonerOutcome? = null,
   @Schema(description = "Optional comment on prisoner’s involvement", required = false, defaultValue = "null")
   val comment: String? = null,
-)
+) : Dto

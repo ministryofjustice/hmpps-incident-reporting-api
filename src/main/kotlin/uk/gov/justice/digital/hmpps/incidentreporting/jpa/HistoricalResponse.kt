@@ -26,7 +26,7 @@ class HistoricalResponse(
 
   override val recordedBy: String,
   override val recordedOn: LocalDateTime,
-) : GenericResponse {
+) : DtoConvertible, GenericResponse {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -44,7 +44,7 @@ class HistoricalResponse(
     return "HistoricalResponse(id=$id)"
   }
 
-  fun toDto() = HistoricalResponseDto(
+  override fun toDto() = HistoricalResponseDto(
     response = response,
     recordedBy = recordedBy,
     recordedOn = recordedOn,

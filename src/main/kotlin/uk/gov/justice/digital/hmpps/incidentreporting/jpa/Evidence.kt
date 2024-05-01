@@ -21,7 +21,7 @@ class Evidence(
   // TODO: should `type` be an enum?
   val type: String,
   val description: String,
-) {
+) : DtoConvertible {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -41,7 +41,7 @@ class Evidence(
 
   fun getReport() = report
 
-  fun toDto() = EvidenceDto(
+  override fun toDto() = EvidenceDto(
     type = type,
     description = description,
   )
