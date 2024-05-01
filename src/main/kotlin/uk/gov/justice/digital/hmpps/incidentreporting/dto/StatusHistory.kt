@@ -1,12 +1,10 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import java.time.LocalDateTime
 
 @Schema(description = "Previous statuses an incident report transitioned to")
-@JsonInclude(JsonInclude.Include.ALWAYS)
 data class StatusHistory(
   @Schema(description = "Previous current status of an incident report", required = true)
   val status: Status,

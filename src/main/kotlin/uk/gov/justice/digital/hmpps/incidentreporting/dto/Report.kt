@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
@@ -9,7 +8,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Schema(description = "Incident report")
-@JsonInclude(JsonInclude.Include.ALWAYS)
 data class Report(
   @Schema(description = "The internal ID of this report", required = true)
   val id: UUID,
