@@ -33,6 +33,23 @@ class History(
   @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
 ) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as History
+
+    return id == other.id
+  }
+
+  override fun hashCode(): Int {
+    return id?.hashCode() ?: 0
+  }
+
+  override fun toString(): String {
+    return "History(id=$id)"
+  }
+
   fun getReport() = report
 
   fun addQuestion(
@@ -44,22 +61,6 @@ class History(
       code = code,
       question = question,
     ).also { questions.add(it) }
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as History
-
-    return report == other.report && type == other.type && changeDate == other.changeDate
-  }
-
-  override fun hashCode(): Int {
-    var result = report.hashCode()
-    result = 31 * result + type.hashCode()
-    result = 31 * result + changeDate.hashCode()
-    return result
   }
 
   fun toDto() = HistoryDto(

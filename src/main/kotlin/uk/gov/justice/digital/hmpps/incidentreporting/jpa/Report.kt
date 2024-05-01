@@ -113,6 +113,10 @@ class Report(
     return incidentNumber.hashCode()
   }
 
+  override fun toString(): String {
+    return "Report(incidentNumber=$incidentNumber)"
+  }
+
   fun getQuestions(): List<Question> = questions
 
   fun getType() = type

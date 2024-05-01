@@ -30,6 +30,23 @@ class HistoricalQuestion(
   @OrderColumn(name = "sequence")
   private val responses: MutableList<HistoricalResponse> = mutableListOf(),
 ) : GenericQuestion {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as HistoricalQuestion
+
+    return id == other.id
+  }
+
+  override fun hashCode(): Int {
+    return id?.hashCode() ?: 0
+  }
+
+  override fun toString(): String {
+    return "HistoricalQuestion(id=$id)"
+  }
+
   override fun getResponses(): List<HistoricalResponse> = responses
 
   override fun addResponse(
@@ -48,25 +65,6 @@ class HistoricalQuestion(
       ),
     )
     return this
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as HistoricalQuestion
-
-    return history == other.history && code == other.code
-  }
-
-  override fun hashCode(): Int {
-    var result = history.hashCode()
-    result = 31 * result + code.hashCode()
-    return result
-  }
-
-  override fun toString(): String {
-    return "HistoricalQuestion(code='$code', responses=$responses)"
   }
 
   fun toDto() = HistoricalQuestionDto(

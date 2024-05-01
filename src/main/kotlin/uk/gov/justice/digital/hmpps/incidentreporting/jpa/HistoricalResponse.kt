@@ -27,18 +27,21 @@ class HistoricalResponse(
   override val recordedBy: String,
   override val recordedOn: LocalDateTime,
 ) : GenericResponse {
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
     other as HistoricalResponse
 
-    return historicalQuestion == other.historicalQuestion && response == other.response
+    return id == other.id
   }
 
   override fun hashCode(): Int {
-    return historicalQuestion.hashCode() * 31 + response.hashCode()
+    return id?.hashCode() ?: 0
+  }
+
+  override fun toString(): String {
+    return "HistoricalResponse(id=$id)"
   }
 
   fun toDto() = HistoricalResponseDto(

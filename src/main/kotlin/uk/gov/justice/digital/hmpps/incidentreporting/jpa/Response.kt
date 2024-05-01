@@ -27,18 +27,21 @@ class Response(
   override val recordedBy: String,
   override val recordedOn: LocalDateTime,
 ) : GenericResponse {
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
     other as Response
 
-    return question == other.question && response == other.response
+    return id == other.id
   }
 
   override fun hashCode(): Int {
-    return question.hashCode() * 31 + response.hashCode()
+    return id?.hashCode() ?: 0
+  }
+
+  override fun toString(): String {
+    return "Response(id=$id)"
   }
 
   fun toDto() = ResponseDto(
