@@ -273,6 +273,22 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().is4xxClientError
       }
+
+      @Test
+      fun `cannot create a report with an inactive type`() {
+        webTestClient.post().uri("/incident-reports")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            jsonString(
+              createReportRequest.copy(
+                type = Type.OLD_ASSAULT,
+              ),
+            ),
+          )
+          .exchange()
+          .expectStatus().isBadRequest
+      }
     }
 
     @Nested

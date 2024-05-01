@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.ValidationException
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -32,6 +33,9 @@ data class CreateReportRequest(
   // TODO: there is not yet a way to add any more details to a report, question-response pairs, etc
 ) {
   fun toNewEntity(incidentNumber: String, event: Event, createdBy: String, clock: Clock): Report {
+    if (!type.active) {
+      throw ValidationException("Inactive incident type $type")
+    }
     val now = LocalDateTime.now(clock)
     val status = Status.DRAFT
     val report = Report(
