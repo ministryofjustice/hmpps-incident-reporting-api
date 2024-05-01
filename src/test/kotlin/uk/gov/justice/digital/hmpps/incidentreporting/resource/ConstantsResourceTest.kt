@@ -22,8 +22,11 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
       .header("Content-Type", "application/json")
       .exchange()
       .expectStatus().isOk
-      .expectBody().jsonPath("$").value<List<Any?>> {
-        assertThat(it).hasSizeGreaterThan(0)
+      .expectBody().jsonPath("$").value<List<Map<String, Any?>>> { list ->
+        assertThat(list).hasSizeGreaterThan(0)
+        assertThat(list).allSatisfy { constant ->
+          assertThat(constant).containsKeys("code", "description")
+        }
       }
   }
 }

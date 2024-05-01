@@ -15,6 +15,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.DeactivatableConstantDescription
 
 @RestController
 @Validated
@@ -32,12 +34,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun prisonerOutcomes(): List<Map<String, Any>> {
+  fun prisonerOutcomes(): List<ConstantDescription> {
     return PrisonerOutcome.entries.map {
-      mapOf(
-        "code" to it.name,
-        "description" to it.description,
-      )
+      ConstantDescription(it.name, it.description)
     }
   }
 
@@ -52,12 +51,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun prisonerRoles(): List<Map<String, Any>> {
+  fun prisonerRoles(): List<ConstantDescription> {
     return PrisonerRole.entries.map {
-      mapOf(
-        "code" to it.name,
-        "description" to it.description,
-      )
+      ConstantDescription(it.name, it.description)
     }
   }
 
@@ -72,12 +68,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun staffRoles(): List<Map<String, Any>> {
+  fun staffRoles(): List<ConstantDescription> {
     return StaffRole.entries.map {
-      mapOf(
-        "code" to it.name,
-        "description" to it.description,
-      )
+      ConstantDescription(it.name, it.description)
     }
   }
 
@@ -92,12 +85,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun statuses(): List<Map<String, Any>> {
+  fun statuses(): List<ConstantDescription> {
     return Status.entries.map {
-      mapOf(
-        "code" to it.name,
-        "description" to it.description,
-      )
+      ConstantDescription(it.name, it.description)
     }
   }
 
@@ -112,13 +102,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun types(): List<Map<String, Any>> {
+  fun types(): List<DeactivatableConstantDescription> {
     return Type.entries.map {
-      mapOf(
-        "code" to it.name,
-        "description" to it.description,
-        "active" to it.active,
-      )
+      DeactivatableConstantDescription(it.name, it.description, it.active)
     }
   }
 }
