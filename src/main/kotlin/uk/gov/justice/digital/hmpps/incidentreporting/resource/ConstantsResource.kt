@@ -24,7 +24,7 @@ class ConstantsResource {
   @GetMapping("/prisoner-outcomes")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-    summary = "List codes and descriptions of incident statuses",
+    summary = "List codes and descriptions of outcomes from a prisoner’s involvement in an incident",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -44,7 +44,7 @@ class ConstantsResource {
   @GetMapping("/prisoner-roles")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-    summary = "List codes and descriptions of incident statuses",
+    summary = "List codes and descriptions of roles of a prisoner’s involvement in an incident",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -64,7 +64,7 @@ class ConstantsResource {
   @GetMapping("/staff-roles")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-    summary = "List codes and descriptions of incident statuses",
+    summary = "List codes and descriptions of roles of staff involvement in an incident",
     responses = [
       ApiResponse(
         responseCode = "200",
