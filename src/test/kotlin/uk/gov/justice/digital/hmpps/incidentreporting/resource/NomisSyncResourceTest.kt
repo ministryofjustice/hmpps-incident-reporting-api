@@ -450,13 +450,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "evidence": [],
               "correctionRequests": [
                 {
-                  "reason": "OTHER",
+                  "reason": "NOT_SPECIFIED",
                   "descriptionOfChange": "Change 1",
                   "correctionRequestedBy": "user2",
                   "correctionRequestedAt": "2023-12-05T00:00:00"
                 },
                 {
-                  "reason": "OTHER",
+                  "reason": "NOT_SPECIFIED",
                   "descriptionOfChange": "Change 2",
                   "correctionRequestedBy": "user2",
                   "correctionRequestedAt": "2023-11-28T00:00:00"
@@ -694,13 +694,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "evidence": [],
               "correctionRequests": [
                 {
-                  "reason": "OTHER",
+                  "reason": "NOT_SPECIFIED",
                   "descriptionOfChange": "Change 1",
                   "correctionRequestedBy": "user2",
                   "correctionRequestedAt": "2023-12-05T00:00:00"
                 },
                 {
-                  "reason": "OTHER",
+                  "reason": "NOT_SPECIFIED",
                   "descriptionOfChange": "Change 2",
                   "correctionRequestedBy": "user2",
                   "correctionRequestedAt": "2023-11-28T00:00:00"
