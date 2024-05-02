@@ -8,6 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import org.hibernate.Hibernate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
+import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.CorrectionRequest as CorrectionRequestDto
 
@@ -25,7 +26,7 @@ class CorrectionRequest(
 
   val correctionRequestedBy: String,
   val correctionRequestedAt: LocalDateTime,
-) : DtoConvertible {
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -45,7 +46,7 @@ class CorrectionRequest(
 
   fun getReport() = report
 
-  override fun toDto() = CorrectionRequestDto(
+  fun toDto() = CorrectionRequestDto(
     reason = reason,
     descriptionOfChange = descriptionOfChange,
     correctionRequestedBy = correctionRequestedBy,

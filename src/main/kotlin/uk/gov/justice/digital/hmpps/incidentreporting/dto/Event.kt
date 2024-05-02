@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
 @Schema(description = "Event linking multiple incident reports")
+@JsonInclude(JsonInclude.Include.ALWAYS)
 data class Event(
   @Schema(description = "The human-readable identifier of this report", required = true)
   val eventId: String,
@@ -23,4 +25,4 @@ data class Event(
   val lastModifiedDate: LocalDateTime,
   @Schema(description = "Username of the person who last changed this report", required = true)
   val lastModifiedBy: String,
-) : Dto
+)

@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import java.time.LocalDateTime
 
 @Schema(description = "Prior version of an incident report")
+@JsonInclude(JsonInclude.Include.ALWAYS)
 data class History(
   @Schema(description = "Previous incident report type", required = true)
   val type: Type,
@@ -14,4 +16,4 @@ data class History(
   val changeStaffUsername: String,
   @Schema(description = "Previous set of question-response pairs", required = true)
   val questions: List<HistoricalQuestion> = emptyList(),
-) : Dto
+)

@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import org.hibernate.Hibernate
+import java.io.Serializable
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Location as LocationDto
 
 @Entity
@@ -23,7 +24,7 @@ class Location(
   // TODO: should `type` be an enum?
   val type: String,
   val description: String,
-) : DtoConvertible {
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -43,7 +44,7 @@ class Location(
 
   fun getReport() = report
 
-  override fun toDto() = LocationDto(
+  fun toDto() = LocationDto(
     locationId = locationId,
     type = type,
     description = description,

@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
+import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
 
@@ -22,14 +23,14 @@ class Question(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
-  override val code: String,
+  val code: String,
   // TODO: should we force `question` to be non-null?
-  override val question: String? = null,
+  val question: String? = null,
 
   @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
   private val responses: MutableList<Response> = mutableListOf(),
-) : DtoConvertible, GenericQuestion {
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -49,9 +50,9 @@ class Question(
 
   fun getReport() = report
 
-  override fun getResponses(): List<Response> = responses
+  fun getResponses(): List<Response> = responses
 
-  override fun addResponse(
+  fun addResponse(
     response: String,
     additionalInformation: String?,
     recordedBy: String,
@@ -69,7 +70,7 @@ class Question(
     return this
   }
 
-  override fun toDto() = QuestionDto(
+  fun toDto() = QuestionDto(
     code = code,
     question = question,
     responses = responses.map { it.toDto() },

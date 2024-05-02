@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import org.hibernate.Hibernate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
+import java.io.Serializable
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.StaffInvolvement as StaffInvolvementDto
 
 @Entity
@@ -27,7 +28,7 @@ class StaffInvolvement(
   val staffRole: StaffRole,
 
   val comment: String? = null,
-) : DtoConvertible {
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -47,7 +48,7 @@ class StaffInvolvement(
 
   fun getReport() = report
 
-  override fun toDto() = StaffInvolvementDto(
+  fun toDto() = StaffInvolvementDto(
     staffUsername = staffUsername,
     staffRole = staffRole,
     comment = comment,

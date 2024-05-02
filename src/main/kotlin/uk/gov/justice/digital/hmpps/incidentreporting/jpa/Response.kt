@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import org.hibernate.Hibernate
+import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Response as ResponseDto
 
@@ -20,13 +21,13 @@ class Response(
   val question: Question,
 
   // TODO: should we add a `val code: String` like in Question?
-  override val response: String,
+  val response: String,
 
-  override val additionalInformation: String? = null,
+  val additionalInformation: String? = null,
 
-  override val recordedBy: String,
-  override val recordedOn: LocalDateTime,
-) : DtoConvertible, GenericResponse {
+  val recordedBy: String,
+  val recordedOn: LocalDateTime,
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -44,7 +45,7 @@ class Response(
     return "Response(id=$id)"
   }
 
-  override fun toDto() = ResponseDto(
+  fun toDto() = ResponseDto(
     response = response,
     recordedBy = recordedBy,
     recordedOn = recordedOn,

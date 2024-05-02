@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
+import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.HistoricalQuestion as HistoricalQuestionDto
 
@@ -22,14 +23,14 @@ class HistoricalQuestion(
   @ManyToOne(fetch = FetchType.LAZY)
   val history: History,
 
-  override val code: String,
+  val code: String,
   // TODO: should we force `question` to be non-null?
-  override val question: String? = null,
+  val question: String? = null,
 
   @OneToMany(mappedBy = "historicalQuestion", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
   private val responses: MutableList<HistoricalResponse> = mutableListOf(),
-) : DtoConvertible, GenericQuestion {
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -47,9 +48,9 @@ class HistoricalQuestion(
     return "HistoricalQuestion(id=$id)"
   }
 
-  override fun getResponses(): List<HistoricalResponse> = responses
+  fun getResponses(): List<HistoricalResponse> = responses
 
-  override fun addResponse(
+  fun addResponse(
     response: String,
     additionalInformation: String?,
     recordedBy: String,
@@ -67,7 +68,7 @@ class HistoricalQuestion(
     return this
   }
 
-  override fun toDto() = HistoricalQuestionDto(
+  fun toDto() = HistoricalQuestionDto(
     code = code,
     question = question,
     responses = responses.map { it.toDto() },

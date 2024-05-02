@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
 @Schema(description = "Response to a question making up an incident report")
+@JsonInclude(JsonInclude.Include.ALWAYS)
 data class Response(
   @Schema(description = "The response", required = true)
   val response: String,
@@ -13,4 +15,4 @@ data class Response(
   val recordedOn: LocalDateTime,
   @Schema(description = "Optional additional information", required = false, defaultValue = "null")
   val additionalInformation: String? = null,
-) : Dto
+)

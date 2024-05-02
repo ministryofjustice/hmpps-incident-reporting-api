@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
+import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
 
@@ -38,7 +39,7 @@ class Event(
   val createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
-) : DtoConvertible {
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -60,7 +61,7 @@ class Event(
     return reports.add(report).let { report }
   }
 
-  override fun toDto() = EventDto(
+  fun toDto() = EventDto(
     eventId = eventId,
     prisonId = prisonId,
     eventDateAndTime = eventDateAndTime,
