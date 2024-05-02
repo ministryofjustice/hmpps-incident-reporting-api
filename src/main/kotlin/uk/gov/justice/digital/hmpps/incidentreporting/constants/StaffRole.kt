@@ -7,11 +7,11 @@ enum class StaffRole(
 ) {
   ACTIVELY_INVOLVED("Actively involved"),
   AUTHORISING_OFFICER("Authorising officer"),
-  CR_HEAD("C&R Head"),
-  CR_LEFT_ARM("C&R Left Arm"),
-  CR_LEGS("C&R Legs"),
-  CR_RIGHT_ARM("C&R Right Arm"),
-  CR_SUPERVISOR("C&R Supervisor"),
+  CR_HEAD("Control and restraint - head"),
+  CR_LEFT_ARM("Control and restraint - left arm"),
+  CR_LEGS("Control and restraint - legs"),
+  CR_RIGHT_ARM("Control and restraint - right arm"),
+  CR_SUPERVISOR("Control and restraint - supervisor"),
   DECEASED("Deceased"),
   FIRST_ON_SCENE("First on scene"),
   HEALTHCARE("Healthcare"),
@@ -29,16 +29,16 @@ enum class StaffRole(
       "AI" -> ACTIVELY_INVOLVED
       "AO" -> AUTHORISING_OFFICER
       "CRH" -> CR_HEAD
-      "CRS" -> CR_SUPERVISOR
-      "CRLG" -> CR_LEGS
       "CRL" -> CR_LEFT_ARM
+      "CRLG" -> CR_LEGS
       "CRR" -> CR_RIGHT_ARM
-      "DECEASED" -> DECEASED
+      "CRS" -> CR_SUPERVISOR
+      "DEC" -> DECEASED
       "FOS" -> FIRST_ON_SCENE
       "HEALTH" -> HEALTHCARE
       "HOST" -> HOSTAGE
       "INPOS" -> IN_POSSESSION
-      "INV" -> ACTIVELY_INVOLVED
+      "INV" -> ACTIVELY_INVOLVED // TODO: needs checking, might not exist in NOMIS
       "NEG" -> NEGOTIATOR
       "PAS" -> PRESENT_AT_SCENE
       "SUSIN" -> SUSPECTED_INVOLVEMENT
