@@ -40,10 +40,6 @@ class Event(
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
 ) : Serializable {
-  fun addReport(report: Report): Report {
-    return reports.add(report).let { report }
-  }
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -55,6 +51,14 @@ class Event(
 
   override fun hashCode(): Int {
     return eventId.hashCode()
+  }
+
+  override fun toString(): String {
+    return "Event(eventId=$eventId)"
+  }
+
+  fun addReport(report: Report): Report {
+    return reports.add(report).let { report }
   }
 
   fun toDto() = EventDto(

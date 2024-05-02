@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderBy
 import jakarta.persistence.OrderColumn
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
@@ -89,6 +90,7 @@ class Report(
   val questionSetId: String? = null,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OrderBy("change_date ASC")
   val history: MutableList<History> = mutableListOf(),
 
   @Enumerated(EnumType.STRING)
@@ -111,27 +113,45 @@ class Report(
     return incidentNumber.hashCode()
   }
 
+  override fun toString(): String {
+    return "Report(incidentNumber=$incidentNumber)"
+  }
+
   fun getQuestions(): List<Question> = questions
 
   fun getType() = type
 
-  fun changeType(newType: Type, changedDate: LocalDateTime, staffChanged: String) {
+  fun changeType(newType: Type, changedDate: LocalDateTime, staffChanged: String): Report {
     copyToHistory(changedDate, staffChanged)
     questions.clear()
     type = newType
+    return this
+  }
+
+  fun addStatusHistory(status: Status, setOn: LocalDateTime, setBy: String): StatusHistory {
+    return StatusHistory(
+      report = this,
+      status = status,
+      setOn = setOn,
+      setBy = setBy,
+    ).also { historyOfStatuses.add(it) }
   }
 
   fun addEvidence(type: String, description: String): Evidence {
-    val evidenceItem =
-      Evidence(report = this, type = type, description = description)
-    evidence.add(evidenceItem)
-    return evidenceItem
+    return Evidence(
+      report = this,
+      type = type,
+      description = description,
+    ).also { evidence.add(it) }
   }
 
   fun addStaffInvolved(staffRole: StaffRole, username: String, comment: String? = null): StaffInvolvement {
-    val staff = StaffInvolvement(report = this, staffUsername = username, staffRole = staffRole, comment = comment)
-    staffInvolved.add(staff)
-    return staff
+    return StaffInvolvement(
+      report = this,
+      staffUsername = username,
+      staffRole = staffRole,
+      comment = comment,
+    ).also { staffInvolved.add(it) }
   }
 
   fun addPrisonerInvolved(
@@ -140,15 +160,13 @@ class Report(
     prisonerOutcome: PrisonerOutcome? = null,
     comment: String? = null,
   ): PrisonerInvolvement {
-    val prisoner = PrisonerInvolvement(
+    return PrisonerInvolvement(
       report = this,
       prisonerNumber = prisonerNumber,
       prisonerInvolvement = prisonerInvolvement,
       outcome = prisonerOutcome,
       comment = comment,
-    )
-    prisonersInvolved.add(prisoner)
-    return prisoner
+    ).also { prisonersInvolved.add(it) }
   }
 
   fun addLocation(
@@ -156,14 +174,12 @@ class Report(
     locationType: String,
     description: String,
   ): Location {
-    val location = Location(
+    return Location(
       report = this,
       locationId = locationId,
       type = locationType,
       description = description,
-    )
-    locations.add(location)
-    return location
+    ).also { locations.add(it) }
   }
 
   fun addCorrectionRequest(
@@ -172,59 +188,66 @@ class Report(
     reason: CorrectionReason,
     descriptionOfChange: String,
   ): CorrectionRequest {
-    val correctionRequest = CorrectionRequest(
+    return CorrectionRequest(
       report = this,
       correctionRequestedBy = correctionRequestedBy,
       correctionRequestedAt = correctionRequestedAt,
       reason = reason,
       descriptionOfChange = descriptionOfChange,
-    )
-    correctionRequests.add(correctionRequest)
-    return correctionRequest
+    ).also { correctionRequests.add(it) }
   }
 
   fun addQuestion(
     code: String,
     question: String? = null,
   ): Question {
-    val questionItem = Question(
+    return Question(
       report = this,
       code = code,
       question = question,
-    )
-    questions.add(questionItem)
-    return questionItem
+    ).also { questions.add(it) }
   }
 
   fun addHistory(type: Type, incidentChangeDate: LocalDateTime, staffChanged: String): History {
-    val historyItem = History(
+    return History(
       report = this,
       type = type,
       changeDate = incidentChangeDate,
       changeStaffUsername = staffChanged,
-    )
-    history.add(historyItem)
-    return historyItem
+    ).also { history.add(it) }
   }
 
-  fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
+  private fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
     val history = addHistory(type, changedDate, staffChanged)
     getQuestions().filterNotNull().forEach { question ->
       val historicalQuestion = history.addQuestion(question.code, question.question)
-      question.getEvidence()?.let { historicalQuestion.attachEvidence(it) }
-      question.getLocation()?.let { historicalQuestion.attachLocation(it) }
-      question.getStaffInvolvement()?.let { historicalQuestion.attachStaffInvolvement(it) }
-      question.getPrisonerInvolvement()?.let { historicalQuestion.attachPrisonerInvolvement(it) }
+      question.getResponses().forEach { response ->
+        historicalQuestion.addResponse(
+          response.response,
+          response.additionalInformation,
+          response.recordedBy,
+          response.recordedOn,
+        )
+      }
     }
     return history
   }
 
   fun updateWith(upsert: NomisReport, updatedBy: String, clock: Clock) {
-    this.title = upsert.title ?: "NO DETAILS GIVEN"
-    this.description = upsert.description ?: "NO DETAILS GIVEN"
-    this.status = Status.fromNomisCode(upsert.status.code)
-    this.lastModifiedBy = updatedBy
-    this.lastModifiedDate = LocalDateTime.now(clock)
+    val now = LocalDateTime.now(clock)
+
+    lastModifiedDate = now
+    lastModifiedBy = updatedBy
+
+    title = upsert.title ?: "NO DETAILS GIVEN"
+    description = upsert.description ?: "NO DETAILS GIVEN"
+
+    val newStatus = Status.fromNomisCode(upsert.status.code)
+    if (newStatus != status) {
+      status = newStatus
+      addStatusHistory(newStatus, now, updatedBy)
+    }
+
     // TODO: need to compare and update other fields and related entities
   }
 

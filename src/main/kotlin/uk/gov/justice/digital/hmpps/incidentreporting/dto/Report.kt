@@ -32,8 +32,8 @@ data class Report(
   val reportedBy: String,
   @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
   val reportedDate: LocalDateTime,
-  @Schema(description = "The current status of this report", required = true)
-  val status: Status,
+  @Schema(description = "The current status of this report", required = false, defaultValue = "DRAFT")
+  val status: Status = Status.DRAFT,
   @Schema(description = "Optional user who this report is currently assigned to", required = false, defaultValue = "null")
   val assignedTo: String? = null,
 

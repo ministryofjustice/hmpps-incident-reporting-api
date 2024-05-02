@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.ValidationException
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -32,7 +33,12 @@ data class CreateReportRequest(
   // TODO: there is not yet a way to add any more details to a report, question-response pairs, etc
 ) {
   fun toNewEntity(incidentNumber: String, event: Event, createdBy: String, clock: Clock): Report {
-    return Report(
+    if (!type.active) {
+      throw ValidationException("Inactive incident type $type")
+    }
+    val now = LocalDateTime.now(clock)
+    val status = Status.DRAFT
+    val report = Report(
       incidentNumber = incidentNumber,
       type = type,
       title = title,
@@ -41,25 +47,28 @@ data class CreateReportRequest(
       description = description,
       reportedBy = reportedBy,
       reportedDate = reportedDate,
-      status = Status.DRAFT,
-      createdDate = LocalDateTime.now(clock),
-      lastModifiedDate = LocalDateTime.now(clock),
+      status = status,
+      createdDate = now,
+      lastModifiedDate = now,
       lastModifiedBy = createdBy,
       source = InformationSource.DPS,
       assignedTo = reportedBy,
       event = event,
     )
+    report.addStatusHistory(status, now, createdBy)
+    return report
   }
 
   fun toNewEvent(generateEventId: String, createdBy: String, clock: Clock): Event {
+    val now = LocalDateTime.now(clock)
     return Event(
       eventId = generateEventId,
       eventDateAndTime = incidentDateAndTime,
       prisonId = prisonId,
       title = title,
       description = description,
-      createdDate = LocalDateTime.now(clock),
-      lastModifiedDate = LocalDateTime.now(clock),
+      createdDate = now,
+      lastModifiedDate = now,
       lastModifiedBy = createdBy,
     )
   }

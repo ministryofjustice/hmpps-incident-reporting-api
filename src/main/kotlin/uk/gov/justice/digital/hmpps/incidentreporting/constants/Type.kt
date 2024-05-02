@@ -4,59 +4,109 @@ import jakarta.validation.ValidationException
 
 enum class Type(
   val description: String,
+  val active: Boolean = true,
 ) {
-  SELF_HARM("Self Harm"),
-  ASSAULT("Assault"),
-  DAMAGE("Damage"),
-  FINDS("Finds"),
-  KEY_LOCK_INCIDENT("Key Lock Incident"),
-  DISORDER("Disorder"),
-  DRONE_SIGHTING("Drone Sighting"),
-  FIRE("Fire"),
-  TOOL_LOSS("Tool Loss"),
-  FOOD_REFUSAL("Food Refusal"),
-  DEATH_IN_CUSTODY("Death In Custody"),
-  TEMPORARY_RELEASE_FAILURE("Temporary Release Failure"),
-  RADIO_COMPROMISE("Radio Compromise"),
+  // active
   ABSCONDER("Absconder"),
-  RELEASED_IN_ERROR("Released In Error"),
-  BOMB_THREAT("Bomb Threat"),
-  FULL_CLOSE_DOWN_SEARCH("Full Close Down Search"),
-  BREACH_OF_SECURITY("Breach Of Security"),
-  DEATH_OTHER("Death (Other)"),
-  ATTEMPTED_ESCAPE_FROM_CUSTODY("Attempted Escape From Custody"),
-  ESCAPE_FROM_CUSTODY("Escape From Custody"),
-  ATTEMPTED_ESCAPE_FROM_ESCORT("Attempted Escape From Escort"),
-  ESCAPE_FROM_ESCORT("Escape From Escort"),
+  ASSAULT("Assault"),
+  ATTEMPTED_ESCAPE_FROM_CUSTODY("Attempted escape from custody"),
+  ATTEMPTED_ESCAPE_FROM_ESCORT("Attempted escape from escort"),
+  BOMB_THREAT("Bomb threat"),
+  BREACH_OF_SECURITY("Breach of security"),
+  DAMAGE("Damage"),
+  DEATH_IN_CUSTODY("Death in custody"),
+  DEATH_OTHER("Death (other)"),
+  DISORDER("Disorder"),
+  DRONE_SIGHTING("Drone sighting"),
+  ESCAPE_FROM_CUSTODY("Escape from custody"),
+  ESCAPE_FROM_ESCORT("Escape from escort"),
+  FINDS("Finds"),
+  FIRE("Fire"),
+  FOOD_REFUSAL("Food refusal"),
+  FULL_CLOSE_DOWN_SEARCH("Full close down search"),
+  KEY_LOCK_INCIDENT("Key lock incident"),
   MISCELLANEOUS("Miscellaneous"),
+  RADIO_COMPROMISE("Radio compromise"),
+  RELEASED_IN_ERROR("Released in error"),
+  SELF_HARM("Self harm"),
+  TEMPORARY_RELEASE_FAILURE("Temporary release failure"),
+  TOOL_LOSS("Tool loss"),
+
+  // inactive
+  OLD_ASSAULT("Assault", active = false),
+  OLD_ASSAULT1("Assault (from April 2017)", active = false),
+  OLD_ASSAULT2("Assault (from April 2017)", active = false),
+  OLD_ASSAULT3("Assault (from April 2017)", active = false),
+  OLD_BARRICADE("Barricade/prevention of access", active = false),
+  OLD_CONCERTED_INDISCIPLINE("Concerted indiscipline", active = false),
+  OLD_DISORDER("Disorder", active = false),
+  OLD_DRONE_SIGHTING("Drone sighting", active = false),
+  OLD_DRUGS("Drugs", active = false),
+  OLD_FINDS("Finds", active = false),
+  OLD_FINDS1("Finds (from August 2015)", active = false),
+  OLD_FINDS2("Finds (from September 2015)", active = false),
+  OLD_FINDS3("Finds (from March 2022)", active = false),
+  OLD_FINDS4("Finds (from September 2016)", active = false),
+  OLD_FIREARM_ETC("Firearm/ammunition/chemical incapacitant", active = false),
+  OLD_HOSTAGE("Hostage", active = false),
+  OLD_KEY_LOCK_INCIDENT("Key lock incident", active = false),
+  OLD_MOBILES("Mobile phones", active = false),
+  OLD_ROOF_CLIMB("Incident at height", active = false),
+  OLD_TEMPORARY_RELEASE_FAILURE("Temporary release failure", active = false),
+  OLD_TEMPORARY_RELEASE_FAILURE1("Temporary release failure (from July 2015)", active = false),
+  OLD_TEMPORARY_RELEASE_FAILURE2("Temporary release failure (from April 2016)", active = false),
   ;
 
   companion object {
     fun fromNomisCode(type: String): Type = when (type) {
-      "SELF_HARM" -> SELF_HARM
-      "MISC" -> MISCELLANEOUS
-      "ASSAULTS3" -> ASSAULT
-      "DAMAGE" -> DAMAGE
-      "FIND0422" -> FINDS
-      "KEY_LOCKNEW" -> KEY_LOCK_INCIDENT
-      "DISORDER1" -> DISORDER
-      "FIRE" -> FIRE
-      "TOOL_LOSS" -> TOOL_LOSS
-      "FOOD_REF" -> FOOD_REFUSAL
-      "DEATH" -> DEATH_IN_CUSTODY
-      "TRF3" -> TEMPORARY_RELEASE_FAILURE
-      "RADIO_COMP" -> RADIO_COMPROMISE
-      "DRONE1" -> DRONE_SIGHTING
+      // active
       "ABSCOND" -> ABSCONDER
-      "REL_ERROR" -> RELEASED_IN_ERROR
-      "BOMB" -> BOMB_THREAT
-      "CLOSE_DOWN" -> FULL_CLOSE_DOWN_SEARCH
-      "BREACH" -> BREACH_OF_SECURITY
-      "DEATH_NI" -> DEATH_OTHER
-      "ESCAPE_EST" -> ESCAPE_FROM_CUSTODY
-      "ATT_ESCAPE" -> ATTEMPTED_ESCAPE_FROM_CUSTODY
-      "ESCAPE_ESC" -> ESCAPE_FROM_ESCORT
+      "ASSAULTS3" -> ASSAULT
       "ATT_ESC_E" -> ATTEMPTED_ESCAPE_FROM_ESCORT
+      "ATT_ESCAPE" -> ATTEMPTED_ESCAPE_FROM_CUSTODY
+      "BOMB" -> BOMB_THREAT
+      "BREACH" -> BREACH_OF_SECURITY
+      "CLOSE_DOWN" -> FULL_CLOSE_DOWN_SEARCH
+      "DAMAGE" -> DAMAGE
+      "DEATH_NI" -> DEATH_OTHER
+      "DEATH" -> DEATH_IN_CUSTODY
+      "DISORDER1" -> DISORDER
+      "DRONE1" -> DRONE_SIGHTING
+      "ESCAPE_ESC" -> ESCAPE_FROM_ESCORT
+      "ESCAPE_EST" -> ESCAPE_FROM_CUSTODY
+      "FIND0422" -> FINDS
+      "FIRE" -> FIRE
+      "FOOD_REF" -> FOOD_REFUSAL
+      "KEY_LOCKNEW" -> KEY_LOCK_INCIDENT
+      "MISC" -> MISCELLANEOUS
+      "RADIO_COMP" -> RADIO_COMPROMISE
+      "REL_ERROR" -> RELEASED_IN_ERROR
+      "SELF_HARM" -> SELF_HARM
+      "TOOL_LOSS" -> TOOL_LOSS
+      "TRF3" -> TEMPORARY_RELEASE_FAILURE
+      // inactive
+      "ASSAULT" -> OLD_ASSAULT
+      "ASSAULTS" -> OLD_ASSAULT1
+      "ASSAULTS1" -> OLD_ASSAULT2
+      "ASSAULTS2" -> OLD_ASSAULT3
+      "BARRICADE" -> OLD_BARRICADE
+      "CON_INDISC" -> OLD_CONCERTED_INDISCIPLINE
+      "DISORDER" -> OLD_DISORDER
+      "DRONE" -> OLD_DRONE_SIGHTING
+      "DRUGS" -> OLD_DRUGS
+      "FINDS" -> OLD_FINDS
+      "FIND" -> OLD_FINDS1
+      "FIND1" -> OLD_FINDS2
+      "FIND0322" -> OLD_FINDS3
+      "FINDS1" -> OLD_FINDS4
+      "FIREARM_ETC" -> OLD_FIREARM_ETC
+      "HOSTAGE" -> OLD_HOSTAGE
+      "KEY_LOCK" -> OLD_KEY_LOCK_INCIDENT
+      "MOBILES" -> OLD_MOBILES
+      "ROOF_CLIMB" -> OLD_ROOF_CLIMB
+      "TRF" -> OLD_TEMPORARY_RELEASE_FAILURE
+      "TRF1" -> OLD_TEMPORARY_RELEASE_FAILURE1
+      "TRF2" -> OLD_TEMPORARY_RELEASE_FAILURE2
       else -> throw ValidationException("Unknown NOMIS incident type: $type")
     }
   }

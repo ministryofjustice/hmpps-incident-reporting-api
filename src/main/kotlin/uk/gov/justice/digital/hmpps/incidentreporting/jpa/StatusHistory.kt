@@ -8,7 +8,9 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import org.hibernate.Hibernate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
+import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.StatusHistory as StatusHistoryDto
 
@@ -19,14 +21,33 @@ class StatusHistory(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  val report: Report,
+  private val report: Report,
 
   @Enumerated(EnumType.STRING)
   val status: Status,
 
   val setOn: LocalDateTime,
   val setBy: String,
-) {
+) : Serializable {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as StatusHistory
+
+    return id == other.id
+  }
+
+  override fun hashCode(): Int {
+    return id?.hashCode() ?: 0
+  }
+
+  override fun toString(): String {
+    return "StatusHistory(id=$id)"
+  }
+
+  fun getReport() = report
+
   fun toDto() = StatusHistoryDto(
     status = status,
     setOn = setOn,

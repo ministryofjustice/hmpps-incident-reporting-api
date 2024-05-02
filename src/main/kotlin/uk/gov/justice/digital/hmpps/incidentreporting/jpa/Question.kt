@@ -6,13 +6,11 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
 import jakarta.persistence.OrderColumn
-import jakarta.validation.ValidationException
 import org.hibernate.Hibernate
+import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
 
@@ -25,32 +23,36 @@ class Question(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
-  override val code: String,
+  val code: String,
   // TODO: should we force `question` to be non-null?
-  override val question: String? = null,
+  val question: String? = null,
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
-  @JoinColumn(name = "question_id", nullable = false)
   private val responses: MutableList<Response> = mutableListOf(),
+) : Serializable {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
-  @OneToOne(fetch = FetchType.LAZY)
-  private var evidence: Evidence? = null,
+    other as Question
 
-  @OneToOne(fetch = FetchType.LAZY)
-  private var location: Location? = null,
+    return id == other.id
+  }
 
-  @OneToOne(fetch = FetchType.LAZY)
-  private var prisonerInvolvement: PrisonerInvolvement? = null,
+  override fun hashCode(): Int {
+    return id?.hashCode() ?: 0
+  }
 
-  @OneToOne(fetch = FetchType.LAZY)
-  private var staffInvolvement: StaffInvolvement? = null,
-
-) : GenericQuestion {
+  override fun toString(): String {
+    return "Question(id=$id)"
+  }
 
   fun getReport() = report
 
-  override fun addResponse(
+  fun getResponses(): List<Response> = responses
+
+  fun addResponse(
     response: String,
     additionalInformation: String?,
     recordedBy: String,
@@ -58,6 +60,7 @@ class Question(
   ): Question {
     responses.add(
       Response(
+        question = this,
         response = response,
         recordedBy = recordedBy,
         recordedOn = recordedOn,
@@ -65,68 +68,6 @@ class Question(
       ),
     )
     return this
-  }
-
-  override fun getLocation() = location
-
-  override fun attachLocation(location: Location): Question {
-    if (location.getReport() != getReport()) {
-      throw ValidationException("Cannot attach a location from a different incident report")
-    }
-    this.location = location
-    return this
-  }
-
-  override fun getPrisonerInvolvement() = prisonerInvolvement
-
-  override fun attachPrisonerInvolvement(prisonerInvolvement: PrisonerInvolvement): Question {
-    if (prisonerInvolvement.getReport() != getReport()) {
-      throw ValidationException("Cannot attach prisoner involvement from a different incident report")
-    }
-    this.prisonerInvolvement = prisonerInvolvement
-    return this
-  }
-
-  override fun getStaffInvolvement() = staffInvolvement
-
-  override fun attachStaffInvolvement(staffInvolvement: StaffInvolvement): Question {
-    if (staffInvolvement.getReport() != getReport()) {
-      throw ValidationException("Cannot attach staff involvement from a different incident report")
-    }
-    this.staffInvolvement = staffInvolvement
-    return this
-  }
-
-  override fun getEvidence() = evidence
-
-  override fun attachEvidence(evidence: Evidence): Question {
-    if (evidence.getReport() != getReport()) {
-      throw ValidationException("Cannot attach evidence from a different incident report")
-    }
-    this.evidence = evidence
-    return this
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as Question
-
-    if (report != other.report) return false
-    if (code != other.code) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = report.hashCode()
-    result = 31 * result + code.hashCode()
-    return result
-  }
-
-  override fun toString(): String {
-    return "Question(code='$code', responses=$responses)"
   }
 
   fun toDto() = QuestionDto(

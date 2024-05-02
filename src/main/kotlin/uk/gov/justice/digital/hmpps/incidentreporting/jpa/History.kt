@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.History as HistoryDto
 
@@ -32,41 +33,35 @@ class History(
 
   @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
-) {
-
-  fun addQuestion(
-    code: String,
-    question: String? = null,
-  ): HistoricalQuestion {
-    val historicalQuestion = HistoricalQuestion(
-      history = this,
-      code = code,
-      question = question,
-    )
-    questions.add(historicalQuestion)
-    return historicalQuestion
-  }
-
-  fun getReport() = report
-
+) : Serializable {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
 
     other as History
 
-    if (report != other.report) return false
-    if (type != other.type) return false
-    if (changeDate != other.changeDate) return false
-
-    return true
+    return id == other.id
   }
 
   override fun hashCode(): Int {
-    var result = report.hashCode()
-    result = 31 * result + type.hashCode()
-    result = 31 * result + changeDate.hashCode()
-    return result
+    return id?.hashCode() ?: 0
+  }
+
+  override fun toString(): String {
+    return "History(id=$id)"
+  }
+
+  fun getReport() = report
+
+  fun addQuestion(
+    code: String,
+    question: String? = null,
+  ): HistoricalQuestion {
+    return HistoricalQuestion(
+      history = this,
+      code = code,
+      question = question,
+    ).also { questions.add(it) }
   }
 
   fun toDto() = HistoryDto(
