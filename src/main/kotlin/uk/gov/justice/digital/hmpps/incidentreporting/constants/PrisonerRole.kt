@@ -5,8 +5,6 @@ import jakarta.validation.ValidationException
 enum class PrisonerRole(
   val description: String,
 ) {
-  VICTIM("Victim"),
-  PERPETRATOR("Perpetrator"),
   ABSCONDER("Absconder"),
   ACTIVE_INVOLVEMENT("Active involvement"),
   ASSAILANT("Assailant"),
@@ -19,20 +17,22 @@ enum class PrisonerRole(
   IN_POSSESSION("In possession"),
   INTENDED_RECIPIENT("Intended recipient"),
   LICENSE_FAILURE("License failure"),
+  PERPETRATOR("Perpetrator"),
   PRESENT_AT_SCENE("Present at scene"),
   SUSPECTED_ASSAILANT("Suspected assailant"),
   SUSPECTED_INVOLVED("Suspected involved"),
   TEMPORARY_RELEASE_FAILURE("Temporary release failure"),
+  VICTIM("Victim"),
   ;
 
   companion object {
     fun fromNomisCode(role: String): PrisonerRole = when (role) {
-      "ABSCONDEE" -> ABSCONDER
-      "ACTIVE_INVOLVEMENT" -> ACTIVE_INVOLVEMENT
-      "ASSAILANT" -> ASSAILANT
-      "ASSISTED_STAFF" -> ASSISTED_STAFF
-      "DECEASED" -> DECEASED
-      "ESCAPE" -> ESCAPE
+      "ABS" -> ABSCONDER
+      "ACTINV" -> ACTIVE_INVOLVEMENT
+      "ASSIAL" -> ASSAILANT
+      "ASSIST" -> ASSISTED_STAFF
+      "DEC" -> DECEASED
+      "ESC" -> ESCAPE
       "FIGHT" -> FIGHTER
       "HOST" -> HOSTAGE
       "IMPED" -> IMPEDED_STAFF

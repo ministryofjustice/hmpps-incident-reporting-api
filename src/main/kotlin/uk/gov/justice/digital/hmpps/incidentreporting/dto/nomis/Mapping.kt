@@ -67,7 +67,7 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
       correctionRequestedBy = it.staff.username,
       correctionRequestedAt = it.date.atStartOfDay(),
       descriptionOfChange = it.comment ?: "NO DETAILS GIVEN",
-      reason = CorrectionReason.OTHER,
+      reason = CorrectionReason.NOT_SPECIFIED,
     )
   }
 
