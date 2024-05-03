@@ -55,11 +55,13 @@ class History(
   fun addQuestion(
     code: String,
     question: String? = null,
+    additionalInformation: String? = null,
   ): HistoricalQuestion {
     return HistoricalQuestion(
       history = this,
       code = code,
       question = question,
+      additionalInformation = additionalInformation,
     ).also { questions.add(it) }
   }
 

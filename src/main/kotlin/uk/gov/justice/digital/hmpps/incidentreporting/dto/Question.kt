@@ -12,4 +12,6 @@ data class Question(
   val question: String? = null,
   @Schema(description = "The responses to this question", required = true)
   val responses: List<Response> = emptyList(),
+  @Schema(description = "Optional additional information", required = false, defaultValue = "null")
+  val additionalInformation: String? = null,
 )

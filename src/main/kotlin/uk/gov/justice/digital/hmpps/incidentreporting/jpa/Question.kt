@@ -26,6 +26,8 @@ class Question(
   // TODO: should we force `question` to be non-null?
   val question: String? = null,
 
+  val additionalInformation: String? = null,
+
   @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
   private val responses: MutableList<Response> = mutableListOf(),
@@ -72,6 +74,7 @@ class Question(
   fun toDto() = QuestionDto(
     code = code,
     question = question,
+    additionalInformation = additionalInformation,
     responses = responses.map { it.toDto() },
   )
 }

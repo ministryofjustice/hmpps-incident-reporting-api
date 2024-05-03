@@ -203,6 +203,7 @@ class SyncServiceTest {
     val question = report.questions[0]
     assertThat(question.code).isEqualTo("IMPL")
     assertThat(question.question).isEqualTo("What implement was used?")
+    assertThat(question.additionalInformation).isNull()
     assertThat(question.responses).hasSize(1)
     val response = question.responses[0]
     assertThat(response.response).isEqualTo("Razor")

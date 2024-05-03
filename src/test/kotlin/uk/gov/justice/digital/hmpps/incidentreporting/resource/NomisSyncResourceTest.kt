@@ -273,6 +273,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 {
                   "code": "QID-000000000004",
                   "question": "Question 1",
+                  "additionalInformation": null,
                   "responses": [
                     {
                       "response": "Answer 1",
@@ -297,6 +298,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 {
                   "code": "QID-000000000005",
                   "question": "Question 2",
+                  "additionalInformation": null,
                   "responses": [
                     {
                       "response": "Answer 1",
@@ -321,6 +323,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 {
                   "code": "QID-000000000006",
                   "question": "Question 3",
+                  "additionalInformation": null,
                   "responses": [
                     {
                       "response": "Answer 1",
@@ -352,6 +355,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "code": "QID-000000000001",
                       "question": "Old question 1",
+                      "additionalInformation": null,
                       "responses": [
                         {
                           "response": "Old answer 1",
@@ -376,6 +380,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "code": "QID-000000000002",
                       "question": "Old question 2",
+                      "additionalInformation": null,
                       "responses": [
                         {
                           "response": "Old answer 1",
@@ -400,6 +405,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "code": "QID-000000000003",
                       "question": "Old question 3",
+                      "additionalInformation": null,
                       "responses": [
                         {
                           "response": "Old answer 1",
@@ -517,6 +523,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 {
                   "code": "QID-000000000004",
                   "question": "Question 1",
+                  "additionalInformation": null,
                   "responses": [
                     {
                       "response": "Answer 1",
@@ -541,6 +548,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 {
                   "code": "QID-000000000005",
                   "question": "Question 2",
+                  "additionalInformation": null,
                   "responses": [
                     {
                       "response": "Answer 1",
@@ -565,6 +573,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 {
                   "code": "QID-000000000006",
                   "question": "Question 3",
+                  "additionalInformation": null,
                   "responses": [
                     {
                       "response": "Answer 1",
@@ -596,6 +605,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "code": "QID-000000000001",
                       "question": "Old question 1",
+                      "additionalInformation": null,
                       "responses": [
                         {
                           "response": "Old answer 1",
@@ -620,6 +630,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "code": "QID-000000000002",
                       "question": "Old question 2",
+                      "additionalInformation": null,
                       "responses": [
                         {
                           "response": "Old answer 1",
@@ -644,6 +655,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "code": "QID-000000000003",
                       "question": "Old question 3",
+                      "additionalInformation": null,
                       "responses": [
                         {
                           "response": "Old answer 1",

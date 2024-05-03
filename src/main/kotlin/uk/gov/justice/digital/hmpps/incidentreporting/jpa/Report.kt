@@ -199,11 +199,13 @@ class Report(
   fun addQuestion(
     code: String,
     question: String? = null,
+    additionalInformation: String? = null,
   ): Question {
     return Question(
       report = this,
       code = code,
       question = question,
+      additionalInformation = additionalInformation,
     ).also { questions.add(it) }
   }
 
@@ -219,7 +221,11 @@ class Report(
   private fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
     val history = addHistory(type, changedDate, staffChanged)
     getQuestions().filterNotNull().forEach { question ->
-      val historicalQuestion = history.addQuestion(question.code, question.question)
+      val historicalQuestion = history.addQuestion(
+        code = question.code,
+        question = question.question,
+        additionalInformation = question.additionalInformation,
+      )
       question.getResponses().forEach { response ->
         historicalQuestion.addResponse(
           response.response,
