@@ -22,7 +22,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
-import java.io.Serializable
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -99,7 +98,7 @@ class Report(
   val createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
-) : Serializable {
+) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false

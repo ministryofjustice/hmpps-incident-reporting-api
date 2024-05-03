@@ -12,7 +12,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
-import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.History as HistoryDto
 
@@ -33,7 +32,7 @@ class History(
 
   @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
-) : Serializable {
+) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
