@@ -42,6 +42,7 @@ classDiagram
     }
     class HistoricalQuestion {
         Long  id
+        String  additionalInformation
         String  code
         String  question
     }
@@ -73,6 +74,7 @@ classDiagram
     }
     class Question {
         Long  id
+        String  additionalInformation
         String  code
         String  question
     }
@@ -114,17 +116,17 @@ classDiagram
         Status  status
     }
 
-CorrectionRequest "1..*" <--> "1" Report
-Evidence "1..*" <--> "1" Report
-HistoricalQuestion "0..1" --> "0..*" HistoricalResponse
-HistoricalQuestion "1..*" <--> "1" History
-Question "0..1" --> "0..*" Response
+CorrectionRequest "0..*" <--> "1" Report
+Evidence "0..*" <--> "1" Report
+HistoricalQuestion "0..*" <--> "1" History
+HistoricalResponse "0..*" <--> "1" HistoricalQuestion
+Question "1" <--> "0..*" Response
 Report "1..*" <--> "1" Event
-Report "1" <--> "1..*" History
-Report "1" <--> "1..*" Location
-Report "1" <--> "1..*" PrisonerInvolvement
-Report "1" <--> "1..*" Question
-StaffInvolvement "1..*" <--> "1" Report
+Report "1" <--> "0..*" History
+Report "1" <--> "0..*" Location
+Report "1" <--> "0..*" PrisonerInvolvement
+Report "1" <--> "0..*" Question
+StaffInvolvement "0..*" <--> "1" Report
 StatusHistory "1..*" <--> "1" Report
 ```
 
@@ -134,118 +136,118 @@ StatusHistory "1..*" <--> "1" Report
 classDiagram
     direction BT
     class correction_request {
-       uuid report_id
-       varchar(120) correction_requested_by
-       text description_of_change
-       varchar(80) reason
-       timestamp correction_requested_at
-       integer id
+        uuid report_id
+        varchar(120) correction_requested_by
+        varchar(60) reason
+        text description_of_change
+        timestamp correction_requested_at
+        integer id
     }
     class event {
-       varchar(25) event_id
-       varchar(6) prison_id
-       timestamp event_date_and_time
-       varchar(255) title
-       text description
-       timestamp created_date
-       varchar(120) last_modified_by
-       timestamp last_modified_date
-       integer id
+        varchar(25) event_id
+        varchar(6) prison_id
+        timestamp event_date_and_time
+        varchar(255) title
+        text description
+        timestamp created_date
+        varchar(120) last_modified_by
+        timestamp last_modified_date
+        integer id
     }
     class evidence {
-       uuid report_id
-       varchar(80) type
-       text description
-       integer id
+        uuid report_id
+        varchar(60) type
+        text description
+        integer id
     }
     class historical_question {
-       bigint history_id
-       integer sequence
-       varchar(120) code
-       text question
-       text additional_information
-       integer id
+        integer history_id
+        integer sequence
+        varchar(60) code
+        text question
+        text additional_information
+        integer id
     }
     class historical_response {
-       bigint historical_question_id
-       integer sequence
-       text response
-       text additional_information
-       timestamp recorded_on
-       varchar(120) recorded_by
-       integer id
+        integer historical_question_id
+        integer sequence
+        text response
+        text additional_information
+        timestamp recorded_on
+        varchar(120) recorded_by
+        integer id
     }
     class history {
-       uuid report_id
-       varchar(255) type
-       timestamp change_date
-       varchar(120) change_staff_username
-       integer id
+        uuid report_id
+        varchar(60) type
+        timestamp change_date
+        varchar(120) change_staff_username
+        integer id
     }
     class location {
-       uuid report_id
-       varchar(210) location_id
-       varchar(80) type
-       text description
-       integer id
+        uuid report_id
+        varchar(60) location_id
+        varchar(60) type
+        text description
+        integer id
     }
     class prisoner_involvement {
-       uuid report_id
-       varchar(7) prisoner_number
-       varchar(80) prisoner_involvement
-       text comment
-       varchar(30) outcome
-       integer id
+        uuid report_id
+        varchar(7) prisoner_number
+        varchar(60) prisoner_involvement
+        varchar(60) outcome
+        text comment
+        integer id
     }
     class question {
-       uuid report_id
-       integer sequence
-       varchar(120) code
-       text question
-       text additional_information
-       integer id
+        uuid report_id
+        integer sequence
+        varchar(60) code
+        text question
+        text additional_information
+        integer id
     }
     class report {
-       bigint event_id
-       varchar(25) incident_number
-       varchar(255) type
-       varchar(20) question_set_id
-       varchar(255) status
-       timestamp incident_date_and_time
-       varchar(6) prison_id
-       timestamp reported_date
-       varchar(120) assigned_to
-       varchar(255) title
-       text description
-       varchar(120) reported_by
-       timestamp created_date
-       varchar(5) source
-       varchar(120) last_modified_by
-       timestamp last_modified_date
-       uuid id
+        integer event_id
+        varchar(25) incident_number
+        varchar(60) type
+        varchar(20) question_set_id
+        varchar(60) status
+        timestamp incident_date_and_time
+        varchar(6) prison_id
+        timestamp reported_date
+        varchar(120) assigned_to
+        varchar(255) title
+        text description
+        varchar(120) reported_by
+        timestamp created_date
+        varchar(5) source
+        varchar(120) last_modified_by
+        timestamp last_modified_date
+        uuid id
     }
     class response {
-       bigint question_id
-       integer sequence
-       text response
-       text additional_information
-       timestamp recorded_on
-       varchar(120) recorded_by
-       integer id
+        integer question_id
+        integer sequence
+        text response
+        text additional_information
+        timestamp recorded_on
+        varchar(120) recorded_by
+        integer id
     }
     class staff_involvement {
-       uuid report_id
-       varchar(80) staff_role
-       varchar(120) staff_username
-       text comment
-       integer id
+        uuid report_id
+        varchar(60) staff_role
+        varchar(120) staff_username
+        text comment
+        integer id
     }
     class status_history {
-       uuid report_id
-       varchar(30) status
-       timestamp set_on
-       varchar(120) set_by
-       integer id
+        uuid report_id
+        varchar(60) status
+        timestamp set_on
+        varchar(120) set_by
+        integer id
     }
 
 correction_request  -->  report : report_id
