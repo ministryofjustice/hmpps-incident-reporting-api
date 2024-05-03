@@ -23,8 +23,9 @@ class Question(
   private val report: Report,
 
   val code: String,
-  // TODO: should we force `question` to be non-null?
-  val question: String? = null,
+  val question: String,
+
+  val additionalInformation: String? = null,
 
   @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence")
@@ -72,6 +73,7 @@ class Question(
   fun toDto() = QuestionDto(
     code = code,
     question = question,
+    additionalInformation = additionalInformation,
     responses = responses.map { it.toDto() },
   )
 }
