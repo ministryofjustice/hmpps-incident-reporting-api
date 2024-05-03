@@ -27,9 +27,9 @@ create table report
         constraint report_event_fk references event (id) on delete restrict,
     incident_number        varchar(25)                          not null
         constraint incident_number unique,
-    type                   varchar(255)                         not null,
+    type                   varchar(60)                          not null,
     question_set_id        varchar(20),
-    status                 varchar(255)                         not null,
+    status                 varchar(60)                          not null,
     incident_date_and_time timestamp                            not null,
     prison_id              varchar(6)                           not null,
     reported_date          timestamp                            not null,
@@ -49,7 +49,7 @@ create table status_history
         constraint status_history_pk primary key,
     report_id uuid                                not null
         constraint status_history_report_fk references report (id) on delete cascade,
-    status    varchar(30)                         not null,
+    status    varchar(60)                         not null,
     set_on    timestamp default CURRENT_TIMESTAMP not null,
     set_by    varchar(120)                        not null
 );
@@ -61,8 +61,8 @@ create table correction_request
     report_id               uuid         not null
         constraint correction_request_report_fk references report (id) on delete cascade,
     correction_requested_by varchar(120) not null,
+    reason                  varchar(60)  not null,
     description_of_change   text         not null,
-    reason                  varchar(80)  not null,
     correction_requested_at timestamp    not null
 );
 
@@ -73,9 +73,9 @@ create table prisoner_involvement
     report_id            uuid        not null
         constraint prisoner_involvement_report_fk references report (id) on delete cascade,
     prisoner_number      varchar(7)  not null,
-    prisoner_involvement varchar(80) not null,
-    comment              text,
-    outcome              varchar(30)
+    prisoner_involvement varchar(60) not null,
+    outcome              varchar(60),
+    comment              text
 );
 
 create table staff_involvement
@@ -84,7 +84,7 @@ create table staff_involvement
         constraint staff_involvement_pk primary key,
     report_id      uuid         not null
         constraint staff_involvement_report_fk references report (id) on delete cascade,
-    staff_role     varchar(80)  not null,
+    staff_role     varchar(60)  not null,
     staff_username varchar(120) not null,
     comment        text
 );
@@ -95,7 +95,7 @@ create table evidence
         constraint evidence_pk primary key,
     report_id   uuid        not null
         constraint evidence_report_fk references report (id) on delete cascade,
-    type        varchar(80) not null,
+    type        varchar(60) not null,
     description text        not null
 );
 
@@ -103,11 +103,11 @@ create table location
 (
     id          serial
         constraint location_pk primary key,
-    report_id   uuid         not null
+    report_id   uuid        not null
         constraint location_report_fk references report (id) on delete cascade,
-    location_id varchar(210) not null,
-    type        varchar(80)  not null,
-    description text         not null
+    location_id varchar(60) not null,
+    type        varchar(60) not null,
+    description text        not null
 );
 
 create table question
@@ -117,7 +117,7 @@ create table question
     report_id              uuid              not null
         constraint question_report_fk references report (id) on delete cascade,
     sequence               integer default 0 not null,
-    code                   varchar(120),
+    code                   varchar(60),
     question               text,
     additional_information text
 );
@@ -141,7 +141,7 @@ create table history
         constraint history_pk primary key,
     report_id             uuid         not null
         constraint history_report_fk references report (id) on delete cascade,
-    type                  varchar(255) not null,
+    type                  varchar(60)  not null,
     change_date           timestamp    not null,
     change_staff_username varchar(120) not null
 );
@@ -153,7 +153,7 @@ create table historical_question
     history_id             integer           not null
         constraint historical_question_history_fk references history (id) on delete cascade,
     sequence               integer default 0 not null,
-    code                   varchar(120)      not null,
+    code                   varchar(60)       not null,
     question               text,
     additional_information text
 );
