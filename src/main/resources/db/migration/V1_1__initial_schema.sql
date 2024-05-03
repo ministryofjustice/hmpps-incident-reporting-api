@@ -23,7 +23,7 @@ create table report
 (
     id                     uuid       default gen_random_uuid()        not null
         constraint report_pk primary key,
-    event_id               bigint                                      not null
+    event_id               integer                                     not null
         constraint report_event_fk references event (id) on delete restrict,
     incident_number        varchar(25)                                 not null
         constraint incident_number unique,
@@ -126,7 +126,7 @@ create table response
 (
     id                     serial
         constraint response_pk primary key,
-    question_id            bigint                                 not null
+    question_id            integer                                not null
         constraint response_question_fk references question (id) on delete cascade,
     sequence               integer      default 0                 not null,
     response               text                                   not null,
@@ -150,7 +150,7 @@ create table historical_question
 (
     id                     serial
         constraint historical_question_pk primary key,
-    history_id             bigint            not null
+    history_id             integer           not null
         constraint historical_question_history_fk references history (id) on delete cascade,
     sequence               integer default 0 not null,
     code                   varchar(120)      not null,
@@ -162,7 +162,7 @@ create table historical_response
 (
     id                     serial
         constraint historical_response_pk primary key,
-    historical_question_id bigint                                 not null
+    historical_question_id integer                                not null
         constraint historical_response_historical_question_fk references historical_question (id) on delete cascade,
     sequence               integer      default 0                 not null,
     response               text                                   not null,
