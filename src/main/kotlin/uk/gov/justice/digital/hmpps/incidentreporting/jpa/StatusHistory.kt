@@ -10,7 +10,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import org.hibernate.Hibernate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
-import java.io.Serializable
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.StatusHistory as StatusHistoryDto
 
@@ -28,7 +27,7 @@ class StatusHistory(
 
   val setOn: LocalDateTime,
   val setBy: String,
-) : Serializable {
+) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
