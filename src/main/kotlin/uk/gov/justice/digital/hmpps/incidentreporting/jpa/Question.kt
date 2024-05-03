@@ -23,8 +23,7 @@ class Question(
   private val report: Report,
 
   val code: String,
-  // TODO: should we force `question` to be non-null?
-  val question: String? = null,
+  val question: String,
 
   val additionalInformation: String? = null,
 

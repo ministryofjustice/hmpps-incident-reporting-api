@@ -54,7 +54,7 @@ class History(
 
   fun addQuestion(
     code: String,
-    question: String? = null,
+    question: String,
     additionalInformation: String? = null,
   ): HistoricalQuestion {
     return HistoricalQuestion(

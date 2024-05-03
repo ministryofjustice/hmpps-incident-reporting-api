@@ -118,7 +118,7 @@ create table question
         constraint question_report_fk references report (id) on delete cascade,
     sequence               integer default 0 not null,
     code                   varchar(60),
-    question               text,
+    question               text              not null,
     additional_information text
 );
 
@@ -154,7 +154,7 @@ create table historical_question
         constraint historical_question_history_fk references history (id) on delete cascade,
     sequence               integer default 0 not null,
     code                   varchar(60)       not null,
-    question               text,
+    question               text              not null,
     additional_information text
 );
 

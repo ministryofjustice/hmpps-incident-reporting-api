@@ -198,7 +198,7 @@ class Report(
 
   fun addQuestion(
     code: String,
-    question: String? = null,
+    question: String,
     additionalInformation: String? = null,
   ): Question {
     return Question(

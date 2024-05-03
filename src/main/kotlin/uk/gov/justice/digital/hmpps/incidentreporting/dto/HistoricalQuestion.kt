@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class HistoricalQuestion(
   @Schema(description = "The question code", required = true)
   val code: String,
-  @Schema(description = "The question", required = false, defaultValue = "null")
-  val question: String? = null,
+  @Schema(description = "The question", required = true)
+  val question: String,
   @Schema(description = "The responses to this question", required = true)
   val responses: List<HistoricalResponse> = emptyList(),
   @Schema(description = "Optional additional information", required = false, defaultValue = "null")
