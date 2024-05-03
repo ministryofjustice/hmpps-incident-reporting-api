@@ -21,26 +21,26 @@ create table event
 
 create table report
 (
-    id                     uuid       default gen_random_uuid()        not null
+    id                     uuid       default gen_random_uuid() not null
         constraint report_pk primary key,
-    event_id               integer                                     not null
+    event_id               integer                              not null
         constraint report_event_fk references event (id) on delete restrict,
-    incident_number        varchar(25)                                 not null
+    incident_number        varchar(25)                          not null
         constraint incident_number unique,
-    type                   varchar(255)                                not null,
+    type                   varchar(255)                         not null,
     question_set_id        varchar(20),
-    status                 varchar(255)                                not null,
-    incident_date_and_time timestamp                                   not null,
-    prison_id              varchar(6)                                  not null,
-    reported_date          timestamp                                   not null,
-    assigned_to            varchar(120)                                not null,
-    title                  varchar(255)                                not null,
-    description            text                                        not null,
-    reported_by            varchar(120)                                not null,
-    created_date           timestamp                                   not null,
-    source                 varchar(5) default 'DPS'::character varying not null,
-    last_modified_by       varchar(120)                                not null,
-    last_modified_date     timestamp  default CURRENT_TIMESTAMP        not null
+    status                 varchar(255)                         not null,
+    incident_date_and_time timestamp                            not null,
+    prison_id              varchar(6)                           not null,
+    reported_date          timestamp                            not null,
+    assigned_to            varchar(120)                         not null,
+    title                  varchar(255)                         not null,
+    description            text                                 not null,
+    reported_by            varchar(120)                         not null,
+    created_date           timestamp                            not null,
+    source                 varchar(5) default 'DPS'             not null,
+    last_modified_by       varchar(120)                         not null,
+    last_modified_date     timestamp  default CURRENT_TIMESTAMP not null
 );
 
 create table status_history
