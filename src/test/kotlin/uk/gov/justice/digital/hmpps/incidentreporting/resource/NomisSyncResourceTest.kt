@@ -480,6 +480,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             """,
             false,
           )
+
+        assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
       }
 
       @Test
