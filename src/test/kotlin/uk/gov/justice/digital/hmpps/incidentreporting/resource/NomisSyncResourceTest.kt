@@ -852,12 +852,23 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
     }
 
-    private fun assertOneDomainMessageSent(eventType: String) {
-      getDomainEvents(1).let {
-        assertThat(it).allMatch { event ->
-          event.eventType == eventType &&
-            event.additionalInformation?.source == InformationSource.NOMIS
-        }
+    private fun assertCreatedReportDomainMessageSent() {
+      assertThat(getDomainEvents(1)).allMatch { event ->
+        event.eventType == "incident.report.created" &&
+          event.additionalInformation?.let { additionalInformation ->
+            additionalInformation.id != existingNomisReport.id && // note that ids should not match
+              additionalInformation.source == InformationSource.NOMIS
+          } ?: false
+      }
+    }
+
+    private fun assertAmendedReportDomainMessageSent() {
+      assertThat(getDomainEvents(1)).allMatch { event ->
+        event.eventType == "incident.report.amended" &&
+          event.additionalInformation?.let { additionalInformation ->
+            additionalInformation.id == existingNomisReport.id &&
+              additionalInformation.source == InformationSource.NOMIS
+          } ?: false
       }
     }
 
@@ -888,8 +899,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         // new report created
         expectStatus().isCreated
 
-        // already migrated, so "created" domain event should be raised
-        assertOneDomainMessageSent("incident.report.created")
+        // already migrated, so domain event should be raised
+        assertCreatedReportDomainMessageSent()
       }
     }
 
@@ -916,8 +927,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         // existing report updated
         expectStatus().isOk
 
-        // already migrated, so "amended" domain event should be raised
-        assertOneDomainMessageSent("incident.report.amended")
+        // already migrated, so domain event should be raised
+        assertAmendedReportDomainMessageSent()
       }
     }
   }
