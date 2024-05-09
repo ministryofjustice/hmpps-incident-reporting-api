@@ -44,8 +44,8 @@ dependencies {
   testImplementation("io.swagger.parser.v3:swagger-parser:2.1.22")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
-  testImplementation("org.testcontainers:localstack:1.19.7")
-  testImplementation("org.testcontainers:postgresql:1.19.7")
+  testImplementation("org.testcontainers:localstack:1.19.8")
+  testImplementation("org.testcontainers:postgresql:1.19.8")
 }
 
 kotlin {
