@@ -38,12 +38,13 @@ enum class StaffRole(
       "HEALTH" -> HEALTHCARE
       "HOST" -> HOSTAGE
       "INPOS" -> IN_POSSESSION
-      "INV" -> ACTIVELY_INVOLVED // TODO: needs checking, might not exist in NOMIS
+      "INV" -> ACTIVELY_INVOLVED
       "NEG" -> NEGOTIATOR
       "PAS" -> PRESENT_AT_SCENE
       "SUSIN" -> SUSPECTED_INVOLVEMENT
       "VICT" -> VICTIM
       "WIT" -> WITNESS
+      // NB: AI & INV both map to ACTIVELY_INVOLVED (their descriptions match in NOMIS)
       else -> throw ValidationException("Unknown NOMIS staff role: $role")
     }
   }
