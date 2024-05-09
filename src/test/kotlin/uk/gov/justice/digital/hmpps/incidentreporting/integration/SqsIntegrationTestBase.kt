@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.opentelemetry.sdk.testing.assertj.OpenTelemetryAssertions.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.matches
 import org.awaitility.kotlin.untilCallTo

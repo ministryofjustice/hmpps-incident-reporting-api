@@ -1,0 +1,203 @@
+{
+  "incidentId": 112414323,
+  "questionnaireId": 1502,
+  "title": "A1235EF hostage taker",
+  "description": "Incident happened in cell xxx",
+  "prison": {
+    "code": "MDI",
+    "description": "Moorland (HMP)"
+  },
+  "status": {
+    "code": "AWAN",
+    "description": "Awaiting Analysis",
+    "listSequence": 1,
+    "standardUser": true,
+    "enhancedUser": true
+  },
+  "type": "ASSAULT",
+  "lockedResponse": false,
+  "incidentDateTime": "2023-12-20T14:00:00",
+  "reportingStaff": {
+    "username": "user1",
+    "staffId": 100001,
+    "firstName": "User",
+    "lastName": "One"
+  },
+  "reportedDateTime": "2023-12-20T15:10:00",
+  "staffParties": [
+    {
+      "staff": {
+        "username": "staff1",
+        "staffId": 200001,
+        "firstName": "Staff",
+        "lastName": "One"
+      },
+      "role": {
+        "code": "HOST",
+        "description": "Hostage"
+      },
+      "comment": "staff 1"
+    },
+    {
+      "staff": {
+        "username": "user1",
+        "staffId": 100001,
+        "firstName": "User",
+        "lastName": "One"
+      },
+      "role": {
+        "code": "PAS",
+        "description": "Present at Scene"
+      },
+      "comment": "user 1"
+    }
+  ],
+  "offenderParties": [
+    {
+      "offender": {
+        "offenderNo": "A1234BC",
+        "firstName": "DAVID",
+        "lastName": "JONES"
+      },
+      "role": {
+        "code": "PERP",
+        "description": "Perpetrator"
+      },
+      "outcome": {
+        "code": "POR",
+        "description": "Placed on Report"
+      },
+      "comment": "hostage taker"
+    },
+    {
+      "offender": {
+        "offenderNo": "A1235EF",
+        "firstName": "FRED",
+        "lastName": "MILLS"
+      },
+      "role": {
+        "code": "SUSINV",
+        "description": "Suspected Involved"
+      },
+      "outcome": {
+        "code": "ILOC",
+        "description": "Investigation (Local)"
+      },
+      "comment": "stopped staff entering cell"
+    }
+  ],
+  "requirements": [
+    {
+      "comment": "Type should be assault",
+      "date": "2024-01-20",
+      "staff": {
+        "username": "user2",
+        "staffId": 100002,
+        "firstName": "User",
+        "lastName": "Two"
+      },
+      "prisonId": "MDI"
+    },
+    {
+      "comment": "Add details to description",
+      "date": "2024-01-21",
+      "staff": {
+        "username": "user2",
+        "staffId": 100002,
+        "firstName": "User",
+        "lastName": "Two"
+      },
+      "prisonId": "MDI"
+    }
+  ],
+  "questions": [
+    {
+      "questionId": 44127,
+      "sequence": 1,
+      "question": "WERE THE POLICE INFORMED OF THE INCIDENT",
+      "answers": [
+        {
+          "questionResponseId": 178912,
+          "sequence": 0,
+          "answer": "YES (ENTER DATE)",
+          "recordingStaff": {
+            "username": "user1",
+            "staffId": 100001,
+            "firstName": "User",
+            "lastName": "One"
+          }
+        }
+      ]
+    },
+    {
+      "questionId": 44913,
+      "sequence": 2,
+      "question": "IS THE INCIDENT THE SUBJECT OF A POLICE INVESTIGATION",
+      "answers": [
+        {
+          "questionResponseId": 181628,
+          "sequence": 1,
+          "answer": "YES",
+          "recordingStaff": {
+            "username": "user1",
+            "staffId": 100001,
+            "firstName": "User",
+            "lastName": "One"
+          }
+        }
+      ]
+    }
+  ],
+  "history": [
+    {
+      "questionnaireId": 1504,
+      "type": "ATT_ESC_E",
+      "description": "ATTEMPTED ESCAPE FROM ESCORT",
+      "questions": [
+        {
+          "questionId": 44423,
+          "sequence": 1,
+          "question": "WERE THE POLICE INFORMED OF THE INCIDENT",
+          "answers": [
+            {
+              "questionResponseId": 179903,
+              "responseSequence": 0,
+              "answer": "YES",
+              "recordingStaff": {
+                "username": "user1",
+                "staffId": 100001,
+                "firstName": "User",
+                "lastName": "One"
+              }
+            }
+          ]
+        },
+        {
+          "questionId": 44924,
+          "sequence": 2,
+          "question": "IS THE INCIDENT THE SUBJECT OF AN INTERNAL INVESTIGATION",
+          "answers": [
+            {
+              "questionResponseId": 181666,
+              "responseSequence": 2,
+              "answer": "NO",
+              "recordingStaff": {
+                "username": "user1",
+                "staffId": 100001,
+                "firstName": "User",
+                "lastName": "One"
+              }
+            }
+          ]
+        }
+      ],
+      "incidentChangeDate": "2024-01-21",
+      "incidentChangeStaff": {
+        "username": "user1",
+        "staffId": 100001,
+        "firstName": "User",
+        "lastName": "One"
+      }
+    }
+  ]
+}

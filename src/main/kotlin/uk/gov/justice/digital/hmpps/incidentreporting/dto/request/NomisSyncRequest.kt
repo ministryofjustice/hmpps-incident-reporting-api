@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import java.util.UUID
 
-@Schema(description = "IncidentReport Details raised/updated in NOMIS")
+@Schema(description = "Incident report created/updated in NOMIS")
 data class NomisSyncRequest(
   @Schema(
     description = "For updates, this value is the UUID of the existing incident. For new incidents, this value is null.",
@@ -14,6 +14,6 @@ data class NomisSyncRequest(
   val id: UUID? = null,
   @Schema(description = "For initial migration this is true", required = false, defaultValue = "false")
   val initialMigration: Boolean = false,
-  @Schema(description = "IncidentReport Details raised/updated in NOMIS", required = true)
+  @Schema(description = "Complete incident report payload", required = true)
   val incidentReport: NomisReport,
 )

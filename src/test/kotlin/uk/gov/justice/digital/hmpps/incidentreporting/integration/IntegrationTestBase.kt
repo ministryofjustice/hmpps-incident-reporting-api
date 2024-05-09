@@ -32,4 +32,9 @@ abstract class IntegrationTestBase {
       }
     }
   }
+
+  protected fun getResource(name: String): String {
+    return this::class.java.getResource(name)?.readText()
+      ?: throw NotImplementedError("test resource $name not defined")
+  }
 }

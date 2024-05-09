@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
@@ -32,6 +33,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.UUID
 
 private const val INCIDENT_NUMBER: Long = 112414323
 
@@ -52,10 +54,14 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
   lateinit var existingNomisReport: Report
 
-  @BeforeEach
-  fun setUp() {
+  private fun deleteAllReports() {
     reportRepository.deleteAll()
     eventRepository.deleteAll()
+  }
+
+  @BeforeEach
+  fun setUp() {
+    deleteAllReports()
 
     existingNomisReport = reportRepository.save(
       buildIncidentReport(
@@ -480,6 +486,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             """,
             false,
           )
+
+        assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
       }
 
       @Test
@@ -812,6 +820,115 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             "incident.report.amended" to Pair(existingNomisReport.id, InformationSource.NOMIS),
           )
         }
+      }
+    }
+  }
+
+  @DisplayName("POST /sync/upsert")
+  @Nested
+  inner class SamplePayloads {
+    private val nomisReportPayload = getResource("/nomis-sync/sample-report.json")
+
+    private fun sendAuthorisedSyncRequest(
+      initialMigration: Boolean,
+      incidentIdToUpdate: UUID?,
+      assertions: WebTestClient.ResponseSpec.() -> Unit,
+    ) {
+      val quotedIncidentId = if (incidentIdToUpdate == null) "null" else "\"$incidentIdToUpdate\""
+      val body = """{
+        "id": $quotedIncidentId,
+        "initialMigration": $initialMigration,
+        "incidentReport": $nomisReportPayload
+      }"""
+      webTestClient.post().uri("/sync/upsert")
+        .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+        .header("Content-Type", "application/json")
+        .bodyValue(body)
+        .exchange()
+        .apply(assertions)
+    }
+
+    private fun assertNoDomainMessagesSent() {
+      assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
+    }
+
+    private fun assertCreatedReportDomainMessageSent() {
+      assertThat(getDomainEvents(1)).allMatch { event ->
+        event.eventType == "incident.report.created" &&
+          event.additionalInformation?.let { additionalInformation ->
+            additionalInformation.id != existingNomisReport.id && // note that ids should not match
+              additionalInformation.source == InformationSource.NOMIS
+          } ?: false
+      }
+    }
+
+    private fun assertAmendedReportDomainMessageSent() {
+      assertThat(getDomainEvents(1)).allMatch { event ->
+        event.eventType == "incident.report.amended" &&
+          event.additionalInformation?.let { additionalInformation ->
+            additionalInformation.id == existingNomisReport.id &&
+              additionalInformation.source == InformationSource.NOMIS
+          } ?: false
+      }
+    }
+
+    @Test
+    fun `can create a report during initial migration`() {
+      deleteAllReports() // drop reports from test setup to prevent incident number and event id clashes
+
+      sendAuthorisedSyncRequest(
+        initialMigration = true,
+        incidentIdToUpdate = null,
+      ) {
+        // new report created
+        expectStatus().isCreated
+
+        // no domain events sent because migrating from NOMIS
+        assertNoDomainMessagesSent()
+      }
+    }
+
+    @Test
+    fun `can create a report after initial migration`() {
+      deleteAllReports() // drop reports from test setup to prevent incident number and event id clashes
+
+      sendAuthorisedSyncRequest(
+        initialMigration = false,
+        incidentIdToUpdate = null,
+      ) {
+        // new report created
+        expectStatus().isCreated
+
+        // already migrated, so domain event should be raised
+        assertCreatedReportDomainMessageSent()
+      }
+    }
+
+    @Test
+    fun `cannot update a report during initial migration`() {
+      sendAuthorisedSyncRequest(
+        initialMigration = true,
+        incidentIdToUpdate = existingNomisReport.id,
+      ) {
+        // invalid options
+        expectStatus().isBadRequest
+
+        // no domain events sent because migrating from NOMIS
+        assertNoDomainMessagesSent()
+      }
+    }
+
+    @Test
+    fun `can update a report after initial migration`() {
+      sendAuthorisedSyncRequest(
+        initialMigration = false,
+        incidentIdToUpdate = existingNomisReport.id,
+      ) {
+        // existing report updated
+        expectStatus().isOk
+
+        // already migrated, so domain event should be raised
+        assertAmendedReportDomainMessageSent()
       }
     }
   }

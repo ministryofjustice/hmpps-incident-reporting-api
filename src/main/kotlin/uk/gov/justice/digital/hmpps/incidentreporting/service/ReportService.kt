@@ -55,7 +55,7 @@ class ReportService(
     }
 
     val newReport = createReportRequest.toNewEntity(
-      reportRepository.generateIncidentNumber(),
+      incidentNumber = reportRepository.generateIncidentNumber(),
       createdBy = authenticationFacade.getUserOrSystemInContext(),
       clock = clock,
       event = event,
