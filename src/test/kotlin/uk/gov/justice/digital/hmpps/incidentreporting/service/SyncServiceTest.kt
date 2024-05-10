@@ -128,7 +128,7 @@ class SyncServiceTest {
     sampleReport.addQuestion("IMPL", "What implement was used?")
       .addResponse("Razor", null, reportedBy, now)
     sampleReport.addLocation("MDI-1-029", "CELL", "Wing 1, cell 029")
-    sampleReport.addStaffInvolved(StaffRole.FIRST_ON_SCENE, reportedBy)
+    sampleReport.addStaffInvolved(StaffRole.PRESENT_AT_SCENE, "user3", "Found offender in cell")
     sampleReport.addPrisonerInvolved("A1234AA", PrisonerRole.PERPETRATOR, PrisonerOutcome.SEEN_HEALTHCARE)
     sampleReport.addEvidence("CAM", "Body worn camera")
     sampleReport.addCorrectionRequest(
@@ -227,9 +227,9 @@ class SyncServiceTest {
 
     assertThat(report.staffInvolved).hasSize(1)
     val staffInvolved = report.staffInvolved[0]
-    assertThat(staffInvolved.staffUsername).isEqualTo(reportedBy)
-    assertThat(staffInvolved.staffRole).isEqualTo(StaffRole.FIRST_ON_SCENE)
-    assertThat(staffInvolved.comment).isNull()
+    assertThat(staffInvolved.staffUsername).isEqualTo("user3")
+    assertThat(staffInvolved.staffRole).isEqualTo(StaffRole.PRESENT_AT_SCENE)
+    assertThat(staffInvolved.comment).isEqualTo("Found offender in cell")
 
     assertThat(report.evidence).hasSize(1)
     val evidence = report.evidence[0]
