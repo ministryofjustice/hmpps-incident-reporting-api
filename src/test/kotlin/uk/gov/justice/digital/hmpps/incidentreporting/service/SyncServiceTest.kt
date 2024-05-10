@@ -221,7 +221,7 @@ class SyncServiceTest {
     assertThat(report.prisonersInvolved).hasSize(1)
     val prisonerInvolved = report.prisonersInvolved[0]
     assertThat(prisonerInvolved.prisonerNumber).isEqualTo("A1234AA")
-    assertThat(prisonerInvolved.prisonerInvolvement).isEqualTo(PrisonerRole.PERPETRATOR)
+    assertThat(prisonerInvolved.prisonerRole).isEqualTo(PrisonerRole.PERPETRATOR)
     assertThat(prisonerInvolved.outcome).isEqualTo(PrisonerOutcome.SEEN_HEALTHCARE)
     assertThat(prisonerInvolved.comment).isNull()
 

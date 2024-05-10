@@ -53,7 +53,7 @@ class PrisonerInvolvement(
 
   fun toDto() = PrisonerInvolvementDto(
     prisonerNumber = prisonerNumber,
-    prisonerInvolvement = prisonerInvolvement,
+    prisonerRole = prisonerInvolvement,
     outcome = outcome,
     comment = comment,
   )
