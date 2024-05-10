@@ -453,7 +453,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "prisonersInvolved": [
                 {
                   "prisonerNumber": "A1234AA",
-                  "prisonerInvolvement": "PERPETRATOR",
+                  "prisonerRole": "PERPETRATOR",
                   "outcome": "ACCT",
                   "comment": "Comment"
                 }
@@ -705,7 +705,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "prisonersInvolved": [
                 {
                   "prisonerNumber": "A1234AA",
-                  "prisonerInvolvement": "PERPETRATOR",
+                  "prisonerRole": "PERPETRATOR",
                   "outcome": "ACCT",
                   "comment": "Comment"
                 }
