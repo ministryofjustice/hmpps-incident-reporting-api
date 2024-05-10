@@ -68,14 +68,14 @@ create table correction_request
 
 create table prisoner_involvement
 (
-    id                   serial
+    id              serial
         constraint prisoner_involvement_pk primary key,
-    report_id            uuid        not null
+    report_id       uuid        not null
         constraint prisoner_involvement_report_fk references report (id) on delete cascade,
-    prisoner_number      varchar(7)  not null,
-    prisoner_involvement varchar(60) not null,
-    outcome              varchar(60),
-    comment              text
+    prisoner_number varchar(7)  not null,
+    prisoner_role   varchar(60) not null,
+    outcome         varchar(60),
+    comment         text
 );
 
 create table staff_involvement

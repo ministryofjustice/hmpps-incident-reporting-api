@@ -69,7 +69,7 @@ classDiagram
         Long  id
         String  comment
         PrisonerOutcome  outcome
-        PrisonerRole  prisonerInvolvement
+        PrisonerRole  prisonerRole
         String  prisonerNumber
     }
     class Question {

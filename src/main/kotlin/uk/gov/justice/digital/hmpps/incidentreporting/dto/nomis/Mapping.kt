@@ -56,7 +56,7 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
   offenderParties.forEach {
     report.addPrisonerInvolved(
       prisonerNumber = it.offender.offenderNo,
-      prisonerInvolvement = PrisonerRole.fromNomisCode(it.role.code),
+      prisonerRole = PrisonerRole.fromNomisCode(it.role.code),
       prisonerOutcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
       comment = it.comment,
     )
