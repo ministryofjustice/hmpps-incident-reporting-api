@@ -178,5 +178,36 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(eventEntity.title).isEqualTo("An event occurred")
       assertThat(eventEntity.description).isEqualTo("Details of the event")
     }
+
+    @Test
+    fun `changing status persists previous one in history`() {
+      val existingReportEntity = buildExistingReport()
+      val reportDto = minimalReportDto.copy()
+
+      existingReportEntity.updateWith(
+        upsert = reportDto,
+        updatedBy = "user1",
+        clock = clock,
+      )
+      assertThat(existingReportEntity.historyOfStatuses).hasSize(2)
+      assertThat(existingReportEntity.historyOfStatuses.map { it.toDto() })
+        .containsExactly(
+          StatusHistory(Status.DRAFT, yesterday, "old-user"),
+          StatusHistory(Status.AWAITING_ANALYSIS, now, "user1"),
+        )
+
+      val anotherReportDto = minimalReportDto.copy(description = "Status is unchanged")
+      existingReportEntity.updateWith(
+        upsert = anotherReportDto,
+        updatedBy = "user1",
+        clock = clock,
+      )
+      assertThat(existingReportEntity.historyOfStatuses).hasSize(2)
+      assertThat(existingReportEntity.historyOfStatuses.map { it.toDto() })
+        .containsExactly(
+          StatusHistory(Status.DRAFT, yesterday, "old-user"),
+          StatusHistory(Status.AWAITING_ANALYSIS, now, "user1"),
+        )
+    }
   }
 }
