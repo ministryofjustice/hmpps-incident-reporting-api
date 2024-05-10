@@ -155,14 +155,14 @@ class Report(
 
   fun addPrisonerInvolved(
     prisonerNumber: String,
-    prisonerInvolvement: PrisonerRole,
+    prisonerRole: PrisonerRole,
     prisonerOutcome: PrisonerOutcome? = null,
     comment: String? = null,
   ): PrisonerInvolvement {
     return PrisonerInvolvement(
       report = this,
       prisonerNumber = prisonerNumber,
-      prisonerInvolvement = prisonerInvolvement,
+      prisonerRole = prisonerRole,
       outcome = prisonerOutcome,
       comment = comment,
     ).also { prisonersInvolved.add(it) }

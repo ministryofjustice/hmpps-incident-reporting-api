@@ -25,7 +25,7 @@ class PrisonerInvolvement(
   val prisonerNumber: String,
 
   @Enumerated(EnumType.STRING)
-  val prisonerInvolvement: PrisonerRole,
+  val prisonerRole: PrisonerRole,
 
   @Enumerated(EnumType.STRING)
   val outcome: PrisonerOutcome? = null,
@@ -53,7 +53,7 @@ class PrisonerInvolvement(
 
   fun toDto() = PrisonerInvolvementDto(
     prisonerNumber = prisonerNumber,
-    prisonerInvolvement = prisonerInvolvement,
+    prisonerRole = prisonerRole,
     outcome = outcome,
     comment = comment,
   )
