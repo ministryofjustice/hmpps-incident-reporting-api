@@ -117,7 +117,7 @@ create table question
     report_id              uuid              not null
         constraint question_report_fk references report (id) on delete cascade,
     sequence               integer default 0 not null,
-    code                   varchar(60),
+    code                   varchar(60)       not null,
     question               text              not null,
     additional_information text
 );
