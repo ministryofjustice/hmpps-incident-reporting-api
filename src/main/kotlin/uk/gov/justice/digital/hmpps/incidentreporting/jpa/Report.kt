@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestions
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
 import java.time.Clock
 import java.time.LocalDateTime
@@ -269,6 +270,9 @@ class Report(
 
     correctionRequests.clear()
     addNomisCorrectionRequests(upsert.requirements)
+
+    questions.clear()
+    addNomisQuestions(upsert.questions)
 
     // TODO: need to compare and update other fields and related entities
   }
