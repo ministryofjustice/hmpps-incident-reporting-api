@@ -22,6 +22,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -259,23 +261,10 @@ class Report(
     // history include history of type changes, questions, etc...
 
     staffInvolved.clear()
-    upsert.staffParties.forEach {
-      addStaffInvolved(
-        staffRole = StaffRole.fromNomisCode(it.role.code),
-        username = it.staff.username,
-        comment = it.comment,
-      )
-    }
+    addNomisStaffInvolvements(upsert.staffParties)
 
     prisonersInvolved.clear()
-    upsert.offenderParties.forEach {
-      addPrisonerInvolved(
-        prisonerNumber = it.offender.offenderNo,
-        prisonerRole = PrisonerRole.fromNomisCode(it.role.code),
-        prisonerOutcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
-        comment = it.comment,
-      )
-    }
+    addNomisPrisonerInvolvements(upsert.offenderParties)
 
     // TODO: need to compare and update other fields and related entities
   }
