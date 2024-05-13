@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffender
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffenderParty
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisRequirement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
@@ -87,7 +88,19 @@ class SyncServiceTest {
           comment = "First time self-harming",
         ),
       ),
-      requirements = emptyList(),
+      requirements = listOf(
+        NomisRequirement(
+          comment = "Title should include prisoner number",
+          date = now.toLocalDate(),
+          prisonId = "MDI",
+          staff = NomisStaff(
+            staffId = 42,
+            username = "checking-user",
+            firstName = "John",
+            lastName = "McCheckin-User",
+          ),
+        ),
+      ),
       questions = emptyList(),
       history = emptyList(),
     ),
@@ -139,7 +152,7 @@ class SyncServiceTest {
     sampleReport.addCorrectionRequest(
       "checking-user",
       now,
-      CorrectionReason.MISSING_INFORMATION,
+      CorrectionReason.NOT_SPECIFIED,
       "Title should include prisoner number",
     )
   }
@@ -244,8 +257,8 @@ class SyncServiceTest {
     assertThat(report.correctionRequests).hasSize(1)
     val correctionRequest = report.correctionRequests[0]
     assertThat(correctionRequest.correctionRequestedBy).isEqualTo("checking-user")
-    assertThat(correctionRequest.correctionRequestedAt).isEqualTo(now)
-    assertThat(correctionRequest.reason).isEqualTo(CorrectionReason.MISSING_INFORMATION)
+    assertThat(correctionRequest.correctionRequestedAt.toLocalDate()).isEqualTo(now.toLocalDate())
+    assertThat(correctionRequest.reason).isEqualTo(CorrectionReason.NOT_SPECIFIED)
     assertThat(correctionRequest.descriptionOfChange).isEqualTo("Title should include prisoner number")
   }
 
