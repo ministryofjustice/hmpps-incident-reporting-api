@@ -800,7 +800,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "setBy": "user2"
                 }
               ],
-              "staffInvolved": [],
+              "staffInvolved": [
+                {
+                  "staffUsername": "user2",
+                  "staffRole": "PRESENT_AT_SCENE",
+                  "comment": "REPORTER"
+                }
+              ],
               "prisonersInvolved": [],
               "locations": [],
               "evidence": [],

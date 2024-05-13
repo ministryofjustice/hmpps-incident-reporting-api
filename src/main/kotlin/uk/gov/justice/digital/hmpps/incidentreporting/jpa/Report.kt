@@ -258,6 +258,15 @@ class Report(
     // TODO: Also update history from syncRequest (`history` field)
     // history include history of type changes, questions, etc...
 
+    staffInvolved.clear()
+    upsert.staffParties.forEach {
+      addStaffInvolved(
+        staffRole = StaffRole.fromNomisCode(it.role.code),
+        username = it.staff.username,
+        comment = it.comment,
+      )
+    }
+
     // TODO: need to compare and update other fields and related entities
   }
 
