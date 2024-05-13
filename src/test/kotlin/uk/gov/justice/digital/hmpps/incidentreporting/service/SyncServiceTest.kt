@@ -129,7 +129,12 @@ class SyncServiceTest {
       .addResponse("Razor", null, reportedBy, now)
     sampleReport.addLocation("MDI-1-029", "CELL", "Wing 1, cell 029")
     sampleReport.addStaffInvolved(StaffRole.PRESENT_AT_SCENE, "user3", "Found offender in cell")
-    sampleReport.addPrisonerInvolved("A1234AA", PrisonerRole.PERPETRATOR, PrisonerOutcome.SEEN_HEALTHCARE)
+    sampleReport.addPrisonerInvolved(
+      "A1234AA",
+      PrisonerRole.PERPETRATOR,
+      PrisonerOutcome.SEEN_HEALTHCARE,
+      "First time self-harming",
+    )
     sampleReport.addEvidence("CAM", "Body worn camera")
     sampleReport.addCorrectionRequest(
       "checking-user",
@@ -223,7 +228,7 @@ class SyncServiceTest {
     assertThat(prisonerInvolved.prisonerNumber).isEqualTo("A1234AA")
     assertThat(prisonerInvolved.prisonerRole).isEqualTo(PrisonerRole.PERPETRATOR)
     assertThat(prisonerInvolved.outcome).isEqualTo(PrisonerOutcome.SEEN_HEALTHCARE)
-    assertThat(prisonerInvolved.comment).isNull()
+    assertThat(prisonerInvolved.comment).isEqualTo("First time self-harming")
 
     assertThat(report.staffInvolved).hasSize(1)
     val staffInvolved = report.staffInvolved[0]
