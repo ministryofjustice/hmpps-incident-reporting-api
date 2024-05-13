@@ -771,7 +771,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
              {
               "id": "${existingNomisReport.id}",
               "incidentNumber": "$INCIDENT_NUMBER",
-              "type": "FINDS",
+              "type": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An incident occurred updated",

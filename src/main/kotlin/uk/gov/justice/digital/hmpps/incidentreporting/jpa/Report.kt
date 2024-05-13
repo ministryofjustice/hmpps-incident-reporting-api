@@ -253,6 +253,11 @@ class Report(
       addStatusHistory(newStatus, now, updatedBy)
     }
 
+    type = Type.fromNomisCode(upsert.type)
+
+    // TODO: Also update history from syncRequest (`history` field)
+    // history include history of type changes, questions, etc...
+
     // TODO: need to compare and update other fields and related entities
   }
 
