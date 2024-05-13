@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
 import java.time.Clock
@@ -265,6 +266,9 @@ class Report(
 
     prisonersInvolved.clear()
     addNomisPrisonerInvolvements(upsert.offenderParties)
+
+    correctionRequests.clear()
+    addNomisCorrectionRequests(upsert.requirements)
 
     // TODO: need to compare and update other fields and related entities
   }

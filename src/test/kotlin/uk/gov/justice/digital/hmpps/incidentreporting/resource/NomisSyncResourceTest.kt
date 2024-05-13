@@ -817,7 +817,14 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ],
               "locations": [],
               "evidence": [],
-              "correctionRequests": [],
+              "correctionRequests": [
+                {
+                  "reason": "NOT_SPECIFIED",
+                  "descriptionOfChange": "Change 1",
+                  "correctionRequestedBy": "user2",
+                  "correctionRequestedAt": "2023-12-05T00:00:00"
+                }
+              ],
               "reportedBy": "USER1",
               "reportedDate": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
