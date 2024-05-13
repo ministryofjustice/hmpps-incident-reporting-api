@@ -24,8 +24,10 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffender
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffenderParty
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisRequirement
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
@@ -101,7 +103,27 @@ class SyncServiceTest {
           ),
         ),
       ),
-      questions = emptyList(),
+      questions = listOf(
+        NomisQuestion(
+          questionId = 42,
+          sequence = 1,
+          question = "What implement was used?",
+          answers = listOf(
+            NomisResponse(
+              answer = "Razor",
+              questionResponseId = null,
+              sequence = 1,
+              comment = null,
+              recordingStaff = NomisStaff(
+                username = reportedBy,
+                staffId = 42,
+                firstName = "John",
+                lastName = "Doe",
+              ),
+            ),
+          ),
+        ),
+      ),
       history = emptyList(),
     ),
   )
@@ -138,7 +160,7 @@ class SyncServiceTest {
   )
 
   init {
-    sampleReport.addQuestion("IMPL", "What implement was used?")
+    sampleReport.addQuestion("QID-000000000042", "What implement was used?")
       .addResponse("Razor", null, reportedBy, now)
     sampleReport.addLocation("MDI-1-029", "CELL", "Wing 1, cell 029")
     sampleReport.addStaffInvolved(StaffRole.PRESENT_AT_SCENE, "user3", "Found offender in cell")
@@ -220,7 +242,7 @@ class SyncServiceTest {
 
     assertThat(report.questions).hasSize(1)
     val question = report.questions[0]
-    assertThat(question.code).isEqualTo("IMPL")
+    assertThat(question.code).isEqualTo("QID-000000000042")
     assertThat(question.question).isEqualTo("What implement was used?")
     assertThat(question.additionalInformation).isNull()
     assertThat(question.responses).hasSize(1)
