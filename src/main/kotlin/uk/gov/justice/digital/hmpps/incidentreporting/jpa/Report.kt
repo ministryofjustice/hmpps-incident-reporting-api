@@ -267,6 +267,16 @@ class Report(
       )
     }
 
+    prisonersInvolved.clear()
+    upsert.offenderParties.forEach {
+      addPrisonerInvolved(
+        prisonerNumber = it.offender.offenderNo,
+        prisonerRole = PrisonerRole.fromNomisCode(it.role.code),
+        prisonerOutcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
+        comment = it.comment,
+      )
+    }
+
     // TODO: need to compare and update other fields and related entities
   }
 

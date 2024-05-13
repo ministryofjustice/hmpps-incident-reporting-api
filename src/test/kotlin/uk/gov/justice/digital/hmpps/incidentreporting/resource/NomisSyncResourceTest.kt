@@ -807,7 +807,14 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "comment": "REPORTER"
                 }
               ],
-              "prisonersInvolved": [],
+              "prisonersInvolved": [
+                {
+                  "prisonerNumber": "A1234AA",
+                  "prisonerRole": "PERPETRATOR",
+                  "outcome": "ACCT",
+                  "comment": "Comment"
+                }
+              ],
               "locations": [],
               "evidence": [],
               "correctionRequests": [],
