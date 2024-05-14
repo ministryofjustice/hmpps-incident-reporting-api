@@ -791,6 +791,28 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               NomisRequirement("Also the description", LocalDate.now(clock), reportingStaff, "MDI"),
               NomisRequirement("Could you update the title please", LocalDate.now(clock).minusWeeks(1), reportingStaff, "MDI"),
             ),
+            questions = listOf(
+              NomisQuestion(
+                4,
+                1,
+                "Who was involved?",
+                listOf(
+                  NomisResponse(10, 1, "John", "comment 1", reportingStaff),
+                  NomisResponse(11, 2, "Trevor", "comment 2", reportingStaff),
+                  NomisResponse(12, 3, "Maybe someone else?", "comment 3", reportingStaff),
+                ),
+              ),
+              NomisQuestion(
+                5,
+                2,
+                "Where did this happen?",
+                listOf(
+                  NomisResponse(13, 1, "Cell", "comment 1", reportingStaff),
+                  NomisResponse(14, 2, "Landing", "comment 2", reportingStaff),
+                  NomisResponse(15, 3, "Kitchen", "comment 3", reportingStaff),
+                ),
+              ),
+            ),
           ),
         )
         webTestClient.post().uri("/sync/upsert")
@@ -823,22 +845,22 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "questions": [
                 {
                   "code": "QID-000000000004",
-                  "question": "Question 1",
+                  "question": "Who was involved?",
                   "responses": [
                     {
-                      "response": "Answer 1",
+                      "response": "John",
                       "recordedBy": "user2",
                       "recordedOn": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
-                      "response": "Answer 2",
+                      "response": "Trevor",
                       "recordedBy": "user2",
                       "recordedOn": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
-                      "response": "Answer 3",
+                      "response": "Maybe someone else?",
                       "recordedBy": "user2",
                       "recordedOn": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 3"
@@ -848,47 +870,22 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 },
                 {
                   "code": "QID-000000000005",
-                  "question": "Question 2",
+                  "question": "Where did this happen?",
                   "responses": [
                     {
-                      "response": "Answer 1",
+                      "response": "Cell",
                       "recordedBy": "user2",
                       "recordedOn": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
-                      "response": "Answer 2",
+                      "response": "Landing",
                       "recordedBy": "user2",
                       "recordedOn": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
-                      "response": "Answer 3",
-                      "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
-                      "additionalInformation": "comment 3"
-                    }
-                  ],
-                  "additionalInformation": null
-                },
-                {
-                  "code": "QID-000000000006",
-                  "question": "Question 3",
-                  "responses": [
-                    {
-                      "response": "Answer 1",
-                      "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
-                      "additionalInformation": "comment 1"
-                    },
-                    {
-                      "response": "Answer 2",
-                      "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
-                      "additionalInformation": "comment 2"
-                    },
-                    {
-                      "response": "Answer 3",
+                      "response": "Kitchen",
                       "recordedBy": "user2",
                       "recordedOn": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 3"
