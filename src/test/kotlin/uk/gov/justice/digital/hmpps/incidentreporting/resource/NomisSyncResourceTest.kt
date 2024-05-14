@@ -863,7 +863,90 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "additionalInformation": null
                 }
               ],
-              "history": [],
+              "history": [
+                {
+                  "type": "DAMAGE",
+                  "changeDate": "2023-12-05T00:00:00",
+                  "changeStaffUsername": "user2",
+                  "questions": [
+                    {
+                      "code": "QID-000000000001",
+                      "question": "Old question 1",
+                      "responses": [
+                        {
+                          "response": "Old answer 1",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 1"
+                        },
+                        {
+                          "response": "Old answer 2",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 2"
+                        },
+                        {
+                          "response": "Old answer 3",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 3"
+                        }
+                      ],
+                      "additionalInformation": null
+                    },
+                    {
+                      "code": "QID-000000000002",
+                      "question": "Old question 2",
+                      "responses": [
+                        {
+                          "response": "Old answer 1",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 1"
+                        },
+                        {
+                          "response": "Old answer 2",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 2"
+                        },
+                        {
+                          "response": "Old answer 3",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 3"
+                        }
+                      ],
+                      "additionalInformation": null
+                    },
+                    {
+                      "code": "QID-000000000003",
+                      "question": "Old question 3",
+                      "responses": [
+                        {
+                          "response": "Old answer 1",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 1"
+                        },
+                        {
+                          "response": "Old answer 2",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 2"
+                        },
+                        {
+                          "response": "Old answer 3",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 3"
+                        }
+                      ],
+                      "additionalInformation": null
+                    }
+                  ]
+                }
+              ],
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",

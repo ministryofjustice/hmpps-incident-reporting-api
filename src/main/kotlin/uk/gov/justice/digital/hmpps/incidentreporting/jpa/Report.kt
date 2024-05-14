@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestions
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
@@ -274,7 +275,8 @@ class Report(
     questions.clear()
     addNomisQuestions(upsert.questions)
 
-    // TODO: need to compare and update other fields and related entities
+    history.clear()
+    addNomisHistory(upsert.history)
   }
 
   fun toDto() = ReportDto(
