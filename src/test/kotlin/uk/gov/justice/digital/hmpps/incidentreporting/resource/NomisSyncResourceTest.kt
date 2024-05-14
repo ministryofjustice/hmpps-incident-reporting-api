@@ -757,6 +757,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = INCIDENT_NUMBER,
             description = "Updated details",
+            staffParties = listOf(
+              NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
+              NomisStaffParty(
+                NomisStaff("JAMESQ", 2, "James", "Quids"),
+                NomisCode("PAS", "Present at scene"), "James was also present actually"),
+            ),
           ),
         )
         webTestClient.post().uri("/sync/upsert")
@@ -964,6 +970,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "staffUsername": "user2",
                   "staffRole": "PRESENT_AT_SCENE",
                   "comment": "REPORTER"
+                },
+                {
+                  "staffUsername": "JAMESQ",
+                  "staffRole": "PRESENT_AT_SCENE",
+                  "comment": "James was also present actually"
                 }
               ],
               "prisonersInvolved": [
