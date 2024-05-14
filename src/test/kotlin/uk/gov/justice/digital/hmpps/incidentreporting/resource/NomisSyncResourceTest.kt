@@ -761,7 +761,31 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
               NomisStaffParty(
                 NomisStaff("JAMESQ", 2, "James", "Quids"),
-                NomisCode("PAS", "Present at scene"), "James was also present actually"),
+                NomisCode("PAS", "Present at scene"),
+                "James was also present actually",
+              ),
+            ),
+            offenderParties = listOf(
+              NomisOffenderParty(
+                offender = NomisOffender(
+                  offenderNo = "B2222BB",
+                  firstName = "John",
+                  lastName = "Also-Smith",
+                ),
+                role = NomisCode("HOST", "Hostage"),
+                outcome = NomisCode("TRN", "Transfer"),
+                comment = "Prisoner was transferred after incident",
+              ),
+              NomisOffenderParty(
+                offender = NomisOffender(
+                  offenderNo = "A1234AA",
+                  firstName = "Trevor",
+                  lastName = "Smith",
+                ),
+                role = NomisCode("PERP", "Perpetrator"),
+                outcome = NomisCode("ILOC", "ILOC"),
+                comment = "Trevor took another prisoner hostage",
+              ),
             ),
           ),
         )
@@ -979,10 +1003,16 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ],
               "prisonersInvolved": [
                 {
+                  "prisonerNumber": "B2222BB",
+                  "prisonerRole": "HOSTAGE",
+                  "outcome": "TRANSFER",
+                  "comment": "Prisoner was transferred after incident"
+                },
+                {
                   "prisonerNumber": "A1234AA",
                   "prisonerRole": "PERPETRATOR",
-                  "outcome": "ACCT",
-                  "comment": "Comment"
+                  "outcome": "LOCAL_INVESTIGATION",
+                  "comment": "Trevor took another prisoner hostage"
                 }
               ],
               "locations": [],
