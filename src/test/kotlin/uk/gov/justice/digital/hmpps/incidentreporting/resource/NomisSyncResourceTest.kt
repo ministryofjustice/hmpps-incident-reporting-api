@@ -787,6 +787,10 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 comment = "Trevor took another prisoner hostage",
               ),
             ),
+            requirements = listOf(
+              NomisRequirement("Also the description", LocalDate.now(clock), reportingStaff, "MDI"),
+              NomisRequirement("Could you update the title please", LocalDate.now(clock).minusWeeks(1), reportingStaff, "MDI"),
+            ),
           ),
         )
         webTestClient.post().uri("/sync/upsert")
@@ -1020,9 +1024,15 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "correctionRequests": [
                 {
                   "reason": "NOT_SPECIFIED",
-                  "descriptionOfChange": "Change 1",
+                  "descriptionOfChange": "Also the description",
                   "correctionRequestedBy": "user2",
                   "correctionRequestedAt": "2023-12-05T00:00:00"
+                },
+                {
+                  "reason": "NOT_SPECIFIED",
+                  "descriptionOfChange": "Could you update the title please",
+                  "correctionRequestedBy": "user2",
+                  "correctionRequestedAt": "2023-11-28T00:00:00"
                 }
               ],
               "reportedBy": "USER1",
