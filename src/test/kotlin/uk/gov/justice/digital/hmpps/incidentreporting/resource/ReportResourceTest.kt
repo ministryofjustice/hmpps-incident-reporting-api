@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -319,9 +321,24 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             )
         }
 
-        @Test
-        fun `can sort reports`() {
-          webTestClient.get().uri("$url?sort=incidentDateAndTime,asc")
+        @ParameterizedTest(name = "can sort reports by {0}")
+        @ValueSource(
+          strings = [
+            "incidentDateAndTime,ASC",
+            "incidentDateAndTime,DESC",
+            "incidentNumber,ASC",
+            "incidentNumber,DESC",
+          ],
+        )
+        fun `can sort reports`(sortParam: String) {
+          val expectedIncidentNumbers = mapOf(
+            "incidentDateAndTime,ASC" to listOf("31934", "94728", "IR-0000000001006603", "IR-0000000001017203", "IR-0000000001124143"),
+            "incidentDateAndTime,DESC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
+            "incidentNumber,ASC" to listOf("31934", "94728", "IR-0000000001006603", "IR-0000000001017203", "IR-0000000001124143"),
+            "incidentNumber,DESC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
+          )[sortParam]!!
+
+          webTestClient.get().uri("$url?sort=$sortParam")
             .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -329,48 +346,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .expectBody().json(
               // language=json
               """{
-                "content": [
-                  {
-                    "incidentNumber": "31934",
-                    "incidentDateAndTime": "2023-12-01T11:34:56",
-                    "event": {
-                      "eventId": "31934",
-                      "eventDateAndTime": "2023-12-01T11:34:56"
-                    }
-                  },
-                  {
-                    "incidentNumber": "94728",
-                    "incidentDateAndTime": "2023-12-02T11:34:56",
-                    "event": {
-                      "eventId": "94728",
-                      "eventDateAndTime": "2023-12-02T11:34:56"
-                    }
-                  },
-                  {
-                    "incidentNumber": "IR-0000000001006603",
-                    "incidentDateAndTime": "2023-12-03T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001006603",
-                      "eventDateAndTime": "2023-12-03T11:34:56"
-                    }
-                  },
-                  {
-                    "incidentNumber": "IR-0000000001017203",
-                    "incidentDateAndTime": "2023-12-04T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001017203",
-                      "eventDateAndTime": "2023-12-04T11:34:56"
-                    }
-                  },
-                  {
-                    "incidentNumber": "IR-0000000001124143",
-                    "incidentDateAndTime": "2023-12-05T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001124143",
-                      "eventDateAndTime": "2023-12-05T11:34:56"
-                    }
-                  }
-                ],
                 "number": 0,
                 "size": 20,
                 "numberOfElements": 5,
@@ -378,7 +353,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "totalPages": 1
               }""",
               false,
-            )
+            ).jsonPath("content[*].incidentNumber")
+            .value<List<String>> {
+              assertThat(it).isEqualTo(expectedIncidentNumbers)
+            }
         }
       }
     }
