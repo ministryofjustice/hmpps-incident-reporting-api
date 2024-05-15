@@ -100,6 +100,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains("Page size must be")
           }
       }
+
+      @Test
+      fun `cannot sort by invalid property`() {
+        webTestClient.get().uri("$url?sort=missing,DESC")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("No property 'missing' found for type 'Report'")
+          }
+      }
     }
 
     @DisplayName("works")
