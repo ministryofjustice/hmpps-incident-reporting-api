@@ -28,8 +28,8 @@ class SimplePage<T>(
   sort: Sort,
 ) : PageImpl<T>(content, PageRequest.of(number, size, sort), totalElements) {
   @get:Schema(description = "Sort orders", example = "[\"property,ASC\"]")
-  @get:JsonProperty
-  val sort: List<String>
+  @get:JsonProperty("sort")
+  val sortOrderList: List<String>
     get() {
       return pageable.sort.stream().map { "${it.property},${it.direction}" }.toList()
     }
