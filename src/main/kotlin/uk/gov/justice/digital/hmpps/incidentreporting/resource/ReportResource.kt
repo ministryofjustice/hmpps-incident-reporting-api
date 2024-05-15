@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.ValidationException
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -24,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import java.util.UUID
@@ -71,11 +72,12 @@ class ReportResource(
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
-  ): Page<ReportDto> {
+  ): SimplePage<ReportDto> {
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
     return reportService.getReports(pageable)
+      .toSimplePage()
   }
 
   @GetMapping("/{id}")

@@ -126,9 +126,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "size": 20,
               "numberOfElements": 0,
               "totalElements": 0,
-              "totalPages": 0
+              "totalPages": 0,
+              "sort": ["incidentDateAndTime,DESC"]
             }""",
-            false,
+            true,
           )
       }
 
@@ -155,7 +156,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "size": 20,
               "numberOfElements": 1,
               "totalElements": 1,
-              "totalPages": 1
+              "totalPages": 1,
+              "sort": ["incidentDateAndTime,DESC"]
             }""",
             false,
           )
@@ -239,7 +241,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "size": 20,
                 "numberOfElements": 5,
                 "totalElements": 5,
-                "totalPages": 1
+                "totalPages": 1,
+                "sort": ["incidentDateAndTime,DESC"]
               }""",
               false,
             )
@@ -277,7 +280,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "size": 2,
                 "numberOfElements": 2,
                 "totalElements": 5,
-                "totalPages": 3
+                "totalPages": 3,
+                "sort": ["incidentDateAndTime,DESC"]
               }""",
               false,
             )
@@ -315,7 +319,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "size": 2,
                 "numberOfElements": 2,
                 "totalElements": 5,
-                "totalPages": 3
+                "totalPages": 3,
+                "sort": ["incidentDateAndTime,DESC"]
               }""",
               false,
             )
@@ -350,7 +355,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "size": 20,
                 "numberOfElements": 5,
                 "totalElements": 5,
-                "totalPages": 1
+                "totalPages": 1,
+                "sort": ["$sortParam"]
               }""",
               false,
             ).jsonPath("content[*].incidentNumber")
