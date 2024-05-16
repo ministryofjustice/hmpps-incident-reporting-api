@@ -5,6 +5,11 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.ValidationException
+import org.springdoc.core.annotations.ParameterObject
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -18,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import java.util.UUID
@@ -33,6 +40,45 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 class ReportResource(
   private val reportService: ReportService,
 ) : EventBaseResource() {
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
+  @Operation(
+    summary = "Returns pages of incident reports",
+    description = "Requires role VIEW_INCIDENT_REPORTS",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns a page of incident reports",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "When input parameters are not valid",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Missing required role. Requires the VIEW_INCIDENT_REPORTS role",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
+  )
+  fun getReports(
+    @ParameterObject
+    @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
+    pageable: Pageable,
+  ): SimplePage<ReportDto> {
+    if (pageable.pageSize > 50) {
+      throw ValidationException("Page size must be 50 or less")
+    }
+    return reportService.getReports(pageable)
+      .toSimplePage()
+  }
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)

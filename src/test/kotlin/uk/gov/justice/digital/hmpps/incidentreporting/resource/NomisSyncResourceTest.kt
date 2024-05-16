@@ -185,6 +185,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       ),
     )
 
+    @DisplayName("is secured")
     @Nested
     inner class Security {
       @Test
@@ -225,6 +226,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       }
     }
 
+    @DisplayName("validates requests")
     @Nested
     inner class Validation {
       @Test
@@ -238,6 +240,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       }
     }
 
+    @DisplayName("works")
     @Nested
     inner class HappyPath {
       @Test

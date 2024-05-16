@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.resource
 import jakarta.validation.ValidationException
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
@@ -28,6 +29,7 @@ class ApiExceptionHandler {
       .body(
         ErrorResponse(
           status = BAD_REQUEST,
+          errorCode = ErrorCode.ValidationFailure,
           userMessage = "Validation failure: ${e.message}",
           developerMessage = e.message,
         ),
@@ -56,6 +58,7 @@ class ApiExceptionHandler {
       .body(
         ErrorResponse(
           status = BAD_REQUEST,
+          errorCode = ErrorCode.ValidationFailure,
           userMessage = "Validation failure: Couldn't read request body: ${e.message}",
           developerMessage = e.message,
         ),
@@ -77,6 +80,7 @@ class ApiExceptionHandler {
       .body(
         ErrorResponse(
           status = BAD_REQUEST,
+          errorCode = ErrorCode.ValidationFailure,
           userMessage = "Validation failure: $message",
           developerMessage = e.message,
         ),
@@ -157,6 +161,22 @@ class ApiExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException::class)
   fun handleInvalidMethodArgumentException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse>? {
     log.debug("MethodArgumentNotValidException exception caught: {}", e.message)
+
+    return ResponseEntity
+      .status(BAD_REQUEST)
+      .body(
+        ErrorResponse(
+          status = BAD_REQUEST,
+          errorCode = ErrorCode.ValidationFailure,
+          userMessage = "Validation Failure: ${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(PropertyReferenceException::class)
+  fun handlePropertyReferenceException(e: PropertyReferenceException): ResponseEntity<ErrorResponse>? {
+    log.debug("PropertyReferenceException caught: {}", e.message)
 
     return ResponseEntity
       .status(BAD_REQUEST)
