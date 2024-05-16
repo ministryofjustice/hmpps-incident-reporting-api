@@ -27,11 +27,11 @@ dependencies {
   implementation("org.flywaydb:flyway-core")
   implementation("com.zaxxer:HikariCP:5.1.0")
   runtimeOnly("org.postgresql:postgresql:42.7.3")
-  implementation("com.github.f4b6a3:uuid-creator:5.3.7")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
+  implementation("com.fasterxml.uuid:java-uuid-generator:5.0.0")
 
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 

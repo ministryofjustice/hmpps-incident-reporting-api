@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa.id
 
-import com.github.f4b6a3.uuid.UuidCreator
+import com.fasterxml.uuid.Generators
+import com.fasterxml.uuid.NoArgGenerator
 import org.hibernate.engine.spi.SharedSessionContractImplementor
 import org.hibernate.generator.BeforeExecutionGenerator
 import org.hibernate.generator.EventType
@@ -9,6 +10,10 @@ import java.util.EnumSet
 import java.util.UUID
 
 class UuidV7Generator : BeforeExecutionGenerator {
+  companion object {
+    val uuidGenerator: NoArgGenerator = Generators.timeBasedEpochGenerator(null)
+  }
+
   override fun getEventTypes(): EnumSet<EventType> {
     return INSERT_ONLY
   }
@@ -19,7 +24,7 @@ class UuidV7Generator : BeforeExecutionGenerator {
     currentValue: Any?,
     eventType: EventType?,
   ): UUID {
-    // NB: the default `org.hibernate.id.uuid.UuidGenerator` ignores session, owner, currentValue and eventType
-    return UuidCreator.getTimeOrderedEpoch()
+    // NB: the default `org.hibernate.id.uuid.UuidGenerator` also ignores session, owner, currentValue and eventType
+    return uuidGenerator.generate()
   }
 }
