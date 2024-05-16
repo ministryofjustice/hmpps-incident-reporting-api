@@ -56,7 +56,7 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
 
 fun Report.addNomisStaffInvolvements(staffParties: Collection<NomisStaffParty>) {
   staffParties.forEach {
-    addStaffInvolved(
+    this.addStaffInvolved(
       staffRole = StaffRole.fromNomisCode(it.role.code),
       username = it.staff.username,
       comment = it.comment,
@@ -66,7 +66,7 @@ fun Report.addNomisStaffInvolvements(staffParties: Collection<NomisStaffParty>) 
 
 fun Report.addNomisPrisonerInvolvements(offenderParties: Collection<NomisOffenderParty>) {
   offenderParties.forEach {
-    addPrisonerInvolved(
+    this.addPrisonerInvolved(
       prisonerNumber = it.offender.offenderNo,
       prisonerRole = PrisonerRole.fromNomisCode(it.role.code),
       prisonerOutcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
@@ -77,7 +77,7 @@ fun Report.addNomisPrisonerInvolvements(offenderParties: Collection<NomisOffende
 
 fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequirement>) {
   correctionRequests.forEach {
-    addCorrectionRequest(
+    this.addCorrectionRequest(
       correctionRequestedBy = it.staff.username,
       correctionRequestedAt = it.date.atStartOfDay(),
       descriptionOfChange = it.comment ?: "NO DETAILS GIVEN",
@@ -88,7 +88,7 @@ fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequir
 
 fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
   questions.sortedBy { it.sequence }.forEach { question ->
-    val dataItem = addQuestion(
+    val dataItem = this.addQuestion(
       code = "QID-%012d".format(question.questionId),
       question = question.question,
     )
