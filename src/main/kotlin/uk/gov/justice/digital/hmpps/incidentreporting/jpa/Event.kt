@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
-import org.hibernate.Hibernate
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
 
@@ -39,19 +38,6 @@ class Event(
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
 ) {
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as Event
-
-    return eventId == other.eventId
-  }
-
-  override fun hashCode(): Int {
-    return eventId.hashCode()
-  }
-
   override fun toString(): String {
     return "Event(eventId=$eventId)"
   }

@@ -12,7 +12,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import jakarta.persistence.OrderColumn
-import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -104,19 +103,6 @@ class Report(
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
 ) {
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as Report
-
-    return incidentNumber == other.incidentNumber
-  }
-
-  override fun hashCode(): Int {
-    return incidentNumber.hashCode()
-  }
-
   override fun toString(): String {
     return "Report(incidentNumber=$incidentNumber)"
   }
