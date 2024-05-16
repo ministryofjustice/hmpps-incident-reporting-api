@@ -27,6 +27,7 @@ dependencies {
   implementation("org.flywaydb:flyway-core")
   implementation("com.zaxxer:HikariCP:5.1.0")
   runtimeOnly("org.postgresql:postgresql:42.7.3")
+  implementation("com.github.f4b6a3:uuid-creator:5.3.7")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
