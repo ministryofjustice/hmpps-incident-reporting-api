@@ -47,9 +47,9 @@ class Report(
   @Column(nullable = false, unique = true, length = 25)
   val incidentNumber: String,
 
-  val incidentDateAndTime: LocalDateTime,
+  var incidentDateAndTime: LocalDateTime,
 
-  val prisonId: String,
+  var prisonId: String,
 
   @Enumerated(EnumType.STRING)
   private var type: Type,
@@ -57,8 +57,8 @@ class Report(
   var title: String,
   var description: String,
 
-  val reportedBy: String,
-  val reportedDate: LocalDateTime,
+  var reportedBy: String,
+  var reportedDate: LocalDateTime,
   @Enumerated(EnumType.STRING)
   var status: Status = Status.DRAFT,
 
@@ -90,7 +90,7 @@ class Report(
   @OrderColumn(name = "sequence", nullable = false)
   private val questions: MutableList<Question> = mutableListOf(),
 
-  val questionSetId: String? = null,
+  var questionSetId: String? = null,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   @OrderBy("change_date ASC")
@@ -232,11 +232,22 @@ class Report(
   fun updateWith(upsert: NomisReport, updatedBy: String, clock: Clock) {
     val now = LocalDateTime.now(clock)
 
-    lastModifiedDate = now
-    lastModifiedBy = updatedBy
+    type = Type.fromNomisCode(upsert.type)
+
+    incidentDateAndTime = upsert.incidentDateTime
+    event.eventDateAndTime = incidentDateAndTime
+
+    prisonId = upsert.prison.code
+    event.prisonId = prisonId
 
     title = upsert.title ?: "NO DETAILS GIVEN"
+    event.title = title
+
     description = upsert.description ?: "NO DETAILS GIVEN"
+    event.description = description
+
+    reportedBy = upsert.reportingStaff.username
+    reportedDate = upsert.reportedDateTime
 
     val newStatus = Status.fromNomisCode(upsert.status.code)
     if (newStatus != status) {
@@ -244,7 +255,13 @@ class Report(
       addStatusHistory(newStatus, now, updatedBy)
     }
 
-    type = Type.fromNomisCode(upsert.type)
+    questionSetId = "${upsert.questionnaireId}"
+
+    lastModifiedDate = now
+    event.lastModifiedDate = lastModifiedDate
+
+    lastModifiedBy = updatedBy
+    event.lastModifiedBy = updatedBy
 
     staffInvolved.clear()
     addNomisStaffInvolvements(upsert.staffParties)

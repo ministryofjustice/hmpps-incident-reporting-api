@@ -25,8 +25,8 @@ class Event(
   @Column(nullable = false, unique = true, length = 25)
   val eventId: String,
 
-  val eventDateAndTime: LocalDateTime,
-  val prisonId: String,
+  var eventDateAndTime: LocalDateTime,
+  var prisonId: String,
 
   var title: String,
   var description: String,

@@ -756,7 +756,15 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           id = existingNomisReport.id,
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = INCIDENT_NUMBER,
+            title = "Updated title",
             description = "Updated details",
+            reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
+            reportedDateTime = LocalDateTime.now(clock).minusDays(1),
+            status = NomisStatus("INAN", "In Analysis"),
+            questionnaireId = 419,
+            type = "ASSAULTS3",
+            incidentDateTime = LocalDateTime.now(clock).minusDays(10),
+            prison = NomisCode("FBI", "Forest Bank (HMP & YOI)"),
             staffParties = listOf(
               NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
               NomisStaffParty(
@@ -883,20 +891,20 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
              {
               "id": "${existingNomisReport.id}",
               "incidentNumber": "$INCIDENT_NUMBER",
-              "type": "SELF_HARM",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
-              "prisonId": "MDI",
-              "title": "An incident occurred updated",
+              "type": "ASSAULT",
+              "incidentDateAndTime": "2023-11-25T12:34:56",
+              "prisonId": "FBI",
+              "title": "Updated title",
               "description": "Updated details",
               "event": {
                 "eventId": "$INCIDENT_NUMBER",
-                "eventDateAndTime": "2023-12-05T11:34:56",
-                "prisonId": "MDI",
-                "title": "An event occurred",
-                "description": "Details of the event",
+                "eventDateAndTime": "2023-11-25T12:34:56",
+                "prisonId": "FBI",
+                "title": "Updated title",
+                "description": "Updated details",
                 "createdDate": "2023-12-05T12:34:56",
                 "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "USER1"
+                "lastModifiedBy": "OF42"
               },
               "questions": [
                 {
@@ -906,19 +914,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "John",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedOn": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Trevor",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedOn": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Maybe someone else?",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedOn": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ],
@@ -931,19 +939,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "Cell",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedOn": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Landing",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedOn": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Kitchen",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedOn": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ],
@@ -963,13 +971,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedOn": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedOn": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 2"
                         }
                       ],
@@ -982,13 +990,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedOn": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedOn": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 2"
                         }
                       ],
@@ -1008,13 +1016,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedOn": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedOn": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 2"
                         }
                       ],
@@ -1027,13 +1035,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedOn": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedOn": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 2"
                         }
                       ],
@@ -1049,9 +1057,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "setBy": "USER1"
                 },
                 {
-                  "status": "AWAITING_ANALYSIS",
+                  "status": "IN_ANALYSIS",
                   "setOn": "2023-12-05T12:34:56",
-                  "setBy": "user2"
+                  "setBy": "OF42"
                 }
               ],
               "staffInvolved": [
@@ -1096,13 +1104,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "correctionRequestedAt": "2023-11-28T00:00:00"
                 }
               ],
-              "reportedBy": "USER1",
-              "reportedDate": "2023-12-05T12:34:56",
-              "status": "AWAITING_ANALYSIS",
+              "reportedBy": "OF42",
+              "reportedDate": "2023-12-04T12:34:56",
+              "status": "IN_ANALYSIS",
               "assignedTo": "USER1",
               "createdDate": "2023-12-05T12:34:56",
               "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "user2",
+              "lastModifiedBy": "OF42",
               "createdInNomis": true
             }
             """,
