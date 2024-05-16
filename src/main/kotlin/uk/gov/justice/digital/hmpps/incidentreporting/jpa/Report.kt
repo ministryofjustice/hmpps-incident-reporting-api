@@ -260,9 +260,6 @@ class Report(
 
     type = Type.fromNomisCode(upsert.type)
 
-    // TODO: Also update history from syncRequest (`history` field)
-    // history include history of type changes, questions, etc...
-
     staffInvolved.clear()
     addNomisStaffInvolvements(upsert.staffParties)
 

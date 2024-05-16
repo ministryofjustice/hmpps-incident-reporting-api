@@ -813,6 +813,62 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ),
               ),
             ),
+            history = listOf(
+              NomisHistory(
+                1,
+                "DAMAGE",
+                "Damage",
+                incidentChangeDate = LocalDate.now(clock),
+                incidentChangeStaff = reportingStaff,
+                questions = listOf(
+                  NomisHistoryQuestion(
+                    1,
+                    1,
+                    "Old question 1",
+                    listOf(
+                      NomisHistoryResponse(1, 1, "Old answer 1", "comment 1", reportingStaff),
+                      NomisHistoryResponse(2, 2, "Old answer 2", "comment 2", reportingStaff),
+                    ),
+                  ),
+                  NomisHistoryQuestion(
+                    2,
+                    2,
+                    "Old question 2",
+                    listOf(
+                      NomisHistoryResponse(4, 1, "Old answer 1", "comment 1", reportingStaff),
+                      NomisHistoryResponse(5, 2, "Old answer 2", "comment 2", reportingStaff),
+                    ),
+                  ),
+                ),
+              ),
+              NomisHistory(
+                2,
+                "BOMB",
+                "Bomb",
+                incidentChangeDate = LocalDate.now(clock).minusDays(2),
+                incidentChangeStaff = reportingStaff,
+                questions = listOf(
+                  NomisHistoryQuestion(
+                    11,
+                    1,
+                    "Old old question 1",
+                    listOf(
+                      NomisHistoryResponse(12, 1, "Old old answer 1", "comment 1", reportingStaff),
+                      NomisHistoryResponse(22, 2, "Old old answer 2", "comment 2", reportingStaff),
+                    ),
+                  ),
+                  NomisHistoryQuestion(
+                    22,
+                    2,
+                    "Old old question 2",
+                    listOf(
+                      NomisHistoryResponse(44, 1, "Old old answer 1", "comment 1", reportingStaff),
+                      NomisHistoryResponse(55, 2, "Old old answer 2", "comment 2", reportingStaff),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         )
         webTestClient.post().uri("/sync/upsert")
@@ -915,12 +971,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           "recordedBy": "user2",
                           "recordedOn": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
-                        },
-                        {
-                          "response": "Old answer 3",
-                          "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
-                          "additionalInformation": "comment 3"
                         }
                       ],
                       "additionalInformation": null
@@ -940,37 +990,51 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           "recordedBy": "user2",
                           "recordedOn": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
-                        },
-                        {
-                          "response": "Old answer 3",
-                          "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
-                          "additionalInformation": "comment 3"
                         }
                       ],
                       "additionalInformation": null
-                    },
+                    }
+                  ]
+                },
+                {
+                  "type": "BOMB_THREAT",
+                  "changeDate": "2023-12-03T00:00:00",
+                  "changeStaffUsername": "user2",
+                  "questions": [
                     {
-                      "code": "QID-000000000003",
-                      "question": "Old question 3",
+                      "code": "QID-000000000011",
+                      "question": "Old old question 1",
                       "responses": [
                         {
-                          "response": "Old answer 1",
+                          "response": "Old old answer 1",
                           "recordedBy": "user2",
                           "recordedOn": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
-                          "response": "Old answer 2",
+                          "response": "Old old answer 2",
                           "recordedBy": "user2",
                           "recordedOn": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
-                        },
+                        }
+                      ],
+                      "additionalInformation": null
+                    },
+                    {
+                      "code": "QID-000000000022",
+                      "question": "Old old question 2",
+                      "responses": [
                         {
-                          "response": "Old answer 3",
+                          "response": "Old old answer 1",
                           "recordedBy": "user2",
                           "recordedOn": "2023-12-05T12:34:56",
-                          "additionalInformation": "comment 3"
+                          "additionalInformation": "comment 1"
+                        },
+                        {
+                          "response": "Old old answer 2",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-05T12:34:56",
+                          "additionalInformation": "comment 2"
                         }
                       ],
                       "additionalInformation": null
