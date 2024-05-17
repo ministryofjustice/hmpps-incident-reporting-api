@@ -45,34 +45,50 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
   )
   report.addStatusHistory(status, reportedDateTime, reportingStaff.username)
 
+  report.addNomisStaffInvolvements(staffParties)
+  report.addNomisPrisonerInvolvements(offenderParties)
+  report.addNomisCorrectionRequests(requirements)
+  report.addNomisQuestions(questions)
+  report.addNomisHistory(history)
+
+  return report
+}
+
+fun Report.addNomisStaffInvolvements(staffParties: Collection<NomisStaffParty>) {
   staffParties.forEach {
-    report.addStaffInvolved(
+    this.addStaffInvolved(
       staffRole = StaffRole.fromNomisCode(it.role.code),
       username = it.staff.username,
       comment = it.comment,
     )
   }
+}
 
+fun Report.addNomisPrisonerInvolvements(offenderParties: Collection<NomisOffenderParty>) {
   offenderParties.forEach {
-    report.addPrisonerInvolved(
+    this.addPrisonerInvolved(
       prisonerNumber = it.offender.offenderNo,
       prisonerRole = PrisonerRole.fromNomisCode(it.role.code),
       prisonerOutcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
       comment = it.comment,
     )
   }
+}
 
-  requirements.forEach {
-    report.addCorrectionRequest(
+fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequirement>) {
+  correctionRequests.forEach {
+    this.addCorrectionRequest(
       correctionRequestedBy = it.staff.username,
       correctionRequestedAt = it.date.atStartOfDay(),
       descriptionOfChange = it.comment ?: "NO DETAILS GIVEN",
       reason = CorrectionReason.NOT_SPECIFIED,
     )
   }
+}
 
+fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
   questions.sortedBy { it.sequence }.forEach { question ->
-    val dataItem = report.addQuestion(
+    val dataItem = this.addQuestion(
       code = "QID-%012d".format(question.questionId),
       question = question.question,
     )
@@ -84,13 +100,15 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
           response = answer.answer!!,
           additionalInformation = answer.comment,
           recordedBy = answer.recordingStaff.username,
-          recordedOn = report.reportedDate,
+          recordedOn = this.reportedDate,
         )
       }
   }
+}
 
+fun Report.addNomisHistory(history: Collection<NomisHistory>) {
   history.forEach { history ->
-    val historyRecord = report.addHistory(
+    val historyRecord = this.addHistory(
       type = Type.fromNomisCode(history.type),
       incidentChangeDate = history.incidentChangeDate.atStartOfDay(),
       staffChanged = history.incidentChangeStaff.username,
@@ -109,11 +127,9 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
             response = answer.answer!!,
             additionalInformation = answer.comment,
             recordedBy = answer.recordingStaff.username,
-            recordedOn = report.reportedDate,
+            recordedOn = this.reportedDate,
           )
         }
     }
   }
-
-  return report
 }

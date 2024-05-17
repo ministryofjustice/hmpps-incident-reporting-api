@@ -133,12 +133,11 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.lastModifiedBy).isEqualTo("user1")
 
       val eventEntity = existingReportEntity.event
-      // TODO: changes not copied to event, should they be? probably not (then keep assertions but drop comment)
-      assertThat(eventEntity.title).isEqualTo("An event occurred")
-      assertThat(eventEntity.description).isEqualTo("Details of the event")
+      assertThat(eventEntity.title).isEqualTo("TITLE")
+      assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
       assertThat(eventEntity.createdDate).isEqualTo(yesterday)
-      assertThat(eventEntity.lastModifiedDate).isEqualTo(yesterday)
-      assertThat(eventEntity.lastModifiedBy).isEqualTo("old-user")
+      assertThat(eventEntity.lastModifiedDate).isEqualTo(now)
+      assertThat(eventEntity.lastModifiedBy).isEqualTo("user1")
     }
 
     @Test
@@ -155,9 +154,8 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.description).isEqualTo("DESCRIPTION")
 
       val eventEntity = existingReportEntity.event
-      // TODO: changes not copied to event, should they be? probably not (then keep assertions but drop comment)
-      assertThat(eventEntity.title).isEqualTo("An event occurred")
-      assertThat(eventEntity.description).isEqualTo("Details of the event")
+      assertThat(eventEntity.title).isEqualTo("NO DETAILS GIVEN")
+      assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
     }
 
     @Test
@@ -174,9 +172,8 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.description).isEqualTo("NO DETAILS GIVEN")
 
       val eventEntity = existingReportEntity.event
-      // TODO: changes not copied to event, should they be? probably not (then keep assertions but drop comment)
-      assertThat(eventEntity.title).isEqualTo("An event occurred")
-      assertThat(eventEntity.description).isEqualTo("Details of the event")
+      assertThat(eventEntity.title).isEqualTo("TITLE")
+      assertThat(eventEntity.description).isEqualTo("NO DETAILS GIVEN")
     }
 
     @Test

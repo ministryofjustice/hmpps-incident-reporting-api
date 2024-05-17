@@ -12,7 +12,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import jakarta.persistence.OrderColumn
-import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -22,6 +21,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestions
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -43,9 +47,9 @@ class Report(
   @Column(nullable = false, unique = true, length = 25)
   val incidentNumber: String,
 
-  val incidentDateAndTime: LocalDateTime,
+  var incidentDateAndTime: LocalDateTime,
 
-  val prisonId: String,
+  var prisonId: String,
 
   @Enumerated(EnumType.STRING)
   private var type: Type,
@@ -53,8 +57,8 @@ class Report(
   var title: String,
   var description: String,
 
-  val reportedBy: String,
-  val reportedDate: LocalDateTime,
+  var reportedBy: String,
+  var reportedDate: LocalDateTime,
   @Enumerated(EnumType.STRING)
   var status: Status = Status.DRAFT,
 
@@ -86,7 +90,7 @@ class Report(
   @OrderColumn(name = "sequence", nullable = false)
   private val questions: MutableList<Question> = mutableListOf(),
 
-  val questionSetId: String? = null,
+  var questionSetId: String? = null,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   @OrderBy("change_date ASC")
@@ -99,19 +103,6 @@ class Report(
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
 ) {
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as Report
-
-    return incidentNumber == other.incidentNumber
-  }
-
-  override fun hashCode(): Int {
-    return incidentNumber.hashCode()
-  }
-
   override fun toString(): String {
     return "Report(incidentNumber=$incidentNumber)"
   }
@@ -241,11 +232,27 @@ class Report(
   fun updateWith(upsert: NomisReport, updatedBy: String, clock: Clock) {
     val now = LocalDateTime.now(clock)
 
-    lastModifiedDate = now
-    lastModifiedBy = updatedBy
+    type = Type.fromNomisCode(upsert.type)
+
+    // NOTE: Currently we update the event information as well on update.
+    //       For some of these fields makes more sense because that's explicitly
+    //       the intent (e.g. `incidentDateTime`, `prisonId`, etc... are also in the event)
+    //       For Event's title/description may make less sense but we're keeping this in
+    //       as well for now.
+    incidentDateAndTime = upsert.incidentDateTime
+    event.eventDateAndTime = incidentDateAndTime
+
+    prisonId = upsert.prison.code
+    event.prisonId = prisonId
 
     title = upsert.title ?: "NO DETAILS GIVEN"
+    event.title = title
+
     description = upsert.description ?: "NO DETAILS GIVEN"
+    event.description = description
+
+    reportedBy = upsert.reportingStaff.username
+    reportedDate = upsert.reportedDateTime
 
     val newStatus = Status.fromNomisCode(upsert.status.code)
     if (newStatus != status) {
@@ -253,7 +260,28 @@ class Report(
       addStatusHistory(newStatus, now, updatedBy)
     }
 
-    // TODO: need to compare and update other fields and related entities
+    questionSetId = "${upsert.questionnaireId}"
+
+    lastModifiedDate = now
+    event.lastModifiedDate = lastModifiedDate
+
+    lastModifiedBy = updatedBy
+    event.lastModifiedBy = updatedBy
+
+    staffInvolved.clear()
+    addNomisStaffInvolvements(upsert.staffParties)
+
+    prisonersInvolved.clear()
+    addNomisPrisonerInvolvements(upsert.offenderParties)
+
+    correctionRequests.clear()
+    addNomisCorrectionRequests(upsert.requirements)
+
+    questions.clear()
+    addNomisQuestions(upsert.questions)
+
+    history.clear()
+    addNomisHistory(upsert.history)
   }
 
   fun toDto() = ReportDto(

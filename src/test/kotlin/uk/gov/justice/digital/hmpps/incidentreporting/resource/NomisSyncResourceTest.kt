@@ -756,7 +756,127 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           id = existingNomisReport.id,
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = INCIDENT_NUMBER,
+            title = "Updated title",
             description = "Updated details",
+            reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
+            reportedDateTime = LocalDateTime.now(clock).minusDays(1),
+            status = NomisStatus("INAN", "In Analysis"),
+            questionnaireId = 419,
+            type = "ASSAULTS3",
+            incidentDateTime = LocalDateTime.now(clock).minusDays(10),
+            prison = NomisCode("FBI", "Forest Bank (HMP & YOI)"),
+            staffParties = listOf(
+              NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
+              NomisStaffParty(
+                NomisStaff("JAMESQ", 2, "James", "Quids"),
+                NomisCode("PAS", "Present at scene"),
+                "James was also present actually",
+              ),
+            ),
+            offenderParties = listOf(
+              NomisOffenderParty(
+                offender = NomisOffender(
+                  offenderNo = "B2222BB",
+                  firstName = "John",
+                  lastName = "Also-Smith",
+                ),
+                role = NomisCode("HOST", "Hostage"),
+                outcome = NomisCode("TRN", "Transfer"),
+                comment = "Prisoner was transferred after incident",
+              ),
+              NomisOffenderParty(
+                offender = NomisOffender(
+                  offenderNo = "A1234AA",
+                  firstName = "Trevor",
+                  lastName = "Smith",
+                ),
+                role = NomisCode("PERP", "Perpetrator"),
+                outcome = NomisCode("ILOC", "ILOC"),
+                comment = "Trevor took another prisoner hostage",
+              ),
+            ),
+            requirements = listOf(
+              NomisRequirement("Also the description", LocalDate.now(clock), reportingStaff, "MDI"),
+              NomisRequirement("Could you update the title please", LocalDate.now(clock).minusWeeks(1), reportingStaff, "MDI"),
+            ),
+            questions = listOf(
+              NomisQuestion(
+                4,
+                1,
+                "Who was involved?",
+                listOf(
+                  NomisResponse(10, 1, "John", "comment 1", reportingStaff),
+                  NomisResponse(11, 2, "Trevor", "comment 2", reportingStaff),
+                  NomisResponse(12, 3, "Maybe someone else?", "comment 3", reportingStaff),
+                ),
+              ),
+              NomisQuestion(
+                5,
+                2,
+                "Where did this happen?",
+                listOf(
+                  NomisResponse(13, 1, "Cell", "comment 1", reportingStaff),
+                  NomisResponse(14, 2, "Landing", "comment 2", reportingStaff),
+                  NomisResponse(15, 3, "Kitchen", "comment 3", reportingStaff),
+                ),
+              ),
+            ),
+            history = listOf(
+              NomisHistory(
+                1,
+                "DAMAGE",
+                "Damage",
+                incidentChangeDate = LocalDate.now(clock),
+                incidentChangeStaff = reportingStaff,
+                questions = listOf(
+                  NomisHistoryQuestion(
+                    1,
+                    1,
+                    "Old question 1",
+                    listOf(
+                      NomisHistoryResponse(1, 1, "Old answer 1", "comment 1", reportingStaff),
+                      NomisHistoryResponse(2, 2, "Old answer 2", "comment 2", reportingStaff),
+                    ),
+                  ),
+                  NomisHistoryQuestion(
+                    2,
+                    2,
+                    "Old question 2",
+                    listOf(
+                      NomisHistoryResponse(4, 1, "Old answer 1", "comment 1", reportingStaff),
+                      NomisHistoryResponse(5, 2, "Old answer 2", "comment 2", reportingStaff),
+                    ),
+                  ),
+                ),
+              ),
+              NomisHistory(
+                2,
+                "BOMB",
+                "Bomb",
+                incidentChangeDate = LocalDate.now(clock).minusDays(2),
+                incidentChangeStaff = reportingStaff,
+                questions = listOf(
+                  NomisHistoryQuestion(
+                    11,
+                    1,
+                    "Old old question 1",
+                    listOf(
+                      NomisHistoryResponse(12, 1, "Old old answer 1", "comment 1", reportingStaff),
+                      NomisHistoryResponse(22, 2, "Old old answer 2", "comment 2", reportingStaff),
+                    ),
+                  ),
+                  NomisHistoryQuestion(
+                    22,
+                    2,
+                    "Old old question 2",
+                    listOf(
+                      NomisHistoryResponse(44, 1, "Old old answer 1", "comment 1", reportingStaff),
+                      NomisHistoryResponse(55, 2, "Old old answer 2", "comment 2", reportingStaff),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         )
         webTestClient.post().uri("/sync/upsert")
@@ -771,23 +891,165 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
              {
               "id": "${existingNomisReport.id}",
               "incidentNumber": "$INCIDENT_NUMBER",
-              "type": "FINDS",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
-              "prisonId": "MDI",
-              "title": "An incident occurred updated",
+              "type": "ASSAULT",
+              "incidentDateAndTime": "2023-11-25T12:34:56",
+              "prisonId": "FBI",
+              "title": "Updated title",
               "description": "Updated details",
               "event": {
                 "eventId": "$INCIDENT_NUMBER",
-                "eventDateAndTime": "2023-12-05T11:34:56",
-                "prisonId": "MDI",
-                "title": "An event occurred",
-                "description": "Details of the event",
+                "eventDateAndTime": "2023-11-25T12:34:56",
+                "prisonId": "FBI",
+                "title": "Updated title",
+                "description": "Updated details",
                 "createdDate": "2023-12-05T12:34:56",
                 "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "USER1"
+                "lastModifiedBy": "OF42"
               },
-              "questions": [],
-              "history": [],
+              "questions": [
+                {
+                  "code": "QID-000000000004",
+                  "question": "Who was involved?",
+                  "responses": [
+                    {
+                      "response": "John",
+                      "recordedBy": "user2",
+                      "recordedOn": "2023-12-04T12:34:56",
+                      "additionalInformation": "comment 1"
+                    },
+                    {
+                      "response": "Trevor",
+                      "recordedBy": "user2",
+                      "recordedOn": "2023-12-04T12:34:56",
+                      "additionalInformation": "comment 2"
+                    },
+                    {
+                      "response": "Maybe someone else?",
+                      "recordedBy": "user2",
+                      "recordedOn": "2023-12-04T12:34:56",
+                      "additionalInformation": "comment 3"
+                    }
+                  ],
+                  "additionalInformation": null
+                },
+                {
+                  "code": "QID-000000000005",
+                  "question": "Where did this happen?",
+                  "responses": [
+                    {
+                      "response": "Cell",
+                      "recordedBy": "user2",
+                      "recordedOn": "2023-12-04T12:34:56",
+                      "additionalInformation": "comment 1"
+                    },
+                    {
+                      "response": "Landing",
+                      "recordedBy": "user2",
+                      "recordedOn": "2023-12-04T12:34:56",
+                      "additionalInformation": "comment 2"
+                    },
+                    {
+                      "response": "Kitchen",
+                      "recordedBy": "user2",
+                      "recordedOn": "2023-12-04T12:34:56",
+                      "additionalInformation": "comment 3"
+                    }
+                  ],
+                  "additionalInformation": null
+                }
+              ],
+              "history": [
+                {
+                  "type": "DAMAGE",
+                  "changeDate": "2023-12-05T00:00:00",
+                  "changeStaffUsername": "user2",
+                  "questions": [
+                    {
+                      "code": "QID-000000000001",
+                      "question": "Old question 1",
+                      "responses": [
+                        {
+                          "response": "Old answer 1",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-04T12:34:56",
+                          "additionalInformation": "comment 1"
+                        },
+                        {
+                          "response": "Old answer 2",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-04T12:34:56",
+                          "additionalInformation": "comment 2"
+                        }
+                      ],
+                      "additionalInformation": null
+                    },
+                    {
+                      "code": "QID-000000000002",
+                      "question": "Old question 2",
+                      "responses": [
+                        {
+                          "response": "Old answer 1",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-04T12:34:56",
+                          "additionalInformation": "comment 1"
+                        },
+                        {
+                          "response": "Old answer 2",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-04T12:34:56",
+                          "additionalInformation": "comment 2"
+                        }
+                      ],
+                      "additionalInformation": null
+                    }
+                  ]
+                },
+                {
+                  "type": "BOMB_THREAT",
+                  "changeDate": "2023-12-03T00:00:00",
+                  "changeStaffUsername": "user2",
+                  "questions": [
+                    {
+                      "code": "QID-000000000011",
+                      "question": "Old old question 1",
+                      "responses": [
+                        {
+                          "response": "Old old answer 1",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-04T12:34:56",
+                          "additionalInformation": "comment 1"
+                        },
+                        {
+                          "response": "Old old answer 2",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-04T12:34:56",
+                          "additionalInformation": "comment 2"
+                        }
+                      ],
+                      "additionalInformation": null
+                    },
+                    {
+                      "code": "QID-000000000022",
+                      "question": "Old old question 2",
+                      "responses": [
+                        {
+                          "response": "Old old answer 1",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-04T12:34:56",
+                          "additionalInformation": "comment 1"
+                        },
+                        {
+                          "response": "Old old answer 2",
+                          "recordedBy": "user2",
+                          "recordedOn": "2023-12-04T12:34:56",
+                          "additionalInformation": "comment 2"
+                        }
+                      ],
+                      "additionalInformation": null
+                    }
+                  ]
+                }
+              ],
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
@@ -795,23 +1057,60 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "setBy": "USER1"
                 },
                 {
-                  "status": "AWAITING_ANALYSIS",
+                  "status": "IN_ANALYSIS",
                   "setOn": "2023-12-05T12:34:56",
-                  "setBy": "user2"
+                  "setBy": "OF42"
                 }
               ],
-              "staffInvolved": [],
-              "prisonersInvolved": [],
+              "staffInvolved": [
+                {
+                  "staffUsername": "user2",
+                  "staffRole": "PRESENT_AT_SCENE",
+                  "comment": "REPORTER"
+                },
+                {
+                  "staffUsername": "JAMESQ",
+                  "staffRole": "PRESENT_AT_SCENE",
+                  "comment": "James was also present actually"
+                }
+              ],
+              "prisonersInvolved": [
+                {
+                  "prisonerNumber": "B2222BB",
+                  "prisonerRole": "HOSTAGE",
+                  "outcome": "TRANSFER",
+                  "comment": "Prisoner was transferred after incident"
+                },
+                {
+                  "prisonerNumber": "A1234AA",
+                  "prisonerRole": "PERPETRATOR",
+                  "outcome": "LOCAL_INVESTIGATION",
+                  "comment": "Trevor took another prisoner hostage"
+                }
+              ],
               "locations": [],
               "evidence": [],
-              "correctionRequests": [],
-              "reportedBy": "USER1",
-              "reportedDate": "2023-12-05T12:34:56",
-              "status": "AWAITING_ANALYSIS",
+              "correctionRequests": [
+                {
+                  "reason": "NOT_SPECIFIED",
+                  "descriptionOfChange": "Also the description",
+                  "correctionRequestedBy": "user2",
+                  "correctionRequestedAt": "2023-12-05T00:00:00"
+                },
+                {
+                  "reason": "NOT_SPECIFIED",
+                  "descriptionOfChange": "Could you update the title please",
+                  "correctionRequestedBy": "user2",
+                  "correctionRequestedAt": "2023-11-28T00:00:00"
+                }
+              ],
+              "reportedBy": "OF42",
+              "reportedDate": "2023-12-04T12:34:56",
+              "status": "IN_ANALYSIS",
               "assignedTo": "USER1",
               "createdDate": "2023-12-05T12:34:56",
               "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "user2",
+              "lastModifiedBy": "OF42",
               "createdInNomis": true
             }
             """,
