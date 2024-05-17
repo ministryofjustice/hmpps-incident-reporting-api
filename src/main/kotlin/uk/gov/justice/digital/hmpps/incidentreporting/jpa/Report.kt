@@ -58,6 +58,9 @@ class Report(
   @Enumerated(EnumType.STRING)
   var status: Status = Status.DRAFT,
 
+  @Enumerated(EnumType.STRING)
+  val source: InformationSource = InformationSource.DPS,
+
   var title: String,
   var description: String,
 
@@ -97,9 +100,6 @@ class Report(
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderBy("change_date ASC")
   val history: MutableList<History> = mutableListOf(),
-
-  @Enumerated(EnumType.STRING)
-  val source: InformationSource = InformationSource.DPS,
 
   val createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,

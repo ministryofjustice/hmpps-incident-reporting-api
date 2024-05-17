@@ -3,21 +3,31 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 import jakarta.persistence.EntityNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentNumber
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
 import java.time.LocalDateTime
 
 @DataJpaTest
@@ -40,6 +50,53 @@ class ReportRepositoryTest : IntegrationTestBase() {
   fun setUp() {
     reportRepository.deleteAll()
     eventRepository.deleteAll()
+  }
+
+  @DisplayName("filtering reports")
+  @Nested
+  inner class Filtering {
+    private val firstPageSortedById = PageRequest.of(0, 20)
+      .withSort(Sort.Direction.ASC, "id")
+
+    @Test
+    fun `can filter reports by simple property specification`() {
+      val report = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "12345",
+          reportTime = now.minusDays(1),
+        ),
+      )
+
+      val matchingSpecifications = listOf(
+        filterByPrisonId("MDI"),
+        filterBySource(InformationSource.DPS),
+        filterByStatus(Status.DRAFT),
+        filterByType(Type.FINDS),
+      )
+      matchingSpecifications.forEach { specification ->
+        val reportsFound = reportRepository.findAll(
+          specification,
+          firstPageSortedById,
+        )
+        assertThat(reportsFound.totalElements).isEqualTo(1)
+        assertThat(reportsFound.content[0].id).isEqualTo(report.id)
+      }
+
+      val nonMatchingSpecifications = listOf(
+        filterByPrisonId("LEI"),
+        filterBySource(InformationSource.NOMIS),
+        filterByStatus(Status.AWAITING_ANALYSIS),
+        filterByType(Type.FOOD_REFUSAL),
+      )
+      nonMatchingSpecifications.forEach { specification ->
+        val reportsFound = reportRepository.findAll(
+          specification,
+          firstPageSortedById,
+        )
+        assertThat(reportsFound.totalElements).isZero()
+        assertThat(reportsFound.content).isEmpty()
+      }
+    }
   }
 
   @Test
