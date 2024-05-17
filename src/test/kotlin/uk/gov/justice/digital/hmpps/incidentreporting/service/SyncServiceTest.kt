@@ -24,7 +24,10 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffender
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffenderParty
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisRequirement
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
@@ -87,8 +90,40 @@ class SyncServiceTest {
           comment = "First time self-harming",
         ),
       ),
-      requirements = emptyList(),
-      questions = emptyList(),
+      requirements = listOf(
+        NomisRequirement(
+          comment = "Title should include prisoner number",
+          date = now.toLocalDate(),
+          prisonId = "MDI",
+          staff = NomisStaff(
+            staffId = 42,
+            username = "checking-user",
+            firstName = "John",
+            lastName = "McCheckin-User",
+          ),
+        ),
+      ),
+      questions = listOf(
+        NomisQuestion(
+          questionId = 42,
+          sequence = 1,
+          question = "What implement was used?",
+          answers = listOf(
+            NomisResponse(
+              answer = "Razor",
+              questionResponseId = null,
+              sequence = 1,
+              comment = null,
+              recordingStaff = NomisStaff(
+                username = reportedBy,
+                staffId = 42,
+                firstName = "John",
+                lastName = "Doe",
+              ),
+            ),
+          ),
+        ),
+      ),
       history = emptyList(),
     ),
   )
@@ -125,16 +160,21 @@ class SyncServiceTest {
   )
 
   init {
-    sampleReport.addQuestion("IMPL", "What implement was used?")
+    sampleReport.addQuestion("QID-000000000042", "What implement was used?")
       .addResponse("Razor", null, reportedBy, now)
     sampleReport.addLocation("MDI-1-029", "CELL", "Wing 1, cell 029")
-    sampleReport.addStaffInvolved(StaffRole.FIRST_ON_SCENE, reportedBy)
-    sampleReport.addPrisonerInvolved("A1234AA", PrisonerRole.PERPETRATOR, PrisonerOutcome.SEEN_HEALTHCARE)
+    sampleReport.addStaffInvolved(StaffRole.PRESENT_AT_SCENE, "user3", "Found offender in cell")
+    sampleReport.addPrisonerInvolved(
+      "A1234AA",
+      PrisonerRole.PERPETRATOR,
+      PrisonerOutcome.SEEN_HEALTHCARE,
+      "First time self-harming",
+    )
     sampleReport.addEvidence("CAM", "Body worn camera")
     sampleReport.addCorrectionRequest(
       "checking-user",
       now,
-      CorrectionReason.MISSING_INFORMATION,
+      CorrectionReason.NOT_SPECIFIED,
       "Title should include prisoner number",
     )
   }
@@ -202,7 +242,7 @@ class SyncServiceTest {
 
     assertThat(report.questions).hasSize(1)
     val question = report.questions[0]
-    assertThat(question.code).isEqualTo("IMPL")
+    assertThat(question.code).isEqualTo("QID-000000000042")
     assertThat(question.question).isEqualTo("What implement was used?")
     assertThat(question.additionalInformation).isNull()
     assertThat(question.responses).hasSize(1)
@@ -223,13 +263,13 @@ class SyncServiceTest {
     assertThat(prisonerInvolved.prisonerNumber).isEqualTo("A1234AA")
     assertThat(prisonerInvolved.prisonerRole).isEqualTo(PrisonerRole.PERPETRATOR)
     assertThat(prisonerInvolved.outcome).isEqualTo(PrisonerOutcome.SEEN_HEALTHCARE)
-    assertThat(prisonerInvolved.comment).isNull()
+    assertThat(prisonerInvolved.comment).isEqualTo("First time self-harming")
 
     assertThat(report.staffInvolved).hasSize(1)
     val staffInvolved = report.staffInvolved[0]
-    assertThat(staffInvolved.staffUsername).isEqualTo(reportedBy)
-    assertThat(staffInvolved.staffRole).isEqualTo(StaffRole.FIRST_ON_SCENE)
-    assertThat(staffInvolved.comment).isNull()
+    assertThat(staffInvolved.staffUsername).isEqualTo("user3")
+    assertThat(staffInvolved.staffRole).isEqualTo(StaffRole.PRESENT_AT_SCENE)
+    assertThat(staffInvolved.comment).isEqualTo("Found offender in cell")
 
     assertThat(report.evidence).hasSize(1)
     val evidence = report.evidence[0]
@@ -239,8 +279,8 @@ class SyncServiceTest {
     assertThat(report.correctionRequests).hasSize(1)
     val correctionRequest = report.correctionRequests[0]
     assertThat(correctionRequest.correctionRequestedBy).isEqualTo("checking-user")
-    assertThat(correctionRequest.correctionRequestedAt).isEqualTo(now)
-    assertThat(correctionRequest.reason).isEqualTo(CorrectionReason.MISSING_INFORMATION)
+    assertThat(correctionRequest.correctionRequestedAt.toLocalDate()).isEqualTo(now.toLocalDate())
+    assertThat(correctionRequest.reason).isEqualTo(CorrectionReason.NOT_SPECIFIED)
     assertThat(correctionRequest.descriptionOfChange).isEqualTo("Title should include prisoner number")
   }
 
