@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.HttpMediaTypeNotSupportedException
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -31,6 +32,20 @@ class ApiExceptionHandler {
           status = BAD_REQUEST,
           errorCode = ErrorCode.ValidationFailure,
           userMessage = "Validation failure: ${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+  fun handleMethodNotAllowedException(e: HttpRequestMethodNotSupportedException): ResponseEntity<ErrorResponse> {
+    log.info("Method not allowed: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.METHOD_NOT_ALLOWED)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.METHOD_NOT_ALLOWED,
+          userMessage = "Method not allowed: ${e.message}",
           developerMessage = e.message,
         ),
       )

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import org.springframework.http.HttpStatus
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
@@ -236,7 +237,17 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .bodyValue("""{ }""")
           .exchange()
-          .expectStatus().is4xxClientError
+          .expectStatus().isBadRequest
+      }
+
+      @Test
+      fun `must use POST method`() {
+        webTestClient.patch().uri("/sync/upsert")
+          .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue("""{ }""")
+          .exchange()
+          .expectStatus().isEqualTo(HttpStatus.METHOD_NOT_ALLOWED)
       }
     }
 
