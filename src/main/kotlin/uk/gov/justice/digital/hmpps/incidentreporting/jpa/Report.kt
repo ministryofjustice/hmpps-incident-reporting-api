@@ -234,6 +234,11 @@ class Report(
 
     type = Type.fromNomisCode(upsert.type)
 
+    // NOTE: Currently we update the event information as well on update.
+    //       For some of these fields makes more sense because that's explicitly
+    //       the intent (e.g. `incidentDateTime`, `prisonId`, etc... are also in the event)
+    //       For Event's title/description may make less sense but we're keeping this in
+    //       as well for now.
     incidentDateAndTime = upsert.incidentDateTime
     event.eventDateAndTime = incidentDateAndTime
 

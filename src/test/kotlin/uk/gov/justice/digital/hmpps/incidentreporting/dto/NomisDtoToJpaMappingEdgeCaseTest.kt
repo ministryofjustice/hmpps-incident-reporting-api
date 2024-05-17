@@ -133,7 +133,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.lastModifiedBy).isEqualTo("user1")
 
       val eventEntity = existingReportEntity.event
-      // TODO: changes not copied to event, should they be? probably not (then keep assertions but drop comment)
       assertThat(eventEntity.title).isEqualTo("TITLE")
       assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
       assertThat(eventEntity.createdDate).isEqualTo(yesterday)
@@ -155,7 +154,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.description).isEqualTo("DESCRIPTION")
 
       val eventEntity = existingReportEntity.event
-      // TODO: changes not copied to event, should they be? probably not (then keep assertions but drop comment)
       assertThat(eventEntity.title).isEqualTo("NO DETAILS GIVEN")
       assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
     }
@@ -174,7 +172,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.description).isEqualTo("NO DETAILS GIVEN")
 
       val eventEntity = existingReportEntity.event
-      // TODO: changes not copied to event, should they be? probably not (then keep assertions but drop comment)
       assertThat(eventEntity.title).isEqualTo("TITLE")
       assertThat(eventEntity.description).isEqualTo("NO DETAILS GIVEN")
     }
