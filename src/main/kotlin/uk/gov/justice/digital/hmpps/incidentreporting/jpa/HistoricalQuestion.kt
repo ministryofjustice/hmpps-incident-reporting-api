@@ -27,7 +27,7 @@ class HistoricalQuestion(
   val additionalInformation: String? = null,
 
   @OneToMany(mappedBy = "historicalQuestion", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-  @OrderColumn(name = "sequence")
+  @OrderColumn(name = "sequence", nullable = false)
   private val responses: MutableList<HistoricalResponse> = mutableListOf(),
 ) {
   override fun toString(): String {
