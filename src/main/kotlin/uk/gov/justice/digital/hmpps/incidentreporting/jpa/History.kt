@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderColumn
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.History as HistoryDto
@@ -29,7 +30,8 @@ class History(
   val changeDate: LocalDateTime,
   val changeStaffUsername: String,
 
-  @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderColumn(name = "sequence", nullable = false)
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
 ) {
   override fun toString(): String {

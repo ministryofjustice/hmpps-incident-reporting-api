@@ -66,25 +66,25 @@ class Report(
   @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
   val event: Event,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
   // TODO: what's this for?
   val assignedTo: String,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val staffInvolved: MutableList<StaffInvolvement> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val prisonersInvolved: MutableList<PrisonerInvolvement> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val locations: MutableList<Location> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val evidence: MutableList<Evidence> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val correctionRequests: MutableList<CorrectionRequest> = mutableListOf(),
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -93,7 +93,7 @@ class Report(
 
   var questionSetId: String? = null,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderBy("change_date ASC")
   val history: MutableList<History> = mutableListOf(),
 
