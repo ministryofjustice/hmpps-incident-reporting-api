@@ -126,7 +126,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
 
     report = reportRepository.findOneByIncidentNumber(report.incidentNumber) ?: throw EntityNotFoundException()
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
-    assertThat(report.getType()).isEqualTo(Type.ASSAULT)
+    assertThat(report.type).isEqualTo(Type.ASSAULT)
     assertThat(report.getQuestions()).hasSize(1)
     assertThat(report.getQuestions()[0].code).isEqualTo("SOME_QUESTION")
     assertThat(report.getQuestions()[0].getResponses()).hasSize(4)
