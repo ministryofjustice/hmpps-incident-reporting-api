@@ -21,7 +21,7 @@ create table event
 
 create table report
 (
-    id                     uuid       default gen_random_uuid() not null
+    id                     uuid                                 not null
         constraint report_pk primary key,
     event_id               integer                              not null
         constraint report_event_fk references event (id) on delete restrict,

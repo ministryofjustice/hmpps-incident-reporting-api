@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestions
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.UuidV7Generator
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -35,7 +36,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 class Report(
   @Id
   @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @GenericGenerator(name = "UUID", type = UuidV7Generator::class)
   @Column(name = "id", updatable = false, nullable = false)
   val id: UUID? = null,
 
