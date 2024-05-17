@@ -345,6 +345,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "incidentDateAndTime,DESC",
             "incidentNumber,ASC",
             "incidentNumber,DESC",
+            "id,ASC",
+            "id,DESC",
           ],
         )
         fun `can sort reports`(sortParam: String) {
@@ -353,6 +355,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "incidentDateAndTime,DESC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
             "incidentNumber,ASC" to listOf("31934", "94728", "IR-0000000001006603", "IR-0000000001017203", "IR-0000000001124143"),
             "incidentNumber,DESC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
+            // id, being a UUIDv7, should follow table insertion order (i.e. what setUp methods do above)
+            "id,ASC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
+            "id,DESC" to listOf("31934", "94728", "IR-0000000001006603", "IR-0000000001017203", "IR-0000000001124143"),
           )[sortParam]!!
 
           webTestClient.get().uri("$url?sort=$sortParam")
