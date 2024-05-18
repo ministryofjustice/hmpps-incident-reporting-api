@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -29,6 +30,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
 import java.time.LocalDateTime
+import java.util.UUID
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -96,6 +98,88 @@ class ReportRepositoryTest : IntegrationTestBase() {
         assertThat(reportsFound.totalElements).isZero()
         assertThat(reportsFound.content).isEmpty()
       }
+    }
+
+    @Test
+    fun `can filter reports by a combination of specifications`() {
+      val report1Id = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "12345",
+          reportTime = now.minusDays(3),
+          prisonId = "MDI",
+          source = InformationSource.DPS,
+          status = Status.AWAITING_ANALYSIS,
+          type = Type.ASSAULT,
+        ),
+      ).id!!
+      val report2Id = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "12346",
+          reportTime = now.minusDays(2),
+          prisonId = "LEI",
+          source = InformationSource.DPS,
+          status = Status.AWAITING_ANALYSIS,
+          type = Type.FINDS,
+        ),
+      ).id!!
+      val report3Id = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "IR-0000000001124143",
+          reportTime = now.minusDays(1),
+          prisonId = "MDI",
+          source = InformationSource.NOMIS,
+          status = Status.DRAFT,
+          type = Type.FINDS,
+        ),
+      ).id!!
+
+      fun assertSpecificationReturnsReports(specification: Specification<Report>, reportIds: List<UUID>) {
+        val reportsFound = reportRepository.findAll(
+          specification,
+          firstPageSortedById,
+        ).map { it.id }
+        assertThat(reportsFound.content).isEqualTo(reportIds)
+      }
+
+      assertSpecificationReturnsReports(
+        filterByPrisonId("MDI"),
+        listOf(report1Id, report3Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByPrisonId("MDI")
+          .and(filterBySource(InformationSource.NOMIS)),
+        listOf(report3Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByPrisonId("LEI")
+          .and(filterBySource(InformationSource.NOMIS)),
+        emptyList(),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatus(Status.AWAITING_ANALYSIS)
+          .and(filterBySource(InformationSource.DPS)),
+        listOf(report1Id, report2Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatus(Status.AWAITING_ANALYSIS)
+          .and(filterBySource(InformationSource.DPS))
+          .and(filterByType(Type.FINDS)),
+        listOf(report2Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatus(Status.AWAITING_ANALYSIS)
+          .and(filterByPrisonId("LEI"))
+          .and(filterBySource(InformationSource.DPS))
+          .and(filterByType(Type.FINDS)),
+        listOf(report2Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatus(Status.AWAITING_ANALYSIS)
+          .and(filterBySource(InformationSource.DPS))
+          .and(filterByPrisonId("MDI"))
+          .and(filterByType(Type.FINDS)),
+        emptyList(),
+      )
     }
   }
 
