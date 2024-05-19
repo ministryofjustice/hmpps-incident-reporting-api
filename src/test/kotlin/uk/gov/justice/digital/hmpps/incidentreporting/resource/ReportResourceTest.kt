@@ -6,12 +6,14 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
@@ -181,20 +183,21 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @BeforeEach
         fun setUp() {
           // makes an additional 4 older reports, 2 of which are from NOMIS
-          listOf("IR-0000000001017203", "IR-0000000001006603", "94728", "31934")
-            .forEachIndexed { daysBefore, incidentNumber ->
-              reportRepository.save(
+          reportRepository.saveAll(
+            listOf("IR-0000000001017203", "IR-0000000001006603", "94728", "31934")
+              .mapIndexed { index, incidentNumber ->
+                val fromDps = incidentNumber.startsWith("IR-")
+                val daysBefore = index.toLong() + 1
                 buildIncidentReport(
                   incidentNumber = incidentNumber,
-                  reportTime = LocalDateTime.now(clock).minusDays(daysBefore.toLong() + 1),
-                  source = if (incidentNumber.startsWith("IR-")) {
-                    InformationSource.DPS
-                  } else {
-                    InformationSource.NOMIS
-                  },
-                ),
-              )
-            }
+                  reportTime = LocalDateTime.now(clock).minusDays(daysBefore),
+                  prisonId = if (index < 2) "LEI" else "MDI",
+                  status = if (fromDps) Status.DRAFT else Status.AWAITING_ANALYSIS,
+                  source = if (fromDps) InformationSource.DPS else InformationSource.NOMIS,
+                  type = if (index < 3) Type.FINDS else Type.FIRE,
+                )
+              },
+          )
         }
 
         @Test
@@ -380,6 +383,31 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .value<List<String>> {
               assertThat(it).isEqualTo(expectedIncidentNumbers)
             }
+        }
+
+        @ParameterizedTest(name = "can filter reports by `{0}`")
+        @CsvSource(
+          value = [
+            "'',                        5",
+            "prisonId=MDI,              3",
+            "status=DRAFT,              3",
+            "source=DPS,                3",
+            "source=NOMIS,              2",
+            "source=NOMIS&prisonId=MDI, 2",
+            "source=DPS&prisonId=MDI,   1",
+            "type=ASSAULT,              0",
+            "type=FIRE,                 1",
+            "type=FIRE&prisonId=LEI,    0",
+            "type=FIRE&prisonId=MDI,    1",
+          ],
+        )
+        fun `can filter reports`(params: String, count: Int) {
+          webTestClient.get().uri("$url?$params")
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().jsonPath("totalElements").isEqualTo(count)
         }
       }
     }

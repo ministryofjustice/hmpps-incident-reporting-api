@@ -8,14 +8,22 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentNumber
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundException
 import java.time.Clock
 import java.util.UUID
@@ -36,9 +44,21 @@ class ReportService(
   }
 
   fun getReports(
+    prisonId: String? = null,
+    source: InformationSource? = null,
+    status: Status? = null,
+    type: Type? = null,
     pageable: Pageable = PageRequest.of(0, 20, Sort.by("incidentDateAndTime").descending()),
   ): Page<ReportDto> {
-    return reportRepository.findAll(pageable)
+    val specification = Specification.allOf(
+      buildList {
+        prisonId?.let { add(filterByPrisonId(prisonId)) }
+        source?.let { add(filterBySource(source)) }
+        status?.let { add(filterByStatus(status)) }
+        type?.let { add(filterByType(type)) }
+      },
+    )
+    return reportRepository.findAll(specification, pageable)
       .map { it.toDto() }
   }
 

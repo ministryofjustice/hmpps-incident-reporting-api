@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.ValidationException
+import jakarta.validation.constraints.Size
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -19,9 +20,12 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
@@ -44,7 +48,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns pages of incident reports",
+    summary = "Returns pages of filtered incident reports",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(
@@ -69,6 +73,40 @@ class ReportResource(
     ],
   )
   fun getReports(
+    @Schema(
+      description = "Filter by given prison ID",
+      required = false,
+      defaultValue = "null",
+      example = "MDI",
+      minLength = 2,
+    )
+    @RequestParam(required = false)
+    @Size(min = 2)
+    prisonId: String? = null,
+    @Schema(
+      description = "Filter by given information source",
+      required = false,
+      defaultValue = "null",
+      example = "DPS",
+    )
+    @RequestParam(required = false)
+    source: InformationSource? = null,
+    @Schema(
+      description = "Filter by given status",
+      required = false,
+      defaultValue = "null",
+      example = "IN_ANALYSIS",
+    )
+    @RequestParam(required = false)
+    status: Status? = null,
+    @Schema(
+      description = "Filter by given incident type",
+      required = false,
+      defaultValue = "null",
+      example = "DAMAGE",
+    )
+    @RequestParam(required = false)
+    type: Type? = null,
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
@@ -76,7 +114,13 @@ class ReportResource(
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
-    return reportService.getReports(pageable)
+    return reportService.getReports(
+      prisonId = prisonId,
+      source = source,
+      status = status,
+      type = type,
+      pageable = pageable,
+    )
       .toSimplePage()
   }
 
