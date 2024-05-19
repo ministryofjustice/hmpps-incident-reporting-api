@@ -114,6 +114,25 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains("No property 'missing' found for type 'Report'")
           }
       }
+
+      @ParameterizedTest(name = "cannot filter by invalid `{0}`")
+      @ValueSource(
+        strings = [
+          "prisonId=",
+          "prisonId=M",
+          "prisonId=Moorland+(HMP)",
+          "source=nomis",
+          "status=new",
+          "type=ABSCOND",
+        ],
+      )
+      fun `cannot filter by invalid property`(param: String) {
+        webTestClient.get().uri("$url?$param")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isBadRequest
+      }
     }
 
     @DisplayName("works")
