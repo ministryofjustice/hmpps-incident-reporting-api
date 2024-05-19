@@ -106,8 +106,8 @@ fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
   }
 }
 
-fun Report.addNomisHistory(history: Collection<NomisHistory>) {
-  history.forEach { history ->
+fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
+  histories.forEach { history ->
     val historyRecord = this.addHistory(
       type = Type.fromNomisCode(history.type),
       incidentChangeDate = history.incidentChangeDate.atStartOfDay(),
