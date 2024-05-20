@@ -35,6 +35,8 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     incidentDateTime = now,
     reportingStaff = NomisStaff("user1", 121, "John", "Smith"),
     reportedDateTime = now,
+    createDateTime = now.plusHours(2),
+    createdBy = "user1",
     staffParties = emptyList(),
     offenderParties = emptyList(),
     requirements = emptyList(),

@@ -71,6 +71,8 @@ class SyncServiceTest {
       incidentDateTime = whenIncidentHappened,
       reportingStaff = NomisStaff(reportedBy, 121, "John", "Smith"),
       reportedDateTime = now,
+      createDateTime = now.plusHours(2),
+      createdBy = reportedBy,
       staffParties = listOf(
         NomisStaffParty(
           NomisStaff("user3", 124, "Mary", "Jones"),

@@ -90,6 +90,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         incidentDateTime = LocalDateTime.now(clock).minusHours(1),
         reportingStaff = reportingStaff,
         reportedDateTime = LocalDateTime.now(clock),
+        createDateTime = LocalDateTime.now(clock).plusHours(2),
+        createdBy = reportingStaff.username,
         staffParties = listOf(
           NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
         ),
