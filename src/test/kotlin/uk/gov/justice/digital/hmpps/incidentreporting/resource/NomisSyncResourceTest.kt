@@ -93,7 +93,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         createDateTime = LocalDateTime.now(clock).plusHours(2),
         createdBy = reportingStaff.username,
         staffParties = listOf(
-          NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
+          NomisStaffParty(
+            reportingStaff,
+            NomisCode("PAS", "Present at scene"),
+            "REPORTER",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
+          ),
         ),
         offenderParties = listOf(
           NomisOffenderParty(
@@ -779,11 +785,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             incidentDateTime = LocalDateTime.now(clock).minusDays(10),
             prison = NomisCode("FBI", "Forest Bank (HMP & YOI)"),
             staffParties = listOf(
-              NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
+              NomisStaffParty(
+                reportingStaff,
+                NomisCode("PAS", "Present at scene"),
+                "REPORTER",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+              ),
               NomisStaffParty(
                 NomisStaff("JAMESQ", 2, "James", "Quids"),
                 NomisCode("PAS", "Present at scene"),
                 "James was also present actually",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
               ),
             ),
             offenderParties = listOf(

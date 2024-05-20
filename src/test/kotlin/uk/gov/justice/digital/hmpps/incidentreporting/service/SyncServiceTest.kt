@@ -78,6 +78,8 @@ class SyncServiceTest {
           NomisStaff("user3", 124, "Mary", "Jones"),
           NomisCode("PAS", "Present at scene"),
           "Found offender in cell",
+          createDateTime = now,
+          createdBy = reportedBy,
         ),
       ),
       offenderParties = listOf(

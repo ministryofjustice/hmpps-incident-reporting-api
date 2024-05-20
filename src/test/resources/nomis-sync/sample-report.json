@@ -40,7 +40,9 @@
         "code": "HOST",
         "description": "Hostage"
       },
-      "comment": "staff 1"
+      "comment": "staff 1",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     },
     {
       "staff": {
@@ -53,7 +55,9 @@
         "code": "PAS",
         "description": "Present at Scene"
       },
-      "comment": "user 1"
+      "comment": "user 1",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     }
   ],
   "offenderParties": [
