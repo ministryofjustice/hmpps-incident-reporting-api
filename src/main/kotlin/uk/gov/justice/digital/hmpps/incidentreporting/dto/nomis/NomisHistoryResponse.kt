@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDate
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisHistoryResponse(
@@ -15,4 +16,7 @@ data class NomisHistoryResponse(
   val comment: String?,
   @Schema(description = "Recording staff")
   val recordingStaff: NomisStaff,
+
+  @Schema(description = "Response date added to the response by recording staff")
+  val responseDate: LocalDate? = null,
 )
