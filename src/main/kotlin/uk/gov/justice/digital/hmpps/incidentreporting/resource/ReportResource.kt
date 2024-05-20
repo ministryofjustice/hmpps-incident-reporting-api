@@ -90,6 +90,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "DPS",
+      implementation = InformationSource::class,
     )
     @RequestParam(required = false)
     source: InformationSource? = null,
@@ -98,6 +99,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "IN_ANALYSIS",
+      implementation = Status::class,
     )
     @RequestParam(required = false)
     status: Status? = null,
@@ -106,6 +108,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "DAMAGE",
+      implementation = Type::class,
     )
     @RequestParam(required = false)
     type: Type? = null,
