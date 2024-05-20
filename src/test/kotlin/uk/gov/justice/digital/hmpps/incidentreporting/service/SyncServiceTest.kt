@@ -115,6 +115,8 @@ class SyncServiceTest {
         NomisQuestion(
           questionId = 42,
           sequence = 1,
+          createDateTime = now,
+          createdBy = reportedBy,
           question = "What implement was used?",
           answers = listOf(
             NomisResponse(

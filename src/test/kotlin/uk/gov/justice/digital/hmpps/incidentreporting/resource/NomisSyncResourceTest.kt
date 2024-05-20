@@ -137,6 +137,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           NomisQuestion(
             4,
             1,
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
             "Question 1",
             listOf(
               NomisResponse(10, 1, "Answer 1", "comment 1", reportingStaff),
@@ -147,6 +149,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           NomisQuestion(
             5,
             2,
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
             "Question 2",
             listOf(
               NomisResponse(13, 1, "Answer 1", "comment 1", reportingStaff),
@@ -157,6 +161,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           NomisQuestion(
             6,
             3,
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
             "Question 3",
             listOf(
               NomisResponse(16, 1, "Answer 1", "comment 1", reportingStaff),
@@ -864,6 +870,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               NomisQuestion(
                 4,
                 1,
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
                 "Who was involved?",
                 listOf(
                   NomisResponse(10, 1, "John", "comment 1", reportingStaff),
@@ -874,6 +882,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               NomisQuestion(
                 5,
                 2,
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
                 "Where did this happen?",
                 listOf(
                   NomisResponse(13, 1, "Cell", "comment 1", reportingStaff),

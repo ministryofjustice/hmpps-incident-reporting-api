@@ -130,6 +130,8 @@
     {
       "questionId": 44127,
       "sequence": 1,
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1",
       "question": "WERE THE POLICE INFORMED OF THE INCIDENT",
       "answers": [
         {
@@ -148,6 +150,8 @@
     {
       "questionId": 44913,
       "sequence": 2,
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1",
       "question": "IS THE INCIDENT THE SUBJECT OF A POLICE INVESTIGATION",
       "answers": [
         {
