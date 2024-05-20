@@ -101,7 +101,7 @@ class Report(
   @OrderBy("change_date ASC")
   val history: MutableList<History> = mutableListOf(),
 
-  val createdDate: LocalDateTime,
+  var createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
 ) {
@@ -229,7 +229,8 @@ class Report(
     return history
   }
 
-  fun updateWith(upsert: NomisReport, updatedBy: String, clock: Clock) {
+  fun updateWith(upsert: NomisReport, clock: Clock) {
+    val updatedBy = upsert.lastModifiedBy ?: upsert.createdBy
     val now = LocalDateTime.now(clock)
 
     type = Type.fromNomisCode(upsert.type)
@@ -262,7 +263,10 @@ class Report(
 
     questionSetId = "${upsert.questionnaireId}"
 
-    lastModifiedDate = now
+    createdDate = upsert.createDateTime
+    event.createdDate = upsert.createDateTime
+
+    lastModifiedDate = upsert.lastModifiedDateTime ?: upsert.createDateTime
     event.lastModifiedDate = lastModifiedDate
 
     lastModifiedBy = updatedBy

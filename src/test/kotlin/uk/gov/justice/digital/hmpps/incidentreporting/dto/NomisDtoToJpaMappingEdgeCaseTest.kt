@@ -32,10 +32,10 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     status = NomisStatus("AWAN", "Awaiting Analysis"),
     type = "FINDS1",
     lockedResponse = false,
-    incidentDateTime = now,
+    incidentDateTime = now.minusDays(1),
     reportingStaff = NomisStaff("user1", 121, "John", "Smith"),
-    reportedDateTime = now,
-    createDateTime = now.plusHours(2),
+    reportedDateTime = now.minusMinutes(5),
+    createDateTime = now.minusMinutes(4),
     createdBy = "user1",
     staffParties = emptyList(),
     offenderParties = emptyList(),
@@ -51,7 +51,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     fun `report details should be copied to new report and event`() {
       val reportDto = minimalReportDto.copy()
 
-      val reportEntity = reportDto.toNewEntity(clock)
+      val reportEntity = reportDto.toNewEntity()
       assertThat(reportEntity.title).isEqualTo("TITLE")
       assertThat(reportEntity.description).isEqualTo("DESCRIPTION")
       assertThat(reportEntity.incidentNumber).isEqualTo("112414323")
@@ -82,7 +82,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     fun `missing report title adopts a fallback value`() {
       val reportDto = minimalReportDto.copy(title = null)
 
-      val reportEntity = reportDto.toNewEntity(clock)
+      val reportEntity = reportDto.toNewEntity()
       assertThat(reportEntity.title).isEqualTo("NO DETAILS GIVEN")
       assertThat(reportEntity.description).isEqualTo("DESCRIPTION")
 
@@ -95,7 +95,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     fun `missing report description adopts a fallback value`() {
       val reportDto = minimalReportDto.copy(description = null)
 
-      val reportEntity = reportDto.toNewEntity(clock)
+      val reportEntity = reportDto.toNewEntity()
       assertThat(reportEntity.title).isEqualTo("TITLE")
       assertThat(reportEntity.description).isEqualTo("NO DETAILS GIVEN")
 
@@ -125,20 +125,19 @@ class NomisDtoToJpaMappingEdgeCaseTest {
 
       existingReportEntity.updateWith(
         upsert = reportDto,
-        updatedBy = "user1",
         clock = clock,
       )
       assertThat(existingReportEntity.title).isEqualTo("TITLE")
       assertThat(existingReportEntity.description).isEqualTo("DESCRIPTION")
-      assertThat(existingReportEntity.createdDate).isEqualTo(yesterday)
-      assertThat(existingReportEntity.lastModifiedDate).isEqualTo(now)
+      assertThat(existingReportEntity.createdDate).isEqualTo(now.minusMinutes(4))
+      assertThat(existingReportEntity.lastModifiedDate).isEqualTo(now.minusMinutes(4))
       assertThat(existingReportEntity.lastModifiedBy).isEqualTo("user1")
 
       val eventEntity = existingReportEntity.event
       assertThat(eventEntity.title).isEqualTo("TITLE")
       assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
-      assertThat(eventEntity.createdDate).isEqualTo(yesterday)
-      assertThat(eventEntity.lastModifiedDate).isEqualTo(now)
+      assertThat(eventEntity.createdDate).isEqualTo(now.minusMinutes(4))
+      assertThat(eventEntity.lastModifiedDate).isEqualTo(now.minusMinutes(4))
       assertThat(eventEntity.lastModifiedBy).isEqualTo("user1")
     }
 
@@ -149,7 +148,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
 
       existingReportEntity.updateWith(
         upsert = reportDto,
-        updatedBy = "user1",
         clock = clock,
       )
       assertThat(existingReportEntity.title).isEqualTo("NO DETAILS GIVEN")
@@ -167,7 +165,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
 
       existingReportEntity.updateWith(
         upsert = reportDto,
-        updatedBy = "user1",
         clock = clock,
       )
       assertThat(existingReportEntity.title).isEqualTo("TITLE")
@@ -185,7 +182,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
 
       existingReportEntity.updateWith(
         upsert = reportDto,
-        updatedBy = "user1",
         clock = clock,
       )
       assertThat(existingReportEntity.historyOfStatuses).hasSize(2)
@@ -198,7 +194,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       val anotherReportDto = minimalReportDto.copy(description = "Status is unchanged")
       existingReportEntity.updateWith(
         upsert = anotherReportDto,
-        updatedBy = "user1",
         clock = clock,
       )
       assertThat(existingReportEntity.historyOfStatuses).hasSize(2)

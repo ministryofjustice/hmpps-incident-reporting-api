@@ -92,6 +92,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         reportedDateTime = LocalDateTime.now(clock),
         createDateTime = LocalDateTime.now(clock).plusHours(2),
         createdBy = reportingStaff.username,
+        lastModifiedDateTime = LocalDateTime.now(clock).plusHours(5),
+        lastModifiedBy = "another-user",
         staffParties = listOf(
           NomisStaffParty(
             reportingStaff,
@@ -389,9 +391,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "A New Incident From NOMIS",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "user2"
+                "createdDate": "2023-12-05T14:34:56",
+                "lastModifiedDate": "2023-12-05T17:34:56",
+                "lastModifiedBy": "another-user"
               },
               "questions": [
                 {
@@ -596,9 +598,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "reportedDate": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
               "assignedTo": "user2",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "user2",
+              "createdDate": "2023-12-05T14:34:56",
+              "lastModifiedDate": "2023-12-05T17:34:56",
+              "lastModifiedBy": "another-user",
               "createdInNomis": true
             }
             """,
@@ -641,9 +643,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "New NOMIS incident",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "user2"
+                "createdDate": "2023-12-05T14:34:56",
+                "lastModifiedDate": "2023-12-05T17:34:56",
+                "lastModifiedBy": "another-user"
               },
               "questions": [
                 {
@@ -848,9 +850,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "reportedDate": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
               "assignedTo": "user2",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "user2",
+              "createdDate": "2023-12-05T14:34:56",
+              "lastModifiedDate": "2023-12-05T17:34:56",
+              "lastModifiedBy": "another-user",
               "createdInNomis": true
             }
             """,
@@ -875,6 +877,10 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             description = "Updated details",
             reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
             reportedDateTime = LocalDateTime.now(clock).minusDays(1),
+            createDateTime = LocalDateTime.now(clock).minusDays(1),
+            createdBy = "creator",
+            lastModifiedDateTime = LocalDateTime.now(clock).minusMinutes(5),
+            lastModifiedBy = "updater",
             status = NomisStatus("INAN", "In Analysis"),
             questionnaireId = 419,
             type = "ASSAULTS3",
@@ -1099,9 +1105,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "FBI",
                 "title": "Updated title",
                 "description": "Updated details",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "OF42"
+                "createdDate": "2023-12-04T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:29:56",
+                "lastModifiedBy": "updater"
               },
               "questions": [
                 {
@@ -1256,7 +1262,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "IN_ANALYSIS",
                   "setOn": "2023-12-05T12:34:56",
-                  "setBy": "OF42"
+                  "setBy": "updater"
                 }
               ],
               "staffInvolved": [
@@ -1305,9 +1311,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "reportedDate": "2023-12-04T12:34:56",
               "status": "IN_ANALYSIS",
               "assignedTo": "USER1",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "OF42",
+              "createdDate": "2023-12-04T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:29:56",
+              "lastModifiedBy": "updater",
               "createdInNomis": true
             }
             """,
