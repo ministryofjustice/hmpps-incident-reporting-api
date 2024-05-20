@@ -177,6 +177,8 @@
       "questionnaireId": 1504,
       "type": "ATT_ESC_E",
       "description": "ATTEMPTED ESCAPE FROM ESCORT",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1",
       "questions": [
         {
           "questionId": 44423,
