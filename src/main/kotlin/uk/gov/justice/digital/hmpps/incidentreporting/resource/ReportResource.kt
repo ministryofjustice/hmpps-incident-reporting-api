@@ -117,6 +117,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "2024-01-01",
+      format = "date",
     )
     @RequestParam(required = false)
     incidentDateFrom: LocalDate? = null,
@@ -125,6 +126,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "2024-05-31",
+      format = "date",
     )
     @RequestParam(required = false)
     incidentDateUntil: LocalDate? = null,
@@ -133,6 +135,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "2024-01-01",
+      format = "date",
     )
     @RequestParam(required = false)
     reportedDateFrom: LocalDate? = null,
@@ -141,6 +144,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "2024-05-31",
+      format = "date",
     )
     @RequestParam(required = false)
     reportedDateUntil: LocalDate? = null,
