@@ -25,7 +25,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventReposi
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentNumber
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
@@ -74,6 +78,10 @@ class ReportRepositoryTest : IntegrationTestBase() {
         filterBySource(InformationSource.DPS),
         filterByStatus(Status.DRAFT),
         filterByType(Type.FINDS),
+        filterByIncidentDateFrom(now.toLocalDate().minusDays(2)),
+        filterByIncidentDateUntil(now.toLocalDate()),
+        filterByReportedDateFrom(now.toLocalDate().minusDays(2)),
+        filterByReportedDateUntil(now.toLocalDate()),
       )
       matchingSpecifications.forEach { specification ->
         val reportsFound = reportRepository.findAll(
@@ -89,6 +97,10 @@ class ReportRepositoryTest : IntegrationTestBase() {
         filterBySource(InformationSource.NOMIS),
         filterByStatus(Status.AWAITING_ANALYSIS),
         filterByType(Type.FOOD_REFUSAL),
+        filterByIncidentDateFrom(now.toLocalDate()),
+        filterByIncidentDateUntil(now.toLocalDate().minusDays(2)),
+        filterByReportedDateFrom(now.toLocalDate()),
+        filterByReportedDateUntil(now.toLocalDate().minusDays(2)),
       )
       nonMatchingSpecifications.forEach { specification ->
         val reportsFound = reportRepository.findAll(
@@ -178,6 +190,17 @@ class ReportRepositoryTest : IntegrationTestBase() {
           .and(filterBySource(InformationSource.DPS))
           .and(filterByPrisonId("MDI"))
           .and(filterByType(Type.FINDS)),
+        emptyList(),
+      )
+      assertSpecificationReturnsReports(
+        filterByIncidentDateFrom(now.toLocalDate().minusDays(3))
+          .and(filterByIncidentDateUntil(now.toLocalDate().minusDays(3)))
+          .and(filterByType(Type.ASSAULT)),
+        listOf(report1Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByReportedDateFrom(now.toLocalDate().minusDays(4))
+          .and(filterByReportedDateUntil(now.toLocalDate().minusDays(4))),
         emptyList(),
       )
     }

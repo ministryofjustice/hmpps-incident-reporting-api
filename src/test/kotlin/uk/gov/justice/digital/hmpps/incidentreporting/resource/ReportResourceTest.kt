@@ -124,6 +124,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "source=nomis",
           "status=new",
           "type=ABSCOND",
+          "incidentDateFrom=2024",
+          "incidentDateUntil=yesterday",
+          "reportedDateFrom=1%2F1%2F2020",
         ],
       )
       fun `cannot filter by invalid property`(param: String) {
@@ -407,17 +410,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @ParameterizedTest(name = "can filter reports by `{0}`")
         @CsvSource(
           value = [
-            "'',                        5",
-            "prisonId=MDI,              3",
-            "status=DRAFT,              3",
-            "source=DPS,                3",
-            "source=NOMIS,              2",
-            "source=NOMIS&prisonId=MDI, 2",
-            "source=DPS&prisonId=MDI,   1",
-            "type=ASSAULT,              0",
-            "type=FIRE,                 1",
-            "type=FIRE&prisonId=LEI,    0",
-            "type=FIRE&prisonId=MDI,    1",
+            "'',                           5",
+            "prisonId=MDI,                 3",
+            "status=DRAFT,                 3",
+            "source=DPS,                   3",
+            "source=NOMIS,                 2",
+            "source=NOMIS&prisonId=MDI,    2",
+            "source=DPS&prisonId=MDI,      1",
+            "type=ASSAULT,                 0",
+            "type=FIRE,                    1",
+            "type=FIRE&prisonId=LEI,       0",
+            "type=FIRE&prisonId=MDI,       1",
+            "incidentDateFrom=2023-12-05,  1",
+            "incidentDateFrom=2023-12-04,  2",
+            "incidentDateFrom=2023-12-03,  3",
+            "incidentDateUntil=2023-12-03, 3",
+            "incidentDateUntil=2023-12-02, 2",
+            "incidentDateFrom=2023-12-02&incidentDateUntil=2023-12-02, 1",
           ],
         )
         fun `can filter reports`(params: String, count: Int) {

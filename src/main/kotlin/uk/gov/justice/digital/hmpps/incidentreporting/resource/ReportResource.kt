@@ -31,6 +31,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
+import java.time.LocalDate
 import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
@@ -79,6 +80,7 @@ class ReportResource(
       defaultValue = "null",
       example = "MDI",
       minLength = 2,
+      maxLength = 10,
     )
     @RequestParam(required = false)
     @Size(min = 2, max = 10)
@@ -107,6 +109,38 @@ class ReportResource(
     )
     @RequestParam(required = false)
     type: Type? = null,
+    @Schema(
+      description = "Filter for incidents occurring since this date (inclusive)",
+      required = false,
+      defaultValue = "null",
+      example = "2024-01-01",
+    )
+    @RequestParam(required = false)
+    incidentDateFrom: LocalDate? = null,
+    @Schema(
+      description = "Filter for incidents occurring until this date (inclusive)",
+      required = false,
+      defaultValue = "null",
+      example = "2024-05-31",
+    )
+    @RequestParam(required = false)
+    incidentDateUntil: LocalDate? = null,
+    @Schema(
+      description = "Filter for incidents reported since this date (inclusive)",
+      required = false,
+      defaultValue = "null",
+      example = "2024-01-01",
+    )
+    @RequestParam(required = false)
+    reportedDateFrom: LocalDate? = null,
+    @Schema(
+      description = "Filter for incidents reported until this date (inclusive)",
+      required = false,
+      defaultValue = "null",
+      example = "2024-05-31",
+    )
+    @RequestParam(required = false)
+    reportedDateUntil: LocalDate? = null,
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
@@ -119,6 +153,10 @@ class ReportResource(
       source = source,
       status = status,
       type = type,
+      incidentDateFrom = incidentDateFrom,
+      incidentDateUntil = incidentDateUntil,
+      reportedDateFrom = reportedDateFrom,
+      reportedDateUntil = reportedDateUntil,
       pageable = pageable,
     )
       .toSimplePage()
