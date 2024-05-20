@@ -107,6 +107,8 @@ class SyncServiceTest {
             firstName = "John",
             lastName = "McCheckin-User",
           ),
+          createDateTime = now,
+          createdBy = reportedBy,
         ),
       ),
       questions = listOf(

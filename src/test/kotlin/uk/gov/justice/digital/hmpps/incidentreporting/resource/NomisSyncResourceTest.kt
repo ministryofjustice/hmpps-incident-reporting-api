@@ -116,8 +116,22 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           ),
         ),
         requirements = listOf(
-          NomisRequirement("Change 1", LocalDate.now(clock), reportingStaff, "MDI"),
-          NomisRequirement("Change 2", LocalDate.now(clock).minusWeeks(1), reportingStaff, "MDI"),
+          NomisRequirement(
+            "Change 1",
+            LocalDate.now(clock),
+            reportingStaff,
+            "MDI",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
+          ),
+          NomisRequirement(
+            "Change 2",
+            LocalDate.now(clock).minusWeeks(1),
+            reportingStaff,
+            "MDI",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
+          ),
         ),
         questions = listOf(
           NomisQuestion(
@@ -829,8 +843,22 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
             ),
             requirements = listOf(
-              NomisRequirement("Also the description", LocalDate.now(clock), reportingStaff, "MDI"),
-              NomisRequirement("Could you update the title please", LocalDate.now(clock).minusWeeks(1), reportingStaff, "MDI"),
+              NomisRequirement(
+                "Also the description",
+                LocalDate.now(clock),
+                reportingStaff,
+                "MDI",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+              ),
+              NomisRequirement(
+                "Could you update the title please",
+                LocalDate.now(clock).minusWeeks(1),
+                reportingStaff,
+                "MDI",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+              ),
             ),
             questions = listOf(
               NomisQuestion(

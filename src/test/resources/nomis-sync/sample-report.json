@@ -108,7 +108,9 @@
         "firstName": "User",
         "lastName": "Two"
       },
-      "prisonId": "MDI"
+      "prisonId": "MDI",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     },
     {
       "comment": "Add details to description",
@@ -119,7 +121,9 @@
         "firstName": "User",
         "lastName": "Two"
       },
-      "prisonId": "MDI"
+      "prisonId": "MDI",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     }
   ],
   "questions": [
