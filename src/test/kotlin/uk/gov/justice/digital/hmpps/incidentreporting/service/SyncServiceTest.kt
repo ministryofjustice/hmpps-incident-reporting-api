@@ -92,6 +92,8 @@ class SyncServiceTest {
           role = NomisCode("PERP", "Perpetrator"),
           outcome = NomisCode("HELTH", "ACCT"),
           comment = "First time self-harming",
+          createDateTime = now,
+          createdBy = reportedBy,
         ),
       ),
       requirements = listOf(

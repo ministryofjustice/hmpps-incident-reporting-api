@@ -75,7 +75,9 @@
         "code": "POR",
         "description": "Placed on Report"
       },
-      "comment": "hostage taker"
+      "comment": "hostage taker",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     },
     {
       "offender": {
@@ -91,7 +93,9 @@
         "code": "ILOC",
         "description": "Investigation (Local)"
       },
-      "comment": "stopped staff entering cell"
+      "comment": "stopped staff entering cell",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     }
   ],
   "requirements": [

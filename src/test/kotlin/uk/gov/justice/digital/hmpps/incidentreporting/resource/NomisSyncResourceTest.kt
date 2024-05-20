@@ -111,6 +111,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             role = NomisCode("PERP", "Perpetrator"),
             outcome = NomisCode("ACCT", "ACCT"),
             comment = "Comment",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
           ),
         ),
         requirements = listOf(
@@ -810,6 +812,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 role = NomisCode("HOST", "Hostage"),
                 outcome = NomisCode("TRN", "Transfer"),
                 comment = "Prisoner was transferred after incident",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
               ),
               NomisOffenderParty(
                 offender = NomisOffender(
@@ -820,6 +824,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 role = NomisCode("PERP", "Perpetrator"),
                 outcome = NomisCode("ILOC", "ILOC"),
                 comment = "Trevor took another prisoner hostage",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
               ),
             ),
             requirements = listOf(
