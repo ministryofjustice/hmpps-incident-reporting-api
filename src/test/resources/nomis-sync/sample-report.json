@@ -138,6 +138,8 @@
           "questionResponseId": 178912,
           "sequence": 0,
           "answer": "YES (ENTER DATE)",
+          "createDateTime": "2023-12-20T16:00:00",
+          "createdBy": "user1",
           "recordingStaff": {
             "username": "user1",
             "staffId": 100001,
@@ -158,6 +160,8 @@
           "questionResponseId": 181628,
           "sequence": 1,
           "answer": "YES",
+          "createDateTime": "2023-12-20T16:00:00",
+          "createdBy": "user1",
           "recordingStaff": {
             "username": "user1",
             "staffId": 100001,

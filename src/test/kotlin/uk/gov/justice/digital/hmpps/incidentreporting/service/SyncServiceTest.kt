@@ -124,6 +124,8 @@ class SyncServiceTest {
               questionResponseId = null,
               sequence = 1,
               comment = null,
+              createDateTime = now,
+              createdBy = reportedBy,
               recordingStaff = NomisStaff(
                 username = reportedBy,
                 staffId = 42,
