@@ -3,22 +3,38 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 import jakarta.persistence.EntityNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentNumber
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
 import java.time.LocalDateTime
+import java.util.UUID
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -40,6 +56,154 @@ class ReportRepositoryTest : IntegrationTestBase() {
   fun setUp() {
     reportRepository.deleteAll()
     eventRepository.deleteAll()
+  }
+
+  @DisplayName("filtering reports")
+  @Nested
+  inner class Filtering {
+    private val firstPageSortedById = PageRequest.of(0, 20)
+      .withSort(Sort.Direction.ASC, "id")
+
+    @Test
+    fun `can filter reports by simple property specification`() {
+      val report = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "12345",
+          reportTime = now.minusDays(1),
+        ),
+      )
+
+      val matchingSpecifications = listOf(
+        filterByPrisonId("MDI"),
+        filterBySource(InformationSource.DPS),
+        filterByStatus(Status.DRAFT),
+        filterByType(Type.FINDS),
+        filterByIncidentDateFrom(now.toLocalDate().minusDays(2)),
+        filterByIncidentDateUntil(now.toLocalDate()),
+        filterByReportedDateFrom(now.toLocalDate().minusDays(2)),
+        filterByReportedDateUntil(now.toLocalDate()),
+      )
+      matchingSpecifications.forEach { specification ->
+        val reportsFound = reportRepository.findAll(
+          specification,
+          firstPageSortedById,
+        )
+        assertThat(reportsFound.totalElements).isEqualTo(1)
+        assertThat(reportsFound.content[0].id).isEqualTo(report.id)
+      }
+
+      val nonMatchingSpecifications = listOf(
+        filterByPrisonId("LEI"),
+        filterBySource(InformationSource.NOMIS),
+        filterByStatus(Status.AWAITING_ANALYSIS),
+        filterByType(Type.FOOD_REFUSAL),
+        filterByIncidentDateFrom(now.toLocalDate()),
+        filterByIncidentDateUntil(now.toLocalDate().minusDays(2)),
+        filterByReportedDateFrom(now.toLocalDate()),
+        filterByReportedDateUntil(now.toLocalDate().minusDays(2)),
+      )
+      nonMatchingSpecifications.forEach { specification ->
+        val reportsFound = reportRepository.findAll(
+          specification,
+          firstPageSortedById,
+        )
+        assertThat(reportsFound.totalElements).isZero()
+        assertThat(reportsFound.content).isEmpty()
+      }
+    }
+
+    @Test
+    fun `can filter reports by a combination of specifications`() {
+      val report1Id = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "12345",
+          reportTime = now.minusDays(3),
+          prisonId = "MDI",
+          source = InformationSource.DPS,
+          status = Status.AWAITING_ANALYSIS,
+          type = Type.ASSAULT,
+        ),
+      ).id!!
+      val report2Id = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "12346",
+          reportTime = now.minusDays(2),
+          prisonId = "LEI",
+          source = InformationSource.DPS,
+          status = Status.AWAITING_ANALYSIS,
+          type = Type.FINDS,
+        ),
+      ).id!!
+      val report3Id = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "IR-0000000001124143",
+          reportTime = now.minusDays(1),
+          prisonId = "MDI",
+          source = InformationSource.NOMIS,
+          status = Status.DRAFT,
+          type = Type.FINDS,
+        ),
+      ).id!!
+
+      fun assertSpecificationReturnsReports(specification: Specification<Report>, reportIds: List<UUID>) {
+        val reportsFound = reportRepository.findAll(
+          specification,
+          firstPageSortedById,
+        ).map { it.id }
+        assertThat(reportsFound.content).isEqualTo(reportIds)
+      }
+
+      assertSpecificationReturnsReports(
+        filterByPrisonId("MDI"),
+        listOf(report1Id, report3Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByPrisonId("MDI")
+          .and(filterBySource(InformationSource.NOMIS)),
+        listOf(report3Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByPrisonId("LEI")
+          .and(filterBySource(InformationSource.NOMIS)),
+        emptyList(),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatus(Status.AWAITING_ANALYSIS)
+          .and(filterBySource(InformationSource.DPS)),
+        listOf(report1Id, report2Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatus(Status.AWAITING_ANALYSIS)
+          .and(filterBySource(InformationSource.DPS))
+          .and(filterByType(Type.FINDS)),
+        listOf(report2Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatus(Status.AWAITING_ANALYSIS)
+          .and(filterByPrisonId("LEI"))
+          .and(filterBySource(InformationSource.DPS))
+          .and(filterByType(Type.FINDS)),
+        listOf(report2Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatus(Status.AWAITING_ANALYSIS)
+          .and(filterBySource(InformationSource.DPS))
+          .and(filterByPrisonId("MDI"))
+          .and(filterByType(Type.FINDS)),
+        emptyList(),
+      )
+      assertSpecificationReturnsReports(
+        filterByIncidentDateFrom(now.toLocalDate().minusDays(3))
+          .and(filterByIncidentDateUntil(now.toLocalDate().minusDays(3)))
+          .and(filterByType(Type.ASSAULT)),
+        listOf(report1Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByReportedDateFrom(now.toLocalDate().minusDays(4))
+          .and(filterByReportedDateUntil(now.toLocalDate().minusDays(4))),
+        emptyList(),
+      )
+    }
   }
 
   @Test
@@ -126,7 +290,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
 
     report = reportRepository.findOneByIncidentNumber(report.incidentNumber) ?: throw EntityNotFoundException()
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
-    assertThat(report.getType()).isEqualTo(Type.ASSAULT)
+    assertThat(report.type).isEqualTo(Type.ASSAULT)
     assertThat(report.getQuestions()).hasSize(1)
     assertThat(report.getQuestions()[0].code).isEqualTo("SOME_QUESTION")
     assertThat(report.getQuestions()[0].getResponses()).hasSize(4)

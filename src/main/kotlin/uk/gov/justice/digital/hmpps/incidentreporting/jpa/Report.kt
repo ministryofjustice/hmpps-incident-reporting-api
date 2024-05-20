@@ -53,15 +53,19 @@ class Report(
   var prisonId: String,
 
   @Enumerated(EnumType.STRING)
-  private var type: Type,
+  var type: Type,
+
+  @Enumerated(EnumType.STRING)
+  var status: Status = Status.DRAFT,
+
+  @Enumerated(EnumType.STRING)
+  val source: InformationSource = InformationSource.DPS,
 
   var title: String,
   var description: String,
 
   var reportedBy: String,
   var reportedDate: LocalDateTime,
-  @Enumerated(EnumType.STRING)
-  var status: Status = Status.DRAFT,
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
   val event: Event,
@@ -97,9 +101,6 @@ class Report(
   @OrderBy("change_date ASC")
   val history: MutableList<History> = mutableListOf(),
 
-  @Enumerated(EnumType.STRING)
-  val source: InformationSource = InformationSource.DPS,
-
   val createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
@@ -109,8 +110,6 @@ class Report(
   }
 
   fun getQuestions(): List<Question> = questions
-
-  fun getType() = type
 
   fun changeType(newType: Type, changedDate: LocalDateTime, staffChanged: String): Report {
     copyToHistory(changedDate, staffChanged)
