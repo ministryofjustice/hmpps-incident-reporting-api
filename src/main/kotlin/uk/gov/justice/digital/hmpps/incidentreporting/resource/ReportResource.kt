@@ -90,6 +90,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "DPS",
+      implementation = InformationSource::class,
     )
     @RequestParam(required = false)
     source: InformationSource? = null,
@@ -98,6 +99,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "IN_ANALYSIS",
+      implementation = Status::class,
     )
     @RequestParam(required = false)
     status: Status? = null,
@@ -106,6 +108,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "DAMAGE",
+      implementation = Type::class,
     )
     @RequestParam(required = false)
     type: Type? = null,
@@ -114,6 +117,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "2024-01-01",
+      format = "date",
     )
     @RequestParam(required = false)
     incidentDateFrom: LocalDate? = null,
@@ -122,6 +126,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "2024-05-31",
+      format = "date",
     )
     @RequestParam(required = false)
     incidentDateUntil: LocalDate? = null,
@@ -130,6 +135,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "2024-01-01",
+      format = "date",
     )
     @RequestParam(required = false)
     reportedDateFrom: LocalDate? = null,
@@ -138,6 +144,7 @@ class ReportResource(
       required = false,
       defaultValue = "null",
       example = "2024-05-31",
+      format = "date",
     )
     @RequestParam(required = false)
     reportedDateUntil: LocalDate? = null,
