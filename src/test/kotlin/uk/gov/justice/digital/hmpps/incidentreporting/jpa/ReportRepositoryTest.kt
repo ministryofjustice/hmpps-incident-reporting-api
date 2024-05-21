@@ -173,6 +173,11 @@ class ReportRepositoryTest : IntegrationTestBase() {
         listOf(report1Id, report2Id),
       )
       assertSpecificationReturnsReports(
+        filterByStatus(Status.DRAFT)
+          .or(filterByStatus(Status.AWAITING_ANALYSIS)),
+        listOf(report1Id, report2Id, report3Id),
+      )
+      assertSpecificationReturnsReports(
         filterByStatus(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
           .and(filterByType(Type.FINDS)),

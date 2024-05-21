@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -40,7 +42,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 @RequestMapping("/incident-reports", produces = [MediaType.APPLICATION_JSON_VALUE])
 @Tag(
   name = "Incident reports",
-  description = "Retrieve and create incident reports",
+  description = "Create, retrieve, update and delete incident reports",
 )
 class ReportResource(
   private val reportService: ReportService,
@@ -94,15 +96,19 @@ class ReportResource(
     )
     @RequestParam(required = false)
     source: InformationSource? = null,
-    @Schema(
-      description = "Filter by given status",
-      required = false,
-      defaultValue = "null",
-      example = "IN_ANALYSIS",
-      implementation = Status::class,
+    @Parameter(
+      description = "Filter by given statuses",
+      example = "CLOSED,DUPLICATE",
+      array = ArraySchema(
+        schema = Schema(implementation = Status::class),
+        arraySchema = Schema(
+          required = false,
+          defaultValue = "null",
+        ),
+      ),
     )
     @RequestParam(required = false)
-    status: Status? = null,
+    status: List<Status>? = null,
     @Schema(
       description = "Filter by given incident type",
       required = false,
@@ -158,7 +164,7 @@ class ReportResource(
     return reportService.getReports(
       prisonId = prisonId,
       source = source,
-      status = status,
+      statuses = status ?: emptyList(),
       type = type,
       incidentDateFrom = incidentDateFrom,
       incidentDateUntil = incidentDateUntil,

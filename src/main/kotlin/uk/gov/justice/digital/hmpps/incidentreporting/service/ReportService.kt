@@ -51,7 +51,7 @@ class ReportService(
   fun getReports(
     prisonId: String? = null,
     source: InformationSource? = null,
-    status: Status? = null,
+    statuses: List<Status> = emptyList(),
     type: Type? = null,
     incidentDateFrom: LocalDate? = null,
     incidentDateUntil: LocalDate? = null,
@@ -63,7 +63,9 @@ class ReportService(
       buildList {
         prisonId?.let { add(filterByPrisonId(prisonId)) }
         source?.let { add(filterBySource(source)) }
-        status?.let { add(filterByStatus(status)) }
+        if (statuses.isNotEmpty()) {
+          add(Specification.anyOf(statuses.map { status -> filterByStatus(status) }))
+        }
         type?.let { add(filterByType(type)) }
         incidentDateFrom?.let { add(filterByIncidentDateFrom(incidentDateFrom)) }
         incidentDateUntil?.let { add(filterByIncidentDateUntil(incidentDateUntil)) }
