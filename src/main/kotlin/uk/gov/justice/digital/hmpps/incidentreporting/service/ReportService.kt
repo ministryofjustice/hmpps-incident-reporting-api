@@ -26,7 +26,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatuses
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundException
 import java.time.Clock
@@ -64,7 +64,7 @@ class ReportService(
         prisonId?.let { add(filterByPrisonId(prisonId)) }
         source?.let { add(filterBySource(source)) }
         if (statuses.isNotEmpty()) {
-          add(Specification.anyOf(statuses.map { status -> filterByStatus(status) }))
+          add(filterByStatuses(statuses))
         }
         type?.let { add(filterByType(type)) }
         incidentDateFrom?.let { add(filterByIncidentDateFrom(incidentDateFrom)) }

@@ -416,6 +416,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "status=AWAITING_ANALYSIS                                 | 2",
             "status=AWAITING_ANALYSIS,DRAFT                           | 5",
             "status=AWAITING_ANALYSIS&status=DRAFT                    | 5",
+            "status=AWAITING_ANALYSIS,DRAFT&source=DPS                | 3",
             "status=CLOSED                                            | 0",
             "source=DPS                                               | 3",
             "source=NOMIS                                             | 2",
