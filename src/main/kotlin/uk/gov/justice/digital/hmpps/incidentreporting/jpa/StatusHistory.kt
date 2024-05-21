@@ -35,7 +35,7 @@ class StatusHistory(
 
   fun toDto() = StatusHistoryDto(
     status = status,
-    setOn = setOn,
-    setBy = setBy,
+    changedAt = setOn,
+    changedBy = setBy,
   )
 }

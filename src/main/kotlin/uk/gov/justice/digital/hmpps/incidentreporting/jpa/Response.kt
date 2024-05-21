@@ -33,7 +33,7 @@ class Response(
   fun toDto() = ResponseDto(
     response = response,
     recordedBy = recordedBy,
-    recordedOn = recordedOn,
+    recordedAt = recordedOn,
     additionalInformation = additionalInformation,
   )
 }

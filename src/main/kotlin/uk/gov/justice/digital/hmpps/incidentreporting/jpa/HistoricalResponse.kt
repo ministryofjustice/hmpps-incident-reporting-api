@@ -33,7 +33,7 @@ class HistoricalResponse(
   fun toDto() = HistoricalResponseDto(
     response = response,
     recordedBy = recordedBy,
-    recordedOn = recordedOn,
+    recordedAt = recordedOn,
     additionalInformation = additionalInformation,
   )
 }

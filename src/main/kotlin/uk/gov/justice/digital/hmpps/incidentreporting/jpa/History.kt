@@ -55,8 +55,8 @@ class History(
 
   fun toDto() = HistoryDto(
     type = type,
-    changeDate = changeDate,
-    changeStaffUsername = changeStaffUsername,
+    changedAt = changeDate,
+    changedBy = changeStaffUsername,
     questions = questions.map { it.toDto() },
   )
 }

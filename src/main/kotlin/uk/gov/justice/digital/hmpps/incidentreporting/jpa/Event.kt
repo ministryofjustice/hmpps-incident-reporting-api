@@ -55,8 +55,8 @@ class Event(
     eventDateAndTime = eventDateAndTime,
     title = title,
     description = description,
-    createdDate = createdDate,
-    lastModifiedDate = lastModifiedDate,
-    lastModifiedBy = lastModifiedBy,
+    createdAt = createdDate,
+    modifiedAt = lastModifiedDate,
+    modifiedBy = lastModifiedBy,
   )
 }
