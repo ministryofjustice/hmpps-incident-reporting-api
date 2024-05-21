@@ -31,7 +31,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatuses
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
 import java.time.LocalDateTime
 import java.util.UUID
@@ -76,7 +76,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       val matchingSpecifications = listOf(
         filterByPrisonId("MDI"),
         filterBySource(InformationSource.DPS),
-        filterByStatus(Status.DRAFT),
+        filterByStatuses(Status.DRAFT),
         filterByType(Type.FINDS),
         filterByIncidentDateFrom(now.toLocalDate().minusDays(2)),
         filterByIncidentDateUntil(now.toLocalDate()),
@@ -95,7 +95,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       val nonMatchingSpecifications = listOf(
         filterByPrisonId("LEI"),
         filterBySource(InformationSource.NOMIS),
-        filterByStatus(Status.AWAITING_ANALYSIS),
+        filterByStatuses(Status.AWAITING_ANALYSIS),
         filterByType(Type.FOOD_REFUSAL),
         filterByIncidentDateFrom(now.toLocalDate()),
         filterByIncidentDateUntil(now.toLocalDate().minusDays(2)),
@@ -168,25 +168,34 @@ class ReportRepositoryTest : IntegrationTestBase() {
         emptyList(),
       )
       assertSpecificationReturnsReports(
-        filterByStatus(Status.AWAITING_ANALYSIS)
+        filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS)),
         listOf(report1Id, report2Id),
       )
       assertSpecificationReturnsReports(
-        filterByStatus(Status.AWAITING_ANALYSIS)
+        filterByStatuses(Status.DRAFT)
+          .or(filterByStatuses(Status.AWAITING_ANALYSIS)),
+        listOf(report1Id, report2Id, report3Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatuses(listOf(Status.DRAFT, Status.AWAITING_ANALYSIS)),
+        listOf(report1Id, report2Id, report3Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
           .and(filterByType(Type.FINDS)),
         listOf(report2Id),
       )
       assertSpecificationReturnsReports(
-        filterByStatus(Status.AWAITING_ANALYSIS)
+        filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterByPrisonId("LEI"))
           .and(filterBySource(InformationSource.DPS))
           .and(filterByType(Type.FINDS)),
         listOf(report2Id),
       )
       assertSpecificationReturnsReports(
-        filterByStatus(Status.AWAITING_ANALYSIS)
+        filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
           .and(filterByPrisonId("MDI"))
           .and(filterByType(Type.FINDS)),

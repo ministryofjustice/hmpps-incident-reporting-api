@@ -26,7 +26,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatus
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatuses
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundException
 import java.time.Clock
@@ -51,7 +51,7 @@ class ReportService(
   fun getReports(
     prisonId: String? = null,
     source: InformationSource? = null,
-    status: Status? = null,
+    statuses: List<Status> = emptyList(),
     type: Type? = null,
     incidentDateFrom: LocalDate? = null,
     incidentDateUntil: LocalDate? = null,
@@ -63,7 +63,9 @@ class ReportService(
       buildList {
         prisonId?.let { add(filterByPrisonId(prisonId)) }
         source?.let { add(filterBySource(source)) }
-        status?.let { add(filterByStatus(status)) }
+        if (statuses.isNotEmpty()) {
+          add(filterByStatuses(statuses))
+        }
         type?.let { add(filterByType(type)) }
         incidentDateFrom?.let { add(filterByIncidentDateFrom(incidentDateFrom)) }
         incidentDateUntil?.let { add(filterByIncidentDateUntil(incidentDateUntil)) }

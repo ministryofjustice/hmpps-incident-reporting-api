@@ -10,6 +10,13 @@ fun <T, V> KProperty1<T, V>.buildSpecForEqualTo(value: V): Specification<T> {
   }
 }
 
+/** Build «in» specification from an entity’s property */
+fun <T, V> KProperty1<T, V>.buildSpecForIn(values: Collection<V>): Specification<T> {
+  return Specification { root, _, criteriaBuilder ->
+    criteriaBuilder.and(root.get<V>(name).`in`(values))
+  }
+}
+
 /** Build «less than» specification from an entity’s property */
 fun <T, V : Comparable<V>> KProperty1<T, V>.buildSpecForLessThan(value: V): Specification<T> {
   return Specification { root, _, criteriaBuilder ->

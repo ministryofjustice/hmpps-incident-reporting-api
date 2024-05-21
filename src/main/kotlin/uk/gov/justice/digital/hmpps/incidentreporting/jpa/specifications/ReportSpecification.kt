@@ -10,7 +10,8 @@ fun filterByPrisonId(prisonId: String) = Report::prisonId.buildSpecForEqualTo(pr
 
 fun filterBySource(informationSource: InformationSource) = Report::source.buildSpecForEqualTo(informationSource)
 
-fun filterByStatus(status: Status) = Report::status.buildSpecForEqualTo(status)
+fun filterByStatuses(statuses: Collection<Status>) = Report::status.buildSpecForIn(statuses)
+fun filterByStatuses(vararg statuses: Status) = filterByStatuses(statuses.toList())
 
 fun filterByType(type: Type) = Report::type.buildSpecForEqualTo(type)
 
