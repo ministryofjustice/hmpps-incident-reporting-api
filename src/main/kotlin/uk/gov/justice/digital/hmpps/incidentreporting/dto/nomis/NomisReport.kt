@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Schema(description = "NOMIS Incident Report Details")
@@ -33,6 +34,19 @@ data class NomisReport(
   val reportingStaff: NomisStaff,
   @Schema(description = "The date and time the incident was reported")
   val reportedDateTime: LocalDateTime,
+
+  @Schema(description = "The date and time the incident was created")
+  val createDateTime: LocalDateTime,
+  @Schema(description = "The username of the person who created the incident")
+  val createdBy: String,
+
+  @Schema(description = "The date and time the incident was last updated")
+  val lastModifiedDateTime: LocalDateTime? = createDateTime,
+  @Schema(description = "The username of the person who last updated the incident")
+  val lastModifiedBy: String? = createdBy,
+
+  @Schema(description = "The follow up date for the incident")
+  val followUpDate: LocalDate? = null,
 
   @Schema(description = "Staff involved in the incident")
   val staffParties: List<NomisStaffParty>,

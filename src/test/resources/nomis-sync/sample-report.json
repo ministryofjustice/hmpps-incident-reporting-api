@@ -17,6 +17,10 @@
   "type": "ASSAULT",
   "lockedResponse": false,
   "incidentDateTime": "2023-12-20T14:00:00",
+  "createDateTime": "2023-12-20T16:00:00",
+  "createdBy": "user1",
+  "lastModifiedDateTime": null,
+  "lastModifiedBy": null,
   "reportingStaff": {
     "username": "user1",
     "staffId": 100001,
@@ -36,7 +40,9 @@
         "code": "HOST",
         "description": "Hostage"
       },
-      "comment": "staff 1"
+      "comment": "staff 1",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     },
     {
       "staff": {
@@ -49,7 +55,9 @@
         "code": "PAS",
         "description": "Present at Scene"
       },
-      "comment": "user 1"
+      "comment": "user 1",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     }
   ],
   "offenderParties": [
@@ -67,7 +75,9 @@
         "code": "POR",
         "description": "Placed on Report"
       },
-      "comment": "hostage taker"
+      "comment": "hostage taker",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     },
     {
       "offender": {
@@ -83,7 +93,9 @@
         "code": "ILOC",
         "description": "Investigation (Local)"
       },
-      "comment": "stopped staff entering cell"
+      "comment": "stopped staff entering cell",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     }
   ],
   "requirements": [
@@ -96,7 +108,9 @@
         "firstName": "User",
         "lastName": "Two"
       },
-      "prisonId": "MDI"
+      "prisonId": "MDI",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     },
     {
       "comment": "Add details to description",
@@ -107,19 +121,25 @@
         "firstName": "User",
         "lastName": "Two"
       },
-      "prisonId": "MDI"
+      "prisonId": "MDI",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1"
     }
   ],
   "questions": [
     {
       "questionId": 44127,
       "sequence": 1,
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1",
       "question": "WERE THE POLICE INFORMED OF THE INCIDENT",
       "answers": [
         {
           "questionResponseId": 178912,
           "sequence": 0,
           "answer": "YES (ENTER DATE)",
+          "createDateTime": "2023-12-20T16:00:00",
+          "createdBy": "user1",
           "recordingStaff": {
             "username": "user1",
             "staffId": 100001,
@@ -132,12 +152,16 @@
     {
       "questionId": 44913,
       "sequence": 2,
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1",
       "question": "IS THE INCIDENT THE SUBJECT OF A POLICE INVESTIGATION",
       "answers": [
         {
           "questionResponseId": 181628,
           "sequence": 1,
           "answer": "YES",
+          "createDateTime": "2023-12-20T16:00:00",
+          "createdBy": "user1",
           "recordingStaff": {
             "username": "user1",
             "staffId": 100001,
@@ -153,6 +177,8 @@
       "questionnaireId": 1504,
       "type": "ATT_ESC_E",
       "description": "ATTEMPTED ESCAPE FROM ESCORT",
+      "createDateTime": "2023-12-20T16:00:00",
+      "createdBy": "user1",
       "questions": [
         {
           "questionId": 44423,

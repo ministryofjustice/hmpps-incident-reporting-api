@@ -71,11 +71,17 @@ class SyncServiceTest {
       incidentDateTime = whenIncidentHappened,
       reportingStaff = NomisStaff(reportedBy, 121, "John", "Smith"),
       reportedDateTime = now,
+      createDateTime = now.plusHours(2),
+      createdBy = reportedBy,
+      lastModifiedDateTime = now.plusHours(5),
+      lastModifiedBy = "another-user",
       staffParties = listOf(
         NomisStaffParty(
           NomisStaff("user3", 124, "Mary", "Jones"),
           NomisCode("PAS", "Present at scene"),
           "Found offender in cell",
+          createDateTime = now,
+          createdBy = reportedBy,
         ),
       ),
       offenderParties = listOf(
@@ -88,6 +94,8 @@ class SyncServiceTest {
           role = NomisCode("PERP", "Perpetrator"),
           outcome = NomisCode("HELTH", "ACCT"),
           comment = "First time self-harming",
+          createDateTime = now,
+          createdBy = reportedBy,
         ),
       ),
       requirements = listOf(
@@ -101,12 +109,16 @@ class SyncServiceTest {
             firstName = "John",
             lastName = "McCheckin-User",
           ),
+          createDateTime = now,
+          createdBy = reportedBy,
         ),
       ),
       questions = listOf(
         NomisQuestion(
           questionId = 42,
           sequence = 1,
+          createDateTime = now,
+          createdBy = reportedBy,
           question = "What implement was used?",
           answers = listOf(
             NomisResponse(
@@ -114,6 +126,8 @@ class SyncServiceTest {
               questionResponseId = null,
               sequence = 1,
               comment = null,
+              createDateTime = now,
+              createdBy = reportedBy,
               recordingStaff = NomisStaff(
                 username = reportedBy,
                 staffId = 42,
@@ -145,18 +159,18 @@ class SyncServiceTest {
       prisonId = "MDI",
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
-      createdDate = now,
-      lastModifiedDate = now,
-      lastModifiedBy = reportedBy,
+      createdDate = now.plusHours(2),
+      lastModifiedDate = now.plusHours(5),
+      lastModifiedBy = "another-user",
     ),
     reportedBy = reportedBy,
     reportedDate = now,
     status = Status.AWAITING_ANALYSIS,
     assignedTo = reportedBy,
     source = InformationSource.NOMIS,
-    createdDate = now,
-    lastModifiedDate = now,
-    lastModifiedBy = reportedBy,
+    createdDate = now.plusHours(2),
+    lastModifiedDate = now.plusHours(5),
+    lastModifiedBy = "another-user",
   )
 
   init {
@@ -225,16 +239,16 @@ class SyncServiceTest {
     assertThat(report.event.eventDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.event.description).isEqualTo("Offender was found in own cell with a razor")
     assertThat(report.event.prisonId).isEqualTo("MDI")
-    assertThat(report.event.createdDate.toString()).isEqualTo("2023-12-05T12:34:56")
-    assertThat(report.event.lastModifiedBy).isEqualTo("user2")
-    assertThat(report.event.lastModifiedDate.toString()).isEqualTo("2023-12-05T12:34:56")
+    assertThat(report.event.createdDate.toString()).isEqualTo("2023-12-05T14:34:56")
+    assertThat(report.event.lastModifiedBy).isEqualTo("another-user")
+    assertThat(report.event.lastModifiedDate.toString()).isEqualTo("2023-12-05T17:34:56")
     assertThat(report.reportedBy).isEqualTo(reportedBy)
     assertThat(report.reportedDate).isEqualTo(now)
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
     assertThat(report.assignedTo).isEqualTo(reportedBy)
-    assertThat(report.createdDate).isEqualTo(now)
-    assertThat(report.lastModifiedDate).isEqualTo(now)
-    assertThat(report.lastModifiedBy).isEqualTo(reportedBy)
+    assertThat(report.createdDate).isEqualTo(now.plusHours(2))
+    assertThat(report.lastModifiedDate).isEqualTo(now.plusHours(5))
+    assertThat(report.lastModifiedBy).isEqualTo("another-user")
     assertThat(report.createdInNomis).isTrue()
 
     assertThat(report.history).isEmpty()

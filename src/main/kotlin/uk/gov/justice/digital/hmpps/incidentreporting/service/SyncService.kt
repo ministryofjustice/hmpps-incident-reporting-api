@@ -53,12 +53,12 @@ class SyncService(
   private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportDto {
     val reportToUpdate = reportRepository.findById(reportId)
       .orElseThrow { ReportNotFoundException(reportId.toString()) }
-    reportToUpdate.updateWith(incidentReport, incidentReport.reportingStaff.username, clock)
+    reportToUpdate.updateWith(incidentReport, clock)
     return reportToUpdate.toDto()
   }
 
   private fun createNewReport(incidentReport: NomisReport): ReportDto {
-    val reportToCreate = incidentReport.toNewEntity(clock)
+    val reportToCreate = incidentReport.toNewEntity()
     return reportRepository.save(reportToCreate).toDto()
   }
 }

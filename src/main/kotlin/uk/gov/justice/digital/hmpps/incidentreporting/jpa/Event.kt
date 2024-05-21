@@ -34,7 +34,7 @@ class Event(
   @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val reports: MutableList<Report> = mutableListOf(),
 
-  val createdDate: LocalDateTime,
+  var createdDate: LocalDateTime,
   var lastModifiedDate: LocalDateTime,
   var lastModifiedBy: String,
 ) {

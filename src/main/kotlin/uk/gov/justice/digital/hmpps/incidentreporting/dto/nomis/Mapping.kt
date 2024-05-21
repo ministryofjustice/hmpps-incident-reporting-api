@@ -9,12 +9,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import java.time.Clock
-import java.time.LocalDateTime
 
-fun NomisReport.toNewEntity(clock: Clock): Report {
-  val now = LocalDateTime.now(clock)
-
+fun NomisReport.toNewEntity(): Report {
   val status = Status.fromNomisCode(status.code)
   val report = Report(
     incidentNumber = "$incidentId",
@@ -27,9 +23,9 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
     reportedDate = reportedDateTime,
     status = status,
     questionSetId = "$questionnaireId",
-    createdDate = now,
-    lastModifiedDate = now,
-    lastModifiedBy = reportingStaff.username,
+    createdDate = createDateTime,
+    lastModifiedDate = lastModifiedDateTime ?: createDateTime,
+    lastModifiedBy = lastModifiedBy ?: createdBy,
     source = InformationSource.NOMIS,
     assignedTo = reportingStaff.username,
     event = Event(
@@ -38,9 +34,9 @@ fun NomisReport.toNewEntity(clock: Clock): Report {
       prisonId = prison.code,
       title = title ?: "NO DETAILS GIVEN",
       description = description ?: "NO DETAILS GIVEN",
-      createdDate = now,
-      lastModifiedDate = now,
-      lastModifiedBy = reportingStaff.username,
+      createdDate = createDateTime,
+      lastModifiedDate = lastModifiedDateTime ?: createDateTime,
+      lastModifiedBy = lastModifiedBy ?: createdBy,
     ),
   )
   report.addStatusHistory(status, reportedDateTime, reportingStaff.username)

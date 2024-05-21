@@ -90,8 +90,18 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         incidentDateTime = LocalDateTime.now(clock).minusHours(1),
         reportingStaff = reportingStaff,
         reportedDateTime = LocalDateTime.now(clock),
+        createDateTime = LocalDateTime.now(clock).plusHours(2),
+        createdBy = reportingStaff.username,
+        lastModifiedDateTime = LocalDateTime.now(clock).plusHours(5),
+        lastModifiedBy = "another-user",
         staffParties = listOf(
-          NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
+          NomisStaffParty(
+            reportingStaff,
+            NomisCode("PAS", "Present at scene"),
+            "REPORTER",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
+          ),
         ),
         offenderParties = listOf(
           NomisOffenderParty(
@@ -103,41 +113,135 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             role = NomisCode("PERP", "Perpetrator"),
             outcome = NomisCode("ACCT", "ACCT"),
             comment = "Comment",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
           ),
         ),
         requirements = listOf(
-          NomisRequirement("Change 1", LocalDate.now(clock), reportingStaff, "MDI"),
-          NomisRequirement("Change 2", LocalDate.now(clock).minusWeeks(1), reportingStaff, "MDI"),
+          NomisRequirement(
+            "Change 1",
+            LocalDate.now(clock),
+            reportingStaff,
+            "MDI",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
+          ),
+          NomisRequirement(
+            "Change 2",
+            LocalDate.now(clock).minusWeeks(1),
+            reportingStaff,
+            "MDI",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
+          ),
         ),
         questions = listOf(
           NomisQuestion(
             4,
             1,
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
             "Question 1",
             listOf(
-              NomisResponse(10, 1, "Answer 1", "comment 1", reportingStaff),
-              NomisResponse(11, 2, "Answer 2", "comment 2", reportingStaff),
-              NomisResponse(12, 3, "Answer 3", "comment 3", reportingStaff),
+              NomisResponse(
+                10,
+                1,
+                "Answer 1",
+                "comment 1",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
+              NomisResponse(
+                11,
+                2,
+                "Answer 2",
+                "comment 2",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
+              NomisResponse(
+                12,
+                3,
+                "Answer 3",
+                "comment 3",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
             ),
           ),
           NomisQuestion(
             5,
             2,
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
             "Question 2",
             listOf(
-              NomisResponse(13, 1, "Answer 1", "comment 1", reportingStaff),
-              NomisResponse(14, 2, "Answer 2", "comment 2", reportingStaff),
-              NomisResponse(15, 3, "Answer 3", "comment 3", reportingStaff),
+              NomisResponse(
+                13,
+                1,
+                "Answer 1",
+                "comment 1",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
+              NomisResponse(
+                14,
+                2,
+                "Answer 2",
+                "comment 2",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
+              NomisResponse(
+                15,
+                3,
+                "Answer 3",
+                "comment 3",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
             ),
           ),
           NomisQuestion(
             6,
             3,
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
             "Question 3",
             listOf(
-              NomisResponse(16, 1, "Answer 1", "comment 1", reportingStaff),
-              NomisResponse(17, 2, "Answer 2", "comment 2", reportingStaff),
-              NomisResponse(18, 3, "Answer 3", "comment 3", reportingStaff),
+              NomisResponse(
+                16,
+                1,
+                "Answer 1",
+                "comment 1",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
+              NomisResponse(
+                17,
+                2,
+                "Answer 2",
+                "comment 2",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
+              NomisResponse(
+                18,
+                3,
+                "Answer 3",
+                "comment 3",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
             ),
           ),
         ),
@@ -146,6 +250,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             1,
             "DAMAGE",
             "Damage",
+            createDateTime = LocalDateTime.now(clock),
+            createdBy = reportingStaff.username,
             incidentChangeDate = LocalDate.now(clock),
             incidentChangeStaff = reportingStaff,
             questions = listOf(
@@ -285,9 +391,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "A New Incident From NOMIS",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "user2"
+                "createdDate": "2023-12-05T14:34:56",
+                "lastModifiedDate": "2023-12-05T17:34:56",
+                "lastModifiedBy": "another-user"
               },
               "questions": [
                 {
@@ -492,9 +598,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "reportedDate": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
               "assignedTo": "user2",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "user2",
+              "createdDate": "2023-12-05T14:34:56",
+              "lastModifiedDate": "2023-12-05T17:34:56",
+              "lastModifiedBy": "another-user",
               "createdInNomis": true
             }
             """,
@@ -537,9 +643,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "New NOMIS incident",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "user2"
+                "createdDate": "2023-12-05T14:34:56",
+                "lastModifiedDate": "2023-12-05T17:34:56",
+                "lastModifiedBy": "another-user"
               },
               "questions": [
                 {
@@ -744,9 +850,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "reportedDate": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
               "assignedTo": "user2",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "user2",
+              "createdDate": "2023-12-05T14:34:56",
+              "lastModifiedDate": "2023-12-05T17:34:56",
+              "lastModifiedBy": "another-user",
               "createdInNomis": true
             }
             """,
@@ -771,17 +877,29 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             description = "Updated details",
             reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
             reportedDateTime = LocalDateTime.now(clock).minusDays(1),
+            createDateTime = LocalDateTime.now(clock).minusDays(1),
+            createdBy = "creator",
+            lastModifiedDateTime = LocalDateTime.now(clock).minusMinutes(5),
+            lastModifiedBy = "updater",
             status = NomisStatus("INAN", "In Analysis"),
             questionnaireId = 419,
             type = "ASSAULTS3",
             incidentDateTime = LocalDateTime.now(clock).minusDays(10),
             prison = NomisCode("FBI", "Forest Bank (HMP & YOI)"),
             staffParties = listOf(
-              NomisStaffParty(reportingStaff, NomisCode("PAS", "Present at scene"), "REPORTER"),
+              NomisStaffParty(
+                reportingStaff,
+                NomisCode("PAS", "Present at scene"),
+                "REPORTER",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+              ),
               NomisStaffParty(
                 NomisStaff("JAMESQ", 2, "James", "Quids"),
                 NomisCode("PAS", "Present at scene"),
                 "James was also present actually",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
               ),
             ),
             offenderParties = listOf(
@@ -794,6 +912,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 role = NomisCode("HOST", "Hostage"),
                 outcome = NomisCode("TRN", "Transfer"),
                 comment = "Prisoner was transferred after incident",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
               ),
               NomisOffenderParty(
                 offender = NomisOffender(
@@ -804,31 +924,99 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 role = NomisCode("PERP", "Perpetrator"),
                 outcome = NomisCode("ILOC", "ILOC"),
                 comment = "Trevor took another prisoner hostage",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
               ),
             ),
             requirements = listOf(
-              NomisRequirement("Also the description", LocalDate.now(clock), reportingStaff, "MDI"),
-              NomisRequirement("Could you update the title please", LocalDate.now(clock).minusWeeks(1), reportingStaff, "MDI"),
+              NomisRequirement(
+                "Also the description",
+                LocalDate.now(clock),
+                reportingStaff,
+                "MDI",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+              ),
+              NomisRequirement(
+                "Could you update the title please",
+                LocalDate.now(clock).minusWeeks(1),
+                reportingStaff,
+                "MDI",
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
+              ),
             ),
             questions = listOf(
               NomisQuestion(
                 4,
                 1,
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
                 "Who was involved?",
                 listOf(
-                  NomisResponse(10, 1, "John", "comment 1", reportingStaff),
-                  NomisResponse(11, 2, "Trevor", "comment 2", reportingStaff),
-                  NomisResponse(12, 3, "Maybe someone else?", "comment 3", reportingStaff),
+                  NomisResponse(
+                    10,
+                    1,
+                    "John",
+                    "comment 1",
+                    createDateTime = LocalDateTime.now(clock),
+                    createdBy = reportingStaff.username,
+                    recordingStaff = reportingStaff,
+                  ),
+                  NomisResponse(
+                    11,
+                    2,
+                    "Trevor",
+                    "comment 2",
+                    createDateTime = LocalDateTime.now(clock),
+                    createdBy = reportingStaff.username,
+                    recordingStaff = reportingStaff,
+                  ),
+                  NomisResponse(
+                    12,
+                    3,
+                    "Maybe someone else?",
+                    "comment 3",
+                    createDateTime = LocalDateTime.now(clock),
+                    createdBy = reportingStaff.username,
+                    recordingStaff = reportingStaff,
+                  ),
                 ),
               ),
               NomisQuestion(
                 5,
                 2,
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
                 "Where did this happen?",
                 listOf(
-                  NomisResponse(13, 1, "Cell", "comment 1", reportingStaff),
-                  NomisResponse(14, 2, "Landing", "comment 2", reportingStaff),
-                  NomisResponse(15, 3, "Kitchen", "comment 3", reportingStaff),
+                  NomisResponse(
+                    13,
+                    1,
+                    "Cell",
+                    "comment 1",
+                    createDateTime = LocalDateTime.now(clock),
+                    createdBy = reportingStaff.username,
+                    recordingStaff = reportingStaff,
+                  ),
+                  NomisResponse(
+                    14,
+                    2,
+                    "Landing",
+                    "comment 2",
+                    createDateTime = LocalDateTime.now(clock),
+                    createdBy = reportingStaff.username,
+                    recordingStaff = reportingStaff,
+                  ),
+                  NomisResponse(
+                    15,
+                    3,
+                    "Kitchen",
+                    "comment 3",
+                    createDateTime = LocalDateTime.now(clock),
+                    createdBy = reportingStaff.username,
+                    recordingStaff = reportingStaff,
+                  ),
                 ),
               ),
             ),
@@ -839,6 +1027,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "Damage",
                 incidentChangeDate = LocalDate.now(clock),
                 incidentChangeStaff = reportingStaff,
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
                 questions = listOf(
                   NomisHistoryQuestion(
                     1,
@@ -866,6 +1056,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "Bomb",
                 incidentChangeDate = LocalDate.now(clock).minusDays(2),
                 incidentChangeStaff = reportingStaff,
+                createDateTime = LocalDateTime.now(clock),
+                createdBy = reportingStaff.username,
                 questions = listOf(
                   NomisHistoryQuestion(
                     11,
@@ -913,9 +1105,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "FBI",
                 "title": "Updated title",
                 "description": "Updated details",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "OF42"
+                "createdDate": "2023-12-04T12:34:56",
+                "lastModifiedDate": "2023-12-05T12:29:56",
+                "lastModifiedBy": "updater"
               },
               "questions": [
                 {
@@ -1070,7 +1262,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "IN_ANALYSIS",
                   "setOn": "2023-12-05T12:34:56",
-                  "setBy": "OF42"
+                  "setBy": "updater"
                 }
               ],
               "staffInvolved": [
@@ -1119,9 +1311,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "reportedDate": "2023-12-04T12:34:56",
               "status": "IN_ANALYSIS",
               "assignedTo": "USER1",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "OF42",
+              "createdDate": "2023-12-04T12:34:56",
+              "lastModifiedDate": "2023-12-05T12:29:56",
+              "lastModifiedBy": "updater",
               "createdInNomis": true
             }
             """,
