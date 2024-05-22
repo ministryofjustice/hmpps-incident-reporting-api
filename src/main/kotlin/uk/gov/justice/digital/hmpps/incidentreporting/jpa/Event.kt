@@ -31,7 +31,7 @@ class Event(
   var title: String,
   var description: String,
 
-  @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH], orphanRemoval = false)
+  @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val reports: MutableList<Report> = mutableListOf(),
 
   var createdDate: LocalDateTime,
@@ -43,7 +43,10 @@ class Event(
   }
 
   fun addReport(report: Report): Report {
-    return reports.add(report).let { report }
+    return reports.add(report).let {
+      report.event = this
+      report
+    }
   }
 
   fun toDto() = EventDto(

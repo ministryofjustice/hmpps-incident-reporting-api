@@ -340,11 +340,19 @@ class ReportResource(
     @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
     @PathVariable
     id: UUID,
+    @Schema(
+      description = "Whether orphaned events should also be deleted",
+      required = false,
+      defaultValue = "true",
+      example = "false",
+    )
+    @RequestParam(required = false)
+    deleteOrphanedEvents: Boolean = true,
   ): ReportDto {
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_DELETED,
       {
-        reportService.deleteReportById(id)
+        reportService.deleteReportById(id, deleteOrphanedEvents)
           ?: throw ReportNotFoundException(id)
       },
       InformationSource.DPS,

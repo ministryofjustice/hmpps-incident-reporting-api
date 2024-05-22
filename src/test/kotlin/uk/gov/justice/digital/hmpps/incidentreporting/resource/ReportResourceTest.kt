@@ -946,9 +946,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("works")
     @Nested
     inner class HappyPath {
-      @Test
-      fun `can delete a report by ID`() {
-        webTestClient.delete().uri(url)
+      @ParameterizedTest(name = "can delete a report by ID (including orphaned event? {0})")
+      @ValueSource(booleans = [true, false])
+      fun `can delete a report by ID`(deleteOrphanedEvents: Boolean) {
+        val reportId = existingReport.id!!
+        val eventId = existingReport.event.id!!
+
+        webTestClient.delete().uri("$url?deleteOrphanedEvents=$deleteOrphanedEvents")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -957,12 +961,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             // language=json
             """ 
             {
-              "id": "${existingReport.id}",
+              "id": "$reportId",
               "incidentNumber": "IR-0000000001124143"
             }
             """,
             false,
           )
+
+        assertThat(reportRepository.findById(reportId)).isEmpty
+        if (deleteOrphanedEvents) {
+          assertThat(eventRepository.findById(eventId)).isEmpty
+        } else {
+          assertThat(eventRepository.findById(eventId)).isPresent
+        }
 
         getDomainEvents(1).let {
           assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
@@ -970,6 +981,41 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "incident.report.deleted" to InformationSource.DPS,
             )
         }
+      }
+
+      @Test
+      fun `cannot cascade deleting non-orphan event`() {
+        val reportId = existingReport.id!!
+        val eventId = existingReport.event.id!!
+
+        existingReport.event.addReport(
+          buildIncidentReport(
+            incidentNumber = "IR-0000000001124142",
+            reportTime = LocalDateTime.now(clock).minusMinutes(5),
+          ),
+        )
+        eventRepository.save(existingReport.event)
+        val otherReportId = reportRepository.findAll().first { it.id != reportId }.id!!
+
+        webTestClient.delete().uri("$url?deleteOrphanedEvents=true")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "$reportId",
+              "incidentNumber": "IR-0000000001124143"
+            }
+            """,
+            false,
+          )
+
+        val remainingReportIds = reportRepository.findAllById(listOf(reportId, otherReportId)).map { it.id }
+        assertThat(remainingReportIds).containsOnly(otherReportId)
+        assertThat(eventRepository.findById(eventId)).isPresent
       }
     }
   }

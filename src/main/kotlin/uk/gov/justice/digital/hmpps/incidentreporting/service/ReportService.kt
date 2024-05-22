@@ -86,9 +86,20 @@ class ReportService(
   }
 
   @Transactional
-  fun deleteReportById(id: UUID): ReportDto? {
-    return getReportById(id)?.apply {
-      reportRepository.deleteById(id)
+  fun deleteReportById(id: UUID, deleteOrphanedEvents: Boolean = true): ReportDto? {
+    return reportRepository.findById(id).getOrNull()?.let { report ->
+      val eventIdToDelete = if (deleteOrphanedEvents && report.event.reports.size == 1) {
+        report.event.id!!
+      } else {
+        null
+      }
+      report.toDto().also {
+        report.event.reports.removeIf { it.id == id }
+        reportRepository.deleteById(id)
+        eventIdToDelete?.let { eventId ->
+          eventRepository.deleteById(eventId)
+        }
+      }
     }
   }
 
