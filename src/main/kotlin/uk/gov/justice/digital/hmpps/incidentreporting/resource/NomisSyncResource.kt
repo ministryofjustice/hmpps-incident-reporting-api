@@ -34,7 +34,7 @@ class NomisSyncResource(
   @PostMapping("/upsert")
   @Operation(
     summary = "Migrate a location",
-    description = "Requires role MIGRATE_LOCATIONS and write scope",
+    description = "Requires role MIGRATE_INCIDENT_REPORTS and write scope",
     responses = [
       ApiResponse(
         responseCode = "201",
