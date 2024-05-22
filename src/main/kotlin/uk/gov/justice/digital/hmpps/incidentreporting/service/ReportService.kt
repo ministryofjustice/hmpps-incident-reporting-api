@@ -96,8 +96,22 @@ class ReportService(
       report.toDto().also {
         report.event.reports.removeIf { it.id == id }
         reportRepository.deleteById(id)
+
+        log.info("Deleted incident report number=${report.incidentNumber} ID=${report.id}")
+        telemetryClient.trackEvent(
+          "Deleted incident report",
+          mapOf(
+            "id" to report.id.toString(),
+            "incidentNumber" to report.incidentNumber,
+            "prisonId" to report.prisonId,
+          ),
+          null,
+        )
+
         eventIdToDelete?.let { eventId ->
           eventRepository.deleteById(eventId)
+
+          log.info("Deleted event ID=$eventId")
         }
       }
     }
@@ -127,11 +141,12 @@ class ReportService(
 
     val report = reportRepository.save(newReport).toDto()
 
-    log.info("Created incident report [${report.id}]")
+    log.info("Created incident report number=${report.incidentNumber} ID=${report.id}")
     telemetryClient.trackEvent(
       "Created incident report",
       mapOf(
         "id" to report.id.toString(),
+        "incidentNumber" to report.incidentNumber,
         "prisonId" to report.prisonId,
       ),
       null,
