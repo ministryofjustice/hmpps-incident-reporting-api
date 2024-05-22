@@ -85,6 +85,7 @@ class ReportService(
     return reportRepository.findOneByIncidentNumber(incidentNumber)?.toDto()
   }
 
+  @Transactional
   fun deleteReportById(id: UUID): ReportDto? {
     return getReportById(id)?.apply {
       reportRepository.deleteById(id)
