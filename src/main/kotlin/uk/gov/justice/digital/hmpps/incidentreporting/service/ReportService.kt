@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
+import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -105,7 +106,6 @@ class ReportService(
             "incidentNumber" to report.incidentNumber,
             "prisonId" to report.prisonId,
           ),
-          null,
         )
 
         eventIdToDelete?.let { eventId ->
@@ -149,7 +149,6 @@ class ReportService(
         "incidentNumber" to report.incidentNumber,
         "prisonId" to report.prisonId,
       ),
-      null,
     )
 
     return report

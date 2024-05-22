@@ -6,6 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.toNewEntity
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
@@ -45,7 +46,6 @@ class SyncService(
         "id" to report.id.toString(),
         "prisonId" to report.prisonId,
       ),
-      null,
     )
     return report
   }
