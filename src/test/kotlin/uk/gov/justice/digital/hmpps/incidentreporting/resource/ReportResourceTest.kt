@@ -486,6 +486,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
 
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot get a report by ID if it is not found`() {
+        webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
+      }
+    }
+
     @DisplayName("works")
     @Nested
     inner class HappyPath {
@@ -583,6 +596,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isForbidden
+      }
+    }
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot get a report by incident number if it is not found`() {
+        webTestClient.get().uri("/incident-reports/incident-number/IR-11111111")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
       }
     }
 
