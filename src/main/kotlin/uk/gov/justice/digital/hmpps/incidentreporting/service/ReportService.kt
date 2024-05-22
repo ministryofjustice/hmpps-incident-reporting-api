@@ -85,6 +85,12 @@ class ReportService(
     return reportRepository.findOneByIncidentNumber(incidentNumber)?.toDto()
   }
 
+  fun deleteReportById(id: UUID): ReportDto? {
+    return getReportById(id)?.apply {
+      reportRepository.deleteById(id)
+    }
+  }
+
   @Transactional
   fun createReport(createReportRequest: CreateReportRequest): ReportDto {
     val event = if (createReportRequest.createNewEvent) {

@@ -862,4 +862,80 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
   }
+
+  @DisplayName("DELETE /incident-reports/{id}")
+  @Nested
+  inner class DeleteReportById {
+    private lateinit var url: String
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/${existingReport.id}"
+    }
+
+    @DisplayName("is secured")
+    @Nested
+    inner class Security {
+      @Test
+      fun `access forbidden when no authority`() {
+        webTestClient.delete().uri(url)
+          .exchange()
+          .expectStatus().isUnauthorized
+      }
+
+      @Test
+      fun `access forbidden when no role`() {
+        webTestClient.delete().uri(url)
+          .headers(setAuthorisation(roles = listOf()))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isForbidden
+      }
+
+      @Test
+      fun `access forbidden with wrong role`() {
+        webTestClient.delete().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isForbidden
+      }
+    }
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot delete a report by ID if it is not found`() {
+        webTestClient.delete().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can delete a report by ID`() {
+        webTestClient.delete().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143"
+            }
+            """,
+            false,
+          )
+      }
+    }
+  }
 }
