@@ -70,4 +70,5 @@ data class AuditEvent(
 enum class AuditType {
   INCIDENT_REPORT_CREATED,
   INCIDENT_REPORT_AMENDED,
+  INCIDENT_REPORT_DELETED,
 }

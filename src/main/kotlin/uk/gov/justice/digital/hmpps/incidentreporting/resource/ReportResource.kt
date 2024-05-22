@@ -341,7 +341,13 @@ class ReportResource(
     @PathVariable
     id: UUID,
   ): ReportDto {
-    return reportService.deleteReportById(id)
-      ?: throw ReportNotFoundException(id)
+    return eventPublishAndAudit(
+      ReportDomainEventType.INCIDENT_REPORT_DELETED,
+      {
+        reportService.deleteReportById(id)
+          ?: throw ReportNotFoundException(id)
+      },
+      InformationSource.DPS,
+    )
   }
 }

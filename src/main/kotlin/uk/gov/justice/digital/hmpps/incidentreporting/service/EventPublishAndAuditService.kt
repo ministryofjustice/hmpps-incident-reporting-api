@@ -15,9 +15,9 @@ class EventPublishAndAuditService(
 
   fun publishEvent(
     eventType: ReportDomainEventType,
-    reports: List<ReportDto>,
+    reports: Iterable<ReportDto>,
     auditData: Any? = null,
-    source: InformationSource = InformationSource.DPS,
+    source: InformationSource,
   ) {
     reports.forEach {
       publishEvent(
@@ -33,7 +33,7 @@ class EventPublishAndAuditService(
     eventType: ReportDomainEventType,
     report: ReportDto,
     auditData: Any? = null,
-    source: InformationSource = InformationSource.DPS,
+    source: InformationSource,
   ) {
     publishEvent(event = eventType, report = report, source = source)
 
@@ -67,7 +67,7 @@ class EventPublishAndAuditService(
     auditType: AuditType,
     id: String,
     auditData: Any,
-    source: InformationSource = InformationSource.DPS,
+    source: InformationSource,
   ) {
     auditService.sendMessage(
       auditType = auditType,

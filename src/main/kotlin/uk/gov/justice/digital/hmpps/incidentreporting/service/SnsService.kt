@@ -99,6 +99,11 @@ enum class ReportDomainEventType(val value: String, val description: String, val
     "An incident report has been amended",
     AuditType.INCIDENT_REPORT_AMENDED,
   ),
+  INCIDENT_REPORT_DELETED(
+    "incident.report.deleted",
+    "An incident report has been deleted",
+    AuditType.INCIDENT_REPORT_DELETED,
+  ),
 }
 
 fun Instant.toOffsetDateFormat(): String =

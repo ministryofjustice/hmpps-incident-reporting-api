@@ -938,6 +938,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isNotFound
+
+        assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
       }
     }
 
@@ -961,6 +963,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """,
             false,
           )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.deleted" to InformationSource.DPS,
+            )
+        }
       }
     }
   }
