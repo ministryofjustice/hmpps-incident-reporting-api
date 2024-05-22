@@ -95,7 +95,7 @@ class ReportService(
       )
     } else if (createReportRequest.linkedEventId != null) {
       eventRepository.findOneByEventId(createReportRequest.linkedEventId)
-        ?: throw EventNotFoundException("Event with ID [${createReportRequest.linkedEventId}] not found")
+        ?: throw EventNotFoundException(createReportRequest.linkedEventId)
     } else {
       throw ValidationException("Either createNewEvent or linkedEventId must be provided")
     }

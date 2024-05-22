@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.resource.NoResourceFoundException
+import java.util.UUID
 
 @RestControllerAdvice
 class ApiExceptionHandler {
@@ -255,6 +256,14 @@ class ApiExceptionHandler {
   }
 }
 
-class EventNotFoundException(id: String) : Exception("There is no event found for ID = $id")
-class ReportNotFoundException(id: String) : Exception("There is no incident report found for ID = $id")
-class ReportAlreadyExistsException(key: String) : Exception("Report already exists = $key")
+class EventNotFoundException(description: String) : Exception("There is no event found: $description") {
+  constructor(id: Long) : this(id.toString())
+}
+
+class ReportNotFoundException(description: String) : Exception("There is no report found: $description") {
+  constructor(id: UUID) : this(id.toString())
+}
+
+class ReportAlreadyExistsException(description: String) : Exception("Report already exists: $description") {
+  constructor(id: UUID) : this(id.toString())
+}

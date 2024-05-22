@@ -52,7 +52,7 @@ class SyncService(
 
   private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportDto {
     val reportToUpdate = reportRepository.findById(reportId)
-      .orElseThrow { ReportNotFoundException(reportId.toString()) }
+      .orElseThrow { ReportNotFoundException(reportId) }
     reportToUpdate.updateWith(incidentReport, clock)
     return reportToUpdate.toDto()
   }
