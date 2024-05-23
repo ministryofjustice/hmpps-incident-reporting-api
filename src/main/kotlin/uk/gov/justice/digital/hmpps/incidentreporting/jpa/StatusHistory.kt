@@ -24,8 +24,8 @@ class StatusHistory(
   @Enumerated(EnumType.STRING)
   val status: Status,
 
-  val setOn: LocalDateTime,
-  val setBy: String,
+  val changedAt: LocalDateTime,
+  val changedBy: String,
 ) {
   override fun toString(): String {
     return "StatusHistory(id=$id)"
@@ -35,7 +35,7 @@ class StatusHistory(
 
   fun toDto() = StatusHistoryDto(
     status = status,
-    changedAt = setOn,
-    changedBy = setBy,
+    changedAt = changedAt,
+    changedBy = changedBy,
   )
 }

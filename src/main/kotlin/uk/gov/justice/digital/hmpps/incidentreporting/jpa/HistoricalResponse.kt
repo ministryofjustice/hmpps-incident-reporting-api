@@ -24,7 +24,7 @@ class HistoricalResponse(
   val additionalInformation: String? = null,
 
   val recordedBy: String,
-  val recordedOn: LocalDateTime,
+  val recordedAt: LocalDateTime,
 ) {
   override fun toString(): String {
     return "HistoricalResponse(id=$id)"
@@ -33,7 +33,7 @@ class HistoricalResponse(
   fun toDto() = HistoricalResponseDto(
     response = response,
     recordedBy = recordedBy,
-    recordedAt = recordedOn,
+    recordedAt = recordedAt,
     additionalInformation = additionalInformation,
   )
 }

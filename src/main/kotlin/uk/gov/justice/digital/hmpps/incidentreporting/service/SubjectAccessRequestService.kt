@@ -15,7 +15,7 @@ class SubjectAccessRequestService(
     val content = prisonerInvolvementList
       .map { it.getReport() }
       .distinctBy { it.id }
-      .filter { it.reportedDate.isAfter(fromDate?.atStartOfDay()) && it.reportedDate.isBefore(toDate?.atStartOfDay()) }
+      .filter { it.reportedAt.isAfter(fromDate?.atStartOfDay()) && it.reportedAt.isBefore(toDate?.atStartOfDay()) }
       .map { it.toDto() }
     return HmppsSubjectAccessRequestContent(
       content = content,

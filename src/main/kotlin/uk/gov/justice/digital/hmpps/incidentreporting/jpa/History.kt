@@ -27,8 +27,8 @@ class History(
   @Enumerated(EnumType.STRING)
   val type: Type,
 
-  val changeDate: LocalDateTime,
-  val changeStaffUsername: String,
+  val changedAt: LocalDateTime,
+  val changedBy: String,
 
   @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
@@ -55,8 +55,8 @@ class History(
 
   fun toDto() = HistoryDto(
     type = type,
-    changedAt = changeDate,
-    changedBy = changeStaffUsername,
+    changedAt = changedAt,
+    changedBy = changedBy,
     questions = questions.map { it.toDto() },
   )
 }

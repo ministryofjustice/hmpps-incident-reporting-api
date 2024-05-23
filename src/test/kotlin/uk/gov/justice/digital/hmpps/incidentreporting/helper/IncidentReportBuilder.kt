@@ -26,12 +26,12 @@ fun buildIncidentReport(
     type = type,
     title = "Incident Report $incidentNumber",
     description = "A new incident created in the new service of type ${type.description}",
-    reportedDate = reportTime,
-    createdDate = reportTime,
-    lastModifiedDate = reportTime,
+    reportedAt = reportTime,
+    createdAt = reportTime,
+    modifiedAt = reportTime,
     reportedBy = reportingUsername,
     assignedTo = reportingUsername,
-    lastModifiedBy = reportingUsername,
+    modifiedBy = reportingUsername,
     event = Event(
       eventId = when (source) {
         InformationSource.DPS -> "IE-${incidentNumber.removePrefix("IR-")}"
@@ -41,9 +41,9 @@ fun buildIncidentReport(
       prisonId = prisonId,
       title = "An event occurred",
       description = "Details of the event",
-      createdDate = reportTime,
-      lastModifiedDate = reportTime,
-      lastModifiedBy = reportingUsername,
+      createdAt = reportTime,
+      modifiedAt = reportTime,
+      modifiedBy = reportingUsername,
     ),
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)

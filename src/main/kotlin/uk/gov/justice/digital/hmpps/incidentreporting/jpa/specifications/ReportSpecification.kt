@@ -22,7 +22,7 @@ fun filterByIncidentDateUntil(date: LocalDate) =
   Report::incidentDateAndTime.buildSpecForLessThan(date.plusDays(1).atStartOfDay())
 
 fun filterByReportedDateFrom(date: LocalDate) =
-  Report::reportedDate.buildSpecForGreaterThanOrEqualTo(date.atStartOfDay())
+  Report::reportedAt.buildSpecForGreaterThanOrEqualTo(date.atStartOfDay())
 
 fun filterByReportedDateUntil(date: LocalDate) =
-  Report::reportedDate.buildSpecForLessThan(date.plusDays(1).atStartOfDay())
+  Report::reportedAt.buildSpecForLessThan(date.plusDays(1).atStartOfDay())

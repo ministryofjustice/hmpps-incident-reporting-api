@@ -40,14 +40,14 @@ class HistoricalQuestion(
     response: String,
     additionalInformation: String?,
     recordedBy: String,
-    recordedOn: LocalDateTime,
+    recordedAt: LocalDateTime,
   ): HistoricalQuestion {
     responses.add(
       HistoricalResponse(
         historicalQuestion = this,
         response = response,
         recordedBy = recordedBy,
-        recordedOn = recordedOn,
+        recordedAt = recordedAt,
         additionalInformation = additionalInformation,
       ),
     )

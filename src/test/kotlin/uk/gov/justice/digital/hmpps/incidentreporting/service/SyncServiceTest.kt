@@ -159,18 +159,18 @@ class SyncServiceTest {
       prisonId = "MDI",
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
-      createdDate = now.plusHours(2),
-      lastModifiedDate = now.plusHours(5),
-      lastModifiedBy = "another-user",
+      createdAt = now.plusHours(2),
+      modifiedAt = now.plusHours(5),
+      modifiedBy = "another-user",
     ),
     reportedBy = reportedBy,
-    reportedDate = now,
+    reportedAt = now,
     status = Status.AWAITING_ANALYSIS,
     assignedTo = reportedBy,
     source = InformationSource.NOMIS,
-    createdDate = now.plusHours(2),
-    lastModifiedDate = now.plusHours(5),
-    lastModifiedBy = "another-user",
+    createdAt = now.plusHours(2),
+    modifiedAt = now.plusHours(5),
+    modifiedBy = "another-user",
   )
 
   init {
@@ -204,13 +204,13 @@ class SyncServiceTest {
       report.description == sampleReport.description &&
       report.prisonId == sampleReport.prisonId &&
       report.reportedBy == sampleReport.reportedBy &&
-      report.reportedDate == sampleReport.reportedDate &&
+      report.reportedAt == sampleReport.reportedAt &&
       report.status == sampleReport.status &&
       report.assignedTo == sampleReport.assignedTo &&
       report.source == sampleReport.source &&
-      report.createdDate == sampleReport.createdDate &&
-      report.lastModifiedDate == sampleReport.lastModifiedDate &&
-      report.lastModifiedBy == sampleReport.lastModifiedBy &&
+      report.createdAt == sampleReport.createdAt &&
+      report.modifiedAt == sampleReport.modifiedAt &&
+      report.modifiedBy == sampleReport.modifiedBy &&
       isEqualToSampleEvent(report.event)
   }
 
@@ -222,9 +222,9 @@ class SyncServiceTest {
       event.eventDateAndTime == sampleEvent.eventDateAndTime &&
       event.prisonId == sampleEvent.prisonId &&
       event.description == sampleEvent.description &&
-      event.createdDate == sampleEvent.createdDate &&
-      event.lastModifiedDate == sampleEvent.lastModifiedDate &&
-      event.lastModifiedBy == sampleEvent.lastModifiedBy
+      event.createdAt == sampleEvent.createdAt &&
+      event.modifiedAt == sampleEvent.modifiedAt &&
+      event.modifiedBy == sampleEvent.modifiedBy
   }
 
   private fun assertSampleReportConvertedToDto(report: ReportDto) {

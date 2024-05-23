@@ -58,7 +58,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(reportEntity.prisonId).isEqualTo("MDI")
       assertThat(reportEntity.questionSetId).isEqualTo("2124")
       assertThat(reportEntity.assignedTo).isEqualTo("user1")
-      assertThat(reportEntity.lastModifiedBy).isEqualTo("user1")
+      assertThat(reportEntity.modifiedBy).isEqualTo("user1")
       assertThat(reportEntity.reportedBy).isEqualTo("user1")
       assertThat(reportEntity.getQuestions()).isEmpty()
       assertThat(reportEntity.history).isEmpty()
@@ -75,7 +75,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
       assertThat(eventEntity.eventId).isEqualTo("112414323")
       assertThat(eventEntity.prisonId).isEqualTo("MDI")
-      assertThat(eventEntity.lastModifiedBy).isEqualTo("user1")
+      assertThat(eventEntity.modifiedBy).isEqualTo("user1")
     }
 
     @Test
@@ -129,16 +129,16 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       )
       assertThat(existingReportEntity.title).isEqualTo("TITLE")
       assertThat(existingReportEntity.description).isEqualTo("DESCRIPTION")
-      assertThat(existingReportEntity.createdDate).isEqualTo(now.minusMinutes(4))
-      assertThat(existingReportEntity.lastModifiedDate).isEqualTo(now.minusMinutes(4))
-      assertThat(existingReportEntity.lastModifiedBy).isEqualTo("user1")
+      assertThat(existingReportEntity.createdAt).isEqualTo(now.minusMinutes(4))
+      assertThat(existingReportEntity.modifiedAt).isEqualTo(now.minusMinutes(4))
+      assertThat(existingReportEntity.modifiedBy).isEqualTo("user1")
 
       val eventEntity = existingReportEntity.event
       assertThat(eventEntity.title).isEqualTo("TITLE")
       assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
-      assertThat(eventEntity.createdDate).isEqualTo(now.minusMinutes(4))
-      assertThat(eventEntity.lastModifiedDate).isEqualTo(now.minusMinutes(4))
-      assertThat(eventEntity.lastModifiedBy).isEqualTo("user1")
+      assertThat(eventEntity.createdAt).isEqualTo(now.minusMinutes(4))
+      assertThat(eventEntity.modifiedAt).isEqualTo(now.minusMinutes(4))
+      assertThat(eventEntity.modifiedBy).isEqualTo("user1")
     }
 
     @Test
