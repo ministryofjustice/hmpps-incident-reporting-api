@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
+import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.hmpps.sqs.HmppsQueue
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import java.time.Clock
@@ -41,18 +42,16 @@ class AuditService(
     )
     log.debug("Audit {} ", auditEvent)
 
-    val result =
-      auditSqsClient.sendMessage(
-        SendMessageRequest.builder()
-          .queueUrl(auditQueueUrl)
-          .messageBody(auditEvent.toJson())
-          .build(),
-      ).get()
+    val result = auditSqsClient.sendMessage(
+      SendMessageRequest.builder()
+        .queueUrl(auditQueueUrl)
+        .messageBody(auditEvent.toJson())
+        .build(),
+    ).get()
 
     telemetryClient.trackEvent(
       auditEvent.what,
       mapOf("messageId" to result.messageId(), "id" to id),
-      null,
     )
   }
 
@@ -70,4 +69,5 @@ data class AuditEvent(
 enum class AuditType {
   INCIDENT_REPORT_CREATED,
   INCIDENT_REPORT_AMENDED,
+  INCIDENT_REPORT_DELETED,
 }

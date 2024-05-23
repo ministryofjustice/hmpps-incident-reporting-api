@@ -67,8 +67,8 @@ class Report(
   var reportedBy: String,
   var reportedDate: LocalDateTime,
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
-  val event: Event,
+  @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH], optional = false)
+  var event: Event,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),

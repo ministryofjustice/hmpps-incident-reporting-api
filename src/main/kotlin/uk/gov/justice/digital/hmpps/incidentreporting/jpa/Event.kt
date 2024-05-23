@@ -43,7 +43,10 @@ class Event(
   }
 
   fun addReport(report: Report): Report {
-    return reports.add(report).let { report }
+    return reports.add(report).let {
+      report.event = this
+      report
+    }
   }
 
   fun toDto() = EventDto(

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
+import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -86,6 +87,37 @@ class ReportService(
   }
 
   @Transactional
+  fun deleteReportById(id: UUID, deleteOrphanedEvents: Boolean = true): ReportDto? {
+    return reportRepository.findById(id).getOrNull()?.let { report ->
+      val eventIdToDelete = if (deleteOrphanedEvents && report.event.reports.size == 1) {
+        report.event.id!!
+      } else {
+        null
+      }
+      report.toDto().also {
+        report.event.reports.removeIf { it.id == id }
+        reportRepository.deleteById(id)
+
+        log.info("Deleted incident report number=${report.incidentNumber} ID=${report.id}")
+        telemetryClient.trackEvent(
+          "Deleted incident report",
+          mapOf(
+            "id" to report.id.toString(),
+            "incidentNumber" to report.incidentNumber,
+            "prisonId" to report.prisonId,
+          ),
+        )
+
+        eventIdToDelete?.let { eventId ->
+          eventRepository.deleteById(eventId)
+
+          log.info("Deleted event ID=$eventId")
+        }
+      }
+    }
+  }
+
+  @Transactional
   fun createReport(createReportRequest: CreateReportRequest): ReportDto {
     val event = if (createReportRequest.createNewEvent) {
       createReportRequest.toNewEvent(
@@ -95,7 +127,7 @@ class ReportService(
       )
     } else if (createReportRequest.linkedEventId != null) {
       eventRepository.findOneByEventId(createReportRequest.linkedEventId)
-        ?: throw EventNotFoundException("Event with ID [${createReportRequest.linkedEventId}] not found")
+        ?: throw EventNotFoundException(createReportRequest.linkedEventId)
     } else {
       throw ValidationException("Either createNewEvent or linkedEventId must be provided")
     }
@@ -109,14 +141,14 @@ class ReportService(
 
     val report = reportRepository.save(newReport).toDto()
 
-    log.info("Created incident report [${report.id}]")
+    log.info("Created incident report number=${report.incidentNumber} ID=${report.id}")
     telemetryClient.trackEvent(
       "Created incident report",
       mapOf(
         "id" to report.id.toString(),
+        "incidentNumber" to report.incidentNumber,
         "prisonId" to report.prisonId,
       ),
-      null,
     )
 
     return report

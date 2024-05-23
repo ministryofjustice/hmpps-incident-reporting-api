@@ -486,6 +486,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
 
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot get a report by ID if it is not found`() {
+        webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
+      }
+    }
+
     @DisplayName("works")
     @Nested
     inner class HappyPath {
@@ -583,6 +596,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isForbidden
+      }
+    }
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot get a report by incident number if it is not found`() {
+        webTestClient.get().uri("/incident-reports/incident-number/IR-11111111")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
       }
     }
 
@@ -859,6 +885,137 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "incident.report.created" to InformationSource.DPS,
             )
         }
+      }
+    }
+  }
+
+  @DisplayName("DELETE /incident-reports/{id}")
+  @Nested
+  inner class DeleteReportById {
+    private lateinit var url: String
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/${existingReport.id}"
+    }
+
+    @DisplayName("is secured")
+    @Nested
+    inner class Security {
+      @Test
+      fun `access forbidden when no authority`() {
+        webTestClient.delete().uri(url)
+          .exchange()
+          .expectStatus().isUnauthorized
+      }
+
+      @Test
+      fun `access forbidden when no role`() {
+        webTestClient.delete().uri(url)
+          .headers(setAuthorisation(roles = listOf()))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isForbidden
+      }
+
+      @Test
+      fun `access forbidden with wrong role`() {
+        webTestClient.delete().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isForbidden
+      }
+    }
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot delete a report by ID if it is not found`() {
+        webTestClient.delete().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
+
+        assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @ParameterizedTest(name = "can delete a report by ID (including orphaned event? {0})")
+      @ValueSource(booleans = [true, false])
+      fun `can delete a report by ID`(deleteOrphanedEvents: Boolean) {
+        val reportId = existingReport.id!!
+        val eventId = existingReport.event.id!!
+
+        webTestClient.delete().uri("$url?deleteOrphanedEvents=$deleteOrphanedEvents")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "$reportId",
+              "incidentNumber": "IR-0000000001124143"
+            }
+            """,
+            false,
+          )
+
+        assertThat(reportRepository.findById(reportId)).isEmpty
+        if (deleteOrphanedEvents) {
+          assertThat(eventRepository.findById(eventId)).isEmpty
+        } else {
+          assertThat(eventRepository.findById(eventId)).isPresent
+        }
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.deleted" to InformationSource.DPS,
+            )
+        }
+      }
+
+      @Test
+      fun `cannot cascade deleting non-orphan event`() {
+        val reportId = existingReport.id!!
+        val eventId = existingReport.event.id!!
+
+        existingReport.event.addReport(
+          buildIncidentReport(
+            incidentNumber = "IR-0000000001124142",
+            reportTime = LocalDateTime.now(clock).minusMinutes(5),
+          ),
+        )
+        eventRepository.save(existingReport.event)
+        val otherReportId = reportRepository.findAll().first { it.id != reportId }.id!!
+
+        webTestClient.delete().uri("$url?deleteOrphanedEvents=true")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "$reportId",
+              "incidentNumber": "IR-0000000001124143"
+            }
+            """,
+            false,
+          )
+
+        val remainingReportIds = reportRepository.findAllById(listOf(reportId, otherReportId)).map { it.id }
+        assertThat(remainingReportIds).containsOnly(otherReportId)
+        assertThat(eventRepository.findById(eventId)).isPresent
       }
     }
   }

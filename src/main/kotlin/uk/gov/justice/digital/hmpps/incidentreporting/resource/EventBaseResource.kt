@@ -14,7 +14,7 @@ abstract class EventBaseResource {
   protected fun eventPublishAndAudit(
     event: ReportDomainEventType,
     function: () -> Report,
-    informationSource: InformationSource = InformationSource.DPS,
+    informationSource: InformationSource,
   ) =
     function().also { report ->
       eventPublishAndAuditService.publishEvent(
