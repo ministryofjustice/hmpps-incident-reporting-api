@@ -43,16 +43,27 @@ create table report
     modified_at            timestamp  default CURRENT_TIMESTAMP not null
 );
 
+create index report_incident_date_and_time_idx on report (incident_date_and_time);
+create index report_reported_at_idx on report (reported_at);
+create index report_created_at_idx on report (created_at);
+
+create index report_prison_id_idx on report (prison_id);
+create index report_source_idx on report (source);
+create index report_status_idx on report (status);
+create index report_type_idx on report (type);
+
 create table status_history
 (
-    id        serial
+    id         serial
         constraint status_history_pk primary key,
-    report_id uuid                                not null
+    report_id  uuid                                not null
         constraint status_history_report_fk references report (id) on delete cascade,
     status     varchar(60)                         not null,
     changed_at timestamp default CURRENT_TIMESTAMP not null,
     changed_by varchar(120)                        not null
 );
+
+create index status_history_changed_at_idx on status_history (changed_at);
 
 create table correction_request
 (
@@ -122,6 +133,8 @@ create table question
     additional_information text
 );
 
+create index question_sequence_at_idx on question (sequence);
+
 create table response
 (
     id                     serial
@@ -135,16 +148,20 @@ create table response
     recorded_by            varchar(120) default 'system'          not null
 );
 
+create index response_sequence_at_idx on response (sequence);
+
 create table history
 (
-    id                    serial
+    id         serial
         constraint history_pk primary key,
-    report_id             uuid         not null
+    report_id  uuid         not null
         constraint history_report_fk references report (id) on delete cascade,
     type       varchar(60)  not null,
     changed_at timestamp    not null,
     changed_by varchar(120) not null
 );
+
+create index history_changed_at_idx on history (changed_at);
 
 create table historical_question
 (
@@ -158,6 +175,8 @@ create table historical_question
     additional_information text
 );
 
+create index historical_question_sequence_at_idx on historical_question (sequence);
+
 create table historical_response
 (
     id                     serial
@@ -170,3 +189,5 @@ create table historical_response
     recorded_at            timestamp    default CURRENT_TIMESTAMP not null,
     recorded_by            varchar(120) default 'system'          not null
 );
+
+create index historical_response_sequence_at_idx on historical_response (sequence);
