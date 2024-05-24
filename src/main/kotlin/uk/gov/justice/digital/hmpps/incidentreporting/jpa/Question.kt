@@ -26,7 +26,7 @@ class Question(
 
   val additionalInformation: String? = null,
 
-  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
   private val responses: MutableList<Response> = mutableListOf(),
 ) {

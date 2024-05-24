@@ -67,37 +67,37 @@ class Report(
   var reportedBy: String,
   var reportedAt: LocalDateTime,
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH], optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH], optional = false)
   var event: Event,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
   // TODO: what's this for?
   val assignedTo: String,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   val staffInvolved: MutableList<StaffInvolvement> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   val prisonersInvolved: MutableList<PrisonerInvolvement> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   val locations: MutableList<Location> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   val evidence: MutableList<Evidence> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   val correctionRequests: MutableList<CorrectionRequest> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
   private val questions: MutableList<Question> = mutableListOf(),
 
   var questionSetId: String? = null,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderBy("changed_at ASC")
   val history: MutableList<History> = mutableListOf(),
 
