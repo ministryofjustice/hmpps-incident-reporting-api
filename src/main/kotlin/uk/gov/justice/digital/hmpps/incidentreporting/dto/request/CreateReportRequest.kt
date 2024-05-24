@@ -46,11 +46,11 @@ data class CreateReportRequest(
       prisonId = prisonId,
       description = description,
       reportedBy = reportedBy,
-      reportedDate = reportedDate,
+      reportedAt = reportedDate,
       status = status,
-      createdDate = now,
-      lastModifiedDate = now,
-      lastModifiedBy = createdBy,
+      createdAt = now,
+      modifiedAt = now,
+      modifiedBy = createdBy,
       source = InformationSource.DPS,
       assignedTo = reportedBy,
       event = event,
@@ -67,9 +67,9 @@ data class CreateReportRequest(
       prisonId = prisonId,
       title = title,
       description = description,
-      createdDate = now,
-      lastModifiedDate = now,
-      lastModifiedBy = createdBy,
+      createdAt = now,
+      modifiedAt = now,
+      modifiedBy = createdBy,
     )
   }
 }

@@ -42,14 +42,14 @@ class Question(
     response: String,
     additionalInformation: String?,
     recordedBy: String,
-    recordedOn: LocalDateTime,
+    recordedAt: LocalDateTime,
   ): Question {
     responses.add(
       Response(
         question = this,
         response = response,
         recordedBy = recordedBy,
-        recordedOn = recordedOn,
+        recordedAt = recordedAt,
         additionalInformation = additionalInformation,
       ),
     )

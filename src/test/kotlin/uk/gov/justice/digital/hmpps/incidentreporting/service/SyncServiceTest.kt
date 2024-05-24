@@ -159,18 +159,18 @@ class SyncServiceTest {
       prisonId = "MDI",
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
-      createdDate = now.plusHours(2),
-      lastModifiedDate = now.plusHours(5),
-      lastModifiedBy = "another-user",
+      createdAt = now.plusHours(2),
+      modifiedAt = now.plusHours(5),
+      modifiedBy = "another-user",
     ),
     reportedBy = reportedBy,
-    reportedDate = now,
+    reportedAt = now,
     status = Status.AWAITING_ANALYSIS,
     assignedTo = reportedBy,
     source = InformationSource.NOMIS,
-    createdDate = now.plusHours(2),
-    lastModifiedDate = now.plusHours(5),
-    lastModifiedBy = "another-user",
+    createdAt = now.plusHours(2),
+    modifiedAt = now.plusHours(5),
+    modifiedBy = "another-user",
   )
 
   init {
@@ -204,13 +204,13 @@ class SyncServiceTest {
       report.description == sampleReport.description &&
       report.prisonId == sampleReport.prisonId &&
       report.reportedBy == sampleReport.reportedBy &&
-      report.reportedDate == sampleReport.reportedDate &&
+      report.reportedAt == sampleReport.reportedAt &&
       report.status == sampleReport.status &&
       report.assignedTo == sampleReport.assignedTo &&
       report.source == sampleReport.source &&
-      report.createdDate == sampleReport.createdDate &&
-      report.lastModifiedDate == sampleReport.lastModifiedDate &&
-      report.lastModifiedBy == sampleReport.lastModifiedBy &&
+      report.createdAt == sampleReport.createdAt &&
+      report.modifiedAt == sampleReport.modifiedAt &&
+      report.modifiedBy == sampleReport.modifiedBy &&
       isEqualToSampleEvent(report.event)
   }
 
@@ -222,9 +222,9 @@ class SyncServiceTest {
       event.eventDateAndTime == sampleEvent.eventDateAndTime &&
       event.prisonId == sampleEvent.prisonId &&
       event.description == sampleEvent.description &&
-      event.createdDate == sampleEvent.createdDate &&
-      event.lastModifiedDate == sampleEvent.lastModifiedDate &&
-      event.lastModifiedBy == sampleEvent.lastModifiedBy
+      event.createdAt == sampleEvent.createdAt &&
+      event.modifiedAt == sampleEvent.modifiedAt &&
+      event.modifiedBy == sampleEvent.modifiedBy
   }
 
   private fun assertSampleReportConvertedToDto(report: ReportDto) {
@@ -239,16 +239,16 @@ class SyncServiceTest {
     assertThat(report.event.eventDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.event.description).isEqualTo("Offender was found in own cell with a razor")
     assertThat(report.event.prisonId).isEqualTo("MDI")
-    assertThat(report.event.createdDate.toString()).isEqualTo("2023-12-05T14:34:56")
-    assertThat(report.event.lastModifiedBy).isEqualTo("another-user")
-    assertThat(report.event.lastModifiedDate.toString()).isEqualTo("2023-12-05T17:34:56")
+    assertThat(report.event.createdAt.toString()).isEqualTo("2023-12-05T14:34:56")
+    assertThat(report.event.modifiedBy).isEqualTo("another-user")
+    assertThat(report.event.modifiedAt.toString()).isEqualTo("2023-12-05T17:34:56")
     assertThat(report.reportedBy).isEqualTo(reportedBy)
-    assertThat(report.reportedDate).isEqualTo(now)
+    assertThat(report.reportedAt).isEqualTo(now)
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
     assertThat(report.assignedTo).isEqualTo(reportedBy)
-    assertThat(report.createdDate).isEqualTo(now.plusHours(2))
-    assertThat(report.lastModifiedDate).isEqualTo(now.plusHours(5))
-    assertThat(report.lastModifiedBy).isEqualTo("another-user")
+    assertThat(report.createdAt).isEqualTo(now.plusHours(2))
+    assertThat(report.modifiedAt).isEqualTo(now.plusHours(5))
+    assertThat(report.modifiedBy).isEqualTo("another-user")
     assertThat(report.createdInNomis).isTrue()
 
     assertThat(report.history).isEmpty()
@@ -263,7 +263,7 @@ class SyncServiceTest {
     val response = question.responses[0]
     assertThat(response.response).isEqualTo("Razor")
     assertThat(response.recordedBy).isEqualTo(reportedBy)
-    assertThat(response.recordedOn).isEqualTo(now)
+    assertThat(response.recordedAt).isEqualTo(now)
     assertThat(response.additionalInformation).isNull()
 
     assertThat(report.locations).hasSize(1)

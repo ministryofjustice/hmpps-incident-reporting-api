@@ -20,9 +20,9 @@ data class Event(
   val description: String,
 
   @Schema(description = "When the report was first created", required = true, example = "2024-04-29T12:34:56.789012")
-  val createdDate: LocalDateTime,
+  val createdAt: LocalDateTime,
   @Schema(description = "When the report was last changed", required = true, example = "2024-04-29T12:34:56.789012")
-  val lastModifiedDate: LocalDateTime,
+  val modifiedAt: LocalDateTime,
   @Schema(description = "Username of the person who last changed this report", required = true)
-  val lastModifiedBy: String,
+  val modifiedBy: String,
 )

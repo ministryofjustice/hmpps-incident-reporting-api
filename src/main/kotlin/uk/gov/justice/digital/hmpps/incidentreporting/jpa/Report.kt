@@ -65,7 +65,7 @@ class Report(
   var description: String,
 
   var reportedBy: String,
-  var reportedDate: LocalDateTime,
+  var reportedAt: LocalDateTime,
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH], optional = false)
   var event: Event,
@@ -98,12 +98,12 @@ class Report(
   var questionSetId: String? = null,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-  @OrderBy("change_date ASC")
+  @OrderBy("changed_at ASC")
   val history: MutableList<History> = mutableListOf(),
 
-  var createdDate: LocalDateTime,
-  var lastModifiedDate: LocalDateTime,
-  var lastModifiedBy: String,
+  var createdAt: LocalDateTime,
+  var modifiedAt: LocalDateTime,
+  var modifiedBy: String,
 ) {
   override fun toString(): String {
     return "Report(incidentNumber=$incidentNumber)"
@@ -111,19 +111,19 @@ class Report(
 
   fun getQuestions(): List<Question> = questions
 
-  fun changeType(newType: Type, changedDate: LocalDateTime, staffChanged: String): Report {
-    copyToHistory(changedDate, staffChanged)
+  fun changeType(newType: Type, changedAt: LocalDateTime, changedBy: String): Report {
+    copyToHistory(changedAt, changedBy)
     questions.clear()
     type = newType
     return this
   }
 
-  fun addStatusHistory(status: Status, setOn: LocalDateTime, setBy: String): StatusHistory {
+  fun addStatusHistory(status: Status, changedAt: LocalDateTime, changedBy: String): StatusHistory {
     return StatusHistory(
       report = this,
       status = status,
-      setOn = setOn,
-      setBy = setBy,
+      changedAt = changedAt,
+      changedBy = changedBy,
     ).also { historyOfStatuses.add(it) }
   }
 
@@ -200,17 +200,17 @@ class Report(
     ).also { questions.add(it) }
   }
 
-  fun addHistory(type: Type, incidentChangeDate: LocalDateTime, staffChanged: String): History {
+  fun addHistory(type: Type, changedAt: LocalDateTime, changedBy: String): History {
     return History(
       report = this,
       type = type,
-      changeDate = incidentChangeDate,
-      changeStaffUsername = staffChanged,
+      changedAt = changedAt,
+      changedBy = changedBy,
     ).also { history.add(it) }
   }
 
-  private fun copyToHistory(changedDate: LocalDateTime, staffChanged: String): History {
-    val history = addHistory(type, changedDate, staffChanged)
+  private fun copyToHistory(changedAt: LocalDateTime, changedBy: String): History {
+    val history = addHistory(type, changedAt, changedBy)
     getQuestions().filterNotNull().forEach { question ->
       val historicalQuestion = history.addQuestion(
         code = question.code,
@@ -222,7 +222,7 @@ class Report(
           response.response,
           response.additionalInformation,
           response.recordedBy,
-          response.recordedOn,
+          response.recordedAt,
         )
       }
     }
@@ -253,7 +253,7 @@ class Report(
     event.description = description
 
     reportedBy = upsert.reportingStaff.username
-    reportedDate = upsert.reportedDateTime
+    reportedAt = upsert.reportedDateTime
 
     val newStatus = Status.fromNomisCode(upsert.status.code)
     if (newStatus != status) {
@@ -263,14 +263,14 @@ class Report(
 
     questionSetId = "${upsert.questionnaireId}"
 
-    createdDate = upsert.createDateTime
-    event.createdDate = upsert.createDateTime
+    createdAt = upsert.createDateTime
+    event.createdAt = upsert.createDateTime
 
-    lastModifiedDate = upsert.lastModifiedDateTime ?: upsert.createDateTime
-    event.lastModifiedDate = lastModifiedDate
+    modifiedAt = upsert.lastModifiedDateTime ?: upsert.createDateTime
+    event.modifiedAt = modifiedAt
 
-    lastModifiedBy = updatedBy
-    event.lastModifiedBy = updatedBy
+    modifiedBy = updatedBy
+    event.modifiedBy = updatedBy
 
     staffInvolved.clear()
     addNomisStaffInvolvements(upsert.staffParties)
@@ -297,12 +297,12 @@ class Report(
     title = title,
     description = description,
     reportedBy = reportedBy,
-    reportedDate = reportedDate,
+    reportedAt = reportedAt,
     status = status,
     assignedTo = assignedTo,
-    createdDate = createdDate,
-    lastModifiedDate = lastModifiedDate,
-    lastModifiedBy = lastModifiedBy,
+    createdAt = createdAt,
+    modifiedAt = modifiedAt,
+    modifiedBy = modifiedBy,
     createdInNomis = source == InformationSource.NOMIS,
     event = event.toDto(),
     questions = questions.map { it.toDto() },

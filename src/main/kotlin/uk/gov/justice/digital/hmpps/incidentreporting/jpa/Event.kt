@@ -34,9 +34,9 @@ class Event(
   @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   val reports: MutableList<Report> = mutableListOf(),
 
-  var createdDate: LocalDateTime,
-  var lastModifiedDate: LocalDateTime,
-  var lastModifiedBy: String,
+  var createdAt: LocalDateTime,
+  var modifiedAt: LocalDateTime,
+  var modifiedBy: String,
 ) {
   override fun toString(): String {
     return "Event(eventId=$eventId)"
@@ -55,8 +55,8 @@ class Event(
     eventDateAndTime = eventDateAndTime,
     title = title,
     description = description,
-    createdDate = createdDate,
-    lastModifiedDate = lastModifiedDate,
-    lastModifiedBy = lastModifiedBy,
+    createdAt = createdAt,
+    modifiedAt = modifiedAt,
+    modifiedBy = modifiedBy,
   )
 }

@@ -391,9 +391,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "A New Incident From NOMIS",
-                "createdDate": "2023-12-05T14:34:56",
-                "lastModifiedDate": "2023-12-05T17:34:56",
-                "lastModifiedBy": "another-user"
+                "createdAt": "2023-12-05T14:34:56",
+                "modifiedAt": "2023-12-05T17:34:56",
+                "modifiedBy": "another-user"
               },
               "questions": [
                 {
@@ -404,19 +404,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "Answer 1",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Answer 2",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Answer 3",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ]
@@ -429,19 +429,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "Answer 1",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Answer 2",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Answer 3",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ]
@@ -454,19 +454,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "Answer 1",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Answer 2",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Answer 3",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ]
@@ -475,8 +475,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "history": [
                 {
                   "type": "DAMAGE",
-                  "changeDate": "2023-12-05T00:00:00",
-                  "changeStaffUsername": "user2",
+                  "changedAt": "2023-12-05T00:00:00",
+                  "changedBy": "user2",
                   "questions": [
                     {
                       "code": "QID-000000000001",
@@ -486,19 +486,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
                         },
                         {
                           "response": "Old answer 3",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 3"
                         }
                       ]
@@ -511,19 +511,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
                         },
                         {
                           "response": "Old answer 3",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 3"
                         }
                       ]
@@ -536,19 +536,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
                         },
                         {
                           "response": "Old answer 3",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 3"
                         }
                       ]
@@ -559,8 +559,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "historyOfStatuses": [
                 {
                   "status": "AWAITING_ANALYSIS",
-                  "setOn": "2023-12-05T12:34:56",
-                  "setBy": "user2"
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "user2"
                 }
               ],
               "staffInvolved": [
@@ -595,12 +595,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 }
               ],
               "reportedBy": "user2",
-              "reportedDate": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
               "assignedTo": "user2",
-              "createdDate": "2023-12-05T14:34:56",
-              "lastModifiedDate": "2023-12-05T17:34:56",
-              "lastModifiedBy": "another-user",
+              "createdAt": "2023-12-05T14:34:56",
+              "modifiedAt": "2023-12-05T17:34:56",
+              "modifiedBy": "another-user",
               "createdInNomis": true
             }
             """,
@@ -643,9 +643,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "New NOMIS incident",
-                "createdDate": "2023-12-05T14:34:56",
-                "lastModifiedDate": "2023-12-05T17:34:56",
-                "lastModifiedBy": "another-user"
+                "createdAt": "2023-12-05T14:34:56",
+                "modifiedAt": "2023-12-05T17:34:56",
+                "modifiedBy": "another-user"
               },
               "questions": [
                 {
@@ -656,19 +656,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "Answer 1",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Answer 2",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Answer 3",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ]
@@ -681,19 +681,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "Answer 1",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Answer 2",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Answer 3",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ]
@@ -706,19 +706,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "Answer 1",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Answer 2",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Answer 3",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-05T12:34:56",
+                      "recordedAt": "2023-12-05T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ]
@@ -727,8 +727,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "history": [
                 {
                   "type": "DAMAGE",
-                  "changeDate": "2023-12-05T00:00:00",
-                  "changeStaffUsername": "user2",
+                  "changedAt": "2023-12-05T00:00:00",
+                  "changedBy": "user2",
                   "questions": [
                     {
                       "code": "QID-000000000001",
@@ -738,19 +738,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
                         },
                         {
                           "response": "Old answer 3",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 3"
                         }
                       ]
@@ -763,19 +763,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
                         },
                         {
                           "response": "Old answer 3",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 3"
                         }
                       ]
@@ -788,19 +788,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 2"
                         },
                         {
                           "response": "Old answer 3",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-05T12:34:56",
+                          "recordedAt": "2023-12-05T12:34:56",
                           "additionalInformation": "comment 3"
                         }
                       ]
@@ -811,8 +811,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "historyOfStatuses": [
                 {
                   "status": "AWAITING_ANALYSIS",
-                  "setOn": "2023-12-05T12:34:56",
-                  "setBy": "user2"
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "user2"
                 }
               ],
               "staffInvolved": [
@@ -847,12 +847,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 }
               ],
               "reportedBy": "user2",
-              "reportedDate": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
               "assignedTo": "user2",
-              "createdDate": "2023-12-05T14:34:56",
-              "lastModifiedDate": "2023-12-05T17:34:56",
-              "lastModifiedBy": "another-user",
+              "createdAt": "2023-12-05T14:34:56",
+              "modifiedAt": "2023-12-05T17:34:56",
+              "modifiedBy": "another-user",
               "createdInNomis": true
             }
             """,
@@ -1105,9 +1105,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "FBI",
                 "title": "Updated title",
                 "description": "Updated details",
-                "createdDate": "2023-12-04T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:29:56",
-                "lastModifiedBy": "updater"
+                "createdAt": "2023-12-04T12:34:56",
+                "modifiedAt": "2023-12-05T12:29:56",
+                "modifiedBy": "updater"
               },
               "questions": [
                 {
@@ -1117,19 +1117,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "John",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-04T12:34:56",
+                      "recordedAt": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Trevor",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-04T12:34:56",
+                      "recordedAt": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Maybe someone else?",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-04T12:34:56",
+                      "recordedAt": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ],
@@ -1142,19 +1142,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     {
                       "response": "Cell",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-04T12:34:56",
+                      "recordedAt": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 1"
                     },
                     {
                       "response": "Landing",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-04T12:34:56",
+                      "recordedAt": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 2"
                     },
                     {
                       "response": "Kitchen",
                       "recordedBy": "user2",
-                      "recordedOn": "2023-12-04T12:34:56",
+                      "recordedAt": "2023-12-04T12:34:56",
                       "additionalInformation": "comment 3"
                     }
                   ],
@@ -1164,8 +1164,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "history": [
                 {
                   "type": "DAMAGE",
-                  "changeDate": "2023-12-05T00:00:00",
-                  "changeStaffUsername": "user2",
+                  "changedAt": "2023-12-05T00:00:00",
+                  "changedBy": "user2",
                   "questions": [
                     {
                       "code": "QID-000000000001",
@@ -1174,13 +1174,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-04T12:34:56",
+                          "recordedAt": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-04T12:34:56",
+                          "recordedAt": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 2"
                         }
                       ],
@@ -1193,13 +1193,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-04T12:34:56",
+                          "recordedAt": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-04T12:34:56",
+                          "recordedAt": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 2"
                         }
                       ],
@@ -1209,8 +1209,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 },
                 {
                   "type": "BOMB_THREAT",
-                  "changeDate": "2023-12-03T00:00:00",
-                  "changeStaffUsername": "user2",
+                  "changedAt": "2023-12-03T00:00:00",
+                  "changedBy": "user2",
                   "questions": [
                     {
                       "code": "QID-000000000011",
@@ -1219,13 +1219,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-04T12:34:56",
+                          "recordedAt": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-04T12:34:56",
+                          "recordedAt": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 2"
                         }
                       ],
@@ -1238,13 +1238,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         {
                           "response": "Old old answer 1",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-04T12:34:56",
+                          "recordedAt": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 1"
                         },
                         {
                           "response": "Old old answer 2",
                           "recordedBy": "user2",
-                          "recordedOn": "2023-12-04T12:34:56",
+                          "recordedAt": "2023-12-04T12:34:56",
                           "additionalInformation": "comment 2"
                         }
                       ],
@@ -1256,13 +1256,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
-                  "setOn": "2023-12-05T12:34:56",
-                  "setBy": "USER1"
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
                 },
                 {
                   "status": "IN_ANALYSIS",
-                  "setOn": "2023-12-05T12:34:56",
-                  "setBy": "updater"
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "updater"
                 }
               ],
               "staffInvolved": [
@@ -1308,12 +1308,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 }
               ],
               "reportedBy": "OF42",
-              "reportedDate": "2023-12-04T12:34:56",
+              "reportedAt": "2023-12-04T12:34:56",
               "status": "IN_ANALYSIS",
               "assignedTo": "USER1",
-              "createdDate": "2023-12-04T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:29:56",
-              "lastModifiedBy": "updater",
+              "createdAt": "2023-12-04T12:34:56",
+              "modifiedAt": "2023-12-05T12:29:56",
+              "modifiedBy": "updater",
               "createdInNomis": true
             }
             """,

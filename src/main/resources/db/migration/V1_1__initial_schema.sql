@@ -14,9 +14,9 @@ create table event
     event_date_and_time timestamp                           not null,
     title               varchar(255)                        not null,
     description         text                                not null,
-    created_date        timestamp                           not null,
-    last_modified_by    varchar(120)                        not null,
-    last_modified_date  timestamp default CURRENT_TIMESTAMP not null
+    created_at          timestamp                           not null,
+    modified_by         varchar(120)                        not null,
+    modified_at         timestamp default CURRENT_TIMESTAMP not null
 );
 
 create table report
@@ -32,15 +32,15 @@ create table report
     status                 varchar(60)                          not null,
     incident_date_and_time timestamp                            not null,
     prison_id              varchar(6)                           not null,
-    reported_date          timestamp                            not null,
+    reported_at            timestamp                            not null,
     assigned_to            varchar(120)                         not null,
     title                  varchar(255)                         not null,
     description            text                                 not null,
     reported_by            varchar(120)                         not null,
-    created_date           timestamp                            not null,
+    created_at             timestamp                            not null,
     source                 varchar(5) default 'DPS'             not null,
-    last_modified_by       varchar(120)                         not null,
-    last_modified_date     timestamp  default CURRENT_TIMESTAMP not null
+    modified_by            varchar(120)                         not null,
+    modified_at            timestamp  default CURRENT_TIMESTAMP not null
 );
 
 create table status_history
@@ -49,9 +49,9 @@ create table status_history
         constraint status_history_pk primary key,
     report_id uuid                                not null
         constraint status_history_report_fk references report (id) on delete cascade,
-    status    varchar(60)                         not null,
-    set_on    timestamp default CURRENT_TIMESTAMP not null,
-    set_by    varchar(120)                        not null
+    status     varchar(60)                         not null,
+    changed_at timestamp default CURRENT_TIMESTAMP not null,
+    changed_by varchar(120)                        not null
 );
 
 create table correction_request
@@ -131,7 +131,7 @@ create table response
     sequence               integer      default 0                 not null,
     response               text                                   not null,
     additional_information text,
-    recorded_on            timestamp    default CURRENT_TIMESTAMP not null,
+    recorded_at            timestamp    default CURRENT_TIMESTAMP not null,
     recorded_by            varchar(120) default 'system'          not null
 );
 
@@ -141,9 +141,9 @@ create table history
         constraint history_pk primary key,
     report_id             uuid         not null
         constraint history_report_fk references report (id) on delete cascade,
-    type                  varchar(60)  not null,
-    change_date           timestamp    not null,
-    change_staff_username varchar(120) not null
+    type       varchar(60)  not null,
+    changed_at timestamp    not null,
+    changed_by varchar(120) not null
 );
 
 create table historical_question
@@ -167,6 +167,6 @@ create table historical_response
     sequence               integer      default 0                 not null,
     response               text                                   not null,
     additional_information text,
-    recorded_on            timestamp    default CURRENT_TIMESTAMP not null,
+    recorded_at            timestamp    default CURRENT_TIMESTAMP not null,
     recorded_by            varchar(120) default 'system'          not null
 );

@@ -20,12 +20,12 @@ fun NomisReport.toNewEntity(): Report {
     title = title ?: "NO DETAILS GIVEN",
     description = description ?: "NO DETAILS GIVEN",
     reportedBy = reportingStaff.username,
-    reportedDate = reportedDateTime,
+    reportedAt = reportedDateTime,
     status = status,
     questionSetId = "$questionnaireId",
-    createdDate = createDateTime,
-    lastModifiedDate = lastModifiedDateTime ?: createDateTime,
-    lastModifiedBy = lastModifiedBy ?: createdBy,
+    createdAt = createDateTime,
+    modifiedAt = lastModifiedDateTime ?: createDateTime,
+    modifiedBy = lastModifiedBy ?: createdBy,
     source = InformationSource.NOMIS,
     assignedTo = reportingStaff.username,
     event = Event(
@@ -34,9 +34,9 @@ fun NomisReport.toNewEntity(): Report {
       prisonId = prison.code,
       title = title ?: "NO DETAILS GIVEN",
       description = description ?: "NO DETAILS GIVEN",
-      createdDate = createDateTime,
-      lastModifiedDate = lastModifiedDateTime ?: createDateTime,
-      lastModifiedBy = lastModifiedBy ?: createdBy,
+      createdAt = createDateTime,
+      modifiedAt = lastModifiedDateTime ?: createDateTime,
+      modifiedBy = lastModifiedBy ?: createdBy,
     ),
   )
   report.addStatusHistory(status, reportedDateTime, reportingStaff.username)
@@ -96,7 +96,7 @@ fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
           response = answer.answer!!,
           additionalInformation = answer.comment,
           recordedBy = answer.recordingStaff.username,
-          recordedOn = this.reportedDate,
+          recordedAt = this.reportedAt,
         )
       }
   }
@@ -106,8 +106,8 @@ fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
   histories.forEach { history ->
     val historyRecord = this.addHistory(
       type = Type.fromNomisCode(history.type),
-      incidentChangeDate = history.incidentChangeDate.atStartOfDay(),
-      staffChanged = history.incidentChangeStaff.username,
+      changedAt = history.incidentChangeDate.atStartOfDay(),
+      changedBy = history.incidentChangeStaff.username,
     )
 
     history.questions.sortedBy { it.sequence }.forEach { question ->
@@ -123,7 +123,7 @@ fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
             response = answer.answer!!,
             additionalInformation = answer.comment,
             recordedBy = answer.recordingStaff.username,
-            recordedOn = this.reportedDate,
+            recordedAt = this.reportedAt,
           )
         }
     }
