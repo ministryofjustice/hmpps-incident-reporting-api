@@ -1417,6 +1417,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       ) {
         // invalid options
         expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains(
+              "Cannot update an existing report (${existingNomisReport.id}) during initial migration",
+            )
+          }
 
         // no domain events sent because migrating from NOMIS
         assertNoDomainMessagesSent()
