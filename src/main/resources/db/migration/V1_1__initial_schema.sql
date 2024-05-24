@@ -19,6 +19,9 @@ create table event
     modified_at         timestamp default CURRENT_TIMESTAMP not null
 );
 
+create index event_event_date_and_time_idx on event (event_date_and_time);
+create index event_created_at_idx on event (created_at);
+
 create table report
 (
     id                     uuid                                 not null
@@ -76,6 +79,8 @@ create table correction_request
     description_of_change   text         not null,
     correction_requested_at timestamp    not null
 );
+
+create index correction_request_correction_requested_at_idx on correction_request (correction_requested_at);
 
 create table prisoner_involvement
 (
