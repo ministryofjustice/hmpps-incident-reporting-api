@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
+import jakarta.validation.Valid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.validation.annotation.Validated
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
@@ -19,6 +21,7 @@ import java.util.UUID
 
 @Service
 @Transactional(rollbackFor = [ReportAlreadyExistsException::class])
+@Validated
 class NomisSyncService(
   private val reportRepository: ReportRepository,
   private val clock: Clock,
@@ -28,9 +31,7 @@ class NomisSyncService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun upsert(syncRequest: NomisSyncRequest): ReportWithDetails {
-    syncRequest.validate()
-
+  fun upsert(syncRequest: @Valid NomisSyncRequest): ReportWithDetails {
     val report = if (syncRequest.id != null) {
       updateExistingReport(syncRequest.id, syncRequest.incidentReport)
     } else {

@@ -2,10 +2,13 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.ValidationException
+import uk.gov.justice.digital.hmpps.incidentreporting.config.ValidatableWithMethod
+import uk.gov.justice.digital.hmpps.incidentreporting.config.ValidateWithMethod
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import java.util.UUID
 
 @Schema(description = "Incident report created/updated in NOMIS")
+@ValidateWithMethod(message = "Invalid NOMIS sync request ({error})")
 data class NomisSyncRequest(
   @Schema(
     description = "For updates, this value is the UUID of the existing incident. For new incidents, this value is null.",
@@ -17,8 +20,8 @@ data class NomisSyncRequest(
   val initialMigration: Boolean = false,
   @Schema(description = "Complete incident report payload", required = true)
   val incidentReport: NomisReport,
-) {
-  fun validate() {
+) : ValidatableWithMethod {
+  override fun validate() {
     if (initialMigration && id != null) {
       throw ValidationException("Cannot update an existing report ($id) during initial migration")
     }

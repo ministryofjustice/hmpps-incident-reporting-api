@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
-import jakarta.validation.ValidationException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hibernate.exception.ConstraintViolationException
@@ -386,24 +385,6 @@ class NomisSyncServiceTest {
 
     // verify entity not saved
     verify(reportRepository, never()).save(any())
-
-    // verify telemetry not sent
-    verify(telemetryClient, never()).trackEvent(anyOrNull(), anyOrNull(), anyOrNull())
-  }
-
-  @Test
-  fun `cannot update report during initial migration`() {
-    val syncRequest = sampleSyncRequest.copy(
-      id = sampleReportId,
-      initialMigration = true,
-    )
-
-    assertThatThrownBy {
-      syncService.upsert(syncRequest)
-    }.isInstanceOf(ValidationException::class.java)
-
-    // verify entity not even looked up
-    verify(reportRepository, never()).findOneEagerlyById(any())
 
     // verify telemetry not sent
     verify(telemetryClient, never()).trackEvent(anyOrNull(), anyOrNull(), anyOrNull())

@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.ValidationException
+import uk.gov.justice.digital.hmpps.incidentreporting.config.ValidatableWithMethod
+import uk.gov.justice.digital.hmpps.incidentreporting.config.ValidateWithMethod
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -11,6 +13,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 
 @Schema(description = "Payload to create a new incident report")
+@ValidateWithMethod(message = "Invalid create report request ({error})")
 data class CreateReportRequest(
   @Schema(description = "Incident report type", required = true)
   val type: Type,
@@ -31,8 +34,8 @@ data class CreateReportRequest(
   @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
   val reportedDate: LocalDateTime,
   // TODO: there is not yet a way to add any more details to a report, question-response pairs, etc
-) {
-  fun validate() {
+) : ValidatableWithMethod {
+  override fun validate() {
     if (!createNewEvent && linkedEventId.isNullOrEmpty()) {
       throw ValidationException("Either createNewEvent or linkedEventId must be provided")
     }

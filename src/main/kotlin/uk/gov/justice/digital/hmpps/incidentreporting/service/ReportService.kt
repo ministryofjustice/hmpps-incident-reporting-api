@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
+import jakarta.validation.Valid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.validation.annotation.Validated
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -38,6 +40,7 @@ import kotlin.jvm.optionals.getOrNull
 
 @Service
 @Transactional(readOnly = true)
+@Validated
 class ReportService(
   private val reportRepository: ReportRepository,
   private val eventRepository: EventRepository,
@@ -126,9 +129,7 @@ class ReportService(
   }
 
   @Transactional
-  fun createReport(createReportRequest: CreateReportRequest): ReportWithDetails {
-    createReportRequest.validate()
-
+  fun createReport(createReportRequest: @Valid CreateReportRequest): ReportWithDetails {
     val event = if (createReportRequest.linkedEventId != null) {
       eventRepository.findOneByEventId(createReportRequest.linkedEventId)
         ?: throw EventNotFoundException(createReportRequest.linkedEventId)
