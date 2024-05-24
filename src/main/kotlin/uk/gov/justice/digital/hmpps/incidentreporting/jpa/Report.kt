@@ -71,6 +71,7 @@ class Report(
   var event: Event,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderBy("changed_at ASC")
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
   // TODO: what's this for?
