@@ -32,10 +32,16 @@ data class CreateReportRequest(
   val reportedDate: LocalDateTime,
   // TODO: there is not yet a way to add any more details to a report, question-response pairs, etc
 ) {
-  fun toNewEntity(incidentNumber: String, event: Event, createdBy: String, clock: Clock): Report {
+  fun validate() {
+    if (!createNewEvent && linkedEventId.isNullOrEmpty()) {
+      throw ValidationException("Either createNewEvent or linkedEventId must be provided")
+    }
     if (!type.active) {
       throw ValidationException("Inactive incident type $type")
     }
+  }
+
+  fun toNewEntity(incidentNumber: String, event: Event, createdBy: String, clock: Clock): Report {
     val now = LocalDateTime.now(clock)
     val status = Status.DRAFT
     val report = Report(

@@ -771,6 +771,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           )
           .exchange()
           .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("Inactive incident type OLD_ASSAULT")
+          }
       }
     }
 
