@@ -176,16 +176,18 @@ class ApiExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException::class)
   fun handleInvalidMethodArgumentException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse>? {
-    log.debug("MethodArgumentNotValidException exception caught: {}", e.message)
-
+    val message = e.allErrors.joinToString(", ") {
+      "${it.objectName}: ${it.defaultMessage}"
+    }
+    log.debug("MethodArgumentNotValidException caught: {}", message)
     return ResponseEntity
       .status(BAD_REQUEST)
       .body(
         ErrorResponse(
           status = BAD_REQUEST,
           errorCode = ErrorCode.ValidationFailure,
-          userMessage = "Validation Failure: ${e.message}",
-          developerMessage = e.message,
+          userMessage = "Validation Failure: $message",
+          developerMessage = message,
         ),
       )
   }

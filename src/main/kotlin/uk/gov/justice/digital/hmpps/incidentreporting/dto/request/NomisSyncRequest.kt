@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.ValidationException
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import java.util.UUID
 
@@ -16,4 +17,10 @@ data class NomisSyncRequest(
   val initialMigration: Boolean = false,
   @Schema(description = "Complete incident report payload", required = true)
   val incidentReport: NomisReport,
-)
+) {
+  fun validate() {
+    if (initialMigration && id != null) {
+      throw ValidationException("Cannot update an existing report ($id) during initial migration")
+    }
+  }
+}
