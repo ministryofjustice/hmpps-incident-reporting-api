@@ -12,10 +12,12 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.History as HistoryDto
 
 @Entity
+@EntityOpen
 class History(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ class History(
   val changedAt: LocalDateTime,
   val changedBy: String,
 
-  @OneToMany(mappedBy = "history", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
 ) {

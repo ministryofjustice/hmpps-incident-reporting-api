@@ -8,10 +8,12 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
 
 @Entity
+@EntityOpen
 class Event(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

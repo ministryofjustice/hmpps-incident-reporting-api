@@ -9,10 +9,12 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.StatusHistory as StatusHistoryDto
 
 @Entity
+@EntityOpen
 class StatusHistory(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

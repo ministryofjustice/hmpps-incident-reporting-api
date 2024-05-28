@@ -6,9 +6,11 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Evidence as EvidenceDto
 
 @Entity
+@EntityOpen
 class Evidence(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

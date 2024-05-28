@@ -9,10 +9,12 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
 
 @Entity
+@EntityOpen
 class Question(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +28,7 @@ class Question(
 
   val additionalInformation: String? = null,
 
-  @OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
   private val responses: MutableList<Response> = mutableListOf(),
 ) {

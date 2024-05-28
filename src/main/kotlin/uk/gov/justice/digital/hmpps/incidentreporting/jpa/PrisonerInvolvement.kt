@@ -10,9 +10,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.PrisonerInvolvement as PrisonerInvolvementDto
 
 @Entity
+@EntityOpen
 class PrisonerInvolvement(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
