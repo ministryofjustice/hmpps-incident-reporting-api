@@ -26,12 +26,12 @@ classDiagram
     }
     class Event {
         Long  id
-        LocalDateTime  createdDate
+        LocalDateTime  createdAt
         String  description
         LocalDateTime  eventDateAndTime
         String  eventId
-        String  lastModifiedBy
-        LocalDateTime  lastModifiedDate
+        LocalDateTime  modifiedAt
+        String  modifiedBy
         String  prisonId
         String  title
     }
@@ -49,14 +49,14 @@ classDiagram
     class HistoricalResponse {
         Long  id
         String  additionalInformation
+        LocalDateTime  recordedAt
         String  recordedBy
-        LocalDateTime  recordedOn
         String  response
     }
     class History {
         Long  id
-        LocalDateTime  changeDate
-        String  changeStaffUsername
+        LocalDateTime  changedAt
+        String  changedBy
         Type  type
     }
     class Location {
@@ -69,8 +69,8 @@ classDiagram
         Long  id
         String  comment
         PrisonerOutcome  outcome
-        PrisonerRole  prisonerRole
         String  prisonerNumber
+        PrisonerRole  prisonerRole
     }
     class Question {
         Long  id
@@ -81,16 +81,16 @@ classDiagram
     class Report {
         UUID  id
         String  assignedTo
-        LocalDateTime  createdDate
+        LocalDateTime  createdAt
         String  description
         LocalDateTime  incidentDateAndTime
         String  incidentNumber
-        String  lastModifiedBy
-        LocalDateTime  lastModifiedDate
+        LocalDateTime  modifiedAt
+        String  modifiedBy
         String  prisonId
         String  questionSetId
+        LocalDateTime  reportedAt
         String  reportedBy
-        LocalDateTime  reportedDate
         InformationSource  source
         Status  status
         String  title
@@ -99,8 +99,8 @@ classDiagram
     class Response {
         Long  id
         String  additionalInformation
+        LocalDateTime  recordedAt
         String  recordedBy
-        LocalDateTime  recordedOn
         String  response
     }
     class StaffInvolvement {
@@ -111,8 +111,8 @@ classDiagram
     }
     class StatusHistory {
         Long  id
-        String  setBy
-        LocalDateTime  setOn
+        LocalDateTime  changedAt
+        String  changedBy
         Status  status
     }
 
@@ -137,21 +137,21 @@ classDiagram
     direction BT
     class correction_request {
         uuid report_id
-        varchar(120) correction_requested_by
         varchar(60) reason
         text description_of_change
         timestamp correction_requested_at
+        varchar(120) correction_requested_by
         integer id
     }
     class event {
         varchar(25) event_id
-        varchar(6) prison_id
         timestamp event_date_and_time
         varchar(255) title
         text description
-        timestamp created_date
-        varchar(120) last_modified_by
-        timestamp last_modified_date
+        varchar(6) prison_id
+        timestamp created_at
+        varchar(120) modified_by
+        timestamp modified_at
         integer id
     }
     class evidence {
@@ -173,15 +173,15 @@ classDiagram
         integer sequence
         text response
         text additional_information
-        timestamp recorded_on
+        timestamp recorded_at
         varchar(120) recorded_by
         integer id
     }
     class history {
         uuid report_id
         varchar(60) type
-        timestamp change_date
-        varchar(120) change_staff_username
+        timestamp changed_at
+        varchar(120) changed_by
         integer id
     }
     class location {
@@ -194,7 +194,7 @@ classDiagram
     class prisoner_involvement {
         uuid report_id
         varchar(7) prisoner_number
-        varchar(60) prisoner_involvement
+        varchar(60) prisoner_role
         varchar(60) outcome
         text comment
         integer id
@@ -210,20 +210,20 @@ classDiagram
     class report {
         integer event_id
         varchar(25) incident_number
-        varchar(60) type
-        varchar(20) question_set_id
-        varchar(60) status
-        timestamp incident_date_and_time
-        varchar(6) prison_id
-        timestamp reported_date
-        varchar(120) assigned_to
         varchar(255) title
         text description
-        varchar(120) reported_by
-        timestamp created_date
+        varchar(6) prison_id
+        varchar(60) type
         varchar(5) source
-        varchar(120) last_modified_by
-        timestamp last_modified_date
+        varchar(60) status
+        timestamp incident_date_and_time
+        timestamp reported_at
+        varchar(120) reported_by
+        varchar(120) assigned_to
+        varchar(20) question_set_id
+        timestamp created_at
+        varchar(120) modified_by
+        timestamp modified_at
         uuid id
     }
     class response {
@@ -231,35 +231,35 @@ classDiagram
         integer sequence
         text response
         text additional_information
-        timestamp recorded_on
+        timestamp recorded_at
         varchar(120) recorded_by
         integer id
     }
     class staff_involvement {
         uuid report_id
-        varchar(60) staff_role
         varchar(120) staff_username
+        varchar(60) staff_role
         text comment
         integer id
     }
     class status_history {
         uuid report_id
         varchar(60) status
-        timestamp set_on
-        varchar(120) set_by
+        timestamp changed_at
+        varchar(120) changed_by
         integer id
     }
 
-correction_request  -->  report : report_id
-evidence  -->  report : report_id
-historical_question  -->  history : history_id
-historical_response  -->  historical_question : historical_question_id
-history  -->  report : report_id
-location  -->  report : report_id
-prisoner_involvement  -->  report : report_id
-question  -->  report : report_id
-report  -->  event : event_id
-response  -->  question : question_id
-staff_involvement  -->  report : report_id
-status_history  -->  report : report_id
+correction_request --> report: report_id
+evidence --> report: report_id
+historical_question --> history: history_id
+historical_response --> historical_question: historical_question_id
+history --> report: report_id
+location --> report: report_id
+prisoner_involvement --> report: report_id
+question --> report: report_id
+report --> event: event_id
+response --> question: question_id
+staff_involvement --> report: report_id
+status_history --> report: report_id
 ```
