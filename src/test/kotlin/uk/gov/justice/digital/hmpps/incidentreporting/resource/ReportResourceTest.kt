@@ -745,6 +745,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
+      fun `cannot create a report without creating or linking event`() {
+        webTestClient.post().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(jsonString(createReportRequest.copy(createNewEvent = false)))
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("Either createNewEvent or linkedEventId must be provided")
+          }
+      }
+
+      @Test
       fun `cannot create a report with an inactive type`() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -758,6 +771,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           )
           .exchange()
           .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("Inactive incident type OLD_ASSAULT")
+          }
       }
     }
 

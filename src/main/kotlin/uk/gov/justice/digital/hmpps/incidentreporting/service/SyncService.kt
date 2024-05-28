@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
-import jakarta.validation.ValidationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -28,10 +27,9 @@ class SyncService(
   }
 
   fun upsert(syncRequest: NomisSyncRequest): ReportDto {
+    syncRequest.validate()
+
     val report = if (syncRequest.id != null) {
-      if (syncRequest.initialMigration) {
-        throw ValidationException("Cannot update an existing report (${syncRequest.id}) during initial migration")
-      }
       updateExistingReport(syncRequest.id, syncRequest.incidentReport)
     } else {
       createNewReport(syncRequest.incidentReport)

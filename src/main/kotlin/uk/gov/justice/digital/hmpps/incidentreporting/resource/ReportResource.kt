@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import jakarta.validation.ValidationException
 import jakarta.validation.constraints.Size
 import org.springdoc.core.annotations.ParameterObject
@@ -290,7 +291,7 @@ class ReportResource(
   )
   fun createReport(
     @RequestBody
-    @Validated
+    @Valid
     createReportRequest: CreateReportRequest,
   ): ReportDto {
     return eventPublishAndAudit(

@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
-import jakarta.validation.ValidationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
@@ -119,17 +118,17 @@ class ReportService(
 
   @Transactional
   fun createReport(createReportRequest: CreateReportRequest): ReportDto {
-    val event = if (createReportRequest.createNewEvent) {
+    createReportRequest.validate()
+
+    val event = if (createReportRequest.linkedEventId != null) {
+      eventRepository.findOneByEventId(createReportRequest.linkedEventId)
+        ?: throw EventNotFoundException(createReportRequest.linkedEventId)
+    } else {
       createReportRequest.toNewEvent(
         eventRepository.generateEventId(),
         createdBy = authenticationFacade.getUserOrSystemInContext(),
         clock = clock,
       )
-    } else if (createReportRequest.linkedEventId != null) {
-      eventRepository.findOneByEventId(createReportRequest.linkedEventId)
-        ?: throw EventNotFoundException(createReportRequest.linkedEventId)
-    } else {
-      throw ValidationException("Either createNewEvent or linkedEventId must be provided")
     }
 
     val newReport = createReportRequest.toNewEntity(
