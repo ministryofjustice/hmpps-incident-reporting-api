@@ -31,7 +31,7 @@ data class Report(
   @Schema(description = "Username of person who created the incident report", required = true)
   val reportedBy: String,
   @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
-  val reportedDate: LocalDateTime,
+  val reportedAt: LocalDateTime,
   @Schema(description = "The current status of this report", required = false, defaultValue = "DRAFT")
   val status: Status = Status.DRAFT,
   @Schema(description = "Optional user who this report is currently assigned to", required = false, defaultValue = "null")
@@ -56,11 +56,11 @@ data class Report(
   val correctionRequests: List<CorrectionRequest> = emptyList(),
 
   @Schema(description = "When the report was first created", required = true)
-  val createdDate: LocalDateTime,
+  val createdAt: LocalDateTime,
   @Schema(description = "When the report was last changed", required = true)
-  val lastModifiedDate: LocalDateTime,
+  val modifiedAt: LocalDateTime,
   @Schema(description = "Username of the person who last changed this report", required = true)
-  val lastModifiedBy: String,
+  val modifiedBy: String,
 
   @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", required = false, defaultValue = "false")
   @JsonProperty(required = false, access = JsonProperty.Access.READ_ONLY)

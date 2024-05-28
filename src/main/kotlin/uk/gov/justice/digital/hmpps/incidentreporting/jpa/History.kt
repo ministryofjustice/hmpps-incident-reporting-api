@@ -27,10 +27,10 @@ class History(
   @Enumerated(EnumType.STRING)
   val type: Type,
 
-  val changeDate: LocalDateTime,
-  val changeStaffUsername: String,
+  val changedAt: LocalDateTime,
+  val changedBy: String,
 
-  @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "history", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
 ) {
@@ -55,8 +55,8 @@ class History(
 
   fun toDto() = HistoryDto(
     type = type,
-    changeDate = changeDate,
-    changeStaffUsername = changeStaffUsername,
+    changedAt = changedAt,
+    changedBy = changedBy,
     questions = questions.map { it.toDto() },
   )
 }

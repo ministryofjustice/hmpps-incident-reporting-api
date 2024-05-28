@@ -11,9 +11,9 @@ data class History(
   @Schema(description = "Previous incident report type", required = true)
   val type: Type,
   @Schema(description = "When the report type was changed", required = true, example = "2024-04-29T12:34:56.789012")
-  val changeDate: LocalDateTime,
+  val changedAt: LocalDateTime,
   @Schema(description = "The member of staff who changed the report type", required = true)
-  val changeStaffUsername: String,
+  val changedBy: String,
   @Schema(description = "Previous set of question-response pairs", required = true)
   val questions: List<HistoricalQuestion> = emptyList(),
 )

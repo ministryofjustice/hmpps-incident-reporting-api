@@ -526,17 +526,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An event occurred",
                 "description": "Details of the event",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "USER1"
+                "createdAt": "2023-12-05T12:34:56",
+                "modifiedAt": "2023-12-05T12:34:56",
+                "modifiedBy": "USER1"
               },
               "questions": [],
               "history": [],
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
-                  "setOn": "2023-12-05T12:34:56",
-                  "setBy": "USER1"
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
                 }
               ],
               "staffInvolved": [],
@@ -545,12 +545,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "evidence": [],
               "correctionRequests": [],
               "reportedBy": "USER1",
-              "reportedDate": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
               "assignedTo": "USER1",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1",
               "createdInNomis": false
             }
             """,
@@ -639,17 +639,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An event occurred",
                 "description": "Details of the event",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "USER1"
+                "createdAt": "2023-12-05T12:34:56",
+                "modifiedAt": "2023-12-05T12:34:56",
+                "modifiedBy": "USER1"
               },
               "questions": [],
               "history": [],
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
-                  "setOn": "2023-12-05T12:34:56",
-                  "setBy": "USER1"
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
                 }
               ],
               "staffInvolved": [],
@@ -658,12 +658,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "evidence": [],
               "correctionRequests": [],
               "reportedBy": "USER1",
-              "reportedDate": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
               "assignedTo": "USER1",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1",
               "createdInNomis": false
             }
             """,
@@ -802,17 +802,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred",
                 "description": "Longer explanation of incident",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "INCIDENT_REPORTING_API"
+                "createdAt": "2023-12-05T12:34:56",
+                "modifiedAt": "2023-12-05T12:34:56",
+                "modifiedBy": "INCIDENT_REPORTING_API"
               },
               "questions": [],
               "history": [],
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
-                  "setOn": "2023-12-05T12:34:56",
-                  "setBy": "INCIDENT_REPORTING_API"
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "INCIDENT_REPORTING_API"
                 }
               ],
               "staffInvolved": [],
@@ -821,12 +821,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "evidence": [],
               "correctionRequests": [],
               "reportedBy": "user2",
-              "reportedDate": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
               "assignedTo": "user2",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "INCIDENT_REPORTING_API",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
               "createdInNomis": false
             }
             """,
@@ -864,17 +864,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An event occurred",
                 "description": "Details of the event",
-                "createdDate": "2023-12-05T12:34:56",
-                "lastModifiedDate": "2023-12-05T12:34:56",
-                "lastModifiedBy": "USER1"
+                "createdAt": "2023-12-05T12:34:56",
+                "modifiedAt": "2023-12-05T12:34:56",
+                "modifiedBy": "USER1"
               },
               "questions": [],
               "history": [],
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
-                  "setOn": "2023-12-05T12:34:56",
-                  "setBy": "INCIDENT_REPORTING_API"
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "INCIDENT_REPORTING_API"
                 }
               ],
               "staffInvolved": [],
@@ -883,12 +883,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "evidence": [],
               "correctionRequests": [],
               "reportedBy": "user2",
-              "reportedDate": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
               "assignedTo": "user2",
-              "createdDate": "2023-12-05T12:34:56",
-              "lastModifiedDate": "2023-12-05T12:34:56",
-              "lastModifiedBy": "INCIDENT_REPORTING_API",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
               "createdInNomis": false
             }
             """,

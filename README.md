@@ -27,6 +27,27 @@ docker compose -f docker-compose-local.yml up
 
 Then run the API.
 
+## Connecting to AWS resources from a local port
+
+There are custom gradle tasks that make it easier to connect to AWS resources (RDS and ElastiCache Redis)
+in Cloud Platform from a local port:
+
+```shell
+./gradlew portForwardRDS
+# and
+./gradlew portForwardRedis
+```
+
+These could be useful to, for instance, clear out a development database or edit data live.
+
+They require `kubectl` to already be set up to access the kubernetes cluster;
+essentially these tasks are just convenience wrappers.
+
+Both accept the `--environment` argument to select between `dev`, `preprod` and `prod` namespaces
+or prompt for user input when run.
+
+Both also accept the `--port` argument to choose a different local port, other than the resource’s default.
+
 ## Architecture
 
 Architecture decision records start [here](docs/0001-use-adr.md)
