@@ -13,10 +13,13 @@ class SubjectAccessRequestService(
   override fun getPrisonContentFor(prn: String, fromDate: LocalDate?, toDate: LocalDate?): HmppsSubjectAccessRequestContent {
     val prisonerInvolvementList = prisonerInvolvementRepository.findAllByPrisonerNumber(prn)
     val content = prisonerInvolvementList
+      .asSequence()
       .map { it.getReport() }
       .distinctBy { it.id }
-      .filter { it.reportedAt.isAfter(fromDate?.atStartOfDay()) && it.reportedAt.isBefore(toDate?.atStartOfDay()) }
+      .filter { it.incidentDateAndTime.isAfter(fromDate?.atStartOfDay()) && it.incidentDateAndTime.isBefore(toDate?.atStartOfDay()) }
       .map { it.toDto() }
+      .sortedBy { it.incidentDateAndTime }
+      .toList()
     return HmppsSubjectAccessRequestContent(
       content = content,
     )
