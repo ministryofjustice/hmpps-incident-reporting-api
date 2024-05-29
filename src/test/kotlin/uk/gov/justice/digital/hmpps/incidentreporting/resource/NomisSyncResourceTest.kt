@@ -32,6 +32,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import java.time.Clock
 import java.time.LocalDate
 import java.util.UUID
@@ -52,6 +53,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var eventRepository: EventRepository
+
+  @Autowired
+  lateinit var reportService: ReportService
 
   lateinit var existingNomisReport: Report
 
@@ -411,8 +415,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findById(reportId).orElseThrow()
-            val reportJson = objectMapper.writeValueAsString(report.toDtoWithDetails())
+            val report = reportService.getReportById(reportId)
+            val reportJson = objectMapper.writeValueAsString(report)
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """
@@ -651,7 +655,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `can sync an new incident after migration created in NOMIS`() {
+      fun `can sync a new incident after migration created in NOMIS`() {
         val newIncidentId = INCIDENT_NUMBER + 1
         val newIncident = syncRequest.copy(
           initialMigration = false,
@@ -669,8 +673,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findById(reportId).orElseThrow()
-            val reportJson = objectMapper.writeValueAsString(report.toDtoWithDetails())
+            val report = reportService.getReportById(reportId)
+            val reportJson = objectMapper.writeValueAsString(report)
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """
@@ -1136,8 +1140,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findById(reportId).orElseThrow()
-            val reportJson = objectMapper.writeValueAsString(report.toDtoWithDetails())
+            val report = reportService.getReportById(reportId)
+            val reportJson = objectMapper.writeValueAsString(report)
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """
