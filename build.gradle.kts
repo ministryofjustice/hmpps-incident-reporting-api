@@ -25,7 +25,6 @@ dependencies {
   implementation("io.opentelemetry:opentelemetry-api:1.38.0")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.4.0")
 
-  implementation("org.flywaydb:flyway-core")
   implementation("com.zaxxer:HikariCP:5.1.0")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.3")
