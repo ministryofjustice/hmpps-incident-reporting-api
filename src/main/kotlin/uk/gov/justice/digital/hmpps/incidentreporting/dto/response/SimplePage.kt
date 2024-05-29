@@ -1,38 +1,41 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.response
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 
 /**
- * A `org.springframework.data.domain.Page` that serialises better than the default implementation.
- * Removes excessive and redundant properties.
+ * `org.springframework.data.domain.PageImpl` serialises with excessive and redundant properties.
+ * This class creates simpler JSON.
  */
-@JsonIgnoreProperties(
-  value = [
-    "pageable",
-    "first",
-    "last",
-    "empty",
-  ],
-)
-class SimplePage<T>(
-  content: List<T>,
-  totalElements: Long,
-  number: Int,
-  size: Int,
-  sort: Sort,
-) : PageImpl<T>(content, PageRequest.of(number, size, sort), totalElements) {
+data class SimplePage<T>(
+  @Schema(description = "Elements in this pages", example = "[…]")
+  val content: List<T>,
+  @Schema(description = "Page number (0-based)", example = "0")
+  val number: Int,
+  @Schema(description = "Page size", example = "20")
+  val size: Int,
+  @Schema(description = "Total number of elements in all pages", example = "55")
+  val totalElements: Long,
+  @JsonIgnore
+  val sort: Sort,
+) {
+  @get:Schema(description = "Total number of pages", example = "3")
+  @get:JsonProperty
+  val totalPages: Int
+    get() = kotlin.math.ceil(totalElements.toDouble() / size.toDouble()).toInt()
+
+  @get:Schema(description = "Number of elements in this page", example = "20")
+  @get:JsonProperty
+  val numberOfElements: Int
+    get() = content.size
+
   @get:Schema(description = "Sort orders", example = "[\"property,ASC\"]")
   @get:JsonProperty("sort")
   val sortOrderList: List<String>
-    get() {
-      return pageable.sort.stream().map { "${it.property},${it.direction}" }.toList()
-    }
+    get() = sort.stream().map { "${it.property},${it.direction}" }.toList()
 }
 
-fun <T> Page<T>.toSimplePage(): SimplePage<T> = SimplePage(content, totalElements, pageable.pageNumber, pageable.pageSize, sort)
+fun <T> Page<T>.toSimplePage(): SimplePage<T> = SimplePage(content, pageable.pageNumber, pageable.pageSize, totalElements, sort)
