@@ -33,7 +33,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundExce
 import java.time.Clock
 import java.time.LocalDate
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 @Transactional(readOnly = true)
@@ -78,16 +77,18 @@ class ReportService(
   }
 
   fun getReportById(id: UUID): ReportWithDetails? {
-    return reportRepository.findById(id).getOrNull()?.toDtoWithDetails()
+    return reportRepository.findOneEagerlyById(id)
+      ?.toDtoWithDetails()
   }
 
   fun getReportByIncidentNumber(incidentNumber: String): ReportWithDetails? {
-    return reportRepository.findOneByIncidentNumber(incidentNumber)?.toDtoWithDetails()
+    return reportRepository.findOneEagerlyByIncidentNumber(incidentNumber)
+      ?.toDtoWithDetails()
   }
 
   @Transactional
   fun deleteReportById(id: UUID, deleteOrphanedEvents: Boolean = true): ReportWithDetails? {
-    return reportRepository.findById(id).getOrNull()?.let { report ->
+    return reportRepository.findOneEagerlyById(id)?.let { report ->
       val eventIdToDelete = if (deleteOrphanedEvents && report.event.reports.size == 1) {
         report.event.id!!
       } else {

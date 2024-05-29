@@ -8,6 +8,10 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.NamedEntityGraphs
+import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import jakarta.persistence.OrderColumn
@@ -33,6 +37,25 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
+@NamedEntityGraphs(
+  value = [
+    NamedEntityGraph(
+      name = "Report.eager",
+      attributeNodes = [
+        NamedAttributeNode("event"),
+        NamedAttributeNode("questions", subgraph = "Report.eager.subgraph"),
+      ],
+      subgraphs = [
+        NamedSubgraph(
+          name = "Report.eager.subgraph",
+          attributeNodes = [
+            NamedAttributeNode("responses"),
+          ],
+        ),
+      ],
+    ),
+  ],
+)
 class Report(
   @Id
   @GeneratedUuidV7

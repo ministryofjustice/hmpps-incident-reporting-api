@@ -43,7 +43,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.sql.SQLException
-import java.util.Optional
 import java.util.UUID
 
 class NomisSyncServiceTest {
@@ -342,7 +341,7 @@ class NomisSyncServiceTest {
       initialMigration = false,
     )
 
-    whenever(reportRepository.findById(sampleReportId)).thenReturn(Optional.of(sampleReport))
+    whenever(reportRepository.findOneEagerlyById(sampleReportId)).thenReturn(sampleReport)
 
     val report = syncService.upsert(syncRequest)
 
@@ -374,7 +373,7 @@ class NomisSyncServiceTest {
       initialMigration = false,
     )
 
-    whenever(reportRepository.findById(missingId)).thenReturn(Optional.empty())
+    whenever(reportRepository.findOneEagerlyById(missingId)).thenReturn(null)
 
     assertThatThrownBy {
       syncService.upsert(syncRequest)
@@ -402,7 +401,7 @@ class NomisSyncServiceTest {
     }.isInstanceOf(ValidationException::class.java)
 
     // verify entity not even looked up
-    verify(reportRepository, never()).findById(any())
+    verify(reportRepository, never()).findOneEagerlyById(any())
 
     // verify telemetry not sent
     verify(telemetryClient, never()).trackEvent(anyOrNull(), anyOrNull(), anyOrNull())

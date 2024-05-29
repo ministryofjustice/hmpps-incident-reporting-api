@@ -50,8 +50,8 @@ class NomisSyncService(
   }
 
   private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportWithDetails {
-    val reportToUpdate = reportRepository.findById(reportId)
-      .orElseThrow { ReportNotFoundException(reportId) }
+    val reportToUpdate = reportRepository.findOneEagerlyById(reportId)
+      ?: throw ReportNotFoundException(reportId)
     reportToUpdate.updateWith(incidentReport, clock)
     return reportToUpdate.toDtoWithDetails()
   }

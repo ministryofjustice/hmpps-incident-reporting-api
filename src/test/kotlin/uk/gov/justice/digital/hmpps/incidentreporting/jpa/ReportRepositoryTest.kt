@@ -253,7 +253,8 @@ class ReportRepositoryTest : IntegrationTestBase() {
     TestTransaction.end()
     TestTransaction.start()
 
-    report = reportRepository.findOneByIncidentNumber(report.incidentNumber) ?: throw EntityNotFoundException()
+    report = reportRepository.findOneEagerlyByIncidentNumber(report.incidentNumber)
+      ?: throw EntityNotFoundException()
 
     report.addQuestion("WHERE_OCCURRED", "Where did this occur?")
       .addResponse("DETOX_UNIT", "They hurt themselves", "user1", now)
@@ -282,7 +283,8 @@ class ReportRepositoryTest : IntegrationTestBase() {
     TestTransaction.end()
     TestTransaction.start()
 
-    report = reportRepository.findOneByIncidentNumber(report.incidentNumber) ?: throw EntityNotFoundException()
+    report = reportRepository.findOneEagerlyByIncidentNumber(report.incidentNumber)
+      ?: throw EntityNotFoundException()
     report.changeType(Type.ASSAULT, now, "user5")
 
     report.addQuestion("SOME_QUESTION", "Another question?")
@@ -295,7 +297,8 @@ class ReportRepositoryTest : IntegrationTestBase() {
     TestTransaction.end()
     TestTransaction.start()
 
-    report = reportRepository.findOneByIncidentNumber(report.incidentNumber) ?: throw EntityNotFoundException()
+    report = reportRepository.findOneEagerlyByIncidentNumber(report.incidentNumber)
+      ?: throw EntityNotFoundException()
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
     assertThat(report.type).isEqualTo(Type.ASSAULT)
     assertThat(report.getQuestions()).hasSize(1)

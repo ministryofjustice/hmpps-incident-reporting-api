@@ -983,7 +983,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        assertThat(reportRepository.findById(reportId)).isEmpty
+        assertThat(reportRepository.findOneEagerlyById(reportId)).isNull()
         if (deleteOrphanedEvents) {
           assertThat(eventRepository.findById(eventId)).isEmpty
         } else {
