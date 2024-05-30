@@ -355,6 +355,34 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isEqualTo(HttpStatus.METHOD_NOT_ALLOWED)
       }
+
+      @Test
+      fun `returns 409 CONFLICT when report already created in initial migration`() {
+        val initialSyncRequest = syncRequest.copy(
+          initialMigration = true,
+          incidentReport = syncRequest.incidentReport.copy(
+            incidentId = 112414666,
+            description = "A New Incident From NOMIS",
+          ),
+        )
+
+        webTestClient.post().uri("/sync/upsert")
+          .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(jsonString(initialSyncRequest))
+          .exchange()
+          .expectStatus().isCreated
+
+        webTestClient.post().uri("/sync/upsert")
+          .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(jsonString(initialSyncRequest))
+          .exchange()
+          .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("Report already exists: 112414666")
+          }
+      }
     }
 
     @DisplayName("works")
