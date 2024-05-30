@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Service
 @Transactional(rollbackFor = [ReportAlreadyExistsException::class])
-class SyncService(
+class NomisSyncService(
   private val reportRepository: ReportRepository,
   private val clock: Clock,
   private val telemetryClient: TelemetryClient,

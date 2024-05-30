@@ -46,11 +46,11 @@ import java.util.Optional
 import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
-class SyncServiceTest {
+class NomisSyncServiceTest {
   private val reportRepository: ReportRepository = mock()
   private val telemetryClient: TelemetryClient = mock()
 
-  private val syncService = SyncService(
+  private val syncService = NomisSyncService(
     reportRepository,
     clock,
     telemetryClient,
