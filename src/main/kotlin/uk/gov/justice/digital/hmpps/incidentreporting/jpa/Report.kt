@@ -15,6 +15,7 @@ import jakarta.persistence.OrderColumn
 import org.hibernate.annotations.GenericGenerator
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
@@ -247,10 +248,10 @@ class Report(
     prisonId = upsert.prison.code
     event.prisonId = prisonId
 
-    title = upsert.title ?: "NO DETAILS GIVEN"
+    title = upsert.title ?: NO_DETAILS_GIVEN
     event.title = title
 
-    description = upsert.description ?: "NO DETAILS GIVEN"
+    description = upsert.description ?: NO_DETAILS_GIVEN
     event.description = description
 
     reportedBy = upsert.reportingStaff.username
