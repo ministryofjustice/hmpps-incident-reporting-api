@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
@@ -17,8 +18,8 @@ fun NomisReport.toNewEntity(): Report {
     type = Type.fromNomisCode(type),
     incidentDateAndTime = incidentDateTime,
     prisonId = prison.code,
-    title = title ?: "NO DETAILS GIVEN",
-    description = description ?: "NO DETAILS GIVEN",
+    title = title ?: NO_DETAILS_GIVEN,
+    description = description ?: NO_DETAILS_GIVEN,
     reportedBy = reportingStaff.username,
     reportedAt = reportedDateTime,
     status = status,
@@ -32,8 +33,8 @@ fun NomisReport.toNewEntity(): Report {
       eventId = "$incidentId",
       eventDateAndTime = incidentDateTime,
       prisonId = prison.code,
-      title = title ?: "NO DETAILS GIVEN",
-      description = description ?: "NO DETAILS GIVEN",
+      title = title ?: NO_DETAILS_GIVEN,
+      description = description ?: NO_DETAILS_GIVEN,
       createdAt = createDateTime,
       modifiedAt = lastModifiedDateTime ?: createDateTime,
       modifiedBy = lastModifiedBy ?: createdBy,
@@ -76,7 +77,7 @@ fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequir
     this.addCorrectionRequest(
       correctionRequestedBy = it.staff.username,
       correctionRequestedAt = it.date.atStartOfDay(),
-      descriptionOfChange = it.comment ?: "NO DETAILS GIVEN",
+      descriptionOfChange = it.comment ?: NO_DETAILS_GIVEN,
       reason = CorrectionReason.NOT_SPECIFIED,
     )
   }

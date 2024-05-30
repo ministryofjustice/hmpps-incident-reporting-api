@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
-import uk.gov.justice.digital.hmpps.incidentreporting.service.SyncService
 
 @RestController
 @Validated
@@ -29,7 +29,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.service.SyncService
 )
 @PreAuthorize("hasRole('ROLE_MIGRATE_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
 class NomisSyncResource(
-  private val syncService: SyncService,
+  private val syncService: NomisSyncService,
 ) : EventBaseResource() {
 
   @PostMapping("/upsert")

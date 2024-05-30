@@ -247,7 +247,7 @@ class ApiExceptionHandler {
         ErrorResponse(
           status = HttpStatus.CONFLICT,
           errorCode = ErrorCode.ReportAlreadyExists,
-          userMessage = "Report already exists: ${e.message}",
+          userMessage = "${e.message}",
           developerMessage = e.message,
         ),
       )
