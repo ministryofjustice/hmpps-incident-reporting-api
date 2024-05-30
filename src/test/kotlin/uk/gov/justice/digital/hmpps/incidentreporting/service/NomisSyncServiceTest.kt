@@ -4,6 +4,7 @@ import com.microsoft.applicationinsights.TelemetryClient
 import jakarta.validation.ValidationException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.hibernate.exception.ConstraintViolationException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -14,6 +15,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.dao.DataIntegrityViolationException
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
@@ -36,17 +38,19 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTes
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
+import java.sql.SQLException
 import java.time.LocalDateTime
 import java.util.Optional
 import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
-class SyncServiceTest {
+class NomisSyncServiceTest {
   private val reportRepository: ReportRepository = mock()
   private val telemetryClient: TelemetryClient = mock()
 
-  private val syncService = SyncService(
+  private val syncService = NomisSyncService(
     reportRepository,
     clock,
     telemetryClient,
@@ -401,5 +405,47 @@ class SyncServiceTest {
 
     // verify telemetry not sent
     verify(telemetryClient, never()).trackEvent(anyOrNull(), anyOrNull(), anyOrNull())
+  }
+
+  @ParameterizedTest(name = "throws report-already-exists exception if {0} constraint failed")
+  @ValueSource(strings = ["event_id", "incident_number"])
+  fun `throws report-already-exists exception if identifier constraints failed`(constraint: String) {
+    val syncRequest = sampleSyncRequest.copy(
+      id = null,
+      initialMigration = true,
+    )
+
+    val abbreviatedMessage = "ERROR: duplicate key value violates unique constraint \"$constraint\""
+    val simulatedDatabaseError = DataIntegrityViolationException(
+      abbreviatedMessage,
+      ConstraintViolationException(
+        abbreviatedMessage,
+        // in practice, a org.postgresql.util.PSQLException
+        SQLException(abbreviatedMessage),
+        constraint,
+      ),
+    )
+    whenever(reportRepository.save(any())).thenThrow(simulatedDatabaseError)
+
+    assertThatThrownBy {
+      syncService.upsert(syncRequest)
+    }.isInstanceOf(ReportAlreadyExistsException::class.java)
+  }
+
+  @Test
+  fun `rethrows exception if caused by something other than identifier constraints`() {
+    val syncRequest = sampleSyncRequest.copy(
+      id = null,
+      initialMigration = true,
+    )
+
+    val simulatedDatabaseError = DataIntegrityViolationException("unknown data integrity violation")
+    whenever(reportRepository.save(any())).thenThrow(simulatedDatabaseError)
+
+    assertThatThrownBy {
+      syncService.upsert(syncRequest)
+    }
+      .isInstanceOf(DataIntegrityViolationException::class.java)
+      .hasMessage("unknown data integrity violation")
   }
 }
