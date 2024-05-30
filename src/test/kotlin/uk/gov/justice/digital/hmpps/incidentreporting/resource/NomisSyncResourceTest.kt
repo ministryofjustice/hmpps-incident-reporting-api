@@ -362,10 +362,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           initialMigration = true,
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = 112414666,
-            description = "A New Incident From NOMIS",
+            description = "A new incident from NOMIS",
           ),
         )
-
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
@@ -373,10 +372,17 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isCreated
 
+        val initialSyncRequestRetry = syncRequest.copy(
+          initialMigration = true,
+          incidentReport = syncRequest.incidentReport.copy(
+            incidentId = 112414666,
+            description = "A new incident from NOMIS sent again",
+          ),
+        )
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(initialSyncRequest))
+          .bodyValue(jsonString(initialSyncRequestRetry))
           .exchange()
           .expectStatus().isEqualTo(HttpStatus.CONFLICT)
           .expectBody().jsonPath("developerMessage").value<String> {

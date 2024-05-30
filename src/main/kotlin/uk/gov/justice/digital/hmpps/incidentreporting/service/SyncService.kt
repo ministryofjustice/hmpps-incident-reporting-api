@@ -62,8 +62,11 @@ class SyncService(
     val reportEntity = try {
       reportRepository.save(reportToCreate)
     } catch (e: DataIntegrityViolationException) {
-      val constraintViolation = e.cause as org.hibernate.exception.ConstraintViolationException
-      if (listOf("event_id", "incident_number").contains(constraintViolation.constraintName)) {
+      val constraintViolation = e.cause as? org.hibernate.exception.ConstraintViolationException
+      if (
+        constraintViolation != null &&
+        listOf("event_id", "incident_number").contains(constraintViolation.constraintName)
+      ) {
         throw ReportAlreadyExistsException("${incidentReport.incidentId}")
       } else {
         throw e
