@@ -16,7 +16,7 @@ parameters:
     default: "21.0"
   postgres-version:
     type: string
-    default: "15"
+    default: "16"
   localstack-version:
     type: string
     default: "3"
@@ -139,6 +139,7 @@ workflows:
           context:
             - hmpps-common-vars
       - hmpps/veracode_pipeline_scan:
+          jdk_tag: << pipeline.parameters.java-version >>
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - veracode-credentials
