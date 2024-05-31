@@ -27,6 +27,14 @@ hmpps.sqs:
   queues:
     audit:
       queueName: ${random.uuid}
+    incidentreporting:
+      queueName: ${random.uuid}
+      dlqName: ${random.uuid}
+      subscribeTopicId: domainevents
+      subscribeFilter: >-
+        {"eventType": [
+          "prison-offender-events.prisoner.merged"
+        ]}
     test:
       queueName: ${random.uuid}
       dlqName: ${random.uuid}

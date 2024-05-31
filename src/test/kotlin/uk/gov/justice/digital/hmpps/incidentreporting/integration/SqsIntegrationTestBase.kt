@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer.setLocalStackProperties
 import uk.gov.justice.digital.hmpps.incidentreporting.config.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSDomainEvent
+import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSMessage
 import uk.gov.justice.hmpps.sqs.HmppsQueue
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
@@ -119,10 +120,3 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     }
   }
 }
-
-data class HMPPSEventType(val Value: String, val Type: String)
-data class HMPPSMessageAttributes(val eventType: HMPPSEventType)
-data class HMPPSMessage(
-  val Message: String,
-  val MessageAttributes: HMPPSMessageAttributes,
-)
