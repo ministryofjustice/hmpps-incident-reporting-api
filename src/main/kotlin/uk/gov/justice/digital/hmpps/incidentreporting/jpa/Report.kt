@@ -6,13 +6,11 @@ import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
-import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import jakarta.persistence.OrderColumn
-import org.hibernate.annotations.GenericGenerator
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
@@ -27,7 +25,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestions
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.UuidV7Generator
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -36,8 +34,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 @Entity
 class Report(
   @Id
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", type = UuidV7Generator::class)
+  @GeneratedUuidV7
   @Column(name = "id", updatable = false, nullable = false)
   val id: UUID? = null,
 
