@@ -2,10 +2,12 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa.id
 
 import com.fasterxml.uuid.Generators
 import com.fasterxml.uuid.NoArgGenerator
+import org.hibernate.annotations.IdGeneratorType
+import org.hibernate.annotations.ValueGenerationType
 import org.hibernate.engine.spi.SharedSessionContractImplementor
 import org.hibernate.generator.BeforeExecutionGenerator
 import org.hibernate.generator.EventType
-import org.hibernate.generator.EventTypeSets.INSERT_ONLY
+import org.hibernate.generator.EventTypeSets
 import java.util.EnumSet
 import java.util.UUID
 
@@ -15,7 +17,7 @@ class UuidV7Generator : BeforeExecutionGenerator {
   }
 
   override fun getEventTypes(): EnumSet<EventType> {
-    return INSERT_ONLY
+    return EventTypeSets.INSERT_ONLY
   }
 
   override fun generate(
@@ -28,3 +30,9 @@ class UuidV7Generator : BeforeExecutionGenerator {
     return uuidGenerator.generate()
   }
 }
+
+@IdGeneratorType(UuidV7Generator::class)
+@ValueGenerationType(generatedBy = UuidV7Generator::class)
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FIELD)
+annotation class GeneratedUuidV7
