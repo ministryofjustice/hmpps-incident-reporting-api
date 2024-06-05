@@ -85,11 +85,10 @@ class NomisSyncResource(
         }
         eventPublishAndAudit(
           eventType,
-          function = {
-            report
-          },
           informationSource = InformationSource.NOMIS,
-        ).id
+        ) {
+          report
+        }.id
       },
       if (syncRequest.id != null) {
         HttpStatus.OK
