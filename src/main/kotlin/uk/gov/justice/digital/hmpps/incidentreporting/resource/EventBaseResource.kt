@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSourc
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.service.EventPublishAndAuditService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
-import java.util.*
 
 abstract class EventBaseResource {
 
