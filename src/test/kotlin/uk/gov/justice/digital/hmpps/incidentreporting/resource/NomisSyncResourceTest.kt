@@ -1072,7 +1072,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 1,
                 "DAMAGE",
                 "Damage",
-                incidentChangeDate = LocalDate.now(clock),
+                incidentChangeDate = LocalDate.now(clock).minusDays(2),
                 incidentChangeStaff = reportingStaff,
                 createDateTime = LocalDateTime.now(clock),
                 createdBy = reportingStaff.username,
@@ -1101,7 +1101,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 2,
                 "BOMB",
                 "Bomb",
-                incidentChangeDate = LocalDate.now(clock).minusDays(2),
+                incidentChangeDate = LocalDate.now(clock).minusDays(1),
                 incidentChangeStaff = reportingStaff,
                 createDateTime = LocalDateTime.now(clock),
                 createdBy = reportingStaff.username,
@@ -1215,7 +1215,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "history": [
                   {
                     "type": "DAMAGE",
-                    "changedAt": "2023-12-05T00:00:00",
+                    "changedAt": "2023-12-03T00:00:00",
                     "changedBy": "user2",
                     "questions": [
                       {
@@ -1260,7 +1260,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   },
                   {
                     "type": "BOMB_THREAT",
-                    "changedAt": "2023-12-03T00:00:00",
+                    "changedAt": "2023-12-04T00:00:00",
                     "changedBy": "user2",
                     "questions": [
                       {
