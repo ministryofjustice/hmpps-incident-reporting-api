@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
+import java.util.UUID
 
 @Service
 class EventPublishAndAuditService(
@@ -15,32 +15,16 @@ class EventPublishAndAuditService(
 
   fun publishEvent(
     eventType: ReportDomainEventType,
-    reports: Iterable<ReportDto>,
+    reportId: UUID,
     auditData: Any? = null,
     source: InformationSource,
   ) {
-    reports.forEach {
-      publishEvent(
-        eventType = eventType,
-        report = it,
-        auditData = it,
-        source = source,
-      )
-    }
-  }
-
-  fun publishEvent(
-    eventType: ReportDomainEventType,
-    report: ReportDto,
-    auditData: Any? = null,
-    source: InformationSource,
-  ) {
-    publishEvent(event = eventType, report = report, source = source)
+    publishEvent(event = eventType, reportId = reportId, source = source)
 
     auditData?.let {
       auditEvent(
         auditType = eventType.auditType,
-        id = report.id.toString(),
+        id = reportId.toString(),
         auditData = it,
         source = source,
       )
@@ -49,15 +33,15 @@ class EventPublishAndAuditService(
 
   private fun publishEvent(
     event: ReportDomainEventType,
-    report: ReportDto,
+    reportId: UUID,
     source: InformationSource,
   ) {
     snsService.publishDomainEvent(
       eventType = event,
-      description = "${report.id} ${event.description}",
+      description = "$reportId ${event.description}",
       occurredAt = LocalDateTime.now(clock),
       additionalInformation = AdditionalInformation(
-        id = report.id,
+        id = reportId,
         source = source,
       ),
     )

@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSourc
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.service.EventPublishAndAuditService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
+import java.util.*
 
 abstract class EventBaseResource {
 
@@ -19,7 +20,7 @@ abstract class EventBaseResource {
     function().also { report ->
       eventPublishAndAuditService.publishEvent(
         eventType = event,
-        report = report,
+        reportId = report.id,
         auditData = report,
         source = informationSource,
       )
