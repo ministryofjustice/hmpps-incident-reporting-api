@@ -15,7 +15,7 @@ abstract class EventBaseResource {
     event: ReportDomainEventType,
     informationSource: InformationSource,
     block: () -> Report,
-  ) =
+  ): Report =
     block().also { report ->
       eventPublishAndAuditService.publishEvent(
         eventType = event,

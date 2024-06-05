@@ -19,26 +19,25 @@ class EventPublishAndAuditService(
     auditData: Any? = null,
     source: InformationSource,
   ) {
-    publishEvent(event = eventType, reportId = reportId, source = source)
+    domainEvent(eventType = eventType, reportId = reportId, source = source)
 
     auditData?.let {
       auditEvent(
         auditType = eventType.auditType,
         id = reportId.toString(),
         auditData = it,
-        source = source,
       )
     }
   }
 
-  private fun publishEvent(
-    event: ReportDomainEventType,
+  private fun domainEvent(
+    eventType: ReportDomainEventType,
     reportId: UUID,
     source: InformationSource,
   ) {
     snsService.publishDomainEvent(
-      eventType = event,
-      description = "$reportId ${event.description}",
+      eventType = eventType,
+      description = "$reportId ${eventType.description}",
       occurredAt = LocalDateTime.now(clock),
       additionalInformation = AdditionalInformation(
         id = reportId,
@@ -47,11 +46,10 @@ class EventPublishAndAuditService(
     )
   }
 
-  fun auditEvent(
+  private fun auditEvent(
     auditType: AuditType,
     id: String,
     auditData: Any,
-    source: InformationSource,
   ) {
     auditService.sendMessage(
       auditType = auditType,
