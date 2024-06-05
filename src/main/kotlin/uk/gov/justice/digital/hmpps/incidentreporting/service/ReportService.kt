@@ -100,11 +100,7 @@ class ReportService(
         log.info("Deleted incident report number=${report.incidentNumber} ID=${report.id}")
         telemetryClient.trackEvent(
           "Deleted incident report",
-          mapOf(
-            "id" to report.id.toString(),
-            "incidentNumber" to report.incidentNumber,
-            "prisonId" to report.prisonId,
-          ),
+          it,
         )
 
         eventIdToDelete?.let { eventId ->
@@ -143,11 +139,7 @@ class ReportService(
     log.info("Created incident report number=${report.incidentNumber} ID=${report.id}")
     telemetryClient.trackEvent(
       "Created incident report",
-      mapOf(
-        "id" to report.id.toString(),
-        "incidentNumber" to report.incidentNumber,
-        "prisonId" to report.prisonId,
-      ),
+      report,
     )
 
     return report
