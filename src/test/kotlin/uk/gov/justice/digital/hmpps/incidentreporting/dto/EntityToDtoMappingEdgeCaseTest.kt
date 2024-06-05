@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import java.time.LocalDateTime
 
 /**
  * Tests for edge cases when converting JPA entities to DTO classes.
@@ -18,8 +17,6 @@ import java.time.LocalDateTime
  * NB: most conversions are already covered by resource and service tests.
  */
 class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
-  private val now = LocalDateTime.now(clock)
-
   @Autowired
   lateinit var eventRepository: EventRepository
 
