@@ -13,13 +13,13 @@ abstract class EventBaseResource {
 
   protected fun eventPublishAndAudit(
     event: ReportDomainEventType,
-    function: () -> Report,
     informationSource: InformationSource,
-  ) =
-    function().also { report ->
+    block: () -> Report,
+  ): Report =
+    block().also { report ->
       eventPublishAndAuditService.publishEvent(
         eventType = event,
-        report = report,
+        reportId = report.id,
         auditData = report,
         source = informationSource,
       )

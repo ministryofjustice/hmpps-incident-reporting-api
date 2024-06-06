@@ -296,11 +296,10 @@ class ReportResource(
   ): ReportDto {
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_CREATED,
-      {
-        reportService.createReport(createReportRequest)
-      },
       InformationSource.DPS,
-    )
+    ) {
+      reportService.createReport(createReportRequest)
+    }
   }
 
   // TODO: decide if a different role should be used!
@@ -352,11 +351,10 @@ class ReportResource(
   ): ReportDto {
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_DELETED,
-      {
-        reportService.deleteReportById(id, deleteOrphanedEvents)
-          ?: throw ReportNotFoundException(id)
-      },
       InformationSource.DPS,
-    )
+    ) {
+      reportService.deleteReportById(id, deleteOrphanedEvents)
+        ?: throw ReportNotFoundException(id)
+    }
   }
 }

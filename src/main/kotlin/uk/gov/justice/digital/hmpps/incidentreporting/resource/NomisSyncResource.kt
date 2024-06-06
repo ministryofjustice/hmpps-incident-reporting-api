@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSourc
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
+import java.util.UUID
 
 @RestController
 @Validated
@@ -39,11 +40,11 @@ class NomisSyncResource(
     responses = [
       ApiResponse(
         responseCode = "201",
-        description = "Migrated NOMIS Incident Report",
+        description = "Migrated NOMIS Incident Report Id",
       ),
       ApiResponse(
-        responseCode = "201",
-        description = "Updated NOMIS Incident Report",
+        responseCode = "200",
+        description = "Updated NOMIS Incident Report Id",
       ),
       ApiResponse(
         responseCode = "400",
@@ -71,11 +72,11 @@ class NomisSyncResource(
     @RequestBody
     @Valid
     syncRequest: NomisSyncRequest,
-  ): ResponseEntity<uk.gov.justice.digital.hmpps.incidentreporting.dto.Report> {
-    val result = syncService.upsert(syncRequest)
+  ): ResponseEntity<UUID> {
+    val report = syncService.upsert(syncRequest)
     return ResponseEntity(
       if (syncRequest.initialMigration) {
-        result
+        report.id
       } else {
         val eventType = if (syncRequest.id != null) {
           ReportDomainEventType.INCIDENT_REPORT_AMENDED
@@ -84,11 +85,10 @@ class NomisSyncResource(
         }
         eventPublishAndAudit(
           eventType,
-          function = {
-            result
-          },
           informationSource = InformationSource.NOMIS,
-        )
+        ) {
+          report
+        }.id
       },
       if (syncRequest.id != null) {
         HttpStatus.OK

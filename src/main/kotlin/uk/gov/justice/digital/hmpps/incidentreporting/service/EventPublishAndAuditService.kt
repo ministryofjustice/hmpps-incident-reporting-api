@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
+import java.util.UUID
 
 @Service
 class EventPublishAndAuditService(
@@ -15,59 +15,41 @@ class EventPublishAndAuditService(
 
   fun publishEvent(
     eventType: ReportDomainEventType,
-    reports: Iterable<ReportDto>,
+    reportId: UUID,
     auditData: Any? = null,
     source: InformationSource,
   ) {
-    reports.forEach {
-      publishEvent(
-        eventType = eventType,
-        report = it,
-        auditData = it,
-        source = source,
-      )
-    }
-  }
-
-  fun publishEvent(
-    eventType: ReportDomainEventType,
-    report: ReportDto,
-    auditData: Any? = null,
-    source: InformationSource,
-  ) {
-    publishEvent(event = eventType, report = report, source = source)
+    sendDomainEvent(eventType = eventType, reportId = reportId, source = source)
 
     auditData?.let {
-      auditEvent(
+      sendAuditEvent(
         auditType = eventType.auditType,
-        id = report.id.toString(),
+        id = reportId.toString(),
         auditData = it,
-        source = source,
       )
     }
   }
 
-  private fun publishEvent(
-    event: ReportDomainEventType,
-    report: ReportDto,
+  private fun sendDomainEvent(
+    eventType: ReportDomainEventType,
+    reportId: UUID,
     source: InformationSource,
   ) {
     snsService.publishDomainEvent(
-      eventType = event,
-      description = "${report.id} ${event.description}",
+      eventType = eventType,
+      description = "$reportId ${eventType.description}",
       occurredAt = LocalDateTime.now(clock),
       additionalInformation = AdditionalInformation(
-        id = report.id,
+        id = reportId,
         source = source,
       ),
     )
   }
 
-  fun auditEvent(
+  private fun sendAuditEvent(
     auditType: AuditType,
     id: String,
     auditData: Any,
-    source: InformationSource,
   ) {
     auditService.sendMessage(
       auditType = auditType,
