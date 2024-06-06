@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
@@ -286,6 +287,24 @@ class Report(
     history.clear()
     addNomisHistory(upsert.history)
   }
+
+  fun toDtoBasic() = ReportBasic(
+    id = id!!,
+    incidentNumber = incidentNumber,
+    incidentDateAndTime = incidentDateAndTime,
+    prisonId = prisonId,
+    type = type,
+    title = title,
+    description = description,
+    reportedBy = reportedBy,
+    reportedAt = reportedAt,
+    status = status,
+    assignedTo = assignedTo,
+    createdAt = createdAt,
+    modifiedAt = modifiedAt,
+    modifiedBy = modifiedBy,
+    createdInNomis = source == InformationSource.NOMIS,
+  )
 
   fun toDtoWithDetails() = ReportWithDetails(
     id = id!!,
