@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.toNewEntity
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
@@ -15,7 +16,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExis
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.time.Clock
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Service
 @Transactional(rollbackFor = [ReportAlreadyExistsException::class])
@@ -28,7 +28,7 @@ class NomisSyncService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun upsert(syncRequest: NomisSyncRequest): ReportDto {
+  fun upsert(syncRequest: NomisSyncRequest): ReportWithDetails {
     syncRequest.validate()
 
     val report = if (syncRequest.id != null) {
@@ -49,14 +49,14 @@ class NomisSyncService(
     return report
   }
 
-  private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportDto {
+  private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportWithDetails {
     val reportToUpdate = reportRepository.findById(reportId)
       .orElseThrow { ReportNotFoundException(reportId) }
     reportToUpdate.updateWith(incidentReport, clock)
-    return reportToUpdate.toDto()
+    return reportToUpdate.toDtoWithDetails()
   }
 
-  private fun createNewReport(incidentReport: NomisReport): ReportDto {
+  private fun createNewReport(incidentReport: NomisReport): ReportWithDetails {
     val reportToCreate = incidentReport.toNewEntity()
     val reportEntity = try {
       reportRepository.save(reportToCreate)
@@ -71,6 +71,6 @@ class NomisSyncService(
         throw e
       }
     }
-    return reportEntity.toDto()
+    return reportEntity.toDtoWithDetails()
   }
 }

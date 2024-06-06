@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.service.EventPublishAndAuditService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 
@@ -14,8 +14,8 @@ abstract class EventBaseResource {
   protected fun eventPublishAndAudit(
     event: ReportDomainEventType,
     informationSource: InformationSource,
-    block: () -> Report,
-  ): Report =
+    block: () -> ReportWithDetails,
+  ): ReportWithDetails =
     block().also { report ->
       eventPublishAndAuditService.publishEvent(
         eventType = event,

@@ -412,7 +412,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectBody().consumeWith {
             val reportId = objectMapper.readValue(it.responseBody, UUID::class.java)
             val report = reportRepository.findById(reportId).orElseThrow()
-            val reportJson = objectMapper.writeValueAsString(report.toDto())
+            val reportJson = objectMapper.writeValueAsString(report.toDtoWithDetails())
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """
@@ -670,7 +670,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectBody().consumeWith {
             val reportId = objectMapper.readValue(it.responseBody, UUID::class.java)
             val report = reportRepository.findById(reportId).orElseThrow()
-            val reportJson = objectMapper.writeValueAsString(report.toDto())
+            val reportJson = objectMapper.writeValueAsString(report.toDtoWithDetails())
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """
@@ -1137,7 +1137,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectBody().consumeWith {
             val reportId = objectMapper.readValue(it.responseBody, UUID::class.java)
             val report = reportRepository.findById(reportId).orElseThrow()
-            val reportJson = objectMapper.writeValueAsString(report.toDto())
+            val reportJson = objectMapper.writeValueAsString(report.toDtoWithDetails())
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """

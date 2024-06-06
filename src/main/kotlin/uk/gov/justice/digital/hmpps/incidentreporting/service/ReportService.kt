@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
@@ -33,7 +34,6 @@ import java.time.Clock
 import java.time.LocalDate
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Service
 @Transactional(readOnly = true)
@@ -58,7 +58,7 @@ class ReportService(
     reportedDateFrom: LocalDate? = null,
     reportedDateUntil: LocalDate? = null,
     pageable: Pageable = PageRequest.of(0, 20, Sort.by("incidentDateAndTime").descending()),
-  ): Page<ReportDto> {
+  ): Page<ReportWithDetails> {
     val specification = Specification.allOf(
       buildList {
         prisonId?.let { add(filterByPrisonId(prisonId)) }
@@ -74,26 +74,26 @@ class ReportService(
       },
     )
     return reportRepository.findAll(specification, pageable)
-      .map { it.toDto() }
+      .map { it.toDtoWithDetails() }
   }
 
-  fun getReportById(id: UUID): ReportDto? {
-    return reportRepository.findById(id).getOrNull()?.toDto()
+  fun getReportById(id: UUID): ReportWithDetails? {
+    return reportRepository.findById(id).getOrNull()?.toDtoWithDetails()
   }
 
-  fun getReportByIncidentNumber(incidentNumber: String): ReportDto? {
-    return reportRepository.findOneByIncidentNumber(incidentNumber)?.toDto()
+  fun getReportByIncidentNumber(incidentNumber: String): ReportWithDetails? {
+    return reportRepository.findOneByIncidentNumber(incidentNumber)?.toDtoWithDetails()
   }
 
   @Transactional
-  fun deleteReportById(id: UUID, deleteOrphanedEvents: Boolean = true): ReportDto? {
+  fun deleteReportById(id: UUID, deleteOrphanedEvents: Boolean = true): ReportWithDetails? {
     return reportRepository.findById(id).getOrNull()?.let { report ->
       val eventIdToDelete = if (deleteOrphanedEvents && report.event.reports.size == 1) {
         report.event.id!!
       } else {
         null
       }
-      report.toDto().also {
+      report.toDtoWithDetails().also {
         report.event.reports.removeIf { it.id == id }
         reportRepository.deleteById(id)
 
@@ -113,7 +113,7 @@ class ReportService(
   }
 
   @Transactional
-  fun createReport(createReportRequest: CreateReportRequest): ReportDto {
+  fun createReport(createReportRequest: CreateReportRequest): ReportWithDetails {
     createReportRequest.validate()
 
     val event = if (createReportRequest.linkedEventId != null) {
@@ -134,7 +134,7 @@ class ReportService(
       event = event,
     )
 
-    val report = reportRepository.save(newReport).toDto()
+    val report = reportRepository.save(newReport).toDtoWithDetails()
 
     log.info("Created incident report number=${report.incidentNumber} ID=${report.id}")
     telemetryClient.trackEvent(

@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffender
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffenderParty
@@ -44,7 +45,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundExc
 import java.sql.SQLException
 import java.util.Optional
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 class NomisSyncServiceTest {
   private val reportRepository: ReportRepository = mock()
@@ -230,7 +230,7 @@ class NomisSyncServiceTest {
       event.modifiedBy == sampleEvent.modifiedBy
   }
 
-  private fun assertSampleReportConvertedToDto(report: ReportDto) {
+  private fun assertSampleReportConvertedToDto(report: ReportWithDetails) {
     assertThat(report.id).isEqualTo(sampleReportId)
     assertThat(report.incidentNumber).isEqualTo("112414323")
     assertThat(report.type).isEqualTo(Type.SELF_HARM)

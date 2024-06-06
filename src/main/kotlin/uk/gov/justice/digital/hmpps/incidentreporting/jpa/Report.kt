@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
@@ -29,7 +30,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Entity
 class Report(
@@ -287,7 +287,7 @@ class Report(
     addNomisHistory(upsert.history)
   }
 
-  fun toDto() = ReportDto(
+  fun toDtoWithDetails() = ReportWithDetails(
     id = id!!,
     incidentNumber = incidentNumber,
     incidentDateAndTime = incidentDateAndTime,

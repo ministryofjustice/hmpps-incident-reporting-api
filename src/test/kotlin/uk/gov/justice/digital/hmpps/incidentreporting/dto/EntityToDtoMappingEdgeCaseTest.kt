@@ -36,12 +36,12 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
       reportTime = now,
     )
     assertThat(unsavedReport.id).isNull()
-    assertThatThrownBy { unsavedReport.toDto() }
+    assertThatThrownBy { unsavedReport.toDtoWithDetails() }
       .isInstanceOf(NullPointerException::class.java)
 
     val savedReport = reportRepository.save(unsavedReport)
     assertThat(savedReport.id).isNotNull()
-    assertThat(savedReport.toDto().id).isEqualTo(savedReport.id)
+    assertThat(savedReport.toDtoWithDetails().id).isEqualTo(savedReport.id)
   }
 
   @Test
@@ -53,7 +53,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
         source = InformationSource.NOMIS,
       ),
     )
-    assertThat(reportFromNomis.toDto().createdInNomis).isTrue()
+    assertThat(reportFromNomis.toDtoWithDetails().createdInNomis).isTrue()
 
     val reportFromDps = reportRepository.save(
       buildIncidentReport(
@@ -62,6 +62,6 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
         source = InformationSource.DPS,
       ),
     )
-    assertThat(reportFromDps.toDto().createdInNomis).isFalse()
+    assertThat(reportFromDps.toDtoWithDetails().createdInNomis).isFalse()
   }
 }
