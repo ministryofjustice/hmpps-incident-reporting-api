@@ -40,7 +40,7 @@ class Question(
 
   fun addResponse(
     response: String,
-    additionalInformation: String?,
+    additionalInformation: String? = null,
     recordedBy: String,
     recordedAt: LocalDateTime,
   ): Question {

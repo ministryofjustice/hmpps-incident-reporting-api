@@ -85,6 +85,7 @@ class Report(
   @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   val locations: MutableList<Location> = mutableListOf(),
 
+  // TODO: what's this for?
   @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   val evidence: MutableList<Evidence> = mutableListOf(),
 
