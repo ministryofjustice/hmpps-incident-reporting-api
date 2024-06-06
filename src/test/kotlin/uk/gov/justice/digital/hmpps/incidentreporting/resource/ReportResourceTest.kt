@@ -22,7 +22,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import java.time.Clock
-import java.time.LocalDateTime
 
 class ReportResourceTest : SqsIntegrationTestBase() {
 
@@ -49,7 +48,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     existingReport = reportRepository.save(
       buildIncidentReport(
         incidentNumber = "IR-0000000001124143",
-        reportTime = LocalDateTime.now(clock),
+        reportTime = now,
       ),
     )
   }
@@ -212,7 +211,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 val daysBefore = index.toLong() + 1
                 buildIncidentReport(
                   incidentNumber = incidentNumber,
-                  reportTime = LocalDateTime.now(clock).minusDays(daysBefore),
+                  reportTime = now.minusDays(daysBefore),
                   prisonId = if (index < 2) "LEI" else "MDI",
                   status = if (fromDps) Status.DRAFT else Status.AWAITING_ANALYSIS,
                   source = if (fromDps) InformationSource.DPS else InformationSource.NOMIS,
@@ -679,13 +678,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     private val url = "/incident-reports"
 
     val createReportRequest = CreateReportRequest(
-      incidentDateAndTime = LocalDateTime.now(clock).minusHours(1),
+      incidentDateAndTime = now.minusHours(1),
       title = "An incident occurred",
       description = "Longer explanation of incident",
       type = Type.SELF_HARM,
       prisonId = "MDI",
       reportedBy = "user2",
-      reportedDate = LocalDateTime.now(clock),
+      reportedDate = now,
       createNewEvent = true,
     )
 
@@ -1007,7 +1006,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         existingReport.event.addReport(
           buildIncidentReport(
             incidentNumber = "IR-0000000001124142",
-            reportTime = LocalDateTime.now(clock).minusMinutes(5),
+            reportTime = now.minusMinutes(5),
           ),
         )
         eventRepository.save(existingReport.event)
