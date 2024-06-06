@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacad
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.hmpps.sqs.HmppsQueue
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
+import uk.gov.justice.hmpps.sqs.audit.HmppsAuditEvent
 import java.time.Clock
 import java.time.Instant
 
@@ -33,7 +34,7 @@ class AuditService(
   }
 
   fun sendMessage(auditType: AuditType, id: String, details: Any?, username: String? = null) {
-    val auditEvent = AuditEvent(
+    val auditEvent = HmppsAuditEvent(
       what = auditType.name,
       who = username ?: authenticationFacade.getUserOrSystemInContext(),
       service = serviceName,
@@ -57,14 +58,6 @@ class AuditService(
 
   private fun Any.toJson() = objectMapper.writeValueAsString(this)
 }
-
-data class AuditEvent(
-  val what: String,
-  val `when`: Instant,
-  val who: String,
-  val service: String,
-  val details: String? = null,
-)
 
 enum class AuditType {
   INCIDENT_REPORT_CREATED,
