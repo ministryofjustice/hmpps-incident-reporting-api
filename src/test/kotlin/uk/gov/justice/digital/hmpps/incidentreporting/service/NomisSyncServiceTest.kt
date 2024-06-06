@@ -35,13 +35,13 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.sql.SQLException
-import java.time.LocalDateTime
 import java.util.Optional
 import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
@@ -56,7 +56,6 @@ class NomisSyncServiceTest {
     telemetryClient,
   )
 
-  private val now = LocalDateTime.now(clock)
   private val whenIncidentHappened = now.minusDays(1)
 
   private val reportedBy = "user2"

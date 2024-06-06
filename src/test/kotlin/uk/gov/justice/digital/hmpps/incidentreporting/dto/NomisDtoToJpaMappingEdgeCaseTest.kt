@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.toNewEntity
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
-import java.time.LocalDateTime
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
 
 /**
  * Tests for edge cases when converting NOMIS DTOs to JPA entities.
@@ -21,8 +21,6 @@ import java.time.LocalDateTime
  * NB: most conversions are already covered by resource and service tests.
  */
 class NomisDtoToJpaMappingEdgeCaseTest {
-  private val now = LocalDateTime.now(clock)
-
   private val minimalReportDto = NomisReport(
     incidentId = 112414323,
     questionnaireId = 2124,

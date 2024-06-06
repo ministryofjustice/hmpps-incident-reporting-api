@@ -33,7 +33,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatuses
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
-import java.time.LocalDateTime
 import java.util.UUID
 
 @DataJpaTest
@@ -47,7 +46,6 @@ class ReportRepositoryTest : IntegrationTestBase() {
   @Autowired
   lateinit var eventRepository: EventRepository
 
-  private val now = LocalDateTime.now(clock)
   private val hourAgo = now.minusHours(1)
   private val halfHourAgo = now.minusMinutes(30)
   private val quarterHourAgo = now.minusMinutes(15)
