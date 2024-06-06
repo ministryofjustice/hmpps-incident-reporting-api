@@ -19,10 +19,10 @@ class EventPublishAndAuditService(
     auditData: Any? = null,
     source: InformationSource,
   ) {
-    domainEvent(eventType = eventType, reportId = reportId, source = source)
+    sendDomainEvent(eventType = eventType, reportId = reportId, source = source)
 
     auditData?.let {
-      auditEvent(
+      sendAuditEvent(
         auditType = eventType.auditType,
         id = reportId.toString(),
         auditData = it,
@@ -30,7 +30,7 @@ class EventPublishAndAuditService(
     }
   }
 
-  private fun domainEvent(
+  private fun sendDomainEvent(
     eventType: ReportDomainEventType,
     reportId: UUID,
     source: InformationSource,
@@ -46,7 +46,7 @@ class EventPublishAndAuditService(
     )
   }
 
-  private fun auditEvent(
+  private fun sendAuditEvent(
     auditType: AuditType,
     id: String,
     auditData: Any,
