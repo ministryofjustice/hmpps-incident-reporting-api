@@ -30,10 +30,10 @@ open class ReportBasic(
   val reportedBy: String,
   @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
   val reportedAt: LocalDateTime,
-  @Schema(description = "The current status of this report", required = false, defaultValue = "DRAFT")
-  val status: Status = Status.DRAFT,
-  @Schema(description = "Optional user who this report is currently assigned to", required = false, defaultValue = "null")
-  val assignedTo: String? = null,
+  @Schema(description = "The current status of this report", required = true, example = "DRAFT")
+  val status: Status,
+  @Schema(description = "Optional user who this report is currently assigned to", required = true, example = "null")
+  val assignedTo: String?,
 
   @Schema(description = "When the report was first created", required = true)
   val createdAt: LocalDateTime,
@@ -42,7 +42,7 @@ open class ReportBasic(
   @Schema(description = "Username of the person who last changed this report", required = true)
   val modifiedBy: String,
 
-  @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", required = false, defaultValue = "false")
-  @JsonProperty(required = false, access = JsonProperty.Access.READ_ONLY)
-  val createdInNomis: Boolean = false,
+  @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", required = true, example = "false")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  val createdInNomis: Boolean,
 )

@@ -19,33 +19,33 @@ class ReportWithDetails(
   description: String,
   reportedBy: String,
   reportedAt: LocalDateTime,
-  status: Status = Status.DRAFT,
-  assignedTo: String? = null,
+  status: Status,
+  assignedTo: String?,
   createdAt: LocalDateTime,
   modifiedAt: LocalDateTime,
   modifiedBy: String,
-  createdInNomis: Boolean = false,
+  createdInNomis: Boolean,
 
   @Schema(description = "Event linking multiple incident reports together", required = true)
   val event: Event,
 
   @Schema(description = "The question-response pairs that make up this report", required = true)
-  val questions: List<Question> = emptyList(),
+  val questions: List<Question>,
   @Schema(description = "Prior versions of this report, created when the report type changes", required = true)
-  val history: List<History> = emptyList(),
+  val history: List<History>,
   @Schema(description = "Previous statuses the incident report transitioned to", required = true)
-  val historyOfStatuses: List<StatusHistory> = emptyList(),
+  val historyOfStatuses: List<StatusHistory>,
 
   @Schema(description = "Which members of staff were involved?", required = true)
-  val staffInvolved: List<StaffInvolvement> = emptyList(),
+  val staffInvolved: List<StaffInvolvement>,
   @Schema(description = "Which prisoners were involved?", required = true)
-  val prisonersInvolved: List<PrisonerInvolvement> = emptyList(),
+  val prisonersInvolved: List<PrisonerInvolvement>,
   @Schema(description = "Where the incident happened", required = true)
-  val locations: List<Location> = emptyList(),
+  val locations: List<Location>,
   @Schema(description = "What evidence has been recorded", required = true)
-  val evidence: List<Evidence> = emptyList(),
+  val evidence: List<Evidence>,
   @Schema(description = "The corrections that were requested of this report", required = true)
-  val correctionRequests: List<CorrectionRequest> = emptyList(),
+  val correctionRequests: List<CorrectionRequest>,
 ) : ReportBasic(
   id = id,
   incidentNumber = incidentNumber,
