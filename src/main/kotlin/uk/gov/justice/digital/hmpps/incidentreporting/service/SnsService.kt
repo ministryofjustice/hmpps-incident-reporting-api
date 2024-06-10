@@ -10,14 +10,17 @@ import software.amazon.awssdk.services.sns.model.MessageAttributeValue
 import software.amazon.awssdk.services.sns.model.PublishRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Service
-class SnsService(hmppsQueueService: HmppsQueueService, private val objectMapper: ObjectMapper) {
+class SnsService(
+  hmppsQueueService: HmppsQueueService,
+  private val zoneId: ZoneId,
+  private val objectMapper: ObjectMapper,
+) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
@@ -37,10 +40,10 @@ class SnsService(hmppsQueueService: HmppsQueueService, private val objectMapper:
   ) {
     publishToDomainEventsTopic(
       HMPPSDomainEvent(
-        eventType.value,
-        additionalInformation,
-        occurredAt.atZone(ZoneId.systemDefault()).toInstant(),
-        description,
+        eventType = eventType.value,
+        additionalInformation = additionalInformation,
+        occurredAt = occurredAt.atZone(zoneId).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+        description = description,
       ),
     )
   }
@@ -70,23 +73,10 @@ data class AdditionalInformation(
 data class HMPPSDomainEvent(
   val eventType: String? = null,
   val additionalInformation: AdditionalInformation?,
-  val version: String,
+  val version: String = "1.0",
   val occurredAt: String,
   val description: String,
-) {
-  constructor(
-    eventType: String,
-    additionalInformation: AdditionalInformation?,
-    occurredAt: Instant,
-    description: String,
-  ) : this(
-    eventType,
-    additionalInformation,
-    "1.0",
-    occurredAt.toOffsetDateFormat(),
-    description,
-  )
-}
+)
 
 enum class ReportDomainEventType(val value: String, val description: String, val auditType: AuditType) {
   INCIDENT_REPORT_CREATED(
@@ -105,6 +95,3 @@ enum class ReportDomainEventType(val value: String, val description: String, val
     AuditType.INCIDENT_REPORT_DELETED,
   ),
 }
-
-fun Instant.toOffsetDateFormat(): String =
-  atZone(ZoneId.of("Europe/London")).toOffsetDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)

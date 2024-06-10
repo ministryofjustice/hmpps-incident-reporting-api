@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncReportId
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
-import java.util.UUID
 
 @RestController
 @Validated
 @RequestMapping("/sync", produces = [MediaType.APPLICATION_JSON_VALUE])
 @Tag(
   name = "Migrate/Upsert NOMIS Incident Report",
-  description = "Migrate or upsert NOMIS incident Report to IncidentReport Service.",
+  description = "Migrate or synchronise NOMIS incident report to Incident Report Service",
 )
 @PreAuthorize("hasRole('ROLE_MIGRATE_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
 class NomisSyncResource(
@@ -35,16 +35,16 @@ class NomisSyncResource(
 
   @PostMapping("/upsert")
   @Operation(
-    summary = "Migrate a location",
+    summary = "Migrate a report",
     description = "Requires role MIGRATE_INCIDENT_REPORTS and write scope",
     responses = [
       ApiResponse(
         responseCode = "201",
-        description = "Migrated NOMIS Incident Report Id",
+        description = "Migrated NOMIS incident report id",
       ),
       ApiResponse(
         responseCode = "200",
-        description = "Updated NOMIS Incident Report Id",
+        description = "Updated NOMIS incident report id",
       ),
       ApiResponse(
         responseCode = "400",
@@ -72,29 +72,24 @@ class NomisSyncResource(
     @RequestBody
     @Valid
     syncRequest: NomisSyncRequest,
-  ): ResponseEntity<UUID> {
+  ): ResponseEntity<NomisSyncReportId> {
     val report = syncService.upsert(syncRequest)
-    return ResponseEntity(
-      if (syncRequest.initialMigration) {
-        report.id
+    if (!syncRequest.initialMigration) {
+      val eventType = if (syncRequest.id != null) {
+        ReportDomainEventType.INCIDENT_REPORT_AMENDED
       } else {
-        val eventType = if (syncRequest.id != null) {
-          ReportDomainEventType.INCIDENT_REPORT_AMENDED
-        } else {
-          ReportDomainEventType.INCIDENT_REPORT_CREATED
-        }
-        eventPublishAndAudit(
-          eventType,
-          informationSource = InformationSource.NOMIS,
-        ) {
-          report
-        }.id
-      },
-      if (syncRequest.id != null) {
-        HttpStatus.OK
-      } else {
-        HttpStatus.CREATED
-      },
-    )
+        ReportDomainEventType.INCIDENT_REPORT_CREATED
+      }
+      eventPublishAndAudit(
+        eventType,
+        informationSource = InformationSource.NOMIS,
+      ) { report }
+    }
+    val status = if (syncRequest.id != null) {
+      HttpStatus.OK
+    } else {
+      HttpStatus.CREATED
+    }
+    return ResponseEntity(NomisSyncReportId(report.id), status)
   }
 }
