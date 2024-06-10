@@ -409,8 +409,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .bodyValue(jsonString(updatedSyncRequest))
           .exchange()
           .expectStatus().isCreated
-          .expectBody().consumeWith {
-            val reportId = objectMapper.readValue(it.responseBody, UUID::class.java)
+          .expectBody().jsonPath("id").value<String> {
+            val reportId = UUID.fromString(it)
             val report = reportRepository.findById(reportId).orElseThrow()
             val reportJson = objectMapper.writeValueAsString(report.toDto())
             JsonExpectationsHelper().assertJsonEqual(
@@ -667,8 +667,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .bodyValue(jsonString(newIncident))
           .exchange()
           .expectStatus().isCreated
-          .expectBody().consumeWith {
-            val reportId = objectMapper.readValue(it.responseBody, UUID::class.java)
+          .expectBody().jsonPath("id").value<String> {
+            val reportId = UUID.fromString(it)
             val report = reportRepository.findById(reportId).orElseThrow()
             val reportJson = objectMapper.writeValueAsString(report.toDto())
             JsonExpectationsHelper().assertJsonEqual(
@@ -1134,8 +1134,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .bodyValue(jsonString(upsertMigration))
           .exchange()
           .expectStatus().isOk
-          .expectBody().consumeWith {
-            val reportId = objectMapper.readValue(it.responseBody, UUID::class.java)
+          .expectBody().jsonPath("id").value<String> {
+            val reportId = UUID.fromString(it)
             val report = reportRepository.findById(reportId).orElseThrow()
             val reportJson = objectMapper.writeValueAsString(report.toDto())
             JsonExpectationsHelper().assertJsonEqual(
