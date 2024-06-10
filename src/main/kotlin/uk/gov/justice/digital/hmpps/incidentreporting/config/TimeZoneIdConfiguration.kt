@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Configuration
 import java.time.ZoneId
 
 @Configuration
-class TimeZoneConfiguration(
+class TimeZoneIdConfiguration(
   @Value("\${spring.jackson.time-zone}") private val timeZone: String,
 ) {
   @Bean
-  fun timeZone(): ZoneId = ZoneId.of(timeZone)
+  fun timeZoneId(): ZoneId = ZoneId.of(timeZone)
 }
