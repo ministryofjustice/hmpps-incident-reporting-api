@@ -1,9 +1,3 @@
-create sequence event_sequence
-    start with 1000000;
-
-create sequence report_sequence
-    start with 1000000;
-
 create table event
 (
     id                  serial
@@ -20,6 +14,10 @@ create table event
     modified_by         varchar(120)                        not null,
     modified_at         timestamp default CURRENT_TIMESTAMP not null
 );
+
+create sequence event_sequence
+    start with 1000000
+    owned by event.event_id;
 
 create index event_event_date_and_time_idx on event (event_date_and_time);
 create index event_created_at_idx on event (created_at);
@@ -51,6 +49,10 @@ create table report
     modified_by            varchar(120)                         not null,
     modified_at            timestamp  default CURRENT_TIMESTAMP not null
 );
+
+create sequence report_sequence
+    start with 1000000
+    owned by report.incident_number;
 
 create index report_incident_date_and_time_idx on report (incident_date_and_time);
 create index report_reported_at_idx on report (reported_at);
