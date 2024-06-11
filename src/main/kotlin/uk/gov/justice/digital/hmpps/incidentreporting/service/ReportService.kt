@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundExce
 import java.time.Clock
 import java.time.LocalDate
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 @Transactional(readOnly = true)
@@ -75,6 +76,16 @@ class ReportService(
     )
     return reportRepository.findAll(specification, pageable)
       .map { it.toDtoBasic() }
+  }
+
+  fun getBasicReportById(id: UUID): ReportBasic? {
+    return reportRepository.findById(id).getOrNull()
+      ?.toDtoBasic()
+  }
+
+  fun getBasicReportByIncidentNumber(incidentNumber: String): ReportBasic? {
+    return reportRepository.findByIncidentNumber(incidentNumber)
+      ?.toDtoBasic()
   }
 
   fun getReportWithDetailsById(id: UUID): ReportWithDetails? {

@@ -13,6 +13,8 @@ interface ReportRepository : JpaRepository<Report, UUID>, JpaSpecificationExecut
   @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.FETCH)
   fun findOneEagerlyById(id: UUID): Report?
 
+  fun findByIncidentNumber(incidentNumber: String): Report?
+
   @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.FETCH)
   fun findOneEagerlyByIncidentNumber(incidentNumber: String): Report?
 

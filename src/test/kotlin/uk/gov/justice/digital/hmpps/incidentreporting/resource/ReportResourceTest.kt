@@ -384,9 +384,76 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
+  @DisplayName("GET /incident-reports/{id}")
+  @Nested
+  inner class GetBasicReportById {
+    private lateinit var url: String
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/${existingReport.id}"
+    }
+
+    @DisplayName("is secured")
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot get a report by ID if it is not found`() {
+        webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can get a report by ID`() {
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1",
+              "createdInNomis": false
+            }
+            """,
+            true,
+          )
+      }
+    }
+  }
+
   @DisplayName("GET /incident-reports/{id}/with-details")
   @Nested
-  inner class GetReportById {
+  inner class GetReportWithDetailsById {
     private lateinit var url: String
 
     @BeforeEach
@@ -475,9 +542,76 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
+  @DisplayName("GET /incident-reports/incident-number/{incident-number}")
+  @Nested
+  inner class GetBasicReportByIncidentNumber {
+    private lateinit var url: String
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/incident-number/${existingReport.incidentNumber}"
+    }
+
+    @DisplayName("is secured")
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot get a report by incident number if it is not found`() {
+        webTestClient.get().uri("/incident-reports/incident-number/IR-11111111")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can get a report by incident number`() {
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1",
+              "createdInNomis": false
+            }
+            """,
+            true,
+          )
+      }
+    }
+  }
+
   @DisplayName("GET /incident-reports/incident-number/{incident-number}/with-details")
   @Nested
-  inner class GetReportByIncidentNumber {
+  inner class GetReportWithDetailsByIncidentNumber {
     private lateinit var url: String
 
     @BeforeEach

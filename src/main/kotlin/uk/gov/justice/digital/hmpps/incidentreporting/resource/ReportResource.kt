@@ -178,6 +178,43 @@ class ReportResource(
       .toSimplePage()
   }
 
+  @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
+  @Operation(
+    summary = "Returns the incident report (with only basic information) for this ID",
+    description = "Requires role VIEW_INCIDENT_REPORTS",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns an incident report",
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Missing required role. Requires the VIEW_INCIDENT_REPORTS role",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Data not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
+  )
+  fun getBasicReportById(
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @PathVariable
+    id: UUID,
+  ): ReportBasic {
+    return reportService.getBasicReportById(id = id)
+      ?: throw ReportNotFoundException(id)
+  }
+
   @GetMapping("/{id}/with-details")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -213,6 +250,43 @@ class ReportResource(
   ): ReportWithDetails {
     return reportService.getReportWithDetailsById(id = id)
       ?: throw ReportNotFoundException(id)
+  }
+
+  @GetMapping("/incident-number/{incidentNumber}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
+  @Operation(
+    summary = "Returns the incident report (with only basic information) for this incident number",
+    description = "Requires role VIEW_INCIDENT_REPORTS",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns an incident report",
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Missing required role. Requires the VIEW_INCIDENT_REPORTS role",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Data not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
+  )
+  fun getBasicReportByIncidentNumber(
+    @Schema(description = "The incident report number", example = "2342341242", required = true)
+    @PathVariable
+    incidentNumber: String,
+  ): ReportBasic {
+    return reportService.getBasicReportByIncidentNumber(incidentNumber)
+      ?: throw ReportNotFoundException(incidentNumber)
   }
 
   @GetMapping("/incident-number/{incidentNumber}/with-details")
