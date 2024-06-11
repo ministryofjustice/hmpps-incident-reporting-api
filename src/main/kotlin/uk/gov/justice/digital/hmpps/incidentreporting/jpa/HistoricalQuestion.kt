@@ -27,7 +27,7 @@ class HistoricalQuestion(
 
   val additionalInformation: String? = null,
 
-  @OneToMany(mappedBy = "historicalQuestion", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "historicalQuestion", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
   @BatchSize(size = 10)
   private val responses: MutableList<HistoricalResponse> = mutableListOf(),

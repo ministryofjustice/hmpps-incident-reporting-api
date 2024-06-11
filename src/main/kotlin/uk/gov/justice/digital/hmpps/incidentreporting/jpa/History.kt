@@ -31,7 +31,7 @@ class History(
   val changedAt: LocalDateTime,
   val changedBy: String,
 
-  @OneToMany(mappedBy = "history", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "history", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
   @BatchSize(size = 50)
   val questions: MutableList<HistoricalQuestion> = mutableListOf(),
