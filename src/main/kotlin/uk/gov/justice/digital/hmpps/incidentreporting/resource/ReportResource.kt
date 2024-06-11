@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
@@ -53,7 +54,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns pages of filtered incident reports",
+    summary = "Returns pages of filtered incident reports (with only basic information)",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(
@@ -159,7 +160,7 @@ class ReportResource(
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
-  ): SimplePage<ReportWithDetails> {
+  ): SimplePage<ReportBasic> {
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
@@ -181,7 +182,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns the incident report information for this ID",
+    summary = "Returns the incident report (with all related details) for this ID",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(
@@ -218,7 +219,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns the incident report information for this incident number",
+    summary = "Returns the incident report (with all related details) for this incident number",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(

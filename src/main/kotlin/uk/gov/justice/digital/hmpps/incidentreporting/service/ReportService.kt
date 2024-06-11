@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
@@ -57,7 +58,7 @@ class ReportService(
     reportedDateFrom: LocalDate? = null,
     reportedDateUntil: LocalDate? = null,
     pageable: Pageable = PageRequest.of(0, 20, Sort.by("incidentDateAndTime").descending()),
-  ): Page<ReportWithDetails> {
+  ): Page<ReportBasic> {
     val specification = Specification.allOf(
       buildList {
         prisonId?.let { add(filterByPrisonId(prisonId)) }
@@ -73,7 +74,7 @@ class ReportService(
       },
     )
     return reportRepository.findAll(specification, pageable)
-      .map { it.toDtoWithDetails() }
+      .map { it.toDtoBasic() }
   }
 
   fun getReportById(id: UUID): ReportWithDetails? {
