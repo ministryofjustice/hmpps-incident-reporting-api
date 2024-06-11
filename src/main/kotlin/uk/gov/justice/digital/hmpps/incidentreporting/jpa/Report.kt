@@ -124,6 +124,7 @@ class Report(
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
+  @BatchSize(size = 50)
   private val questions: MutableList<Question> = mutableListOf(),
 
   var questionSetId: String? = null,
