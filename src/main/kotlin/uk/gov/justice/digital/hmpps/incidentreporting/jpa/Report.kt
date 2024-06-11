@@ -15,6 +15,7 @@ import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import jakarta.persistence.OrderColumn
+import org.hibernate.annotations.BatchSize
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
@@ -94,25 +95,31 @@ class Report(
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderBy("changed_at ASC")
+  @BatchSize(size = 10)
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
   // TODO: what's this for?
   val assignedTo: String,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val staffInvolved: MutableList<StaffInvolvement> = mutableListOf(),
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val prisonersInvolved: MutableList<PrisonerInvolvement> = mutableListOf(),
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val locations: MutableList<Location> = mutableListOf(),
 
   // TODO: what's this for?
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val evidence: MutableList<Evidence> = mutableListOf(),
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val correctionRequests: MutableList<CorrectionRequest> = mutableListOf(),
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -123,6 +130,7 @@ class Report(
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderBy("changed_at ASC")
+  @BatchSize(size = 10)
   val history: MutableList<History> = mutableListOf(),
 
   var createdAt: LocalDateTime,

@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
+import org.hibernate.annotations.BatchSize
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.HistoricalQuestion as HistoricalQuestionDto
 
@@ -28,6 +29,7 @@ class HistoricalQuestion(
 
   @OneToMany(mappedBy = "historicalQuestion", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
+  @BatchSize(size = 10)
   private val responses: MutableList<HistoricalResponse> = mutableListOf(),
 ) {
   override fun toString(): String {
