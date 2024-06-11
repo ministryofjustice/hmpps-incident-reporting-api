@@ -48,7 +48,7 @@ class ReportService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun getReports(
+  fun getBasicReports(
     prisonId: String? = null,
     source: InformationSource? = null,
     statuses: List<Status> = emptyList(),
@@ -77,12 +77,12 @@ class ReportService(
       .map { it.toDtoBasic() }
   }
 
-  fun getReportById(id: UUID): ReportWithDetails? {
+  fun getReportWithDetailsById(id: UUID): ReportWithDetails? {
     return reportRepository.findOneEagerlyById(id)
       ?.toDtoWithDetails()
   }
 
-  fun getReportByIncidentNumber(incidentNumber: String): ReportWithDetails? {
+  fun getReportWithDetailsByIncidentNumber(incidentNumber: String): ReportWithDetails? {
     return reportRepository.findOneEagerlyByIncidentNumber(incidentNumber)
       ?.toDtoWithDetails()
   }

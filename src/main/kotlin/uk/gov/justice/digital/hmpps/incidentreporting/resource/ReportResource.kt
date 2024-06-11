@@ -78,7 +78,7 @@ class ReportResource(
       ),
     ],
   )
-  fun getReports(
+  fun getBasicReports(
     @Schema(
       description = "Filter by given prison ID",
       required = false,
@@ -164,7 +164,7 @@ class ReportResource(
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
-    return reportService.getReports(
+    return reportService.getBasicReports(
       prisonId = prisonId,
       source = source,
       statuses = status ?: emptyList(),
@@ -206,12 +206,12 @@ class ReportResource(
       ),
     ],
   )
-  fun getReport(
+  fun getReportWithDetailsById(
     @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
     @PathVariable
     id: UUID,
   ): ReportWithDetails {
-    return reportService.getReportById(id = id)
+    return reportService.getReportWithDetailsById(id = id)
       ?: throw ReportNotFoundException(id)
   }
 
@@ -243,12 +243,12 @@ class ReportResource(
       ),
     ],
   )
-  fun getReportByNumber(
+  fun getReportWithDetailsByIncidentNumber(
     @Schema(description = "The incident report number", example = "2342341242", required = true)
     @PathVariable
     incidentNumber: String,
   ): ReportWithDetails {
-    return reportService.getReportByIncidentNumber(incidentNumber)
+    return reportService.getReportWithDetailsByIncidentNumber(incidentNumber)
       ?: throw ReportNotFoundException(incidentNumber)
   }
 
