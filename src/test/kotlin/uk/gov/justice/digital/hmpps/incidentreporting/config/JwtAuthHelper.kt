@@ -28,8 +28,8 @@ class JwtAuthHelper {
 
   fun setAuthorisation(
     user: String = SYSTEM_USERNAME,
-    roles: List<String> = listOf(),
-    scopes: List<String> = listOf(),
+    roles: List<String> = emptyList(),
+    scopes: List<String> = emptyList(),
   ): (HttpHeaders) -> Unit {
     val token = createJwt(
       subject = user,
@@ -42,8 +42,8 @@ class JwtAuthHelper {
 
   internal fun createJwt(
     subject: String?,
-    scope: List<String>? = listOf(),
-    roles: List<String>? = listOf(),
+    scope: List<String>? = emptyList(),
+    roles: List<String>? = emptyList(),
     expiryTime: Duration = Duration.ofHours(1),
     jwtId: String = UUID.randomUUID().toString(),
   ): String =

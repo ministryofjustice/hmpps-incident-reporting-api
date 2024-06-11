@@ -6,6 +6,7 @@ import org.awaitility.kotlin.await
 import org.awaitility.kotlin.matches
 import org.awaitility.kotlin.untilCallTo
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DynamicTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.SpyBean
@@ -103,9 +104,66 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
 
   protected fun setAuthorisation(
     user: String = SYSTEM_USERNAME,
-    roles: List<String> = listOf(),
-    scopes: List<String> = listOf(),
+    roles: List<String> = emptyList(),
+    scopes: List<String> = emptyList(),
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
+
+  protected fun endpointRequiresAuthorisation(
+    endpoint: WebTestClient.RequestHeadersSpec<*>,
+    requiredRole: String? = null,
+    requiredScope: String? = null,
+  ): List<DynamicTest> = buildList {
+    val request = endpoint.header("Content-Type", "application/json")
+
+    add(
+      DynamicTest.dynamicTest("access forbidden with no authority") {
+        request
+          .header(HttpHeaders.AUTHORIZATION, null)
+          .exchange()
+          .expectStatus().isUnauthorized
+      },
+    )
+
+    add(
+      DynamicTest.dynamicTest("access forbidden with no role") {
+        request
+          .headers(setAuthorisation())
+          .exchange()
+          .expectStatus().isForbidden
+      },
+    )
+
+    requiredRole?.let {
+      add(
+        DynamicTest.dynamicTest("access forbidden with wrong role") {
+          request
+            .headers(setAuthorisation(roles = listOf("ROLE_INCORRECT")))
+            .exchange()
+            .expectStatus().isForbidden
+        },
+      )
+
+      requiredScope?.let {
+        add(
+          DynamicTest.dynamicTest("access forbidden with right role, but wrong scope") {
+            request
+              .headers(setAuthorisation(roles = listOf("ROLE_$requiredRole"), scopes = listOf("incorrect")))
+              .exchange()
+              .expectStatus().isForbidden
+          },
+        )
+
+        add(
+          DynamicTest.dynamicTest("access forbidden with right scope, but wrong role") {
+            request
+              .headers(setAuthorisation(roles = listOf("ROLE_INCORRECT"), scopes = listOf(requiredScope)))
+              .exchange()
+              .expectStatus().isForbidden
+          },
+        )
+      }
+    }
+  }
 
   protected fun Any.toJson(): String = objectMapper.writeValueAsString(this)
 

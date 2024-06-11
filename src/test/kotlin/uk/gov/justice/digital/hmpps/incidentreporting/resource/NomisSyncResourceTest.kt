@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -295,45 +296,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
     )
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.post().uri("/sync/upsert")
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.post().uri("/sync/upsert")
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .bodyValue(syncRequest.toJson())
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.post().uri("/sync/upsert")
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .bodyValue(syncRequest.toJson())
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with right role, wrong scope`() {
-        webTestClient.post().uri("/sync/upsert")
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .bodyValue(syncRequest.toJson())
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.post().uri("/sync/upsert").bodyValue(syncRequest.toJson()),
+      "MIGRATE_INCIDENT_REPORTS",
+      "write",
+    )
 
     @DisplayName("validates requests")
     @Nested

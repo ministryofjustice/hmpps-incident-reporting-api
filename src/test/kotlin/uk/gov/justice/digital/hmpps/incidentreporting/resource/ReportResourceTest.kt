@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
@@ -59,33 +60,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     private val url = "/incident-reports"
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.get().uri(url)
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -416,33 +395,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.get().uri(url)
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -529,33 +486,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.get().uri(url)
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -648,46 +583,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     )
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.post().uri(url)
-          .bodyValue(createReportRequest.toJson())
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .bodyValue(createReportRequest.toJson())
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .bodyValue(createReportRequest.toJson())
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with right role, wrong scope`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .bodyValue(createReportRequest.toJson())
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.post().uri(url).bodyValue(createReportRequest.toJson()),
+      "VIEW_INCIDENT_REPORTS",
+      "write",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -873,33 +774,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.delete().uri(url)
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.delete().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.delete().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.delete().uri(url),
+      "MAINTAIN_INCIDENT_REPORTS",
+      "write",
+    )
 
     @DisplayName("validates requests")
     @Nested
