@@ -384,14 +384,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
-  @DisplayName("GET /incident-reports/{id}")
+  @DisplayName("GET /incident-reports/{id}/with-details")
   @Nested
   inner class GetReportById {
     private lateinit var url: String
 
     @BeforeEach
     fun setUp() {
-      url = "/incident-reports/${existingReport.id}"
+      url = "/incident-reports/${existingReport.id}/with-details"
     }
 
     @DisplayName("is secured")
@@ -406,7 +406,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class Validation {
       @Test
       fun `cannot get a report by ID if it is not found`() {
-        webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
+        webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555/with-details")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -475,14 +475,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
-  @DisplayName("GET /incident-reports/incident-number/{incident-number}")
+  @DisplayName("GET /incident-reports/incident-number/{incident-number}/with-details")
   @Nested
   inner class GetReportByIncidentNumber {
     private lateinit var url: String
 
     @BeforeEach
     fun setUp() {
-      url = "/incident-reports/incident-number/${existingReport.incidentNumber}"
+      url = "/incident-reports/incident-number/${existingReport.incidentNumber}/with-details"
     }
 
     @DisplayName("is secured")
@@ -497,7 +497,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class Validation {
       @Test
       fun `cannot get a report by incident number if it is not found`() {
-        webTestClient.get().uri("/incident-reports/incident-number/IR-11111111")
+        webTestClient.get().uri("/incident-reports/incident-number/IR-11111111/with-details")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()

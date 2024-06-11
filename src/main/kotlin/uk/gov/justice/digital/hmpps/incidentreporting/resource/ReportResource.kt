@@ -178,7 +178,7 @@ class ReportResource(
       .toSimplePage()
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/{id}/with-details")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
@@ -215,7 +215,7 @@ class ReportResource(
       ?: throw ReportNotFoundException(id)
   }
 
-  @GetMapping("/incident-number/{incidentNumber}")
+  @GetMapping("/incident-number/{incidentNumber}/with-details")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
