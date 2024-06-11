@@ -107,7 +107,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     scopes: List<String> = listOf(),
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
 
-  protected fun jsonString(any: Any) = objectMapper.writeValueAsString(any) as String
+  protected fun Any.toJson(): String = objectMapper.writeValueAsString(this)
 
   companion object {
     private val localStackContainer = LocalStackContainer.instance

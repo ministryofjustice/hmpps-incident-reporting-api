@@ -653,7 +653,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `access forbidden when no authority`() {
         webTestClient.post().uri(url)
-          .bodyValue(jsonString(createReportRequest))
+          .bodyValue(createReportRequest.toJson())
           .exchange()
           .expectStatus().isUnauthorized
       }
@@ -663,7 +663,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf()))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest))
+          .bodyValue(createReportRequest.toJson())
           .exchange()
           .expectStatus().isForbidden
       }
@@ -673,7 +673,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest))
+          .bodyValue(createReportRequest.toJson())
           .exchange()
           .expectStatus().isForbidden
       }
@@ -683,7 +683,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest))
+          .bodyValue(createReportRequest.toJson())
           .exchange()
           .expectStatus().isForbidden
       }
@@ -707,7 +707,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest.copy(createNewEvent = false)))
+          .bodyValue(createReportRequest.copy(createNewEvent = false).toJson())
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
@@ -720,13 +720,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(
-            jsonString(
-              createReportRequest.copy(
-                type = Type.OLD_ASSAULT,
-              ),
-            ),
-          )
+          .bodyValue(createReportRequest.copy(type = Type.OLD_ASSAULT).toJson())
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
@@ -743,7 +737,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest))
+          .bodyValue(createReportRequest.toJson())
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(
@@ -804,7 +798,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest.copy(createNewEvent = false, linkedEventId = existingReport.event.eventId)))
+          .bodyValue(
+            createReportRequest.copy(
+              createNewEvent = false,
+              linkedEventId = existingReport.event.eventId,
+            ).toJson(),
+          )
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(

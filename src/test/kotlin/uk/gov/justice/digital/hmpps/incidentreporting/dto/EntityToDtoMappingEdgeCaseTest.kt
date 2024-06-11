@@ -99,14 +99,14 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
     @Test
     fun `can serialise basic report`() {
       val expectedJson = getResource("/entity-mapping/sample-report-basic.json")
-      val json = objectMapper.writeValueAsString(report.toDtoBasic())
+      val json = report.toDtoBasic().toJson()
       JsonExpectationsHelper().assertJsonEqual(expectedJson, json, false)
     }
 
     @Test
     fun `can serialise report with all related details`() {
       val expectedJson = getResource("/entity-mapping/sample-report-with-details.json")
-      val json = objectMapper.writeValueAsString(report.toDtoWithDetails())
+      val json = report.toDtoWithDetails().toJson()
       JsonExpectationsHelper().assertJsonEqual(expectedJson, json, false)
     }
   }
