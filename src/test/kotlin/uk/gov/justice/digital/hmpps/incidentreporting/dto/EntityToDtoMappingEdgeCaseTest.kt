@@ -3,11 +3,14 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.util.JsonExpectationsHelper
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 
@@ -36,12 +39,15 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
       reportTime = now,
     )
     assertThat(unsavedReport.id).isNull()
-    assertThatThrownBy { unsavedReport.toDto() }
+    assertThatThrownBy { unsavedReport.toDtoBasic() }
+      .isInstanceOf(NullPointerException::class.java)
+    assertThatThrownBy { unsavedReport.toDtoWithDetails() }
       .isInstanceOf(NullPointerException::class.java)
 
     val savedReport = reportRepository.save(unsavedReport)
     assertThat(savedReport.id).isNotNull()
-    assertThat(savedReport.toDto().id).isEqualTo(savedReport.id)
+    assertThat(savedReport.toDtoBasic().id).isEqualTo(savedReport.id)
+    assertThat(savedReport.toDtoWithDetails().id).isEqualTo(savedReport.id)
   }
 
   @Test
@@ -53,7 +59,8 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
         source = InformationSource.NOMIS,
       ),
     )
-    assertThat(reportFromNomis.toDto().createdInNomis).isTrue()
+    assertThat(reportFromNomis.toDtoBasic().createdInNomis).isTrue()
+    assertThat(reportFromNomis.toDtoWithDetails().createdInNomis).isTrue()
 
     val reportFromDps = reportRepository.save(
       buildIncidentReport(
@@ -62,6 +69,45 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
         source = InformationSource.DPS,
       ),
     )
-    assertThat(reportFromDps.toDto().createdInNomis).isFalse()
+    assertThat(reportFromDps.toDtoBasic().createdInNomis).isFalse()
+    assertThat(reportFromDps.toDtoWithDetails().createdInNomis).isFalse()
+  }
+
+  @Nested
+  inner class Serialisation {
+    private lateinit var report: Report
+
+    @BeforeEach
+    fun setUp() {
+      report = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "IR-0000000001124143",
+          reportTime = now,
+          source = InformationSource.DPS,
+          generateStaffInvolvement = 2,
+          generatePrisonerInvolvement = 2,
+          generateLocations = 1,
+          generateCorrections = 1,
+          generateEvidence = 1,
+          generateQuestions = 3,
+          generateResponses = 2,
+          generateHistory = 2,
+        ),
+      )
+    }
+
+    @Test
+    fun `can serialise basic report`() {
+      val expectedJson = getResource("/entity-mapping/sample-report-basic.json")
+      val json = objectMapper.writeValueAsString(report.toDtoBasic())
+      JsonExpectationsHelper().assertJsonEqual(expectedJson, json, false)
+    }
+
+    @Test
+    fun `can serialise report with all related details`() {
+      val expectedJson = getResource("/entity-mapping/sample-report-with-details.json")
+      val json = objectMapper.writeValueAsString(report.toDtoWithDetails())
+      JsonExpectationsHelper().assertJsonEqual(expectedJson, json, false)
+    }
   }
 }

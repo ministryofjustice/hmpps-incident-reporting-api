@@ -1,0 +1,269 @@
+{
+  "incidentNumber": "IR-0000000001124143",
+  "type": "FINDS",
+  "incidentDateAndTime": "2023-12-05T11:34:56",
+  "prisonId": "MDI",
+  "title": "Incident Report IR-0000000001124143",
+  "description": "A new incident created in the new service of type Finds",
+  "reportedBy": "USER1",
+  "reportedAt": "2023-12-05T12:34:56",
+  "status": "DRAFT",
+  "assignedTo": "USER1",
+  "createdAt": "2023-12-05T12:34:56",
+  "modifiedAt": "2023-12-05T12:34:56",
+  "modifiedBy": "USER1",
+  "createdInNomis": false,
+  "event": {
+    "eventId": "IE-0000000001124143",
+    "eventDateAndTime": "2023-12-05T11:34:56",
+    "prisonId": "MDI",
+    "title": "An event occurred",
+    "description": "Details of the event",
+    "createdAt": "2023-12-05T12:34:56",
+    "modifiedAt": "2023-12-05T12:34:56",
+    "modifiedBy": "USER1"
+  },
+  "questions": [
+    {
+      "code": "QID-000000000001",
+      "question": "Question #1",
+      "responses": [
+        {
+          "response": "Response #1",
+          "recordedBy": "some-user",
+          "recordedAt": "2023-12-05T12:34:56",
+          "additionalInformation": "Prose #1"
+        },
+        {
+          "response": "Response #2",
+          "recordedBy": "some-user",
+          "recordedAt": "2023-12-05T12:34:56",
+          "additionalInformation": "Prose #2"
+        }
+      ],
+      "additionalInformation": "Explanation #1"
+    },
+    {
+      "code": "QID-000000000002",
+      "question": "Question #2",
+      "responses": [
+        {
+          "response": "Response #1",
+          "recordedBy": "some-user",
+          "recordedAt": "2023-12-05T12:34:56",
+          "additionalInformation": "Prose #1"
+        },
+        {
+          "response": "Response #2",
+          "recordedBy": "some-user",
+          "recordedAt": "2023-12-05T12:34:56",
+          "additionalInformation": "Prose #2"
+        }
+      ],
+      "additionalInformation": "Explanation #2"
+    },
+    {
+      "code": "QID-000000000003",
+      "question": "Question #3",
+      "responses": [
+        {
+          "response": "Response #1",
+          "recordedBy": "some-user",
+          "recordedAt": "2023-12-05T12:34:56",
+          "additionalInformation": "Prose #1"
+        },
+        {
+          "response": "Response #2",
+          "recordedBy": "some-user",
+          "recordedAt": "2023-12-05T12:34:56",
+          "additionalInformation": "Prose #2"
+        }
+      ],
+      "additionalInformation": "Explanation #3"
+    }
+  ],
+  "history": [
+    {
+      "type": "ASSAULT",
+      "changedAt": "2023-12-05T12:33:56",
+      "changedBy": "some-past-user",
+      "questions": [
+        {
+          "code": "QID-1-000000000001",
+          "question": "Historical question #1-1",
+          "responses": [
+            {
+              "response": "Historical response #1-1",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #1 in history #1"
+            },
+            {
+              "response": "Historical response #1-2",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #2 in history #1"
+            }
+          ],
+          "additionalInformation": "Explanation #1 in history #1"
+        },
+        {
+          "code": "QID-1-000000000002",
+          "question": "Historical question #1-2",
+          "responses": [
+            {
+              "response": "Historical response #1-1",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #1 in history #1"
+            },
+            {
+              "response": "Historical response #1-2",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #2 in history #1"
+            }
+          ],
+          "additionalInformation": "Explanation #2 in history #1"
+        },
+        {
+          "code": "QID-1-000000000003",
+          "question": "Historical question #1-3",
+          "responses": [
+            {
+              "response": "Historical response #1-1",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #1 in history #1"
+            },
+            {
+              "response": "Historical response #1-2",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #2 in history #1"
+            }
+          ],
+          "additionalInformation": "Explanation #3 in history #1"
+        }
+      ]
+    },
+    {
+      "type": "ATTEMPTED_ESCAPE_FROM_CUSTODY",
+      "changedAt": "2023-12-05T12:34:56",
+      "changedBy": "some-past-user",
+      "questions": [
+        {
+          "code": "QID-2-000000000001",
+          "question": "Historical question #2-1",
+          "responses": [
+            {
+              "response": "Historical response #2-1",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #1 in history #2"
+            },
+            {
+              "response": "Historical response #2-2",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #2 in history #2"
+            }
+          ],
+          "additionalInformation": "Explanation #1 in history #2"
+        },
+        {
+          "code": "QID-2-000000000002",
+          "question": "Historical question #2-2",
+          "responses": [
+            {
+              "response": "Historical response #2-1",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #1 in history #2"
+            },
+            {
+              "response": "Historical response #2-2",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #2 in history #2"
+            }
+          ],
+          "additionalInformation": "Explanation #2 in history #2"
+        },
+        {
+          "code": "QID-2-000000000003",
+          "question": "Historical question #2-3",
+          "responses": [
+            {
+              "response": "Historical response #2-1",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #1 in history #2"
+            },
+            {
+              "response": "Historical response #2-2",
+              "recordedBy": "some-user",
+              "recordedAt": "2023-12-05T12:34:56",
+              "additionalInformation": "Prose #2 in history #2"
+            }
+          ],
+          "additionalInformation": "Explanation #3 in history #2"
+        }
+      ]
+    }
+  ],
+  "historyOfStatuses": [
+    {
+      "status": "DRAFT",
+      "changedAt": "2023-12-05T12:34:56",
+      "changedBy": "USER1"
+    }
+  ],
+  "staffInvolved": [
+    {
+      "staffUsername": "staff-1",
+      "staffRole": "AUTHORISING_OFFICER",
+      "comment": "Comment #1"
+    },
+    {
+      "staffUsername": "staff-2",
+      "staffRole": "CR_HEAD",
+      "comment": "Comment #2"
+    }
+  ],
+  "prisonersInvolved": [
+    {
+      "prisonerNumber": "A0001AA",
+      "prisonerRole": "ACTIVE_INVOLVEMENT",
+      "outcome": "CHARGED_BY_POLICE",
+      "comment": "Comment #1"
+    },
+    {
+      "prisonerNumber": "A0002AA",
+      "prisonerRole": "ASSAILANT",
+      "outcome": "CONVICTED",
+      "comment": "Comment #2"
+    }
+  ],
+  "locations": [
+    {
+      "locationId": "1",
+      "type": "CELL",
+      "description": "Location #1"
+    }
+  ],
+  "evidence": [
+    {
+      "type": "PHOTO",
+      "description": "Evidence #1"
+    }
+  ],
+  "correctionRequests": [
+    {
+      "reason": "NOT_SPECIFIED",
+      "descriptionOfChange": "Fix request #1",
+      "correctionRequestedBy": "qa",
+      "correctionRequestedAt": "2023-12-05T12:34:56"
+    }
+  ]
+}

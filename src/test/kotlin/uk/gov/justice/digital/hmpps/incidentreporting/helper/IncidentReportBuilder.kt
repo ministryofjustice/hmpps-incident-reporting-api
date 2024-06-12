@@ -1,6 +1,10 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.helper
 
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
@@ -15,6 +19,15 @@ fun buildIncidentReport(
   status: Status = Status.DRAFT,
   type: Type = Type.FINDS,
   reportingUsername: String = "USER1",
+  // all related entities apart from event are optionally generated:
+  generateStaffInvolvement: Int = 0,
+  generatePrisonerInvolvement: Int = 0,
+  generateLocations: Int = 0,
+  generateCorrections: Int = 0,
+  generateEvidence: Int = 0,
+  generateQuestions: Int = 0,
+  generateResponses: Int = 0,
+  generateHistory: Int = 0,
 ): Report {
   val eventDateAndTime = reportTime.minusHours(1)
   val report = Report(
@@ -47,5 +60,84 @@ fun buildIncidentReport(
     ),
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)
+
+  (1..generateStaffInvolvement).forEach { staffIndex ->
+    report.addStaffInvolved(
+      username = "staff-$staffIndex",
+      staffRole = StaffRole.entries.elementAtWrapped(staffIndex),
+      comment = "Comment #$staffIndex",
+    )
+  }
+  (1..generatePrisonerInvolvement).forEach { prisonerIndex ->
+    report.addPrisonerInvolved(
+      prisonerNumber = "A%04dAA".format(prisonerIndex),
+      prisonerRole = PrisonerRole.entries.elementAtWrapped(prisonerIndex),
+      prisonerOutcome = PrisonerOutcome.entries.elementAtWrapped(prisonerIndex),
+      comment = "Comment #$prisonerIndex",
+    )
+  }
+  (1..generateLocations).forEach { locationIndex ->
+    report.addLocation(
+      locationId = "$locationIndex",
+      locationType = "CELL",
+      description = "Location #$locationIndex",
+    )
+  }
+  (1..generateCorrections).forEach { correctionIndex ->
+    report.addCorrectionRequest(
+      correctionRequestedAt = reportTime,
+      correctionRequestedBy = "qa",
+      reason = CorrectionReason.NOT_SPECIFIED,
+      descriptionOfChange = "Fix request #$correctionIndex",
+    )
+  }
+  (1..generateEvidence).forEach { evidenceIndex ->
+    report.addEvidence(
+      type = "PHOTO",
+      description = "Evidence #$evidenceIndex",
+    )
+  }
+
+  (1..generateQuestions).forEach { questionIndex ->
+    val question = report.addQuestion(
+      code = "QID-%012d".format(questionIndex),
+      question = "Question #$questionIndex",
+      additionalInformation = "Explanation #$questionIndex",
+    )
+    (1..generateResponses).forEach { responseIndex ->
+      question.addResponse(
+        response = "Response #$responseIndex",
+        additionalInformation = "Prose #$responseIndex",
+        recordedBy = "some-user",
+        recordedAt = reportTime,
+      )
+    }
+  }
+
+  (1..generateHistory).forEach { historyIndex ->
+    val history = report.addHistory(
+      type = Type.entries.elementAtWrapped(historyIndex),
+      changedAt = reportTime.minusMinutes((generateHistory - historyIndex).toLong()),
+      changedBy = "some-past-user",
+    )
+    (1..generateQuestions).forEach { questionIndex ->
+      val historicalQuestion = history.addQuestion(
+        code = "QID-$historyIndex-%012d".format(questionIndex),
+        question = "Historical question #$historyIndex-$questionIndex",
+        additionalInformation = "Explanation #$questionIndex in history #$historyIndex",
+      )
+      (1..generateResponses).forEach { responseIndex ->
+        historicalQuestion.addResponse(
+          response = "Historical response #$historyIndex-$responseIndex",
+          additionalInformation = "Prose #$responseIndex in history #$historyIndex",
+          recordedBy = "some-user",
+          recordedAt = reportTime,
+        )
+      }
+    }
+  }
+
   return report
 }
+
+fun <T> List<T>.elementAtWrapped(index: Int): T = get(index % size)

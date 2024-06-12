@@ -8,9 +8,14 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.NamedEntityGraphs
+import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import jakarta.persistence.OrderColumn
+import org.hibernate.annotations.BatchSize
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
@@ -19,6 +24,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
@@ -29,9 +36,27 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @Entity
+@NamedEntityGraphs(
+  value = [
+    NamedEntityGraph(
+      name = "Report.eager",
+      attributeNodes = [
+        NamedAttributeNode("event"),
+        NamedAttributeNode("questions", subgraph = "Report.eager.subgraph"),
+      ],
+      subgraphs = [
+        NamedSubgraph(
+          name = "Report.eager.subgraph",
+          attributeNodes = [
+            NamedAttributeNode("responses"),
+          ],
+        ),
+      ],
+    ),
+  ],
+)
 class Report(
   @Id
   @GeneratedUuidV7
@@ -65,39 +90,48 @@ class Report(
   var reportedBy: String,
   var reportedAt: LocalDateTime,
 
-  @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH], optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH], optional = false)
   var event: Event,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderBy("changed_at ASC")
+  @BatchSize(size = 10)
   val historyOfStatuses: MutableList<StatusHistory> = mutableListOf(),
 
   // TODO: what's this for?
   val assignedTo: String,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val staffInvolved: MutableList<StaffInvolvement> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val prisonersInvolved: MutableList<PrisonerInvolvement> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val locations: MutableList<Location> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  // TODO: what's this for?
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val evidence: MutableList<Evidence> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @BatchSize(size = 10)
   val correctionRequests: MutableList<CorrectionRequest> = mutableListOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
+  @BatchSize(size = 50)
   private val questions: MutableList<Question> = mutableListOf(),
 
   var questionSetId: String? = null,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderBy("changed_at ASC")
+  @BatchSize(size = 10)
   val history: MutableList<History> = mutableListOf(),
 
   var createdAt: LocalDateTime,
@@ -287,7 +321,25 @@ class Report(
     addNomisHistory(upsert.history)
   }
 
-  fun toDto() = ReportDto(
+  fun toDtoBasic() = ReportBasic(
+    id = id!!,
+    incidentNumber = incidentNumber,
+    incidentDateAndTime = incidentDateAndTime,
+    prisonId = prisonId,
+    type = type,
+    title = title,
+    description = description,
+    reportedBy = reportedBy,
+    reportedAt = reportedAt,
+    status = status,
+    assignedTo = assignedTo,
+    createdAt = createdAt,
+    modifiedAt = modifiedAt,
+    modifiedBy = modifiedBy,
+    createdInNomis = source == InformationSource.NOMIS,
+  )
+
+  fun toDtoWithDetails() = ReportWithDetails(
     id = id!!,
     incidentNumber = incidentNumber,
     incidentDateAndTime = incidentDateAndTime,

@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffender
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffenderParty
@@ -42,9 +43,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.sql.SQLException
-import java.util.Optional
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 class NomisSyncServiceTest {
   private val reportRepository: ReportRepository = mock()
@@ -230,7 +229,7 @@ class NomisSyncServiceTest {
       event.modifiedBy == sampleEvent.modifiedBy
   }
 
-  private fun assertSampleReportConvertedToDto(report: ReportDto) {
+  private fun assertSampleReportConvertedToDto(report: ReportWithDetails) {
     assertThat(report.id).isEqualTo(sampleReportId)
     assertThat(report.incidentNumber).isEqualTo("112414323")
     assertThat(report.type).isEqualTo(Type.SELF_HARM)
@@ -342,7 +341,7 @@ class NomisSyncServiceTest {
       initialMigration = false,
     )
 
-    whenever(reportRepository.findById(sampleReportId)).thenReturn(Optional.of(sampleReport))
+    whenever(reportRepository.findOneEagerlyById(sampleReportId)).thenReturn(sampleReport)
 
     val report = syncService.upsert(syncRequest)
 
@@ -374,7 +373,7 @@ class NomisSyncServiceTest {
       initialMigration = false,
     )
 
-    whenever(reportRepository.findById(missingId)).thenReturn(Optional.empty())
+    whenever(reportRepository.findOneEagerlyById(missingId)).thenReturn(null)
 
     assertThatThrownBy {
       syncService.upsert(syncRequest)
@@ -402,7 +401,7 @@ class NomisSyncServiceTest {
     }.isInstanceOf(ValidationException::class.java)
 
     // verify entity not even looked up
-    verify(reportRepository, never()).findById(any())
+    verify(reportRepository, never()).findOneEagerlyById(any())
 
     // verify telemetry not sent
     verify(telemetryClient, never()).trackEvent(anyOrNull(), anyOrNull(), anyOrNull())

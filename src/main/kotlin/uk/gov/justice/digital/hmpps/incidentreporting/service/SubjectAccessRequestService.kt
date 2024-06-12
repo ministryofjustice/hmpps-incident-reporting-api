@@ -17,7 +17,7 @@ class SubjectAccessRequestService(
       .map { it.getReport() }
       .distinctBy { it.id }
       .filter { it.incidentDateAndTime.isAfter(fromDate?.atStartOfDay()) && it.incidentDateAndTime.isBefore(toDate?.atStartOfDay()) }
-      .map { it.toDto() }
+      .map { it.toDtoWithDetails() }
       .sortedBy { it.incidentDateAndTime }
       .toList()
     return HmppsSubjectAccessRequestContent(

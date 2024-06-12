@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
@@ -37,7 +39,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventT
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import java.time.LocalDate
 import java.util.UUID
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Report as ReportDto
 
 @RestController
 @Validated
@@ -53,7 +54,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns pages of filtered incident reports",
+    summary = "Returns pages of filtered incident reports (with only basic information)",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(
@@ -77,7 +78,7 @@ class ReportResource(
       ),
     ],
   )
-  fun getReports(
+  fun getBasicReports(
     @Schema(
       description = "Filter by given prison ID",
       required = false,
@@ -159,11 +160,11 @@ class ReportResource(
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
-  ): SimplePage<ReportDto> {
+  ): SimplePage<ReportBasic> {
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
-    return reportService.getReports(
+    return reportService.getBasicReports(
       prisonId = prisonId,
       source = source,
       statuses = status ?: emptyList(),
@@ -181,7 +182,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns the incident report information for this ID",
+    summary = "Returns the incident report (with all related details) for this ID",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(
@@ -205,12 +206,12 @@ class ReportResource(
       ),
     ],
   )
-  fun getReport(
+  fun getReportWithDetailsById(
     @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
     @PathVariable
     id: UUID,
-  ): ReportDto {
-    return reportService.getReportById(id = id)
+  ): ReportWithDetails {
+    return reportService.getReportWithDetailsById(id = id)
       ?: throw ReportNotFoundException(id)
   }
 
@@ -218,7 +219,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns the incident report information for this incident number",
+    summary = "Returns the incident report (with all related details) for this incident number",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(
@@ -242,12 +243,12 @@ class ReportResource(
       ),
     ],
   )
-  fun getReportByNumber(
+  fun getReportWithDetailsByIncidentNumber(
     @Schema(description = "The incident report number", example = "2342341242", required = true)
     @PathVariable
     incidentNumber: String,
-  ): ReportDto {
-    return reportService.getReportByIncidentNumber(incidentNumber)
+  ): ReportWithDetails {
+    return reportService.getReportWithDetailsByIncidentNumber(incidentNumber)
       ?: throw ReportNotFoundException(incidentNumber)
   }
 
@@ -293,7 +294,7 @@ class ReportResource(
     @RequestBody
     @Valid
     createReportRequest: CreateReportRequest,
-  ): ReportDto {
+  ): ReportWithDetails {
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_CREATED,
       InformationSource.DPS,
@@ -348,7 +349,7 @@ class ReportResource(
     )
     @RequestParam(required = false)
     deleteOrphanedEvents: Boolean = true,
-  ): ReportDto {
+  ): ReportWithDetails {
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_DELETED,
       InformationSource.DPS,

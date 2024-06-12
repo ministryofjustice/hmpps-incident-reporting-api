@@ -181,11 +181,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "content": [{
                 "id": "${existingReport.id}",
                 "incidentNumber": "IR-0000000001124143",
-                "incidentDateAndTime": "2023-12-05T11:34:56",
-                "event": {
-                  "eventId": "IE-0000000001124143",
-                  "eventDateAndTime": "2023-12-05T11:34:56"
-                }
+                "incidentDateAndTime": "2023-12-05T11:34:56"
               }],
               "number": 0,
               "size": 20,
@@ -234,43 +230,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "content": [
                   {
                     "incidentNumber": "IR-0000000001124143",
-                    "incidentDateAndTime": "2023-12-05T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001124143",
-                      "eventDateAndTime": "2023-12-05T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-05T11:34:56"
                   },
                   {
                     "incidentNumber": "IR-0000000001017203",
-                    "incidentDateAndTime": "2023-12-04T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001017203",
-                      "eventDateAndTime": "2023-12-04T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-04T11:34:56"
                   },
                   {
                     "incidentNumber": "IR-0000000001006603",
-                    "incidentDateAndTime": "2023-12-03T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001006603",
-                      "eventDateAndTime": "2023-12-03T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-03T11:34:56"
                   },
                   {
                     "incidentNumber": "94728",
-                    "incidentDateAndTime": "2023-12-02T11:34:56",
-                    "event": {
-                      "eventId": "94728",
-                      "eventDateAndTime": "2023-12-02T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-02T11:34:56"
                   },
                   {
                     "incidentNumber": "31934",
-                    "incidentDateAndTime": "2023-12-01T11:34:56",
-                    "event": {
-                      "eventId": "31934",
-                      "eventDateAndTime": "2023-12-01T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-01T11:34:56"
                   }
                 ],
                 "number": 0,
@@ -297,19 +273,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "content": [
                   {
                     "incidentNumber": "IR-0000000001124143",
-                    "incidentDateAndTime": "2023-12-05T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001124143",
-                      "eventDateAndTime": "2023-12-05T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-05T11:34:56"
                   },
                   {
                     "incidentNumber": "IR-0000000001017203",
-                    "incidentDateAndTime": "2023-12-04T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001017203",
-                      "eventDateAndTime": "2023-12-04T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-04T11:34:56"
                   }
                 ],
                 "number": 0,
@@ -336,19 +304,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "content": [
                   {
                     "incidentNumber": "IR-0000000001006603",
-                    "incidentDateAndTime": "2023-12-03T11:34:56",
-                    "event": {
-                      "eventId": "IE-0000000001006603",
-                      "eventDateAndTime": "2023-12-03T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-03T11:34:56"
                   },
                   {
                     "incidentNumber": "94728",
-                    "incidentDateAndTime": "2023-12-02T11:34:56",
-                    "event": {
-                      "eventId": "94728",
-                      "eventDateAndTime": "2023-12-02T11:34:56"
-                    }
+                    "incidentDateAndTime": "2023-12-02T11:34:56"
                   }
                 ],
                 "number": 1,
@@ -400,8 +360,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "sort": ["$sortParam"]
               }""",
               false,
-            ).jsonPath("content[*].incidentNumber")
-            .value<List<String>> {
+            ).jsonPath("content[*].incidentNumber").value<List<String>> {
               assertThat(it).isEqualTo(expectedIncidentNumbers)
             }
         }
@@ -983,7 +942,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        assertThat(reportRepository.findById(reportId)).isEmpty
+        assertThat(reportRepository.findOneEagerlyById(reportId)).isNull()
         if (deleteOrphanedEvents) {
           assertThat(eventRepository.findById(eventId)).isEmpty
         } else {
