@@ -16,10 +16,16 @@ class EventPublishAndAuditService(
   fun publishEvent(
     eventType: ReportDomainEventType,
     reportId: UUID,
+    incidentNumber: String,
     auditData: Any? = null,
     source: InformationSource,
   ) {
-    sendDomainEvent(eventType = eventType, reportId = reportId, source = source)
+    sendDomainEvent(
+      eventType = eventType,
+      reportId = reportId,
+      incidentNumber = incidentNumber,
+      source = source,
+    )
 
     auditData?.let {
       sendAuditEvent(
@@ -33,6 +39,7 @@ class EventPublishAndAuditService(
   private fun sendDomainEvent(
     eventType: ReportDomainEventType,
     reportId: UUID,
+    incidentNumber: String,
     source: InformationSource,
   ) {
     snsService.publishDomainEvent(
@@ -41,6 +48,7 @@ class EventPublishAndAuditService(
       occurredAt = LocalDateTime.now(clock),
       additionalInformation = AdditionalInformation(
         id = reportId,
+        incidentNumber = incidentNumber,
         source = source,
       ),
     )

@@ -66,8 +66,9 @@ class SnsService(
 }
 
 data class AdditionalInformation(
-  val id: UUID? = null,
-  val source: InformationSource? = null,
+  val id: UUID,
+  val incidentNumber: String,
+  val source: InformationSource,
 )
 
 data class HMPPSDomainEvent(
