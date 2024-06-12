@@ -73,7 +73,7 @@ data class AdditionalInformation(
 data class HMPPSDomainEvent(
   val eventType: String? = null,
   val additionalInformation: AdditionalInformation?,
-  val version: String = "1.0",
+  val version: Int = 1,
   val occurredAt: String,
   val description: String,
 )
