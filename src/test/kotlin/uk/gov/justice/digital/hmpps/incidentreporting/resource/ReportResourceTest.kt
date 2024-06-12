@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
@@ -23,6 +24,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventReposi
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import java.time.Clock
 
+@DisplayName("Report resource")
 class ReportResourceTest : SqsIntegrationTestBase() {
 
   @TestConfiguration
@@ -59,33 +61,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     private val url = "/incident-reports"
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.get().uri(url)
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -407,7 +387,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("GET /incident-reports/{id}")
   @Nested
-  inner class GetReportById {
+  inner class GetBasicReportById {
     private lateinit var url: String
 
     @BeforeEach
@@ -416,33 +396,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.get().uri(url)
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -450,6 +408,73 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `cannot get a report by ID if it is not found`() {
         webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can get a report by ID`() {
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1",
+              "createdInNomis": false
+            }
+            """,
+            true,
+          )
+      }
+    }
+  }
+
+  @DisplayName("GET /incident-reports/{id}/with-details")
+  @Nested
+  inner class GetReportWithDetailsById {
+    private lateinit var url: String
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/${existingReport.id}/with-details"
+    }
+
+    @DisplayName("is secured")
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot get a report by ID if it is not found`() {
+        webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555/with-details")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -520,7 +545,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("GET /incident-reports/incident-number/{incident-number}")
   @Nested
-  inner class GetReportByIncidentNumber {
+  inner class GetBasicReportByIncidentNumber {
     private lateinit var url: String
 
     @BeforeEach
@@ -529,33 +554,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.get().uri(url)
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -563,6 +566,73 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `cannot get a report by incident number if it is not found`() {
         webTestClient.get().uri("/incident-reports/incident-number/IR-11111111")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isNotFound
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can get a report by incident number`() {
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1",
+              "createdInNomis": false
+            }
+            """,
+            true,
+          )
+      }
+    }
+  }
+
+  @DisplayName("GET /incident-reports/incident-number/{incident-number}/with-details")
+  @Nested
+  inner class GetReportWithDetailsByIncidentNumber {
+    private lateinit var url: String
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/incident-number/${existingReport.incidentNumber}/with-details"
+    }
+
+    @DisplayName("is secured")
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.get().uri(url),
+      "VIEW_INCIDENT_REPORTS",
+    )
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot get a report by incident number if it is not found`() {
+        webTestClient.get().uri("/incident-reports/incident-number/IR-11111111/with-details")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -648,46 +718,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     )
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.post().uri(url)
-          .bodyValue(jsonString(createReportRequest))
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest))
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest))
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with right role, wrong scope`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest))
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.post().uri(url).bodyValue(createReportRequest.toJson()),
+      "VIEW_INCIDENT_REPORTS",
+      "write",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -707,7 +743,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest.copy(createNewEvent = false)))
+          .bodyValue(createReportRequest.copy(createNewEvent = false).toJson())
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
@@ -720,13 +756,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(
-            jsonString(
-              createReportRequest.copy(
-                type = Type.OLD_ASSAULT,
-              ),
-            ),
-          )
+          .bodyValue(createReportRequest.copy(type = Type.OLD_ASSAULT).toJson())
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
@@ -743,7 +773,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest))
+          .bodyValue(createReportRequest.toJson())
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(
@@ -804,7 +834,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(createReportRequest.copy(createNewEvent = false, linkedEventId = existingReport.event.eventId)))
+          .bodyValue(
+            createReportRequest.copy(
+              createNewEvent = false,
+              linkedEventId = existingReport.event.eventId,
+            ).toJson(),
+          )
           .exchange()
           .expectStatus().isCreated
           .expectBody().json(
@@ -874,33 +909,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.delete().uri(url)
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.delete().uri(url)
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.delete().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.delete().uri(url),
+      "MAINTAIN_INCIDENT_REPORTS",
+      "write",
+    )
 
     @DisplayName("validates requests")
     @Nested

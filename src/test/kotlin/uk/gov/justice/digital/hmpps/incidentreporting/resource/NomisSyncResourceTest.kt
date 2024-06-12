@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -39,6 +40,7 @@ import java.util.UUID
 
 private const val INCIDENT_NUMBER: Long = 112414323
 
+@DisplayName("NOMIS sync resource")
 @Transactional
 class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
@@ -295,45 +297,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
     )
 
     @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @Test
-      fun `access forbidden when no authority`() {
-        webTestClient.post().uri("/sync/upsert")
-          .exchange()
-          .expectStatus().isUnauthorized
-      }
-
-      @Test
-      fun `access forbidden when no role`() {
-        webTestClient.post().uri("/sync/upsert")
-          .headers(setAuthorisation(roles = listOf()))
-          .header("Content-Type", "application/json")
-          .bodyValue(jsonString(syncRequest))
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with wrong role`() {
-        webTestClient.post().uri("/sync/upsert")
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS")))
-          .header("Content-Type", "application/json")
-          .bodyValue(jsonString(syncRequest))
-          .exchange()
-          .expectStatus().isForbidden
-      }
-
-      @Test
-      fun `access forbidden with right role, wrong scope`() {
-        webTestClient.post().uri("/sync/upsert")
-          .headers(setAuthorisation(roles = listOf("ROLE_BANANAS"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .bodyValue(jsonString(syncRequest))
-          .exchange()
-          .expectStatus().isForbidden
-      }
-    }
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.post().uri("/sync/upsert").bodyValue(syncRequest.toJson()),
+      "MIGRATE_INCIDENT_REPORTS",
+      "write",
+    )
 
     @DisplayName("validates requests")
     @Nested
@@ -370,7 +339,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(initialSyncRequest))
+          .bodyValue(initialSyncRequest.toJson())
           .exchange()
           .expectStatus().isCreated
 
@@ -384,7 +353,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(initialSyncRequestRetry))
+          .bodyValue(initialSyncRequestRetry.toJson())
           .exchange()
           .expectStatus().isEqualTo(HttpStatus.CONFLICT)
           .expectBody().jsonPath("developerMessage").value<String> {
@@ -408,13 +377,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(updatedSyncRequest))
+          .bodyValue(updatedSyncRequest.toJson())
           .exchange()
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
             val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
-            val reportJson = objectMapper.writeValueAsString(report)
+            val reportJson = report.toJson()
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """
@@ -666,13 +635,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(newIncident))
+          .bodyValue(newIncident.toJson())
           .exchange()
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
             val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
-            val reportJson = objectMapper.writeValueAsString(report)
+            val reportJson = report.toJson()
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """
@@ -1133,13 +1102,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri("/sync/upsert")
           .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(jsonString(upsertMigration))
+          .bodyValue(upsertMigration.toJson())
           .exchange()
           .expectStatus().isOk
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
             val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
-            val reportJson = objectMapper.writeValueAsString(report)
+            val reportJson = report.toJson()
             JsonExpectationsHelper().assertJsonEqual(
               // language=json
               """

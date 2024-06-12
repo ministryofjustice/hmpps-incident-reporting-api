@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTes
  * At present, these are mostly field-by-field copies with some fields renamed.
  * NB: most conversions are already covered by resource and service tests.
  */
+@DisplayName("Mapping NOMIS DTOs to JPA entities")
 class NomisDtoToJpaMappingEdgeCaseTest {
   private val minimalReportDto = NomisReport(
     incidentId = 112414323,
