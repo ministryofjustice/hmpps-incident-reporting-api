@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +20,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
  * Largely, these mappings are field-by-field copies.
  * NB: most conversions are already covered by resource and service tests.
  */
+@DisplayName("Mapping JPA entities to DTOs")
 class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
   @Autowired
   lateinit var eventRepository: EventRepository
@@ -73,6 +75,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
     assertThat(reportFromDps.toDtoWithDetails().createdInNomis).isFalse()
   }
 
+  @DisplayName("serialisation to JSON")
   @Nested
   inner class Serialisation {
     private lateinit var report: Report

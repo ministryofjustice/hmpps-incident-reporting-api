@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventReposi
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import java.time.Clock
 
+@DisplayName("Report resource")
 class ReportResourceTest : SqsIntegrationTestBase() {
 
   @TestConfiguration

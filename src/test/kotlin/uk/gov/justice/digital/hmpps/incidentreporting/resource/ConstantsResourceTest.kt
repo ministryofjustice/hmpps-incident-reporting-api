@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 
+@DisplayName("Constants resource")
 class ConstantsResourceTest : SqsIntegrationTestBase() {
   @ParameterizedTest(name = "cannot access {0} constants without authorisation")
   @ValueSource(strings = ["prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types"])

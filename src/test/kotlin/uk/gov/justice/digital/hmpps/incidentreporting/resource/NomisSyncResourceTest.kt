@@ -40,6 +40,7 @@ import java.util.UUID
 
 private const val INCIDENT_NUMBER: Long = 112414323
 
+@DisplayName("NOMIS sync resource")
 @Transactional
 class NomisSyncResourceTest : SqsIntegrationTestBase() {
 

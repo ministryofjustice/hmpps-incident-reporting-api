@@ -5,6 +5,7 @@ import jakarta.validation.ValidationException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hibernate.exception.ConstraintViolationException
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -45,6 +46,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundExc
 import java.sql.SQLException
 import java.util.UUID
 
+@DisplayName("NOMIS sync service")
 class NomisSyncServiceTest {
   private val reportRepository: ReportRepository = mock()
   private val telemetryClient: TelemetryClient = mock()
