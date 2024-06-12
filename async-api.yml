@@ -1,0 +1,52 @@
+asyncapi: 3.0.0
+info:
+  title: Incident reporting service
+  description: Publishes events relating to incident reports
+  version: 1.0.0
+
+servers:
+  development:
+    host: hmpps-domain-events-dev.live-1.cloud-platform.service.justice.gov.uk
+    protocol: sqs
+    description: Development environment
+  preproduction:
+    host: hmpps-domain-events-preprod.live-1.cloud-platform.service.justice.gov.uk
+    protocol: sqs
+    description: Pre-production environment
+  production:
+    host: hmpps-domain-events-prod.live-1.cloud-platform.service.justice.gov.uk
+    protocol: sqs
+    description: Production environment
+
+components:
+  messages:
+    incident.report.created:
+      $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/incident-reporting-service/report-created.yml
+    incident.report.amended:
+      $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/incident-reporting-service/report-amended.yml
+    incident.report.deleted:
+      $ref: https://raw.githubusercontent.com/ministryofjustice/hmpps-domain-events/main/spec/schemas/incident-reporting-service/report-deleted.yml
+
+channels:
+  hmpps-domain-events:
+    description: HMPPS domain events SNS topic
+    bindings:
+      sns:
+        name: domainevents
+    messages:
+      incident.report.created:
+        $ref: '#/components/messages/incident.report.created'
+      incident.report.amended:
+        $ref: '#/components/messages/incident.report.amended'
+      incident.report.deleted:
+        $ref: '#/components/messages/incident.report.deleted'
+
+operations:
+  publish-event:
+    action: send
+    channel:
+      $ref: '#/channels/hmpps-domain-events'
+    messages:
+      - $ref: '#/channels/hmpps-domain-events/messages/incident.report.created'
+      - $ref: '#/channels/hmpps-domain-events/messages/incident.report.amended'
+      - $ref: '#/channels/hmpps-domain-events/messages/incident.report.deleted'
