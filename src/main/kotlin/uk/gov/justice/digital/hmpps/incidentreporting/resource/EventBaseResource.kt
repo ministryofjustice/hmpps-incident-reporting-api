@@ -20,6 +20,7 @@ abstract class EventBaseResource {
       eventPublishAndAuditService.publishEvent(
         eventType = event,
         reportId = report.id,
+        incidentNumber = report.incidentNumber,
         auditData = report,
         source = informationSource,
       )
