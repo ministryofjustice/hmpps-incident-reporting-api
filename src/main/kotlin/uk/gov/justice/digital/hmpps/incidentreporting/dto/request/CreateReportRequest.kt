@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.Clock
 import java.time.LocalDateTime
 
-@Schema(description = "Payload to create a new incident report")
+@Schema(description = "Payload to create a new draft incident report")
 data class CreateReportRequest(
   @Schema(description = "Incident report type", required = true)
   val type: Type,

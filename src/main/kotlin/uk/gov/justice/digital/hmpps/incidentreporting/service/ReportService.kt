@@ -149,9 +149,9 @@ class ReportService(
 
     val report = reportRepository.save(newReport).toDtoWithDetails()
 
-    log.info("Created incident report number=${report.incidentNumber} ID=${report.id}")
+    log.info("Created draft incident report number=${report.incidentNumber} ID=${report.id}")
     telemetryClient.trackEvent(
-      "Created incident report",
+      "Created draft incident report",
       report,
     )
 
