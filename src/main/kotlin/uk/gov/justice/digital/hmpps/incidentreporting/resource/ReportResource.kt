@@ -326,20 +326,20 @@ class ReportResource(
       ?: throw ReportNotFoundException(incidentNumber)
   }
 
-  @PostMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
+  @PostMapping("")
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
-    summary = "Creates an incident report",
+    summary = "Creates a draft incident report",
     description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
     responses = [
       ApiResponse(
         responseCode = "201",
-        description = "Returns created incident report",
+        description = "Returns created draft incident report",
       ),
       ApiResponse(
         responseCode = "400",
-        description = "Invalid Request",
+        description = "Invalid request",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
@@ -355,11 +355,6 @@ class ReportResource(
       ApiResponse(
         responseCode = "404",
         description = "Data not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
-      ),
-      ApiResponse(
-        responseCode = "409",
-        description = "Incident report already exists",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
     ],

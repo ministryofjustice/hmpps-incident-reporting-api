@@ -721,7 +721,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @TestFactory
     fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
       webTestClient.post().uri(url).bodyValue(createReportRequest.toJson()),
-      "VIEW_INCIDENT_REPORTS",
+      "MAINTAIN_INCIDENT_REPORTS",
       "write",
     )
 
@@ -752,6 +752,26 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue(invalidPayload)
           .exchange()
           .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains(fieldName)
+          }
+      }
+
+      @Test
+      fun `cannot create a report with invalid dates`() {
+        val invalidPayload = createReportRequest.copy(
+          incidentDateAndTime = now.minusMinutes(10),
+          reportedAt = now.minusMinutes(20),
+        ).toJson()
+        webTestClient.post().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(invalidPayload)
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("incidentDateAndTime must be before reportedAt")
+          }
       }
 
       @Test
@@ -785,7 +805,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can add a new incident`() {
+      fun `can add a new incident report`() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")

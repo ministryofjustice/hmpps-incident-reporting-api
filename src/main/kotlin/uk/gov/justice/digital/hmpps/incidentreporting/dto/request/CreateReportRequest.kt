@@ -43,6 +43,9 @@ data class CreateReportRequest(
     if (!type.active) {
       throw ValidationException("Inactive incident type $type")
     }
+    if (reportedAt < incidentDateAndTime) {
+      throw ValidationException("incidentDateAndTime must be before reportedAt")
+    }
   }
 
   fun toNewEntity(incidentNumber: String, event: Event, createdBy: String, clock: Clock): Report {
