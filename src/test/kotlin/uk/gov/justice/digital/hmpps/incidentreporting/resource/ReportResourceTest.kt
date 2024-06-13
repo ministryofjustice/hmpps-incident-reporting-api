@@ -713,7 +713,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       type = Type.SELF_HARM,
       prisonId = "MDI",
       reportedBy = "user2",
-      reportedDate = now,
+      reportedAt = now,
       createNewEvent = true,
     )
 

@@ -29,7 +29,7 @@ data class CreateReportRequest(
   @Schema(description = "Username of person who created the incident report", required = true)
   val reportedBy: String,
   @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
-  val reportedDate: LocalDateTime,
+  val reportedAt: LocalDateTime,
   // TODO: there is not yet a way to add any more details to a report, question-response pairs, etc
 ) {
   fun validate() {
@@ -52,7 +52,7 @@ data class CreateReportRequest(
       prisonId = prisonId,
       description = description,
       reportedBy = reportedBy,
-      reportedAt = reportedDate,
+      reportedAt = reportedAt,
       status = status,
       createdAt = now,
       modifiedAt = now,
