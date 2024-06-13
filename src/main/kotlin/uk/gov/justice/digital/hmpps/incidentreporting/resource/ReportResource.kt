@@ -88,7 +88,7 @@ class ReportResource(
       maxLength = 10,
     )
     @RequestParam(required = false)
-    @Size(min = 2, max = 10)
+    @Size(min = 2, max = 6)
     prisonId: String? = null,
     @Schema(
       description = "Filter by given information source",

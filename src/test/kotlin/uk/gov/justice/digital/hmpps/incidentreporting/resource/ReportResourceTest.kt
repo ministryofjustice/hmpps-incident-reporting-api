@@ -738,6 +738,22 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isBadRequest
       }
 
+      @ParameterizedTest(name = "cannot create a report with invalid `{0}` field")
+      @ValueSource(strings = ["prisonId", "title", "reportedBy"])
+      fun `cannot create a report with invalid fields`(fieldName: String) {
+        val invalidPayload = createReportRequest.copy(
+          prisonId = if (fieldName == "prisonId") "" else createReportRequest.prisonId,
+          title = if (fieldName == "title") "" else createReportRequest.title,
+          reportedBy = if (fieldName == "reportedBy") "" else createReportRequest.reportedBy,
+        ).toJson()
+        webTestClient.post().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(invalidPayload)
+          .exchange()
+          .expectStatus().isBadRequest
+      }
+
       @Test
       fun `cannot create a report without creating or linking event`() {
         webTestClient.post().uri(url)
