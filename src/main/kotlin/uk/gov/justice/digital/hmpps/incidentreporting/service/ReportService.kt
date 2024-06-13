@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
@@ -156,5 +157,24 @@ class ReportService(
     )
 
     return report
+  }
+
+  @Transactional
+  fun updateReport(id: UUID, updateReportRequest: UpdateReportRequest): ReportBasic? {
+    updateReportRequest.validate()
+
+    return reportRepository.findById(id).map {
+      updateReportRequest.updateExistingReport(
+        report = it,
+        updatedBy = authenticationFacade.getUserOrSystemInContext(),
+        clock = clock,
+      ).toDtoBasic().apply {
+        log.info("Updated incident report number=$incidentNumber ID=$id")
+        telemetryClient.trackEvent(
+          "Created draft incident report",
+          this,
+        )
+      }
+    }.getOrNull()
   }
 }
