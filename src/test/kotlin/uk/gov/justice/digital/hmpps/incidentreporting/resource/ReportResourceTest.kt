@@ -1469,7 +1469,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         @Test
         fun `can list objects for a report when there are two`() {
-          val expectedJson = getResource("/related-objects/$urlSuffix/list.json")
+          val expectedJson = getResource("/related-objects/$urlSuffix/list-response.json")
           webTestClient.get().uri(urlWithRelatedObjects)
             .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
             .header("Content-Type", "application/json")
