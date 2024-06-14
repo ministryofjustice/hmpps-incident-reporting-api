@@ -13,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import org.springframework.test.util.JsonExpectationsHelper
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
@@ -713,7 +715,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       type = Type.SELF_HARM,
       prisonId = "MDI",
       reportedBy = "user2",
-      reportedDate = now,
+      reportedAt = now,
       createNewEvent = true,
     )
 
@@ -721,7 +723,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @TestFactory
     fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
       webTestClient.post().uri(url).bodyValue(createReportRequest.toJson()),
-      "VIEW_INCIDENT_REPORTS",
+      "MAINTAIN_INCIDENT_REPORTS",
       "write",
     )
 
@@ -736,6 +738,48 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue("{}")
           .exchange()
           .expectStatus().isBadRequest
+
+        assertNoDomainMessagesSent()
+      }
+
+      @ParameterizedTest(name = "cannot create a report with invalid `{0}` field")
+      @ValueSource(strings = ["prisonId", "title", "reportedBy"])
+      fun `cannot create a report with invalid fields`(fieldName: String) {
+        val invalidPayload = createReportRequest.copy(
+          prisonId = if (fieldName == "prisonId") "" else createReportRequest.prisonId,
+          title = if (fieldName == "title") "" else createReportRequest.title,
+          reportedBy = if (fieldName == "reportedBy") "" else createReportRequest.reportedBy,
+        ).toJson()
+        webTestClient.post().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(invalidPayload)
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains(fieldName)
+          }
+
+        assertNoDomainMessagesSent()
+      }
+
+      @Test
+      fun `cannot create a report with invalid dates`() {
+        val invalidPayload = createReportRequest.copy(
+          incidentDateAndTime = now.minusMinutes(10),
+          reportedAt = now.minusMinutes(20),
+        ).toJson()
+        webTestClient.post().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(invalidPayload)
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("incidentDateAndTime must be before reportedAt")
+          }
+
+        assertNoDomainMessagesSent()
       }
 
       @Test
@@ -749,6 +793,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains("Either createNewEvent or linkedEventId must be provided")
           }
+
+        assertNoDomainMessagesSent()
       }
 
       @Test
@@ -762,6 +808,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains("Inactive incident type OLD_ASSAULT")
           }
+
+        assertNoDomainMessagesSent()
       }
     }
 
@@ -769,7 +817,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can add a new incident`() {
+      fun `can add a new incident report`() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
@@ -898,6 +946,328 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
+  @DisplayName("PATCH /incident-reports/{id}")
+  @Nested
+  inner class UpdateReport {
+    private lateinit var url: String
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/${existingReport.id}"
+    }
+
+    @DisplayName("is secured")
+    @TestFactory
+    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+      webTestClient.patch().uri(url).bodyValue(UpdateReportRequest().toJson()),
+      "MAINTAIN_INCIDENT_REPORTS",
+      "write",
+    )
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot update a report with invalid payload`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue("[]")
+          .exchange()
+          .expectStatus().isBadRequest
+
+        assertNoDomainMessagesSent()
+      }
+
+      @ParameterizedTest(name = "cannot update a report with invalid `{0}` field")
+      @ValueSource(strings = ["prisonId", "title", "reportedBy"])
+      fun `cannot update a report with invalid fields`(fieldName: String) {
+        val invalidPayload = UpdateReportRequest(
+          prisonId = if (fieldName == "prisonId") "" else null,
+          title = if (fieldName == "title") "" else null,
+          reportedBy = if (fieldName == "reportedBy") "" else null,
+        ).toJson()
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(invalidPayload.toJson())
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains(fieldName)
+          }
+
+        assertNoDomainMessagesSent()
+      }
+
+      @Test
+      fun `cannot update a report with invalid dates`() {
+        val invalidPayload = UpdateReportRequest(
+          incidentDateAndTime = now.minusMinutes(10),
+          reportedAt = now.minusMinutes(20),
+        ).toJson()
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(invalidPayload)
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("incidentDateAndTime must be before reportedAt")
+          }
+
+        assertNoDomainMessagesSent()
+      }
+
+      @Test
+      fun `cannot update a missing report`() {
+        webTestClient.patch().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(UpdateReportRequest().toJson())
+          .exchange()
+          .expectStatus().isNotFound
+
+        assertNoDomainMessagesSent()
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can update an incident report with no changes`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(UpdateReportRequest().toJson())
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false
+            }
+            """,
+            true,
+          )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.amended" to InformationSource.DPS,
+            )
+        }
+      }
+
+      @Test
+      fun `can update all incident report fields`() {
+        val updateReportRequest = UpdateReportRequest(
+          incidentDateAndTime = now.minusHours(2),
+          prisonId = "LEI",
+          title = "Updated report IR-0000000001124143",
+          description = "Updated incident report of type Finds",
+          reportedBy = "different-user",
+          reportedAt = now.minusMinutes(2),
+        )
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updateReportRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T10:34:56",
+              "prisonId": "LEI",
+              "title": "Updated report IR-0000000001124143",
+              "description": "Updated incident report of type Finds",
+              "reportedBy": "different-user",
+              "reportedAt": "2023-12-05T12:32:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false
+            }
+            """,
+            true,
+          )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.amended" to InformationSource.DPS,
+            )
+        }
+      }
+
+      @ParameterizedTest(name = "can update `{0}` of an incident report")
+      @ValueSource(strings = ["incidentDateAndTime", "prisonId", "title", "description", "reportedBy", "reportedAt"])
+      fun `can update an incident report field`(fieldName: String) {
+        val updateReportRequest = UpdateReportRequest(
+          incidentDateAndTime = if (fieldName == "incidentDateAndTime") now.minusHours(2) else null,
+          prisonId = if (fieldName == "prisonId") "LEI" else null,
+          title = if (fieldName == "title") "Updated report IR-0000000001124143" else null,
+          description = if (fieldName == "description") "Updated incident report of type Finds" else null,
+          reportedBy = if (fieldName == "reportedBy") "different-user" else null,
+          reportedAt = if (fieldName == "reportedAt") now.minusMinutes(2) else null,
+        )
+        val expectedIncidentDateAndTime = if (fieldName == "incidentDateAndTime") {
+          "2023-12-05T10:34:56"
+        } else {
+          "2023-12-05T11:34:56"
+        }
+        val expectedPrisonId = if (fieldName == "prisonId") {
+          "LEI"
+        } else {
+          "MDI"
+        }
+        val expectedTitle = if (fieldName == "title") {
+          "Updated report IR-0000000001124143"
+        } else {
+          "Incident Report IR-0000000001124143"
+        }
+        val expectedDescription = if (fieldName == "description") {
+          "Updated incident report of type Finds"
+        } else {
+          "A new incident created in the new service of type Finds"
+        }
+        val expectedReportedBy = if (fieldName == "reportedBy") {
+          "different-user"
+        } else {
+          "USER1"
+        }
+        val expectedReportedAt = if (fieldName == "reportedAt") {
+          "2023-12-05T12:32:56"
+        } else {
+          "2023-12-05T12:34:56"
+        }
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updateReportRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "$expectedIncidentDateAndTime",
+              "prisonId": "$expectedPrisonId",
+              "title": "$expectedTitle",
+              "description": "$expectedDescription",
+              "reportedBy": "$expectedReportedBy",
+              "reportedAt": "$expectedReportedAt",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false
+            }
+            """,
+            true,
+          )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.amended" to InformationSource.DPS,
+            )
+        }
+      }
+
+      @ParameterizedTest(name = "can propagate updates to parent event when requested: {0}")
+      @ValueSource(booleans = [true, false])
+      fun `can propagate updates to parent event when requested`(updateEvent: Boolean) {
+        val updateReportRequest = UpdateReportRequest(
+          incidentDateAndTime = now.minusHours(2),
+          prisonId = "LEI",
+          title = "Updated report IR-0000000001124143",
+          description = "Updated incident report of type Finds",
+          reportedBy = "different-user",
+          reportedAt = now.minusMinutes(2),
+
+          updateEvent = updateEvent,
+        )
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updateReportRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+
+        val eventJson = eventRepository.findOneByEventId("IE-0000000001124143")!!
+          .toDto().toJson()
+        JsonExpectationsHelper().assertJsonEqual(
+          if (updateEvent) {
+            // language=json
+            """
+            {
+              "eventId": "IE-0000000001124143",
+              "eventDateAndTime": "2023-12-05T10:34:56",
+              "prisonId": "LEI",
+              "title": "Updated report IR-0000000001124143",
+              "description": "Updated incident report of type Finds",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API"
+            }
+            """
+          } else {
+            // language=json
+            """
+            {
+              "eventId": "IE-0000000001124143",
+              "eventDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "An event occurred",
+              "description": "Details of the event",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1"
+            }
+            """
+          },
+          eventJson,
+          false,
+        )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.amended" to InformationSource.DPS,
+            )
+        }
+      }
+    }
+  }
+
   @DisplayName("DELETE /incident-reports/{id}")
   @Nested
   inner class DeleteReportById {
@@ -927,7 +1297,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isNotFound
 
-        assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
+        assertNoDomainMessagesSent()
       }
     }
 

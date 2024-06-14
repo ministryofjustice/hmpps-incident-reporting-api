@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
@@ -149,12 +150,36 @@ class ReportService(
 
     val report = reportRepository.save(newReport).toDtoWithDetails()
 
-    log.info("Created incident report number=${report.incidentNumber} ID=${report.id}")
+    log.info("Created draft incident report number=${report.incidentNumber} ID=${report.id}")
     telemetryClient.trackEvent(
-      "Created incident report",
+      "Created draft incident report",
       report,
     )
 
     return report
+  }
+
+  @Transactional
+  fun updateReport(id: UUID, updateReportRequest: UpdateReportRequest): ReportBasic? {
+    updateReportRequest.validate()
+
+    return reportRepository.findById(id).map {
+      updateReportRequest.updateExistingReport(
+        report = it,
+        updatedBy = authenticationFacade.getUserOrSystemInContext(),
+        clock = clock,
+      ).toDtoBasic().apply {
+        val changeMessage = if (updateReportRequest.updateEvent) {
+          "Updated incident report and event"
+        } else {
+          "Updated incident report"
+        }
+        log.info("$changeMessage number=$incidentNumber ID=$id")
+        telemetryClient.trackEvent(
+          changeMessage,
+          this,
+        )
+      }
+    }.getOrNull()
   }
 }

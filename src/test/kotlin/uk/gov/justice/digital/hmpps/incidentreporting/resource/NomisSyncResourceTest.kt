@@ -1376,10 +1376,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         .apply(assertions)
     }
 
-    private fun assertNoDomainMessagesSent() {
-      assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
-    }
-
     private fun assertCreatedReportDomainMessageSent() {
       assertThat(getDomainEvents(1)).allMatch { event ->
         event.eventType == "incident.report.created" &&

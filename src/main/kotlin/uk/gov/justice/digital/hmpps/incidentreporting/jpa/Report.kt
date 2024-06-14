@@ -102,23 +102,28 @@ class Report(
   val assignedTo: String,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderBy("id ASC")
   @BatchSize(size = 10)
   val staffInvolved: MutableList<StaffInvolvement> = mutableListOf(),
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderBy("id ASC")
   @BatchSize(size = 10)
   val prisonersInvolved: MutableList<PrisonerInvolvement> = mutableListOf(),
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderBy("id ASC")
   @BatchSize(size = 10)
   val locations: MutableList<Location> = mutableListOf(),
 
   // TODO: what's this for?
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderBy("id ASC")
   @BatchSize(size = 10)
   val evidence: MutableList<Evidence> = mutableListOf(),
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderBy("id ASC")
   @BatchSize(size = 10)
   val correctionRequests: MutableList<CorrectionRequest> = mutableListOf(),
 

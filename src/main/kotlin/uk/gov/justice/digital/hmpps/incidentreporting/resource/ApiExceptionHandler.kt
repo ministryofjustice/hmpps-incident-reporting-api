@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.validation.FieldError
 import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -177,7 +178,12 @@ class ApiExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException::class)
   fun handleInvalidMethodArgumentException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse>? {
     val message = e.allErrors.joinToString(", ") {
-      "${it.objectName}: ${it.defaultMessage}"
+      val field = if (it is FieldError) {
+        "${it.objectName}.${it.field}"
+      } else {
+        it.objectName
+      }
+      "$field: ${it.defaultMessage}"
     }
     log.debug("MethodArgumentNotValidException caught: {}", message)
     return ResponseEntity

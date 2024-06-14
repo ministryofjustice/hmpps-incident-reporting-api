@@ -20,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -33,6 +34,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
@@ -88,7 +90,7 @@ class ReportResource(
       maxLength = 10,
     )
     @RequestParam(required = false)
-    @Size(min = 2, max = 10)
+    @Size(min = 2, max = 6)
     prisonId: String? = null,
     @Schema(
       description = "Filter by given information source",
@@ -326,20 +328,20 @@ class ReportResource(
       ?: throw ReportNotFoundException(incidentNumber)
   }
 
-  @PostMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
+  @PostMapping("")
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
-    summary = "Creates an incident report",
+    summary = "Creates a draft incident report",
     description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
     responses = [
       ApiResponse(
         responseCode = "201",
-        description = "Returns created incident report",
+        description = "Returns created draft incident report",
       ),
       ApiResponse(
         responseCode = "400",
-        description = "Invalid Request",
+        description = "Invalid request",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
@@ -357,11 +359,6 @@ class ReportResource(
         description = "Data not found",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
-      ApiResponse(
-        responseCode = "409",
-        description = "Incident report already exists",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
-      ),
     ],
   )
   fun createReport(
@@ -374,6 +371,56 @@ class ReportResource(
       InformationSource.DPS,
     ) {
       reportService.createReport(createReportRequest)
+    }
+  }
+
+  @PatchMapping("/{id}")
+  @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "Updates key properties of an existing incident report",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns updated incident report",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "Invalid request",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Missing required role. Requires the MAINTAIN_INCIDENT_REPORTS role with write scope.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Data not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
+  )
+  fun updateReport(
+    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @PathVariable
+    id: UUID,
+    @RequestBody
+    @Valid
+    updateReportRequest: UpdateReportRequest,
+  ): ReportBasic {
+    return eventPublishAndAudit(
+      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+      InformationSource.DPS,
+    ) {
+      reportService.updateReport(id, updateReportRequest)
+        ?: throw ReportNotFoundException(id)
     }
   }
 
