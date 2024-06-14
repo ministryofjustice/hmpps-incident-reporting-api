@@ -76,13 +76,18 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
 
   fun assertDomainEventSent(eventType: String): HMPPSDomainEvent {
     val sqsClient = testDomainEventQueue.sqsClient
-    val body = sqsClient.receiveMessage(ReceiveMessageRequest.builder().queueUrl(testDomainEventQueue.queueUrl).build()).get().messages()[0].body()
+    val request = ReceiveMessageRequest.builder().queueUrl(testDomainEventQueue.queueUrl).build()
+    val body = sqsClient.receiveMessage(request).get().messages()[0].body()
     val (message, attributes) = objectMapper.readValue(body, HMPPSMessage::class.java)
     assertThat(attributes.eventType.Value).isEqualTo(eventType)
     val domainEvent = objectMapper.readValue(message, HMPPSDomainEvent::class.java)
     assertThat(domainEvent.eventType).isEqualTo(eventType)
 
     return domainEvent
+  }
+
+  fun assertNoDomainMessagesSent() {
+    assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
   }
 
   fun getDomainEvents(messageCount: Int = 1): List<HMPPSDomainEvent> {

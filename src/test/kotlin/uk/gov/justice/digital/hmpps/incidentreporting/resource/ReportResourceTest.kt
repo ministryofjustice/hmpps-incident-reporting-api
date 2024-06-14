@@ -737,6 +737,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue("{}")
           .exchange()
           .expectStatus().isBadRequest
+
+        assertNoDomainMessagesSent()
       }
 
       @ParameterizedTest(name = "cannot create a report with invalid `{0}` field")
@@ -756,6 +758,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains(fieldName)
           }
+
+        assertNoDomainMessagesSent()
       }
 
       @Test
@@ -773,6 +777,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains("incidentDateAndTime must be before reportedAt")
           }
+
+        assertNoDomainMessagesSent()
       }
 
       @Test
@@ -786,6 +792,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains("Either createNewEvent or linkedEventId must be provided")
           }
+
+        assertNoDomainMessagesSent()
       }
 
       @Test
@@ -799,6 +807,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains("Inactive incident type OLD_ASSAULT")
           }
+
+        assertNoDomainMessagesSent()
       }
     }
 
@@ -964,6 +974,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue("[]")
           .exchange()
           .expectStatus().isBadRequest
+
+        assertNoDomainMessagesSent()
       }
 
       @ParameterizedTest(name = "cannot update a report with invalid `{0}` field")
@@ -983,6 +995,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains(fieldName)
           }
+
+        assertNoDomainMessagesSent()
       }
 
       @Test
@@ -1000,6 +1014,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains("incidentDateAndTime must be before reportedAt")
           }
+
+        assertNoDomainMessagesSent()
       }
 
       @Test
@@ -1010,6 +1026,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue(UpdateReportRequest().toJson())
           .exchange()
           .expectStatus().isNotFound
+
+        assertNoDomainMessagesSent()
       }
     }
 
@@ -1166,7 +1184,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isNotFound
 
-        assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
+        assertNoDomainMessagesSent()
       }
     }
 
