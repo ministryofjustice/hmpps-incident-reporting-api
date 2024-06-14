@@ -1401,4 +1401,97 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
   }
+
+  @Nested
+  abstract inner class RelatedObjects(val urlSuffix: String) {
+    abstract inner class ListObjects {
+      protected lateinit var url: String
+
+      @BeforeEach
+      fun setUp() {
+        url = "/incident-reports/${existingReport.id}/$urlSuffix"
+      }
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url),
+          "VIEW_INCIDENT_REPORTS",
+        )
+      }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot list objects for a report if it is not found`() {
+          webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555/$urlSuffix")
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isNotFound
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @Test
+        fun `can list objects for a report when there are none`() {
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              // language=json
+              "[]",
+              true,
+            )
+        }
+      }
+    }
+  }
+
+  @DisplayName("Staff involvement")
+  @Nested
+  inner class StaffInvolvement : RelatedObjects("staff-involved") {
+    @DisplayName("GET /incident-reports/{reportId}/staff-involved")
+    @Nested
+    inner class ListObjects : RelatedObjects.ListObjects()
+  }
+
+  @DisplayName("Prisoner involvement")
+  @Nested
+  inner class PrisonerInvolvement : RelatedObjects("prisoners-involved") {
+    @DisplayName("GET /incident-reports/{reportId}/prisoners-involved")
+    @Nested
+    inner class ListObjects : RelatedObjects.ListObjects()
+  }
+
+  @DisplayName("Locations")
+  @Nested
+  inner class Locations : RelatedObjects("locations") {
+    @DisplayName("GET /incident-reports/{reportId}/locations")
+    @Nested
+    inner class ListObjects : RelatedObjects.ListObjects()
+  }
+
+  @DisplayName("Evidence")
+  @Nested
+  inner class Evidence : RelatedObjects("evidence") {
+    @DisplayName("GET /incident-reports/{reportId}/evidence")
+    @Nested
+    inner class ListObjects : RelatedObjects.ListObjects()
+  }
+
+  @DisplayName("Correction requests")
+  @Nested
+  inner class CorrectionRequests : RelatedObjects("correction-requests") {
+    @DisplayName("GET /incident-reports/{reportId}/correction-requests")
+    @Nested
+    inner class ListObjects : RelatedObjects.ListObjects()
+  }
 }
