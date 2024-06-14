@@ -297,12 +297,15 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
     )
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.post().uri("/sync/upsert").bodyValue(syncRequest.toJson()),
-      "MIGRATE_INCIDENT_REPORTS",
-      "write",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.post().uri("/sync/upsert").bodyValue(syncRequest.toJson()),
+        "MIGRATE_INCIDENT_REPORTS",
+        "write",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested

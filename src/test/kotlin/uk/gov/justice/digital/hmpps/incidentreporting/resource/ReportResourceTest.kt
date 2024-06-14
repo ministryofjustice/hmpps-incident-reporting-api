@@ -63,11 +63,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     private val url = "/incident-reports"
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.get().uri(url),
-      "VIEW_INCIDENT_REPORTS",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.get().uri(url),
+        "VIEW_INCIDENT_REPORTS",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
@@ -398,11 +401,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.get().uri(url),
-      "VIEW_INCIDENT_REPORTS",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.get().uri(url),
+        "VIEW_INCIDENT_REPORTS",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
@@ -465,11 +471,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.get().uri(url),
-      "VIEW_INCIDENT_REPORTS",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.get().uri(url),
+        "VIEW_INCIDENT_REPORTS",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
@@ -556,11 +565,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.get().uri(url),
-      "VIEW_INCIDENT_REPORTS",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.get().uri(url),
+        "VIEW_INCIDENT_REPORTS",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
@@ -623,11 +635,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.get().uri(url),
-      "VIEW_INCIDENT_REPORTS",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.get().uri(url),
+        "VIEW_INCIDENT_REPORTS",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
@@ -720,12 +735,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     )
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.post().uri(url).bodyValue(createReportRequest.toJson()),
-      "MAINTAIN_INCIDENT_REPORTS",
-      "write",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.post().uri(url).bodyValue(createReportRequest.toJson()),
+        "MAINTAIN_INCIDENT_REPORTS",
+        "write",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
@@ -957,12 +975,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.patch().uri(url).bodyValue(UpdateReportRequest().toJson()),
-      "MAINTAIN_INCIDENT_REPORTS",
-      "write",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.patch().uri(url).bodyValue(UpdateReportRequest().toJson()),
+        "MAINTAIN_INCIDENT_REPORTS",
+        "write",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
@@ -1279,12 +1300,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.delete().uri(url),
-      "MAINTAIN_INCIDENT_REPORTS",
-      "write",
-    )
+    @Nested
+    inner class Security {
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.delete().uri(url),
+        "MAINTAIN_INCIDENT_REPORTS",
+        "write",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
