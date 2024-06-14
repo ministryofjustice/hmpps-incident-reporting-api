@@ -9,20 +9,20 @@ import java.time.LocalDateTime
 
 @Schema(description = "Payload to update key properties of an incident report")
 data class UpdateReportRequest(
-  @Schema(description = "When the incident took place", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the incident took place", required = false, defaultValue = "null", example = "2024-04-29T12:34:56.789012")
   val incidentDateAndTime: LocalDateTime? = null,
-  @Schema(description = "The NOMIS id of the prison where incident took place", required = true, example = "MDI")
+  @Schema(description = "The NOMIS id of the prison where incident took place", required = false, defaultValue = "null", example = "MDI")
   @field:Size(min = 2, max = 6)
   val prisonId: String? = null,
-  @Schema(description = "Brief title describing the incident", required = true)
+  @Schema(description = "Brief title describing the incident", required = false, defaultValue = "null")
   @field:Size(min = 10, max = 255)
   val title: String? = null,
-  @Schema(description = "Longer summary of the incident", required = true)
+  @Schema(description = "Longer summary of the incident", required = false, defaultValue = "null")
   val description: String? = null,
-  @Schema(description = "Username of person who created the incident report", required = true)
+  @Schema(description = "Username of person who created the incident report", required = false, defaultValue = "null")
   @field:Size(min = 3, max = 120)
   val reportedBy: String? = null,
-  @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the incident report was created", required = false, defaultValue = "null", example = "2024-04-29T12:34:56.789012")
   val reportedAt: LocalDateTime? = null,
 ) {
   fun validate() {
