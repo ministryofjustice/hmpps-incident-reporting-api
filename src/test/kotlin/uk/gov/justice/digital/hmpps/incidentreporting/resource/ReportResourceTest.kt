@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import org.springframework.test.util.JsonExpectationsHelper
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -1192,6 +1193,70 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """,
             true,
           )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.amended" to InformationSource.DPS,
+            )
+        }
+      }
+
+      @ParameterizedTest(name = "can propagate updates to parent event when requested: {0}")
+      @ValueSource(booleans = [true, false])
+      fun `can propagate updates to parent event when requested`(updateEvent: Boolean) {
+        val updateReportRequest = UpdateReportRequest(
+          incidentDateAndTime = now.minusHours(2),
+          prisonId = "LEI",
+          title = "Updated report IR-0000000001124143",
+          description = "Updated incident report of type Finds",
+          reportedBy = "different-user",
+          reportedAt = now.minusMinutes(2),
+
+          updateEvent = updateEvent,
+        )
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updateReportRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+
+        val eventJson = eventRepository.findOneByEventId("IE-0000000001124143")!!
+          .toDto().toJson()
+        JsonExpectationsHelper().assertJsonEqual(
+          if (updateEvent) {
+            // language=json
+            """
+            {
+              "eventId": "IE-0000000001124143",
+              "eventDateAndTime": "2023-12-05T10:34:56",
+              "prisonId": "LEI",
+              "title": "Updated report IR-0000000001124143",
+              "description": "Updated incident report of type Finds",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API"
+            }
+            """
+          } else {
+            // language=json
+            """
+            {
+              "eventId": "IE-0000000001124143",
+              "eventDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "An event occurred",
+              "description": "Details of the event",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1"
+            }
+            """
+          },
+          eventJson,
+          false,
+        )
 
         getDomainEvents(1).let {
           assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })

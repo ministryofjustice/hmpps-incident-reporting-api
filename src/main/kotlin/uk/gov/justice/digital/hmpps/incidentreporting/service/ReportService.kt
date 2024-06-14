@@ -169,9 +169,14 @@ class ReportService(
         updatedBy = authenticationFacade.getUserOrSystemInContext(),
         clock = clock,
       ).toDtoBasic().apply {
-        log.info("Updated incident report number=$incidentNumber ID=$id")
+        val changeMessage = if (updateReportRequest.updateEvent) {
+          "Updated incident report and event"
+        } else {
+          "Updated incident report"
+        }
+        log.info("$changeMessage number=$incidentNumber ID=$id")
         telemetryClient.trackEvent(
-          "Created draft incident report",
+          changeMessage,
           this,
         )
       }

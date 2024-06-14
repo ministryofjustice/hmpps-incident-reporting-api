@@ -24,6 +24,9 @@ data class UpdateReportRequest(
   val reportedBy: String? = null,
   @Schema(description = "When the incident report was created", required = false, defaultValue = "null", example = "2024-04-29T12:34:56.789012")
   val reportedAt: LocalDateTime? = null,
+
+  @Schema(description = "Whether the parent event should also be updated", required = false, defaultValue = "false", example = "true")
+  val updateEvent: Boolean = false,
 ) {
   fun validate() {
     if (incidentDateAndTime != null && reportedAt != null && reportedAt < incidentDateAndTime) {
@@ -33,6 +36,7 @@ data class UpdateReportRequest(
 
   fun updateExistingReport(report: Report, updatedBy: String, clock: Clock): Report {
     val now = LocalDateTime.now(clock)
+
     incidentDateAndTime?.let { report.incidentDateAndTime = it }
     prisonId?.let { report.prisonId = it }
     title?.let { report.title = it }
@@ -41,6 +45,17 @@ data class UpdateReportRequest(
     reportedAt?.let { report.reportedAt = it }
     report.modifiedBy = updatedBy
     report.modifiedAt = now
+
+    if (updateEvent) {
+      val event = report.event
+      incidentDateAndTime?.let { event.eventDateAndTime = it }
+      prisonId?.let { event.prisonId = it }
+      title?.let { event.title = it }
+      description?.let { event.description = it }
+      event.modifiedBy = updatedBy
+      event.modifiedAt = now
+    }
+
     return report
   }
 }
