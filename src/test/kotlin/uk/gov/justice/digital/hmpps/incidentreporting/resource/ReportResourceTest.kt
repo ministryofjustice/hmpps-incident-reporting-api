@@ -1074,9 +1074,57 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         }
       }
 
+      @Test
+      fun `can update all incident report fields`() {
+        val updateReportRequest = UpdateReportRequest(
+          incidentDateAndTime = now.minusHours(2),
+          prisonId = "LEI",
+          title = "Updated report IR-0000000001124143",
+          description = "Updated incident report of type Finds",
+          reportedBy = "different-user",
+          reportedAt = now.minusMinutes(2),
+        )
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updateReportRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T10:34:56",
+              "prisonId": "LEI",
+              "title": "Updated report IR-0000000001124143",
+              "description": "Updated incident report of type Finds",
+              "reportedBy": "different-user",
+              "reportedAt": "2023-12-05T12:32:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false
+            }
+            """,
+            true,
+          )
+
+        getDomainEvents(1).let {
+          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+            .containsExactlyInAnyOrder(
+              "incident.report.amended" to InformationSource.DPS,
+            )
+        }
+      }
+
       @ParameterizedTest(name = "can update `{0}` of an incident report")
       @ValueSource(strings = ["incidentDateAndTime", "prisonId", "title", "description", "reportedBy", "reportedAt"])
-      fun `can update an incident report`(fieldName: String) {
+      fun `can update an incident report field`(fieldName: String) {
         val updateReportRequest = UpdateReportRequest(
           incidentDateAndTime = if (fieldName == "incidentDateAndTime") now.minusHours(2) else null,
           prisonId = if (fieldName == "prisonId") "LEI" else null,
