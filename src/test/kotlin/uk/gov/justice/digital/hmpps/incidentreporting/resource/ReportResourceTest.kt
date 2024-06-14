@@ -1405,11 +1405,26 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   @Nested
   abstract inner class RelatedObjects(val urlSuffix: String) {
     abstract inner class ListObjects {
-      protected lateinit var url: String
+      protected lateinit var existingReportWithRelatedObjects: Report
+      protected lateinit var urlWithRelatedObjects: String
+      protected lateinit var urlWithoutRelatedObjects: String
 
       @BeforeEach
       fun setUp() {
-        url = "/incident-reports/${existingReport.id}/$urlSuffix"
+        urlWithoutRelatedObjects = "/incident-reports/${existingReport.id}/$urlSuffix"
+
+        existingReportWithRelatedObjects = reportRepository.save(
+          buildIncidentReport(
+            incidentNumber = "IR-0000000001124146",
+            reportTime = now,
+            generateStaffInvolvement = 2,
+            generatePrisonerInvolvement = 2,
+            generateLocations = 2,
+            generateCorrections = 2,
+            generateEvidence = 2,
+          ),
+        )
+        urlWithRelatedObjects = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix"
       }
 
       @DisplayName("is secured")
@@ -1417,7 +1432,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       inner class Security {
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri(url),
+          webTestClient.get().uri(urlWithRelatedObjects),
           "VIEW_INCIDENT_REPORTS",
         )
       }
@@ -1440,7 +1455,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       inner class HappyPath {
         @Test
         fun `can list objects for a report when there are none`() {
-          webTestClient.get().uri(url)
+          webTestClient.get().uri(urlWithoutRelatedObjects)
             .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -1448,6 +1463,20 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .expectBody().json(
               // language=json
               "[]",
+              true,
+            )
+        }
+
+        @Test
+        fun `can list objects for a report when there are two`() {
+          val expectedJson = getResource("/related-objects/$urlSuffix/list.json")
+          webTestClient.get().uri(urlWithRelatedObjects)
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              expectedJson,
               true,
             )
         }
