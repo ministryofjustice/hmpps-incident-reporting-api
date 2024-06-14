@@ -173,10 +173,10 @@ class Report(
     ).also { evidence.add(it) }
   }
 
-  fun addStaffInvolved(staffRole: StaffRole, username: String, comment: String? = null): StaffInvolvement {
+  fun addStaffInvolved(staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
     return StaffInvolvement(
       report = this,
-      staffUsername = username,
+      staffUsername = staffUsername,
       staffRole = staffRole,
       comment = comment,
     ).also { staffInvolved.add(it) }
@@ -185,27 +185,27 @@ class Report(
   fun addPrisonerInvolved(
     prisonerNumber: String,
     prisonerRole: PrisonerRole,
-    prisonerOutcome: PrisonerOutcome? = null,
+    outcome: PrisonerOutcome? = null,
     comment: String? = null,
   ): PrisonerInvolvement {
     return PrisonerInvolvement(
       report = this,
       prisonerNumber = prisonerNumber,
       prisonerRole = prisonerRole,
-      outcome = prisonerOutcome,
+      outcome = outcome,
       comment = comment,
     ).also { prisonersInvolved.add(it) }
   }
 
   fun addLocation(
     locationId: String,
-    locationType: String,
+    type: String,
     description: String,
   ): Location {
     return Location(
       report = this,
       locationId = locationId,
-      type = locationType,
+      type = type,
       description = description,
     ).also { locations.add(it) }
   }

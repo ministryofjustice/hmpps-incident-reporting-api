@@ -1404,29 +1404,29 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @Nested
   abstract inner class RelatedObjects(val urlSuffix: String) {
+    protected lateinit var existingReportWithRelatedObjects: Report
+    protected lateinit var urlWithRelatedObjects: String
+    protected lateinit var urlWithoutRelatedObjects: String
+
+    @BeforeEach
+    fun setUp() {
+      urlWithoutRelatedObjects = "/incident-reports/${existingReport.id}/$urlSuffix"
+
+      existingReportWithRelatedObjects = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "IR-0000000001124146",
+          reportTime = now,
+          generateStaffInvolvement = 2,
+          generatePrisonerInvolvement = 2,
+          generateLocations = 2,
+          generateCorrections = 2,
+          generateEvidence = 2,
+        ),
+      )
+      urlWithRelatedObjects = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix"
+    }
+
     abstract inner class ListObjects {
-      protected lateinit var existingReportWithRelatedObjects: Report
-      protected lateinit var urlWithRelatedObjects: String
-      protected lateinit var urlWithoutRelatedObjects: String
-
-      @BeforeEach
-      fun setUp() {
-        urlWithoutRelatedObjects = "/incident-reports/${existingReport.id}/$urlSuffix"
-
-        existingReportWithRelatedObjects = reportRepository.save(
-          buildIncidentReport(
-            incidentNumber = "IR-0000000001124146",
-            reportTime = now,
-            generateStaffInvolvement = 2,
-            generatePrisonerInvolvement = 2,
-            generateLocations = 2,
-            generateCorrections = 2,
-            generateEvidence = 2,
-          ),
-        )
-        urlWithRelatedObjects = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix"
-      }
-
       @DisplayName("is secured")
       @Nested
       inner class Security {
@@ -1482,6 +1482,91 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         }
       }
     }
+
+    abstract inner class AddObject {
+      val validRequest = getResource("/related-objects/$urlSuffix/add-request.json")
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.post().uri(urlWithRelatedObjects).bodyValue(validRequest),
+          "MAINTAIN_INCIDENT_REPORTS",
+          "write",
+        )
+      }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot add object to a report if it is not found`() {
+          webTestClient.post().uri("/incident-reports/11111111-2222-3333-4444-555555555555/$urlSuffix")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isNotFound
+
+          assertNoDomainMessagesSent()
+        }
+
+        @Test
+        fun `cannot add invalid object to a report`() {
+          webTestClient.post().uri(urlWithoutRelatedObjects)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue("{}")
+            .exchange()
+            .expectStatus().isBadRequest
+
+          assertNoDomainMessagesSent()
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @Test
+        fun `can add first object to a report`() {
+          val expectedResponse = getResource("/related-objects/$urlSuffix/add-response-one.json")
+          webTestClient.post().uri(urlWithoutRelatedObjects)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(expectedResponse, true)
+
+          getDomainEvents(1).let {
+            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+              .containsExactlyInAnyOrder(
+                "incident.report.amended" to InformationSource.DPS,
+              )
+          }
+        }
+
+        @Test
+        fun `can another object to a report`() {
+          val expectedResponse = getResource("/related-objects/$urlSuffix/add-response-many.json")
+          webTestClient.post().uri(urlWithRelatedObjects)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(expectedResponse, true)
+
+          getDomainEvents(1).let {
+            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+              .containsExactlyInAnyOrder(
+                "incident.report.amended" to InformationSource.DPS,
+              )
+          }
+        }
+      }
+    }
   }
 
   @DisplayName("Staff involvement")
@@ -1490,6 +1575,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("GET /incident-reports/{reportId}/staff-involved")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
+
+    @DisplayName("POST /incident-reports/{reportId}/staff-involved")
+    @Nested
+    inner class AddObject : RelatedObjects.AddObject()
   }
 
   @DisplayName("Prisoner involvement")
@@ -1498,6 +1587,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("GET /incident-reports/{reportId}/prisoners-involved")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
+
+    @DisplayName("POST /incident-reports/{reportId}/prisoners-involved")
+    @Nested
+    inner class AddObject : RelatedObjects.AddObject()
   }
 
   @DisplayName("Locations")
@@ -1506,6 +1599,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("GET /incident-reports/{reportId}/locations")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
+
+    @DisplayName("POST /incident-reports/{reportId}/locations")
+    @Nested
+    inner class AddObject : RelatedObjects.AddObject()
   }
 
   @DisplayName("Evidence")
@@ -1514,6 +1611,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("GET /incident-reports/{reportId}/evidence")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
+
+    @DisplayName("POST /incident-reports/{reportId}/evidence")
+    @Nested
+    inner class AddObject : RelatedObjects.AddObject()
   }
 
   @DisplayName("Correction requests")
@@ -1522,5 +1623,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("GET /incident-reports/{reportId}/correction-requests")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
+
+    @DisplayName("POST /incident-reports/{reportId}/correction-requests")
+    @Nested
+    inner class AddObject : RelatedObjects.AddObject()
   }
 }

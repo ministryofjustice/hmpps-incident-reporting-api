@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PathVariable
@@ -15,7 +16,7 @@ import kotlin.jvm.optionals.getOrNull
   name = "Objects related to incident reports",
   description = "Create, retrieve, update and delete objects that are related to incident reports",
 )
-abstract class ReportRelatedObjectsResource<ResponseDto> {
+abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest> : EventBaseResource() {
   @Autowired
   private lateinit var reportRepository: ReportRepository
 
@@ -25,4 +26,5 @@ abstract class ReportRelatedObjectsResource<ResponseDto> {
   }
 
   abstract fun listObjects(@PathVariable reportId: UUID): List<ResponseDto>
+  abstract fun addObject(@PathVariable reportId: UUID, @Valid request: AddRequest): List<ResponseDto>
 }

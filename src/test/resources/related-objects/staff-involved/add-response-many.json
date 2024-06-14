@@ -1,0 +1,17 @@
+[
+  {
+    "staffUsername": "staff-1",
+    "staffRole": "AUTHORISING_OFFICER",
+    "comment": "Comment #1"
+  },
+  {
+    "staffUsername": "staff-2",
+    "staffRole": "CR_HEAD",
+    "comment": "Comment #2"
+  },
+  {
+    "staffUsername": "abc321",
+    "staffRole": "WITNESS",
+    "comment": "Present at scene"
+  }
+]

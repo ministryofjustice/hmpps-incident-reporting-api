@@ -63,7 +63,7 @@ fun buildIncidentReport(
 
   (1..generateStaffInvolvement).forEach { staffIndex ->
     report.addStaffInvolved(
-      username = "staff-$staffIndex",
+      staffUsername = "staff-$staffIndex",
       staffRole = StaffRole.entries.elementAtWrapped(staffIndex),
       comment = "Comment #$staffIndex",
     )
@@ -72,14 +72,14 @@ fun buildIncidentReport(
     report.addPrisonerInvolved(
       prisonerNumber = "A%04dAA".format(prisonerIndex),
       prisonerRole = PrisonerRole.entries.elementAtWrapped(prisonerIndex),
-      prisonerOutcome = PrisonerOutcome.entries.elementAtWrapped(prisonerIndex),
+      outcome = PrisonerOutcome.entries.elementAtWrapped(prisonerIndex),
       comment = "Comment #$prisonerIndex",
     )
   }
   (1..generateLocations).forEach { locationIndex ->
     report.addLocation(
       locationId = "$locationIndex",
-      locationType = "CELL",
+      type = "CELL",
       description = "Location #$locationIndex",
     )
   }
