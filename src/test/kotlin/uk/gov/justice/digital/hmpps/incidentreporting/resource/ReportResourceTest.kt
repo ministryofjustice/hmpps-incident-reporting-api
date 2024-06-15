@@ -65,6 +65,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("is secured")
     @Nested
     inner class Security {
+      @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
@@ -403,6 +404,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("is secured")
     @Nested
     inner class Security {
+      @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
@@ -473,6 +475,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("is secured")
     @Nested
     inner class Security {
+      @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
@@ -567,6 +570,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("is secured")
     @Nested
     inner class Security {
+      @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
@@ -637,6 +641,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("is secured")
     @Nested
     inner class Security {
+      @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
@@ -737,6 +742,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("is secured")
     @Nested
     inner class Security {
+      @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.post().uri(url).bodyValue(createReportRequest.toJson()),
@@ -977,6 +983,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("is secured")
     @Nested
     inner class Security {
+      @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.patch().uri(url).bodyValue(UpdateReportRequest().toJson()),
@@ -1302,6 +1309,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("is secured")
     @Nested
     inner class Security {
+      @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.delete().uri(url),
@@ -1436,6 +1444,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @DisplayName("is secured")
       @Nested
       inner class Security {
+        @DisplayName("by role and scope")
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri(urlWithRelatedObjects),
@@ -1498,6 +1507,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @DisplayName("is secured")
       @Nested
       inner class Security {
+        @DisplayName("by role and scope")
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.post().uri(urlWithRelatedObjects).bodyValue(validRequest),
@@ -1584,6 +1594,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @DisplayName("is secured")
       @Nested
       inner class Security {
+        @DisplayName("by role and scope")
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.delete().uri(urlForFirstRelatedObject),
