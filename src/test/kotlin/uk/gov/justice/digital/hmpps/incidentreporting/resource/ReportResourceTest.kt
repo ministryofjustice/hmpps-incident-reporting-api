@@ -1407,6 +1407,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     protected lateinit var existingReportWithRelatedObjects: Report
     protected lateinit var urlWithRelatedObjects: String
     protected lateinit var urlWithoutRelatedObjects: String
+    protected lateinit var urlForMissingRelatedObject: String
+    protected lateinit var urlForFirstRelatedObject: String
+    protected lateinit var urlForSecondRelatedObject: String
 
     @BeforeEach
     fun setUp() {
@@ -1424,6 +1427,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         ),
       )
       urlWithRelatedObjects = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix"
+      urlForMissingRelatedObject = "/incident-reports/${existingReport.id}/$urlSuffix/1"
+      urlForFirstRelatedObject = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/1"
+      urlForSecondRelatedObject = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/2"
     }
 
     abstract inner class ListObjects {
@@ -1447,6 +1453,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
         }
       }
 
@@ -1508,6 +1517,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validRequest)
             .exchange()
             .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
 
           assertNoDomainMessagesSent()
         }
@@ -1567,6 +1579,105 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         }
       }
     }
+
+    abstract inner class RemoveObject {
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.delete().uri(urlForFirstRelatedObject),
+          "MAINTAIN_INCIDENT_REPORTS",
+          "write",
+        )
+      }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot delete related object from a report if it is not found`() {
+          webTestClient.delete().uri("/incident-reports/11111111-2222-3333-4444-555555555555/$urlSuffix/1")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
+
+          assertNoDomainMessagesSent()
+        }
+
+        @Test
+        fun `cannot delete related object at index 0`() {
+          webTestClient.delete().uri("/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/0")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("index 0 not found")
+            }
+
+          assertNoDomainMessagesSent()
+        }
+
+        @Test
+        fun `cannot delete related object beyond end`() {
+          webTestClient.delete().uri("/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/3")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("index 3 not found")
+            }
+
+          assertNoDomainMessagesSent()
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @Test
+        fun `can delete first related object from a report`() {
+          val expectedResponse = getResource("/related-objects/$urlSuffix/delete-response-first.json")
+          webTestClient.delete().uri(urlForFirstRelatedObject)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(expectedResponse, true)
+
+          getDomainEvents(1).let {
+            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+              .containsExactlyInAnyOrder(
+                "incident.report.amended" to InformationSource.DPS,
+              )
+          }
+        }
+
+        @Test
+        fun `can delete second related object from a report`() {
+          val expectedResponse = getResource("/related-objects/$urlSuffix/delete-response-second.json")
+          webTestClient.delete().uri(urlForSecondRelatedObject)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(expectedResponse, true)
+
+          getDomainEvents(1).let {
+            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+              .containsExactlyInAnyOrder(
+                "incident.report.amended" to InformationSource.DPS,
+              )
+          }
+        }
+      }
+    }
   }
 
   @DisplayName("Staff involvement")
@@ -1579,6 +1690,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/staff-involved")
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
+
+    @DisplayName("DELETE /incident-reports/{reportId}/staff-involved/{index}")
+    @Nested
+    inner class RemoveObject : RelatedObjects.RemoveObject()
   }
 
   @DisplayName("Prisoner involvement")
@@ -1591,6 +1706,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/prisoners-involved")
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
+
+    @DisplayName("DELETE /incident-reports/{reportId}/prisoners-involved/{index}")
+    @Nested
+    inner class RemoveObject : RelatedObjects.RemoveObject()
   }
 
   @DisplayName("Locations")
@@ -1603,6 +1722,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/locations")
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
+
+    @DisplayName("DELETE /incident-reports/{reportId}/locations/{index}")
+    @Nested
+    inner class RemoveObject : RelatedObjects.RemoveObject()
   }
 
   @DisplayName("Evidence")
@@ -1615,6 +1738,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/evidence")
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
+
+    @DisplayName("DELETE /incident-reports/{reportId}/evidence/{index}")
+    @Nested
+    inner class RemoveObject : RelatedObjects.RemoveObject()
   }
 
   @DisplayName("Correction requests")
@@ -1627,5 +1754,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/correction-requests")
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
+
+    @DisplayName("DELETE /incident-reports/{reportId}/correction-requests/{index}")
+    @Nested
+    inner class RemoveObject : RelatedObjects.RemoveObject()
   }
 }

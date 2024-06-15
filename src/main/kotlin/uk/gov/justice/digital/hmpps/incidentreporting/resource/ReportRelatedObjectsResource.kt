@@ -27,4 +27,5 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest> : EventBase
 
   abstract fun listObjects(@PathVariable reportId: UUID): List<ResponseDto>
   abstract fun addObject(@PathVariable reportId: UUID, @Valid request: AddRequest): List<ResponseDto>
+  abstract fun removeObject(@PathVariable reportId: UUID, index: Int): List<ResponseDto>
 }
