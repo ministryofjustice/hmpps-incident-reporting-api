@@ -765,7 +765,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isBadRequest
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
 
       @ParameterizedTest(name = "cannot create a report with invalid `{0}` field")
@@ -786,7 +786,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains(fieldName)
           }
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
 
       @Test
@@ -805,7 +805,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains("incidentDateAndTime must be before reportedAt")
           }
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
 
       @Test
@@ -820,7 +820,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains("Either createNewEvent or linkedEventId must be provided")
           }
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
 
       @Test
@@ -835,7 +835,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains("Inactive incident type OLD_ASSAULT")
           }
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
     }
 
@@ -895,12 +895,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-            .containsExactlyInAnyOrder(
-              "incident.report.created" to InformationSource.DPS,
-            )
-        }
+        assertThatDomainEventWasSent("incident.report.created", null)
       }
 
       @Test
@@ -962,12 +957,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-            .containsExactlyInAnyOrder(
-              "incident.report.created" to InformationSource.DPS,
-            )
-        }
+        assertThatDomainEventWasSent("incident.report.created", null)
       }
     }
   }
@@ -1006,7 +996,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isBadRequest
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
 
       @ParameterizedTest(name = "cannot update a report with invalid `{0}` field")
@@ -1027,7 +1017,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains(fieldName)
           }
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
 
       @Test
@@ -1046,7 +1036,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains("incidentDateAndTime must be before reportedAt")
           }
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
 
       @Test
@@ -1058,7 +1048,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isNotFound
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
     }
 
@@ -1097,12 +1087,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-            .containsExactlyInAnyOrder(
-              "incident.report.amended" to InformationSource.DPS,
-            )
-        }
+        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
       }
 
       @Test
@@ -1145,12 +1130,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-            .containsExactlyInAnyOrder(
-              "incident.report.amended" to InformationSource.DPS,
-            )
-        }
+        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
       }
 
       @ParameterizedTest(name = "can update `{0}` of an incident report")
@@ -1224,12 +1204,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-            .containsExactlyInAnyOrder(
-              "incident.report.amended" to InformationSource.DPS,
-            )
-        }
+        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
       }
 
       @ParameterizedTest(name = "can propagate updates to parent event when requested: {0}")
@@ -1288,12 +1263,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           false,
         )
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-            .containsExactlyInAnyOrder(
-              "incident.report.amended" to InformationSource.DPS,
-            )
-        }
+        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
       }
     }
   }
@@ -1331,7 +1301,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isNotFound
 
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
     }
 
@@ -1367,12 +1337,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThat(eventRepository.findById(eventId)).isPresent
         }
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-            .containsExactlyInAnyOrder(
-              "incident.report.deleted" to InformationSource.DPS,
-            )
-        }
+        assertThatDomainEventWasSent("incident.report.deleted", "IR-0000000001124143")
       }
 
       @Test
@@ -1550,7 +1515,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               assertThat(it).contains("There is no report found")
             }
 
-          assertNoDomainMessagesSent()
+          assertThatNoDomainEventsWereSent()
         }
 
         @DisplayName("cannot add invalid object to a report")
@@ -1576,7 +1541,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 .exchange()
                 .expectStatus().isBadRequest
 
-              assertNoDomainMessagesSent()
+              assertThatNoDomainEventsWereSent()
             }
           }
         }
@@ -1598,12 +1563,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReport.id!!)
 
-          getDomainEvents(1).let {
-            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-              .containsExactlyInAnyOrder(
-                "incident.report.amended" to InformationSource.DPS,
-              )
-          }
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
         }
 
         @Test
@@ -1619,12 +1579,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          getDomainEvents(1).let {
-            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-              .containsExactlyInAnyOrder(
-                "incident.report.amended" to InformationSource.DPS,
-              )
-          }
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
       }
     }
@@ -1663,7 +1618,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               assertThat(it).contains("There is no report found")
             }
 
-          assertNoDomainMessagesSent()
+          assertThatNoDomainEventsWereSent()
         }
 
         @Test
@@ -1678,7 +1633,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               assertThat(it).contains("index 0 not found")
             }
 
-          assertNoDomainMessagesSent()
+          assertThatNoDomainEventsWereSent()
         }
 
         @Test
@@ -1693,7 +1648,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               assertThat(it).contains("index 3 not found")
             }
 
-          assertNoDomainMessagesSent()
+          assertThatNoDomainEventsWereSent()
         }
 
         @DisplayName("cannot update related object with invalid payload")
@@ -1715,7 +1670,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 .exchange()
                 .expectStatus().isBadRequest
 
-              assertNoDomainMessagesSent()
+              assertThatNoDomainEventsWereSent()
             }
           }
         }
@@ -1746,12 +1701,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          getDomainEvents(1).let {
-            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-              .containsExactlyInAnyOrder(
-                "incident.report.amended" to InformationSource.DPS,
-              )
-          }
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
 
         @ParameterizedTest(name = "can update {0} related object fully")
@@ -1776,12 +1726,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          getDomainEvents(1).let {
-            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-              .containsExactlyInAnyOrder(
-                "incident.report.amended" to InformationSource.DPS,
-              )
-          }
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
 
         @ParameterizedTest(name = "can update {0} related object partially")
@@ -1806,12 +1751,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          getDomainEvents(1).let {
-            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-              .containsExactlyInAnyOrder(
-                "incident.report.amended" to InformationSource.DPS,
-              )
-          }
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
 
         @DisplayName("can update nullable properties")
@@ -1866,7 +1806,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               assertThat(it).contains("There is no report found")
             }
 
-          assertNoDomainMessagesSent()
+          assertThatNoDomainEventsWereSent()
         }
 
         @Test
@@ -1880,7 +1820,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               assertThat(it).contains("index 0 not found")
             }
 
-          assertNoDomainMessagesSent()
+          assertThatNoDomainEventsWereSent()
         }
 
         @Test
@@ -1894,7 +1834,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               assertThat(it).contains("index 3 not found")
             }
 
-          assertNoDomainMessagesSent()
+          assertThatNoDomainEventsWereSent()
         }
       }
 
@@ -1913,12 +1853,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          getDomainEvents(1).let {
-            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-              .containsExactlyInAnyOrder(
-                "incident.report.amended" to InformationSource.DPS,
-              )
-          }
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
 
         @Test
@@ -1933,12 +1868,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          getDomainEvents(1).let {
-            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
-              .containsExactlyInAnyOrder(
-                "incident.report.amended" to InformationSource.DPS,
-              )
-          }
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
       }
     }

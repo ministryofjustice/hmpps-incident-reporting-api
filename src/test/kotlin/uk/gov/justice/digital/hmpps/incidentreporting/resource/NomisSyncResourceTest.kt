@@ -880,11 +880,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             )
           }
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source }).containsExactlyInAnyOrder(
-            "incident.report.created" to InformationSource.NOMIS,
-          )
-        }
+        assertThatDomainEventWasSent("incident.report.created", "$newIncidentId", InformationSource.NOMIS)
       }
 
       @Test
@@ -1347,11 +1343,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             )
           }
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to Pair(message.additionalInformation?.id, message.additionalInformation?.source) }).containsExactlyInAnyOrder(
-            "incident.report.amended" to Pair(existingNomisReport.id, InformationSource.NOMIS),
-          )
-        }
+        assertThatDomainEventWasSent("incident.report.amended", "$INCIDENT_NUMBER", InformationSource.NOMIS)
       }
     }
   }
@@ -1412,7 +1404,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         expectStatus().isCreated
 
         // no domain events sent because migrating from NOMIS
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
     }
 
@@ -1447,7 +1439,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           }
 
         // no domain events sent because migrating from NOMIS
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
     }
 
