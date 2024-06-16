@@ -1518,7 +1518,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
 
-    abstract inner class AddObject(val invalidRequests: Map<String, String> = emptyMap()) {
+    abstract inner class AddObject(
+      val invalidRequests: List<InvalidRequestTestCase> = emptyList(),
+    ) {
       val validRequest = getResource("/related-objects/$urlSuffix/add-request.json")
 
       @DisplayName("is secured")
@@ -1554,9 +1556,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @DisplayName("cannot add invalid object to a report")
         @TestFactory
         fun `cannot add invalid object to a report`(): List<DynamicTest> {
-          val requests = invalidRequests.toMutableMap()
-          requests["empty request"] = "/related-objects/empty-object.json"
-          requests["invalid shape"] = "/related-objects/empty-array.json"
+          val requests = mutableListOf(
+            InvalidRequestTestCase(
+              "empty request",
+              "/related-objects/empty-object.json",
+            ),
+            InvalidRequestTestCase(
+              "invalid shape",
+              "/related-objects/empty-array.json",
+            ),
+          )
+          requests.addAll(invalidRequests)
           return requests.map { (name, requestResourcePath) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.post().uri(urlWithoutRelatedObjects)
@@ -1619,7 +1629,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
 
-    abstract inner class UpdateObject(val invalidRequests: Map<String, String> = emptyMap()) {
+    abstract inner class UpdateObject(
+      val invalidRequests: List<InvalidRequestTestCase> = emptyList(),
+      val nullablePropertyRequests: List<NullablePropertyTestCase> = emptyList(),
+    ) {
       val validRequest = getResource("/related-objects/$urlSuffix/update-request.json")
       val validPartialRequest = getResource("/related-objects/$urlSuffix/update-request-partial.json")
 
@@ -1686,8 +1699,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @DisplayName("cannot update related object with invalid payload")
         @TestFactory
         fun `cannot update related object with invalid payload`(): List<DynamicTest> {
-          val requests = invalidRequests.toMutableMap()
-          requests["invalid shape"] = "/related-objects/empty-array.json"
+          val requests = mutableListOf(
+            InvalidRequestTestCase(
+              "invalid shape",
+              "/related-objects/empty-array.json",
+            ),
+          )
+          requests.addAll(invalidRequests)
           return requests.map { (name, requestResourcePath) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.patch().uri(urlForFirstRelatedObject)
@@ -1793,6 +1811,29 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               .containsExactlyInAnyOrder(
                 "incident.report.amended" to InformationSource.DPS,
               )
+          }
+        }
+
+        @DisplayName("can update nullable properties")
+        @TestFactory
+        fun `can update nullable properties`(): List<DynamicTest> {
+          return nullablePropertyRequests.flatMap { testCase ->
+            mapOf(
+              "value not provided" to ("{}" to testCase.unchangedValue),
+              "null value" to ("""{"${testCase.field}": null}""" to null),
+              "value provided" to ("""{"${testCase.field}": "${testCase.validValue}"}""" to testCase.validValue),
+            ).map { (name, requestAndExpectation) ->
+              val (request, expectedValue) = requestAndExpectation
+              DynamicTest.dynamicTest("${testCase.field} with $name") {
+                webTestClient.patch().uri(urlForFirstRelatedObject)
+                  .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+                  .header("Content-Type", "application/json")
+                  .bodyValue(request)
+                  .exchange()
+                  .expectStatus().isOk
+                  .expectBody().jsonPath("[0].${testCase.field}").isEqualTo(expectedValue)
+              }
+            }
           }
         }
       }
@@ -1913,16 +1954,30 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/staff-involved")
     @Nested
     inner class AddObject : RelatedObjects.AddObject(
-      mapOf(
-        "short staff username" to "/related-objects/staff-involved/add-request-short-username.json",
+      invalidRequests = listOf(
+        InvalidRequestTestCase(
+          "short staff username",
+          "/related-objects/staff-involved/add-request-short-username.json",
+        ),
       ),
     )
 
     @DisplayName("PATCH /incident-reports/{reportId}/staff-involved/{index}")
     @Nested
     inner class UpdateObject : RelatedObjects.UpdateObject(
-      mapOf(
-        "short staff username" to "/related-objects/staff-involved/update-request-short-username.json",
+      invalidRequests = listOf(
+        InvalidRequestTestCase(
+
+          "short staff username",
+          "/related-objects/staff-involved/update-request-short-username.json",
+        ),
+      ),
+      nullablePropertyRequests = listOf(
+        NullablePropertyTestCase(
+          field = "comment",
+          validValue = "Different comment",
+          unchangedValue = "Comment #1",
+        ),
       ),
     )
 
@@ -1944,7 +1999,20 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("PATCH /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject()
+    inner class UpdateObject : RelatedObjects.UpdateObject(
+      nullablePropertyRequests = listOf(
+        NullablePropertyTestCase(
+          field = "outcome",
+          validValue = "PLACED_ON_REPORT",
+          unchangedValue = "CHARGED_BY_POLICE",
+        ),
+        NullablePropertyTestCase(
+          field = "comment",
+          validValue = "Different comment",
+          unchangedValue = "Comment #1",
+        ),
+      ),
+    )
 
     @DisplayName("DELETE /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested
@@ -2001,16 +2069,22 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/correction-requests")
     @Nested
     inner class AddObject : RelatedObjects.AddObject(
-      mapOf(
-        "short requester username" to "/related-objects/correction-requests/add-request-short-username.json",
+      invalidRequests = listOf(
+        InvalidRequestTestCase(
+          "short requester username",
+          "/related-objects/correction-requests/add-request-short-username.json",
+        ),
       ),
     )
 
     @DisplayName("PATCH /incident-reports/{reportId}/correction-requests/{index}")
     @Nested
     inner class UpdateObject : RelatedObjects.UpdateObject(
-      mapOf(
-        "short requester username" to "/related-objects/correction-requests/update-request-short-username.json",
+      invalidRequests = listOf(
+        InvalidRequestTestCase(
+          "short requester username",
+          "/related-objects/correction-requests/update-request-short-username.json",
+        ),
       ),
     )
 
@@ -2019,3 +2093,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class RemoveObject : RelatedObjects.RemoveObject()
   }
 }
+
+data class InvalidRequestTestCase(
+  val name: String,
+  val requestResourcePath: String,
+)
+
+data class NullablePropertyTestCase(
+  val field: String,
+  val validValue: String,
+  val unchangedValue: String,
+)
