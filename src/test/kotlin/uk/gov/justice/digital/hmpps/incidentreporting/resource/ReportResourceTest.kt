@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.resource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -1517,7 +1518,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
 
-    abstract inner class AddObject {
+    abstract inner class AddObject(val invalidRequests: Map<String, String> = emptyMap()) {
       val validRequest = getResource("/related-objects/$urlSuffix/add-request.json")
 
       @DisplayName("is secured")
@@ -1550,16 +1551,24 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertNoDomainMessagesSent()
         }
 
-        @Test
-        fun `cannot add invalid object to a report`() {
-          webTestClient.post().uri(urlWithoutRelatedObjects)
-            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-            .header("Content-Type", "application/json")
-            .bodyValue("{}")
-            .exchange()
-            .expectStatus().isBadRequest
+        @DisplayName("cannot add invalid object to a report")
+        @TestFactory
+        fun `cannot add invalid object to a report`(): List<DynamicTest> {
+          val requests = invalidRequests.toMutableMap()
+          requests["empty request"] = "/related-objects/empty-object.json"
+          requests["invalid shape"] = "/related-objects/empty-array.json"
+          return requests.map { (name, requestResourcePath) ->
+            DynamicTest.dynamicTest(name) {
+              webTestClient.post().uri(urlWithoutRelatedObjects)
+                .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+                .header("Content-Type", "application/json")
+                .bodyValue(getResource(requestResourcePath))
+                .exchange()
+                .expectStatus().isBadRequest
 
-          assertNoDomainMessagesSent()
+              assertNoDomainMessagesSent()
+            }
+          }
         }
       }
 
@@ -1610,7 +1619,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
 
-    abstract inner class UpdateObject {
+    abstract inner class UpdateObject(val invalidRequests: Map<String, String> = emptyMap()) {
       val validRequest = getResource("/related-objects/$urlSuffix/update-request.json")
       val validPartialRequest = getResource("/related-objects/$urlSuffix/update-request-partial.json")
 
@@ -1674,16 +1683,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertNoDomainMessagesSent()
         }
 
-        @Test
-        fun `cannot update related object with invalid payload`() {
-          webTestClient.patch().uri(urlForFirstRelatedObject)
-            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-            .header("Content-Type", "application/json")
-            .bodyValue("[]")
-            .exchange()
-            .expectStatus().isBadRequest
+        @DisplayName("cannot update related object with invalid payload")
+        @TestFactory
+        fun `cannot update related object with invalid payload`(): List<DynamicTest> {
+          val requests = invalidRequests.toMutableMap()
+          requests["invalid shape"] = "/related-objects/empty-array.json"
+          return requests.map { (name, requestResourcePath) ->
+            DynamicTest.dynamicTest(name) {
+              webTestClient.patch().uri(urlForFirstRelatedObject)
+                .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+                .header("Content-Type", "application/json")
+                .bodyValue(getResource(requestResourcePath))
+                .exchange()
+                .expectStatus().isBadRequest
 
-          assertNoDomainMessagesSent()
+              assertNoDomainMessagesSent()
+            }
+          }
         }
       }
 
@@ -1896,11 +1912,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("POST /incident-reports/{reportId}/staff-involved")
     @Nested
-    inner class AddObject : RelatedObjects.AddObject()
+    inner class AddObject : RelatedObjects.AddObject(
+      mapOf(
+        "short staff username" to "/related-objects/staff-involved/add-request-short-username.json",
+      ),
+    )
 
     @DisplayName("PATCH /incident-reports/{reportId}/staff-involved/{index}")
     @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject()
+    inner class UpdateObject : RelatedObjects.UpdateObject(
+      mapOf(
+        "short staff username" to "/related-objects/staff-involved/update-request-short-username.json",
+      ),
+    )
 
     @DisplayName("DELETE /incident-reports/{reportId}/staff-involved/{index}")
     @Nested
@@ -1976,11 +2000,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("POST /incident-reports/{reportId}/correction-requests")
     @Nested
-    inner class AddObject : RelatedObjects.AddObject()
+    inner class AddObject : RelatedObjects.AddObject(
+      mapOf(
+        "short requester username" to "/related-objects/correction-requests/add-request-short-username.json",
+      ),
+    )
 
     @DisplayName("PATCH /incident-reports/{reportId}/correction-requests/{index}")
     @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject()
+    inner class UpdateObject : RelatedObjects.UpdateObject(
+      mapOf(
+        "short requester username" to "/related-objects/correction-requests/update-request-short-username.json",
+      ),
+    )
 
     @DisplayName("DELETE /incident-reports/{reportId}/correction-requests/{index}")
     @Nested

@@ -15,7 +15,7 @@ data class UpdateReportRequest(
   @field:Size(min = 2, max = 6)
   val prisonId: String? = null,
   @Schema(description = "Brief title describing the incident", required = false, defaultValue = "null")
-  @field:Size(min = 10, max = 255)
+  @field:Size(min = 5, max = 255)
   val title: String? = null,
   @Schema(description = "Longer summary of the incident", required = false, defaultValue = "null")
   val description: String? = null,
