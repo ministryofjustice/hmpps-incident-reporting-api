@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Evidence
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddEvidence
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateEvidence
-import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import java.util.UUID
 
 @RestController
@@ -107,21 +105,15 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @Valid
     request: AddEvidence,
   ): List<Evidence> {
-    val report = reportId.findReportOrThrowNotFound()
-    with(request) {
-      report.addEvidence(
-        type = type,
-        description = description,
-      )
+    return reportId.updateReportOrThrowNotFound { report ->
+      with(request) {
+        report.addEvidence(
+          type = type,
+          description = description,
+        )
+      }
+      report.evidence.map { it.toDto() }
     }
-    eventPublishAndAudit(
-      // TODO: should this be more specific?
-      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-      InformationSource.DPS,
-    ) {
-      report.toDtoBasic()
-    }
-    return report.evidence.map { it.toDto() }
   }
 
   @PatchMapping("/evidence/{index}")
@@ -169,20 +161,11 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @Valid
     request: UpdateEvidence,
   ): List<Evidence> {
-    val report = reportId.findReportOrThrowNotFound()
-    val objects = report.evidence
-    if (index < 1 || index > objects.size) {
-      throw ObjectAtIndexNotFoundException(Evidence::class, index)
+    return reportId.updateReportOrThrowNotFound { report ->
+      val objects = report.evidence
+      objects.elementAtIndex(index).updateWith(request)
+      objects.map { it.toDto() }
     }
-    objects[index - 1].updateWith(request)
-    eventPublishAndAudit(
-      // TODO: should this be more specific?
-      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-      InformationSource.DPS,
-    ) {
-      report.toDtoBasic()
-    }
-    return objects.map { it.toDto() }
   }
 
   @DeleteMapping("/evidence/{index}")
@@ -222,19 +205,10 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @PathVariable
     index: Int,
   ): List<Evidence> {
-    val report = reportId.findReportOrThrowNotFound()
-    val objects = report.evidence
-    if (index < 1 || index > objects.size) {
-      throw ObjectAtIndexNotFoundException(Evidence::class, index)
+    return reportId.updateReportOrThrowNotFound { report ->
+      val objects = report.evidence
+      objects.removeElementAtIndex(index)
+      objects.map { it.toDto() }
     }
-    objects.removeAt(index - 1)
-    eventPublishAndAudit(
-      // TODO: should this be more specific?
-      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-      InformationSource.DPS,
-    ) {
-      report.toDtoBasic()
-    }
-    return objects.map { it.toDto() }
   }
 }

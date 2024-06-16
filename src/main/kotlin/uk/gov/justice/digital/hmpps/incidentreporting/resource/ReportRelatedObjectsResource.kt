@@ -6,8 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
+import java.time.Clock
+import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -18,11 +23,46 @@ import kotlin.jvm.optionals.getOrNull
 )
 abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateRequest> : EventBaseResource() {
   @Autowired
+  protected lateinit var clock: Clock
+
+  @Autowired
+  private lateinit var authenticationFacade: AuthenticationFacade
+
+  @Autowired
   private lateinit var reportRepository: ReportRepository
 
   protected fun (UUID).findReportOrThrowNotFound(): Report {
     return reportRepository.findById(this).getOrNull()
       ?: throw ReportNotFoundException(this)
+  }
+
+  protected fun <T> (UUID).updateReportOrThrowNotFound(block: (Report) -> T): T {
+    val report = findReportOrThrowNotFound()
+    return block(report).also {
+      report.modifiedAt = LocalDateTime.now(clock)
+      report.modifiedBy = authenticationFacade.getUserOrSystemInContext()
+      eventPublishAndAudit(
+        // TODO: should different related object actions raise different events?
+        ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+        InformationSource.DPS,
+      ) {
+        report.toDtoBasic()
+      }
+    }
+  }
+
+  protected inline fun <reified T : Any> List<T>.elementAtIndex(index: Int): T {
+    if (index < 1 || index > size) {
+      throw ObjectAtIndexNotFoundException(T::class, index)
+    }
+    return get(index - 1)
+  }
+
+  protected inline fun <reified T : Any> MutableList<T>.removeElementAtIndex(index: Int) {
+    if (index < 1 || index > size) {
+      throw ObjectAtIndexNotFoundException(T::class, index)
+    }
+    removeAt(index - 1)
   }
 
   abstract fun listObjects(@PathVariable reportId: UUID): List<ResponseDto>

@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import java.time.Clock
+import java.util.UUID
 
 @DisplayName("Report resource")
 class ReportResourceTest : SqsIntegrationTestBase() {
@@ -1415,7 +1416,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     protected lateinit var existingReportWithRelatedObjects: Report
     protected lateinit var urlWithRelatedObjects: String
     protected lateinit var urlWithoutRelatedObjects: String
-    protected lateinit var urlForMissingRelatedObject: String
     protected lateinit var urlForFirstRelatedObject: String
     protected lateinit var urlForSecondRelatedObject: String
 
@@ -1435,9 +1435,25 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         ),
       )
       urlWithRelatedObjects = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix"
-      urlForMissingRelatedObject = "/incident-reports/${existingReport.id}/$urlSuffix/1"
       urlForFirstRelatedObject = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/1"
       urlForSecondRelatedObject = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/2"
+    }
+
+    protected fun assertThatReportWasModified(id: UUID) {
+      webTestClient.get().uri("/incident-reports/$id")
+        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+        .header("Content-Type", "application/json")
+        .exchange()
+        .expectBody().json(
+          // language=json
+          """
+          {
+            "modifiedAt": "2023-12-05T12:34:56",
+            "modifiedBy": "INCIDENT_REPORTING_API"
+          }
+          """,
+          false,
+        )
     }
 
     abstract inner class ListObjects {
@@ -1561,6 +1577,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .expectStatus().isCreated
             .expectBody().json(expectedResponse, true)
 
+          assertThatReportWasModified(existingReport.id!!)
+
           getDomainEvents(1).let {
             assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
               .containsExactlyInAnyOrder(
@@ -1579,6 +1597,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isCreated
             .expectBody().json(expectedResponse, true)
+
+          assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
           getDomainEvents(1).let {
             assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
@@ -1690,6 +1710,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               true,
             )
 
+          assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
+
           getDomainEvents(1).let {
             assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
               .containsExactlyInAnyOrder(
@@ -1718,6 +1740,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               true,
             )
 
+          assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
+
           getDomainEvents(1).let {
             assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
               .containsExactlyInAnyOrder(
@@ -1745,6 +1769,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               expectedResponse,
               true,
             )
+
+          assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
           getDomainEvents(1).let {
             assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
@@ -1828,6 +1854,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody().json(expectedResponse, true)
 
+          assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
+
           getDomainEvents(1).let {
             assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
               .containsExactlyInAnyOrder(
@@ -1845,6 +1873,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isOk
             .expectBody().json(expectedResponse, true)
+
+          assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
           getDomainEvents(1).let {
             assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })

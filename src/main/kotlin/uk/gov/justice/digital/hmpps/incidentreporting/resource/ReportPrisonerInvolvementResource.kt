@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.PrisonerInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddPrisonerInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdatePrisonerInvolvement
-import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import java.util.UUID
 
 @RestController
@@ -107,23 +105,17 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @Valid
     request: AddPrisonerInvolvement,
   ): List<PrisonerInvolvement> {
-    val report = reportId.findReportOrThrowNotFound()
-    with(request) {
-      report.addPrisonerInvolved(
-        prisonerNumber = prisonerNumber,
-        prisonerRole = prisonerRole,
-        outcome = outcome,
-        comment = comment,
-      )
+    return reportId.updateReportOrThrowNotFound { report ->
+      with(request) {
+        report.addPrisonerInvolved(
+          prisonerNumber = prisonerNumber,
+          prisonerRole = prisonerRole,
+          outcome = outcome,
+          comment = comment,
+        )
+      }
+      report.prisonersInvolved.map { it.toDto() }
     }
-    eventPublishAndAudit(
-      // TODO: should this be more specific?
-      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-      InformationSource.DPS,
-    ) {
-      report.toDtoBasic()
-    }
-    return report.prisonersInvolved.map { it.toDto() }
   }
 
   @PatchMapping("/prisoners-involved/{index}")
@@ -171,20 +163,11 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @Valid
     request: UpdatePrisonerInvolvement,
   ): List<PrisonerInvolvement> {
-    val report = reportId.findReportOrThrowNotFound()
-    val objects = report.prisonersInvolved
-    if (index < 1 || index > objects.size) {
-      throw ObjectAtIndexNotFoundException(PrisonerInvolvement::class, index)
+    return reportId.updateReportOrThrowNotFound { report ->
+      val objects = report.prisonersInvolved
+      objects.elementAtIndex(index).updateWith(request)
+      objects.map { it.toDto() }
     }
-    objects[index - 1].updateWith(request)
-    eventPublishAndAudit(
-      // TODO: should this be more specific?
-      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-      InformationSource.DPS,
-    ) {
-      report.toDtoBasic()
-    }
-    return objects.map { it.toDto() }
   }
 
   @DeleteMapping("/prisoners-involved/{index}")
@@ -224,19 +207,10 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @PathVariable
     index: Int,
   ): List<PrisonerInvolvement> {
-    val report = reportId.findReportOrThrowNotFound()
-    val objects = report.prisonersInvolved
-    if (index < 1 || index > objects.size) {
-      throw ObjectAtIndexNotFoundException(PrisonerInvolvement::class, index)
+    return reportId.updateReportOrThrowNotFound { report ->
+      val objects = report.prisonersInvolved
+      objects.removeElementAtIndex(index)
+      objects.map { it.toDto() }
     }
-    objects.removeAt(index - 1)
-    eventPublishAndAudit(
-      // TODO: should this be more specific?
-      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-      InformationSource.DPS,
-    ) {
-      report.toDtoBasic()
-    }
-    return objects.map { it.toDto() }
   }
 }
