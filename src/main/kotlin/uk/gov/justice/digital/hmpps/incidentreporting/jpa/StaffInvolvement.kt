@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateStaffInvolvement
+import kotlin.jvm.optionals.getOrNull
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.StaffInvolvement as StaffInvolvementDto
 
 @Entity
@@ -20,18 +22,24 @@ class StaffInvolvement(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
-  val staffUsername: String,
+  var staffUsername: String,
 
   @Enumerated(EnumType.STRING)
-  val staffRole: StaffRole,
+  var staffRole: StaffRole,
 
-  val comment: String? = null,
+  var comment: String? = null,
 ) {
   override fun toString(): String {
     return "StaffInvolvement(id=$id)"
   }
 
   fun getReport() = report
+
+  fun updateWith(request: UpdateStaffInvolvement) {
+    request.staffUsername?.let { staffUsername = it }
+    request.staffRole?.let { staffRole = it }
+    request.comment?.let { comment = it.getOrNull() }
+  }
 
   fun toDto() = StaffInvolvementDto(
     staffUsername = staffUsername,

@@ -16,7 +16,7 @@ import kotlin.jvm.optionals.getOrNull
   name = "Objects related to incident reports",
   description = "Create, retrieve, update and delete objects that are related to incident reports",
 )
-abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest> : EventBaseResource() {
+abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateRequest> : EventBaseResource() {
   @Autowired
   private lateinit var reportRepository: ReportRepository
 
@@ -27,5 +27,6 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest> : EventBase
 
   abstract fun listObjects(@PathVariable reportId: UUID): List<ResponseDto>
   abstract fun addObject(@PathVariable reportId: UUID, @Valid request: AddRequest): List<ResponseDto>
+  abstract fun updateObject(@PathVariable reportId: UUID, index: Int, @Valid request: UpdateRequest): List<ResponseDto>
   abstract fun removeObject(@PathVariable reportId: UUID, index: Int): List<ResponseDto>
 }

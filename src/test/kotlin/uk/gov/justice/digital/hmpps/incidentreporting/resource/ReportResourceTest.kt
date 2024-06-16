@@ -1487,14 +1487,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         @Test
         fun `can list objects for a report when there are two`() {
-          val expectedJson = getResource("/related-objects/$urlSuffix/list-response.json")
+          val expectedResponse = getResource("/related-objects/$urlSuffix/list-response.json")
           webTestClient.get().uri(urlWithRelatedObjects)
             .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
             .expectBody().json(
-              expectedJson,
+              expectedResponse,
               true,
             )
         }
@@ -1579,6 +1579,172 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isCreated
             .expectBody().json(expectedResponse, true)
+
+          getDomainEvents(1).let {
+            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+              .containsExactlyInAnyOrder(
+                "incident.report.amended" to InformationSource.DPS,
+              )
+          }
+        }
+      }
+    }
+
+    abstract inner class UpdateObject {
+      val validRequest = getResource("/related-objects/$urlSuffix/update-request.json")
+      val validPartialRequest = getResource("/related-objects/$urlSuffix/update-request-partial.json")
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.patch().uri(urlForFirstRelatedObject).bodyValue(validRequest),
+          "MAINTAIN_INCIDENT_REPORTS",
+          "write",
+        )
+      }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot update related object for a report if it is not found`() {
+          webTestClient.patch().uri("/incident-reports/11111111-2222-3333-4444-555555555555/$urlSuffix/1")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
+
+          assertNoDomainMessagesSent()
+        }
+
+        @Test
+        fun `cannot update related object at index 0`() {
+          webTestClient.patch().uri("/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/0")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("index 0 not found")
+            }
+
+          assertNoDomainMessagesSent()
+        }
+
+        @Test
+        fun `cannot update related object beyond end`() {
+          webTestClient.patch().uri("/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/3")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("index 3 not found")
+            }
+
+          assertNoDomainMessagesSent()
+        }
+
+        @Test
+        fun `cannot update related object with invalid payload`() {
+          webTestClient.patch().uri(urlForFirstRelatedObject)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue("[]")
+            .exchange()
+            .expectStatus().isBadRequest
+
+          assertNoDomainMessagesSent()
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @ParameterizedTest(name = "can update {0} related object with no changes")
+        @ValueSource(strings = ["first", "second"])
+        fun `can update a related object with no changes`(index: String) {
+          val expectedResponse = getResource("/related-objects/$urlSuffix/list-response.json")
+          val url = if (index == "first") {
+            urlForFirstRelatedObject
+          } else {
+            urlForSecondRelatedObject
+          }
+          webTestClient.patch().uri(url)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue("{}")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          getDomainEvents(1).let {
+            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+              .containsExactlyInAnyOrder(
+                "incident.report.amended" to InformationSource.DPS,
+              )
+          }
+        }
+
+        @ParameterizedTest(name = "can update {0} related object fully")
+        @ValueSource(strings = ["first", "second"])
+        fun `can update a related object fully`(index: String) {
+          val expectedResponse = getResource("/related-objects/$urlSuffix/update-response-$index.json")
+          val url = if (index == "first") {
+            urlForFirstRelatedObject
+          } else {
+            urlForSecondRelatedObject
+          }
+          webTestClient.patch().uri(url)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          getDomainEvents(1).let {
+            assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
+              .containsExactlyInAnyOrder(
+                "incident.report.amended" to InformationSource.DPS,
+              )
+          }
+        }
+
+        @ParameterizedTest(name = "can update {0} related object partially")
+        @ValueSource(strings = ["first", "second"])
+        fun `can update a related object partially`(index: String) {
+          val expectedResponse = getResource("/related-objects/$urlSuffix/update-response-$index-partial.json")
+          val url = if (index == "first") {
+            urlForFirstRelatedObject
+          } else {
+            urlForSecondRelatedObject
+          }
+          webTestClient.patch().uri(url)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validPartialRequest)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
 
           getDomainEvents(1).let {
             assertThat(it.map { message -> message.eventType to message.additionalInformation?.source })
@@ -1702,6 +1868,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
 
+    @DisplayName("PATCH /incident-reports/{reportId}/staff-involved/{index}")
+    @Nested
+    inner class UpdateObject : RelatedObjects.UpdateObject()
+
     @DisplayName("DELETE /incident-reports/{reportId}/staff-involved/{index}")
     @Nested
     inner class RemoveObject : RelatedObjects.RemoveObject()
@@ -1717,6 +1887,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/prisoners-involved")
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
+
+    @DisplayName("PATCH /incident-reports/{reportId}/prisoners-involved/{index}")
+    @Nested
+    inner class UpdateObject : RelatedObjects.UpdateObject()
 
     @DisplayName("DELETE /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested
@@ -1734,6 +1908,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
 
+    @DisplayName("PATCH /incident-reports/{reportId}/locations/{index}")
+    @Nested
+    inner class UpdateObject : RelatedObjects.UpdateObject()
+
     @DisplayName("DELETE /incident-reports/{reportId}/locations/{index}")
     @Nested
     inner class RemoveObject : RelatedObjects.RemoveObject()
@@ -1750,6 +1928,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
 
+    @DisplayName("PATCH /incident-reports/{reportId}/evidence/{index}")
+    @Nested
+    inner class UpdateObject : RelatedObjects.UpdateObject()
+
     @DisplayName("DELETE /incident-reports/{reportId}/evidence/{index}")
     @Nested
     inner class RemoveObject : RelatedObjects.RemoveObject()
@@ -1765,6 +1947,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("POST /incident-reports/{reportId}/correction-requests")
     @Nested
     inner class AddObject : RelatedObjects.AddObject()
+
+    @DisplayName("PATCH /incident-reports/{reportId}/correction-requests/{index}")
+    @Nested
+    inner class UpdateObject : RelatedObjects.UpdateObject()
 
     @DisplayName("DELETE /incident-reports/{reportId}/correction-requests/{index}")
     @Nested

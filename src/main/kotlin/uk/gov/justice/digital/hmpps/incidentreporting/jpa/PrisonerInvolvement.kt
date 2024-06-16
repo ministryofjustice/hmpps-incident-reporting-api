@@ -10,6 +10,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdatePrisonerInvolvement
+import kotlin.jvm.optionals.getOrNull
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.PrisonerInvolvement as PrisonerInvolvementDto
 
 @Entity
@@ -21,21 +23,28 @@ class PrisonerInvolvement(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
-  val prisonerNumber: String,
+  var prisonerNumber: String,
 
   @Enumerated(EnumType.STRING)
-  val prisonerRole: PrisonerRole,
+  var prisonerRole: PrisonerRole,
 
   @Enumerated(EnumType.STRING)
-  val outcome: PrisonerOutcome? = null,
+  var outcome: PrisonerOutcome? = null,
 
-  val comment: String? = null,
+  var comment: String? = null,
 ) {
   override fun toString(): String {
     return "PrisonerInvolvement(id=$id)"
   }
 
   fun getReport() = report
+
+  fun updateWith(request: UpdatePrisonerInvolvement) {
+    request.prisonerNumber?.let { prisonerNumber = it }
+    request.prisonerRole?.let { prisonerRole = it }
+    request.outcome?.let { outcome = it.getOrNull() }
+    request.comment?.let { comment = it.getOrNull() }
+  }
 
   fun toDto() = PrisonerInvolvementDto(
     prisonerNumber = prisonerNumber,

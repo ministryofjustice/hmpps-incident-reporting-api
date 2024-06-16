@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateLocation
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Location as LocationDto
 
 @Entity
@@ -17,17 +18,23 @@ class Location(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
-  val locationId: String,
+  var locationId: String,
 
   // TODO: should `type` be an enum?
-  val type: String,
-  val description: String,
+  var type: String,
+  var description: String,
 ) {
   override fun toString(): String {
     return "Location(id=$id)"
   }
 
   fun getReport() = report
+
+  fun updateWith(request: UpdateLocation) {
+    request.locationId?.let { locationId = it }
+    request.type?.let { type = it }
+    request.description?.let { description = it }
+  }
 
   fun toDto() = LocationDto(
     locationId = locationId,
