@@ -370,7 +370,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can migrate an incident`() {
+      fun `can migrate an incident report`() {
         val updatedSyncRequest = syncRequest.copy(
           initialMigration = true,
           incidentReport = syncRequest.incidentReport.copy(
@@ -626,7 +626,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `can sync a new incident after migration created in NOMIS`() {
+      fun `can sync a new incident report after migration created in NOMIS`() {
         val newIncidentId = INCIDENT_NUMBER + 1
         val newIncident = syncRequest.copy(
           initialMigration = false,
@@ -888,7 +888,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `can sync an update to an existing incident created in NOMIS`() {
+      fun `can sync an update to an existing incident report created in NOMIS`() {
         val upsertMigration = syncRequest.copy(
           initialMigration = false,
           id = existingNomisReport.id,
