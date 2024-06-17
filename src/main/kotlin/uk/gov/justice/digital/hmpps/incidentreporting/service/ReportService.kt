@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
@@ -213,5 +214,35 @@ class ReportService(
         }
       } to changed
     }.getOrNull()
+  }
+
+  @Transactional
+  fun changeReportType(id: UUID, changeTypeRequest: ChangeTypeRequest): Pair<ReportWithDetails, Boolean>? {
+    changeTypeRequest.validate()
+
+    return reportRepository.findOneEagerlyById(id)?.let {
+      val changed = it.type != changeTypeRequest.newType
+      if (changed) {
+        val now = LocalDateTime.now(clock)
+        val user = authenticationFacade.getUserOrSystemInContext()
+        it.changeType(
+          newType = changeTypeRequest.newType,
+          changedAt = now,
+          changedBy = user,
+        )
+        it.modifiedAt = now
+        it.modifiedBy = user
+      }
+
+      it.toDtoWithDetails().apply {
+        if (changed) {
+          log.info("Changed incident report type to ${changeTypeRequest.newType} for number=$incidentNumber ID=$id")
+          telemetryClient.trackEvent(
+            "Changed incident report type",
+            this,
+          )
+        }
+      } to changed
+    }
   }
 }
