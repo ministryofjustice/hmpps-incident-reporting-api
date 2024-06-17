@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -65,8 +64,8 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
     removeAt(index - 1)
   }
 
-  abstract fun listObjects(@PathVariable reportId: UUID): List<ResponseDto>
-  abstract fun addObject(@PathVariable reportId: UUID, @Valid request: AddRequest): List<ResponseDto>
-  abstract fun updateObject(@PathVariable reportId: UUID, index: Int, @Valid request: UpdateRequest): List<ResponseDto>
-  abstract fun removeObject(@PathVariable reportId: UUID, index: Int): List<ResponseDto>
+  abstract fun listObjects(reportId: UUID): List<ResponseDto>
+  abstract fun addObject(reportId: UUID, @Valid request: AddRequest): List<ResponseDto>
+  abstract fun updateObject(reportId: UUID, index: Int, @Valid request: UpdateRequest): List<ResponseDto>
+  abstract fun removeObject(reportId: UUID, index: Int): List<ResponseDto>
 }
