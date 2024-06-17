@@ -11,8 +11,8 @@ data class UpdatePrisonerInvolvement(
   val prisonerNumber: String? = null,
   @Schema(description = "Their role", required = false, defaultValue = "null")
   val prisonerRole: PrisonerRole? = null,
-  @Schema(description = "Optional outcome of prisoner’s involvement", required = false, defaultValue = "null")
+  @Schema(description = "Optional outcome of prisoner’s involvement – omit to preserve existing outcome, provide null to clear it", required = false, defaultValue = "null")
   val outcome: Optional<PrisonerOutcome>? = null,
-  @Schema(description = "Optional comment on prisoner’s involvement", required = false, defaultValue = "null")
+  @Schema(description = "Optional comment on prisoner’s involvement – omit to preserve existing comment, provide null to clear it", required = false, defaultValue = "null")
   val comment: Optional<String>? = null,
 )
