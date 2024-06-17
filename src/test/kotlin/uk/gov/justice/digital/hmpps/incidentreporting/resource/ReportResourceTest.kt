@@ -1268,6 +1268,182 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
+  @DisplayName("PATCH /incident-reports/{id}/status")
+  @Nested
+  inner class ChangeStatus {
+    private lateinit var url: String
+
+    // language=json
+    private val validPayload = """
+      {"newStatus": "AWAITING_ANALYSIS"}
+    """
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/${existingReport.id}/status"
+    }
+
+    @DisplayName("is secured")
+    @Nested
+    inner class Security {
+      @DisplayName("by role and scope")
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.patch().uri(url).bodyValue(validPayload),
+        "MAINTAIN_INCIDENT_REPORTS",
+        "write",
+      )
+    }
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot change status of a missing report`() {
+        webTestClient.patch().uri("/incident-reports/11111111-2222-3333-4444-555555555555/status")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isNotFound
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `cannot change status of a report with invalid payload`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"status": "CLOSED"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isBadRequest
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `cannot change status of a report to an unknown one`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"newStatus": "OPEN"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isBadRequest
+
+        assertThatNoDomainEventsWereSent()
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can change status of a report but keeping it the same`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"newStatus": "DRAFT"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1",
+              "createdInNomis": false,
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
+                }
+              ]
+            }
+            """,
+            false,
+          )
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `can change status of a report preserving history`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "AWAITING_ANALYSIS",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false,
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
+                },
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "INCIDENT_REPORTING_API"
+                }
+              ]
+            }
+            """,
+            false,
+          )
+
+        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+      }
+    }
+  }
+
   @DisplayName("DELETE /incident-reports/{id}")
   @Nested
   inner class DeleteReportById {

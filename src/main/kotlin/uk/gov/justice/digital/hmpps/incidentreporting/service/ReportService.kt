@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
@@ -34,6 +35,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundException
 import java.time.Clock
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -180,6 +182,36 @@ class ReportService(
           this,
         )
       }
+    }.getOrNull()
+  }
+
+  @Transactional
+  fun changeReportStatus(id: UUID, changeStatusRequest: ChangeStatusRequest): Pair<ReportWithDetails, Boolean>? {
+    return reportRepository.findById(id).map {
+      val changed = it.status != changeStatusRequest.newStatus
+      if (changed) {
+        // TODO: determine which transitions are allowed
+
+        val now = LocalDateTime.now(clock)
+        val user = authenticationFacade.getUserOrSystemInContext()
+        it.changeStatus(
+          newStatus = changeStatusRequest.newStatus,
+          changedAt = now,
+          changedBy = user,
+        )
+        it.modifiedAt = now
+        it.modifiedBy = user
+      }
+
+      it.toDtoWithDetails().apply {
+        if (changed) {
+          log.info("Changed incident report status to ${changeStatusRequest.newStatus} for number=$incidentNumber ID=$id")
+          telemetryClient.trackEvent(
+            "Changed incident report status",
+            this,
+          )
+        }
+      } to changed
     }.getOrNull()
   }
 }

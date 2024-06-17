@@ -156,6 +156,12 @@ class Report(
     return this
   }
 
+  fun changeStatus(newStatus: Status, changedAt: LocalDateTime, changedBy: String): Report {
+    status = newStatus
+    addStatusHistory(newStatus, changedAt, changedBy)
+    return this
+  }
+
   fun addStatusHistory(status: Status, changedAt: LocalDateTime, changedBy: String): StatusHistory {
     return StatusHistory(
       report = this,

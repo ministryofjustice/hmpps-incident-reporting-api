@@ -48,7 +48,7 @@ class NomisSyncResource(
       ),
       ApiResponse(
         responseCode = "400",
-        description = "Invalid Request",
+        description = "Invalid request",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
