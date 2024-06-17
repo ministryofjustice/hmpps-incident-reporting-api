@@ -105,7 +105,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     @Valid
     request: AddCorrectionRequest,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Added correction request to incident report") { report ->
       with(request) {
         report.addCorrectionRequest(
           correctionRequestedBy = correctionRequestedBy,
@@ -163,7 +163,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     @Valid
     request: UpdateCorrectionRequest,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Updated a correction request in incident report") { report ->
       val objects = report.correctionRequests
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -207,7 +207,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     @PathVariable
     index: Int,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Deleted correction request from incident report") { report ->
       val objects = report.correctionRequests
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }

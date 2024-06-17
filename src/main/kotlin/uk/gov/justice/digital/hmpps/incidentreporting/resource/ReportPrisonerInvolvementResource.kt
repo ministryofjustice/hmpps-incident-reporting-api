@@ -105,7 +105,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @Valid
     request: AddPrisonerInvolvement,
   ): List<PrisonerInvolvement> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Added an involved prisoner to incident report") { report ->
       with(request) {
         report.addPrisonerInvolved(
           prisonerNumber = prisonerNumber,
@@ -163,7 +163,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @Valid
     request: UpdatePrisonerInvolvement,
   ): List<PrisonerInvolvement> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Updated an involved prisoner in incident report") { report ->
       val objects = report.prisonersInvolved
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -207,7 +207,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @PathVariable
     index: Int,
   ): List<PrisonerInvolvement> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Deleted an involved prisoner from incident report") { report ->
       val objects = report.prisonersInvolved
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }

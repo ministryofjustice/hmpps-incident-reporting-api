@@ -105,7 +105,7 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
     @Valid
     request: AddStaffInvolvement,
   ): List<StaffInvolvement> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Added an involved member of staff to incident report") { report ->
       with(request) {
         report.addStaffInvolved(
           staffUsername = staffUsername,
@@ -162,7 +162,7 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
     @Valid
     request: UpdateStaffInvolvement,
   ): List<StaffInvolvement> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Updated an involved member of staff in incident report") { report ->
       val objects = report.staffInvolved
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -206,7 +206,7 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
     @PathVariable
     index: Int,
   ): List<StaffInvolvement> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Deleted an involved member of staff from incident report") { report ->
       val objects = report.staffInvolved
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }

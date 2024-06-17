@@ -105,7 +105,7 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @Valid
     request: AddEvidence,
   ): List<Evidence> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Added evidence to incident report") { report ->
       with(request) {
         report.addEvidence(
           type = type,
@@ -161,7 +161,7 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @Valid
     request: UpdateEvidence,
   ): List<Evidence> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Updated evidence in incident report") { report ->
       val objects = report.evidence
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -205,7 +205,7 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @PathVariable
     index: Int,
   ): List<Evidence> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Deleted evidence from incident report") { report ->
       val objects = report.evidence
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }

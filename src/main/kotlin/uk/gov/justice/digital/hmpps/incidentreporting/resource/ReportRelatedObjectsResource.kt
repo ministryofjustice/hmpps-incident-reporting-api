@@ -1,15 +1,18 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
+import com.microsoft.applicationinsights.TelemetryClient
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
 import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
+import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService.Companion.log
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -28,6 +31,9 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
   private lateinit var authenticationFacade: AuthenticationFacade
 
   @Autowired
+  private lateinit var telemetryClient: TelemetryClient
+
+  @Autowired
   private lateinit var reportRepository: ReportRepository
 
   protected fun (UUID).findReportOrThrowNotFound(): Report {
@@ -35,18 +41,27 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
       ?: throw ReportNotFoundException(this)
   }
 
-  protected fun <T> (UUID).updateReportOrThrowNotFound(block: (Report) -> T): T {
+  protected fun <T> (UUID).updateReportOrThrowNotFound(changeMessage: String, block: (Report) -> T): T {
     val report = findReportOrThrowNotFound()
     return block(report).also {
       report.modifiedAt = LocalDateTime.now(clock)
       report.modifiedBy = authenticationFacade.getUserOrSystemInContext()
+
+      val basicReport = report.toDtoBasic()
       eventPublishAndAudit(
         // TODO: should different related object actions raise different events?
         ReportDomainEventType.INCIDENT_REPORT_AMENDED,
         InformationSource.DPS,
       ) {
-        report.toDtoBasic()
+        basicReport
       }
+
+      log.info("$changeMessage number=${report.incidentNumber} ID=${report.id}")
+      telemetryClient.trackEvent(
+        // TODO: should different related object actions raise different events?
+        changeMessage,
+        basicReport,
+      )
     }
   }
 

@@ -105,7 +105,7 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
     @Valid
     request: AddLocation,
   ): List<Location> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Added location to incident report") { report ->
       with(request) {
         report.addLocation(
           locationId = locationId,
@@ -162,7 +162,7 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
     @Valid
     request: UpdateLocation,
   ): List<Location> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Updated location in incident report") { report ->
       val objects = report.locations
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -206,7 +206,7 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
     @PathVariable
     index: Int,
   ): List<Location> {
-    return reportId.updateReportOrThrowNotFound { report ->
+    return reportId.updateReportOrThrowNotFound("Deleted location from incident report") { report ->
       val objects = report.locations
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }
