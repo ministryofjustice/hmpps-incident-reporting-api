@@ -1522,22 +1522,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `cannot add invalid object to a report`(): List<DynamicTest> {
           val requests = mutableListOf(
-            InvalidRequestTestCase(
-              "empty request",
-              "/related-objects/empty-object.json",
-            ),
-            InvalidRequestTestCase(
-              "invalid shape",
-              "/related-objects/empty-array.json",
-            ),
+            InvalidRequestTestCase("empty request", "{}"),
+            InvalidRequestTestCase("invalid shape", "[]"),
           )
           requests.addAll(invalidRequests)
-          return requests.map { (name, requestResourcePath) ->
+          return requests.map { (name, value) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.post().uri(urlWithoutRelatedObjects)
                 .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                 .header("Content-Type", "application/json")
-                .bodyValue(getResource(requestResourcePath))
+                .bodyValue(value)
                 .exchange()
                 .expectStatus().isBadRequest
 
@@ -1655,18 +1649,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `cannot update related object with invalid payload`(): List<DynamicTest> {
           val requests = mutableListOf(
-            InvalidRequestTestCase(
-              "invalid shape",
-              "/related-objects/empty-array.json",
-            ),
+            InvalidRequestTestCase("invalid shape", "[]"),
           )
           requests.addAll(invalidRequests)
-          return requests.map { (name, requestResourcePath) ->
+          return requests.map { (name, value) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.patch().uri(urlForFirstRelatedObject)
                 .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                 .header("Content-Type", "application/json")
-                .bodyValue(getResource(requestResourcePath))
+                .bodyValue(value)
                 .exchange()
                 .expectStatus().isBadRequest
 
@@ -1887,7 +1878,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       invalidRequests = listOf(
         InvalidRequestTestCase(
           "short staff username",
-          "/related-objects/staff-involved/add-request-short-username.json",
+          getResource("/related-objects/staff-involved/add-request-short-username.json"),
         ),
       ),
     )
@@ -1899,7 +1890,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         InvalidRequestTestCase(
 
           "short staff username",
-          "/related-objects/staff-involved/update-request-short-username.json",
+          getResource("/related-objects/staff-involved/update-request-short-username.json"),
         ),
       ),
       nullablePropertyRequests = listOf(
@@ -2002,7 +1993,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       invalidRequests = listOf(
         InvalidRequestTestCase(
           "short requester username",
-          "/related-objects/correction-requests/add-request-short-username.json",
+          getResource("/related-objects/correction-requests/add-request-short-username.json"),
         ),
       ),
     )
@@ -2013,7 +2004,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       invalidRequests = listOf(
         InvalidRequestTestCase(
           "short requester username",
-          "/related-objects/correction-requests/update-request-short-username.json",
+          getResource("/related-objects/correction-requests/update-request-short-username.json"),
         ),
       ),
     )
@@ -2026,7 +2017,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
 data class InvalidRequestTestCase(
   val name: String,
-  val requestResourcePath: String,
+  val value: String,
 )
 
 data class NullablePropertyTestCase(
