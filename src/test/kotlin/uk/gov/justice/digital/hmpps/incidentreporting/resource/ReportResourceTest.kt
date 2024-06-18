@@ -2073,12 +2073,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             InvalidRequestTestCase("invalid shape", "[]"),
           )
           requests.addAll(invalidRequests)
-          return requests.map { (name, value) ->
+          return requests.map { (name, request) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.post().uri(urlWithoutRelatedObjects)
                 .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                 .header("Content-Type", "application/json")
-                .bodyValue(value)
+                .bodyValue(request)
                 .exchange()
                 .expectStatus().isBadRequest
 
@@ -2199,12 +2199,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             InvalidRequestTestCase("invalid shape", "[]"),
           )
           requests.addAll(invalidRequests)
-          return requests.map { (name, value) ->
+          return requests.map { (name, request) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.patch().uri(urlForFirstRelatedObject)
                 .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                 .header("Content-Type", "application/json")
-                .bodyValue(value)
+                .bodyValue(request)
                 .exchange()
                 .expectStatus().isBadRequest
 
@@ -2296,20 +2296,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `can update nullable properties`(): List<DynamicTest> {
           return nullablePropertyRequests.flatMap { testCase ->
-            mapOf(
-              "value not provided" to ("{}" to testCase.unchangedValue),
-              "null value" to ("""{"${testCase.field}": null}""" to null),
-              "value provided" to ("""{"${testCase.field}": "${testCase.validValue}"}""" to testCase.validValue),
-            ).map { (name, requestAndExpectation) ->
-              val (request, expectedValue) = requestAndExpectation
-              DynamicTest.dynamicTest("${testCase.field} with $name") {
+            testCase.testCases().map { (name, request, expectedFieldValue) ->
+              DynamicTest.dynamicTest(name) {
                 webTestClient.patch().uri(urlForFirstRelatedObject)
                   .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                   .header("Content-Type", "application/json")
                   .bodyValue(request)
                   .exchange()
                   .expectStatus().isOk
-                  .expectBody().jsonPath("[0].${testCase.field}").isEqualTo(expectedValue)
+                  .expectBody().jsonPath("[0].${testCase.field}").isEqualTo(expectedFieldValue)
               }
             }
           }
@@ -2564,11 +2559,42 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
 data class InvalidRequestTestCase(
   val name: String,
-  val value: String,
+  val request: String,
 )
 
 data class NullablePropertyTestCase(
   val field: String,
   val validValue: String,
   val unchangedValue: String,
-)
+) {
+  data class ValidRequestTestCase(
+    val name: String,
+    val request: String,
+    val expectedFieldValue: String?,
+  )
+
+  fun testCases(): List<ValidRequestTestCase> = listOf(
+    ValidRequestTestCase(
+      "$field with not value provided",
+      // language=json
+      "{}",
+      unchangedValue,
+    ),
+    ValidRequestTestCase(
+      "$field with null value",
+      // language=json
+      """
+      {"$field": null}
+      """,
+      null,
+    ),
+    ValidRequestTestCase(
+      "$field with value provided",
+      // language=json
+      """
+      {"$field": "$validValue"}
+      """,
+      validValue,
+    ),
+  )
+}
