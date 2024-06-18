@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer.setLocalStackProperties
 import uk.gov.justice.digital.hmpps.incidentreporting.config.SYSTEM_USERNAME
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSDomainEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSMessage
 import uk.gov.justice.hmpps.sqs.HmppsQueue
@@ -86,8 +87,23 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     return domainEvent
   }
 
-  fun assertNoDomainMessagesSent() {
+  fun assertThatNoDomainEventsWereSent() {
     assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
+  }
+
+  fun assertThatDomainEventWasSent(
+    eventType: String,
+    incidentNumber: String?,
+    source: InformationSource = InformationSource.DPS,
+  ) {
+    getDomainEvents(1).let {
+      val event = it[0]
+      assertThat(event.eventType).isEqualTo(eventType)
+      incidentNumber?.let {
+        assertThat(event.additionalInformation?.incidentNumber).isEqualTo(incidentNumber)
+      }
+      assertThat(event.additionalInformation?.source).isEqualTo(source)
+    }
   }
 
   fun getDomainEvents(messageCount: Int = 1): List<HMPPSDomainEvent> {

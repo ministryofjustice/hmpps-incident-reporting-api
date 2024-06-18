@@ -1,0 +1,12 @@
+[
+  {
+    "locationId": "102",
+    "type": "WING",
+    "description": "Wing A"
+  },
+  {
+    "locationId": "2",
+    "type": "CELL",
+    "description": "Location #2"
+  }
+]

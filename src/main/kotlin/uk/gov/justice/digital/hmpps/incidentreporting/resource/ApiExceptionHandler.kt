@@ -21,6 +21,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import java.util.UUID
+import kotlin.reflect.KClass
 
 @RestControllerAdvice
 class ApiExceptionHandler {
@@ -259,6 +260,20 @@ class ApiExceptionHandler {
       )
   }
 
+  @ExceptionHandler(ObjectAtIndexNotFoundException::class)
+  fun handleObjectAtIndexNotFound(e: ObjectAtIndexNotFoundException): ResponseEntity<ErrorResponse?>? {
+    log.debug(e.message)
+    return ResponseEntity
+      .status(HttpStatus.NOT_FOUND)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.NOT_FOUND,
+          userMessage = "${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
   }
@@ -275,3 +290,5 @@ class ReportNotFoundException(description: String) : Exception("There is no repo
 class ReportAlreadyExistsException(description: String) : Exception("Report already exists: $description") {
   constructor(id: UUID) : this(id.toString())
 }
+
+class ObjectAtIndexNotFoundException(type: KClass<*>, index: Int) : Exception("Object ${type.simpleName} at index $index not found")

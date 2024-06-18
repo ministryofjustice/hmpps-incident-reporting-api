@@ -1,0 +1,14 @@
+[
+  {
+    "reason": "NOT_SPECIFIED",
+    "descriptionOfChange": "Fix request #1",
+    "correctionRequestedBy": "qa",
+    "correctionRequestedAt": "2023-12-05T12:34:56"
+  },
+  {
+    "reason": "NOT_SPECIFIED",
+    "descriptionOfChange": "Fix request #2",
+    "correctionRequestedBy": "qa",
+    "correctionRequestedAt": "2023-12-05T12:34:56"
+  }
+]

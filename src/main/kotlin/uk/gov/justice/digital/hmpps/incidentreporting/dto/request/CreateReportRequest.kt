@@ -21,7 +21,7 @@ data class CreateReportRequest(
   @field:Size(min = 2, max = 6)
   val prisonId: String,
   @Schema(description = "Brief title describing the incident", required = true)
-  @field:Size(min = 10, max = 255)
+  @field:Size(min = 5, max = 255)
   val title: String,
   @Schema(description = "Longer summary of the incident", required = true)
   val description: String,

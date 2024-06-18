@@ -55,7 +55,7 @@ fun Report.addNomisStaffInvolvements(staffParties: Collection<NomisStaffParty>) 
   staffParties.forEach {
     this.addStaffInvolved(
       staffRole = StaffRole.fromNomisCode(it.role.code),
-      username = it.staff.username,
+      staffUsername = it.staff.username,
       comment = it.comment,
     )
   }
@@ -66,7 +66,7 @@ fun Report.addNomisPrisonerInvolvements(offenderParties: Collection<NomisOffende
     this.addPrisonerInvolved(
       prisonerNumber = it.offender.offenderNo,
       prisonerRole = PrisonerRole.fromNomisCode(it.role.code),
-      prisonerOutcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
+      outcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
       comment = it.comment,
     )
   }

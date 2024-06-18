@@ -1,0 +1,20 @@
+[
+  {
+    "prisonerNumber": "A0001AA",
+    "prisonerRole": "ACTIVE_INVOLVEMENT",
+    "outcome": "CHARGED_BY_POLICE",
+    "comment": "Comment #1"
+  },
+  {
+    "prisonerNumber": "A0002AA",
+    "prisonerRole": "ASSAILANT",
+    "outcome": "CONVICTED",
+    "comment": "Comment #2"
+  },
+  {
+    "prisonerNumber": "A1234BB",
+    "prisonerRole": "PRESENT_AT_SCENE",
+    "outcome": null,
+    "comment": "Onlooker"
+  }
+]

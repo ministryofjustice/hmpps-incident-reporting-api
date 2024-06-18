@@ -1,0 +1,14 @@
+[
+  {
+    "prisonerNumber": "A0001AA",
+    "prisonerRole": "ACTIVE_INVOLVEMENT",
+    "outcome": "LOCAL_INVESTIGATION",
+    "comment": "Comment #1"
+  },
+  {
+    "prisonerNumber": "A0002AA",
+    "prisonerRole": "ASSAILANT",
+    "outcome": "CONVICTED",
+    "comment": "Comment #2"
+  }
+]

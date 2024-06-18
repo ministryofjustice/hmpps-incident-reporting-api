@@ -297,12 +297,16 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
     )
 
     @DisplayName("is secured")
-    @TestFactory
-    fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-      webTestClient.post().uri("/sync/upsert").bodyValue(syncRequest.toJson()),
-      "MIGRATE_INCIDENT_REPORTS",
-      "write",
-    )
+    @Nested
+    inner class Security {
+      @DisplayName("by role and scope")
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.post().uri("/sync/upsert").bodyValue(syncRequest.toJson()),
+        "MIGRATE_INCIDENT_REPORTS",
+        "write",
+      )
+    }
 
     @DisplayName("validates requests")
     @Nested
@@ -366,7 +370,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can migrate an incident`() {
+      fun `can migrate an incident report`() {
         val updatedSyncRequest = syncRequest.copy(
           initialMigration = true,
           incidentReport = syncRequest.incidentReport.copy(
@@ -622,7 +626,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `can sync a new incident after migration created in NOMIS`() {
+      fun `can sync a new incident report after migration created in NOMIS`() {
         val newIncidentId = INCIDENT_NUMBER + 1
         val newIncident = syncRequest.copy(
           initialMigration = false,
@@ -876,15 +880,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             )
           }
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to message.additionalInformation?.source }).containsExactlyInAnyOrder(
-            "incident.report.created" to InformationSource.NOMIS,
-          )
-        }
+        assertThatDomainEventWasSent("incident.report.created", "$newIncidentId", InformationSource.NOMIS)
       }
 
       @Test
-      fun `can sync an update to an existing incident created in NOMIS`() {
+      fun `can sync an update to an existing incident report created in NOMIS`() {
         val upsertMigration = syncRequest.copy(
           initialMigration = false,
           id = existingNomisReport.id,
@@ -1343,11 +1343,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             )
           }
 
-        getDomainEvents(1).let {
-          assertThat(it.map { message -> message.eventType to Pair(message.additionalInformation?.id, message.additionalInformation?.source) }).containsExactlyInAnyOrder(
-            "incident.report.amended" to Pair(existingNomisReport.id, InformationSource.NOMIS),
-          )
-        }
+        assertThatDomainEventWasSent("incident.report.amended", "$INCIDENT_NUMBER", InformationSource.NOMIS)
       }
     }
   }
@@ -1408,7 +1404,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         expectStatus().isCreated
 
         // no domain events sent because migrating from NOMIS
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
     }
 
@@ -1443,7 +1439,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           }
 
         // no domain events sent because migrating from NOMIS
-        assertNoDomainMessagesSent()
+        assertThatNoDomainEventsWereSent()
       }
     }
 
