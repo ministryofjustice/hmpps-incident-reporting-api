@@ -23,7 +23,7 @@ dependencies {
 
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.0.0")
   implementation("io.opentelemetry:opentelemetry-api:1.39.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.4.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.5.0")
 
   implementation("com.zaxxer:HikariCP:5.1.0")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
