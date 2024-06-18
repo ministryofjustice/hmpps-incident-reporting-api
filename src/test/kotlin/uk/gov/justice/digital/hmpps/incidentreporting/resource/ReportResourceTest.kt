@@ -761,7 +761,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue("{}")
+          .bodyValue(
+            // language=json
+            "{}",
+          )
           .exchange()
           .expectStatus().isBadRequest
 
@@ -992,7 +995,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue("[]")
+          .bodyValue(
+            // language=json
+            "[]",
+          )
           .exchange()
           .expectStatus().isBadRequest
 
@@ -1533,6 +1539,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           )
           .exchange()
           .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("Inactive incident type OLD_ASSAULT3")
+          }
 
         assertThatNoDomainEventsWereSent()
       }
@@ -2069,8 +2078,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `cannot add invalid object to a report`(): List<DynamicTest> {
           val requests = mutableListOf(
-            InvalidRequestTestCase("empty request", "{}"),
-            InvalidRequestTestCase("invalid shape", "[]"),
+            InvalidRequestTestCase(
+              "empty request",
+              // language=json
+              "{}",
+            ),
+            InvalidRequestTestCase(
+              "invalid shape",
+              // language=json
+              "[]",
+            ),
           )
           requests.addAll(invalidRequests)
           return requests.map { (name, request) ->
@@ -2196,7 +2213,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `cannot update related object with invalid payload`(): List<DynamicTest> {
           val requests = mutableListOf(
-            InvalidRequestTestCase("invalid shape", "[]"),
+            InvalidRequestTestCase(
+              "invalid shape",
+              // language=json
+              "[]",
+            ),
           )
           requests.addAll(invalidRequests)
           return requests.map { (name, request) ->
@@ -2229,7 +2250,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           webTestClient.patch().uri(url)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
-            .bodyValue("{}")
+            .bodyValue(
+              // language=json
+              "{}",
+            )
             .exchange()
             .expectStatus().isOk
             .expectBody().json(
@@ -2296,7 +2320,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `can update nullable properties`(): List<DynamicTest> {
           return nullablePropertyRequests.flatMap { testCase ->
-            testCase.testCases().map { (name, request, expectedFieldValue) ->
+            testCase.makeValidRequestTests().map { (name, request, expectedFieldValue) ->
               DynamicTest.dynamicTest(name) {
                 webTestClient.patch().uri(urlForFirstRelatedObject)
                   .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -2430,7 +2454,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class UpdateObject : RelatedObjects.UpdateObject(
       invalidRequests = listOf(
         InvalidRequestTestCase(
-
           "short staff username",
           getResource("/related-objects/staff-involved/update-request-short-username.json"),
         ),
@@ -2573,7 +2596,7 @@ data class NullablePropertyTestCase(
     val expectedFieldValue: String?,
   )
 
-  fun testCases(): List<ValidRequestTestCase> = listOf(
+  fun makeValidRequestTests(): List<ValidRequestTestCase> = listOf(
     ValidRequestTestCase(
       "$field with not value provided",
       // language=json
