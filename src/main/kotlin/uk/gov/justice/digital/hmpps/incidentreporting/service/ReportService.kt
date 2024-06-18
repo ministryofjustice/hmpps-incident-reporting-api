@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRe
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
@@ -187,62 +188,64 @@ class ReportService(
   }
 
   @Transactional
-  fun changeReportStatus(id: UUID, changeStatusRequest: ChangeStatusRequest): Pair<ReportWithDetails, Boolean>? {
-    return reportRepository.findById(id).map {
-      val changed = it.status != changeStatusRequest.newStatus
-      if (changed) {
+  fun changeReportStatus(id: UUID, changeStatusRequest: ChangeStatusRequest): MaybeChanged<ReportWithDetails>? {
+    return reportRepository.findById(id).getOrNull()?.let { reportEntity ->
+      val maybeChangedReport = if (reportEntity.status != changeStatusRequest.newStatus) {
         // TODO: determine which transitions are allowed
 
         val now = LocalDateTime.now(clock)
         val user = authenticationFacade.getUserOrSystemInContext()
-        it.changeStatus(
+        reportEntity.changeStatus(
           newStatus = changeStatusRequest.newStatus,
           changedAt = now,
           changedBy = user,
         )
-        it.modifiedAt = now
-        it.modifiedBy = user
+        reportEntity.modifiedAt = now
+        reportEntity.modifiedBy = user
+
+        MaybeChanged.Changed(reportEntity.toDtoWithDetails())
+      } else {
+        MaybeChanged.Unchanged(reportEntity.toDtoWithDetails())
       }
 
-      it.toDtoWithDetails().apply {
-        if (changed) {
-          log.info("Changed incident report status to ${changeStatusRequest.newStatus} for number=$incidentNumber ID=$id")
-          telemetryClient.trackEvent(
-            "Changed incident report status",
-            this,
-          )
-        }
-      } to changed
-    }.getOrNull()
+      maybeChangedReport.alsoIfChanged { reportWithDetails ->
+        log.info("Changed incident report status to ${changeStatusRequest.newStatus} for number=${reportWithDetails.incidentNumber} ID=$id")
+        telemetryClient.trackEvent(
+          "Changed incident report status",
+          reportWithDetails,
+        )
+      }
+    }
   }
 
   @Transactional
-  fun changeReportType(id: UUID, changeTypeRequest: ChangeTypeRequest): Pair<ReportWithDetails, Boolean>? {
+  fun changeReportType(id: UUID, changeTypeRequest: ChangeTypeRequest): MaybeChanged<ReportWithDetails>? {
     changeTypeRequest.validate()
 
-    return reportRepository.findOneEagerlyById(id)?.let {
-      val changed = it.type != changeTypeRequest.newType
-      if (changed) {
+    return reportRepository.findOneEagerlyById(id)?.let { reportEntity ->
+      val maybeChangedReport = if (reportEntity.type != changeTypeRequest.newType) {
         val now = LocalDateTime.now(clock)
         val user = authenticationFacade.getUserOrSystemInContext()
-        it.changeType(
+        reportEntity.changeType(
           newType = changeTypeRequest.newType,
           changedAt = now,
           changedBy = user,
         )
-        it.modifiedAt = now
-        it.modifiedBy = user
+        reportEntity.modifiedAt = now
+        reportEntity.modifiedBy = user
+
+        MaybeChanged.Changed(reportEntity.toDtoWithDetails())
+      } else {
+        MaybeChanged.Unchanged(reportEntity.toDtoWithDetails())
       }
 
-      it.toDtoWithDetails().apply {
-        if (changed) {
-          log.info("Changed incident report type to ${changeTypeRequest.newType} for number=$incidentNumber ID=$id")
-          telemetryClient.trackEvent(
-            "Changed incident report type",
-            this,
-          )
-        }
-      } to changed
+      maybeChangedReport.alsoIfChanged { reportWithDetails ->
+        log.info("Changed incident report type to ${changeTypeRequest.newType} for number=${reportWithDetails.incidentNumber} ID=$id")
+        telemetryClient.trackEvent(
+          "Changed incident report type",
+          reportWithDetails,
+        )
+      }
     }
   }
 }

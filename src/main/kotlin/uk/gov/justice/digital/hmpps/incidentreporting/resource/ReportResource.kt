@@ -467,18 +467,17 @@ class ReportResource(
     @Valid
     changeStatusRequest: ChangeStatusRequest,
   ): ReportWithDetails {
-    val (report, changed) = reportService.changeReportStatus(id, changeStatusRequest)
+    val maybeChangedReport = reportService.changeReportStatus(id, changeStatusRequest)
       ?: throw ReportNotFoundException(id)
-    return report.also {
-      if (changed) {
-        eventPublishAndAudit(
-          ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-          InformationSource.DPS,
-        ) {
-          it
-        }
+
+    return maybeChangedReport.alsoIfChanged {
+      eventPublishAndAudit(
+        ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+        InformationSource.DPS,
+      ) {
+        it
       }
-    }
+    }.value
   }
 
   @PatchMapping("/{id}/type")
@@ -522,18 +521,17 @@ class ReportResource(
     @Valid
     changeTypeRequest: ChangeTypeRequest,
   ): ReportWithDetails {
-    val (report, changed) = reportService.changeReportType(id, changeTypeRequest)
+    val maybeChangedReport = reportService.changeReportType(id, changeTypeRequest)
       ?: throw ReportNotFoundException(id)
-    return report.also {
-      if (changed) {
-        eventPublishAndAudit(
-          ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-          InformationSource.DPS,
-        ) {
-          it
-        }
+
+    return maybeChangedReport.alsoIfChanged {
+      eventPublishAndAudit(
+        ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+        InformationSource.DPS,
+      ) {
+        it
       }
-    }
+    }.value
   }
 
   // TODO: decide if a different role should be used!
