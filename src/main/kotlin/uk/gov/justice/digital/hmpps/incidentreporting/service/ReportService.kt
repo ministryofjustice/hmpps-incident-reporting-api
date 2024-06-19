@@ -17,8 +17,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
@@ -34,6 +37,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundException
 import java.time.Clock
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -181,5 +185,67 @@ class ReportService(
         )
       }
     }.getOrNull()
+  }
+
+  @Transactional
+  fun changeReportStatus(id: UUID, changeStatusRequest: ChangeStatusRequest): MaybeChanged<ReportWithDetails>? {
+    return reportRepository.findById(id).getOrNull()?.let { reportEntity ->
+      val maybeChangedReport = if (reportEntity.status != changeStatusRequest.newStatus) {
+        // TODO: determine which transitions are allowed
+
+        val now = LocalDateTime.now(clock)
+        val user = authenticationFacade.getUserOrSystemInContext()
+        reportEntity.changeStatus(
+          newStatus = changeStatusRequest.newStatus,
+          changedAt = now,
+          changedBy = user,
+        )
+        reportEntity.modifiedAt = now
+        reportEntity.modifiedBy = user
+
+        MaybeChanged.Changed(reportEntity.toDtoWithDetails())
+      } else {
+        MaybeChanged.Unchanged(reportEntity.toDtoWithDetails())
+      }
+
+      maybeChangedReport.alsoIfChanged { reportWithDetails ->
+        log.info("Changed incident report status to ${changeStatusRequest.newStatus} for number=${reportWithDetails.incidentNumber} ID=$id")
+        telemetryClient.trackEvent(
+          "Changed incident report status",
+          reportWithDetails,
+        )
+      }
+    }
+  }
+
+  @Transactional
+  fun changeReportType(id: UUID, changeTypeRequest: ChangeTypeRequest): MaybeChanged<ReportWithDetails>? {
+    changeTypeRequest.validate()
+
+    return reportRepository.findOneEagerlyById(id)?.let { reportEntity ->
+      val maybeChangedReport = if (reportEntity.type != changeTypeRequest.newType) {
+        val now = LocalDateTime.now(clock)
+        val user = authenticationFacade.getUserOrSystemInContext()
+        reportEntity.changeType(
+          newType = changeTypeRequest.newType,
+          changedAt = now,
+          changedBy = user,
+        )
+        reportEntity.modifiedAt = now
+        reportEntity.modifiedBy = user
+
+        MaybeChanged.Changed(reportEntity.toDtoWithDetails())
+      } else {
+        MaybeChanged.Unchanged(reportEntity.toDtoWithDetails())
+      }
+
+      maybeChangedReport.alsoIfChanged { reportWithDetails ->
+        log.info("Changed incident report type to ${changeTypeRequest.newType} for number=${reportWithDetails.incidentNumber} ID=$id")
+        telemetryClient.trackEvent(
+          "Changed incident report type",
+          reportWithDetails,
+        )
+      }
+    }
   }
 }

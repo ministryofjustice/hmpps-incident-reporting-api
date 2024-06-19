@@ -120,7 +120,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(WebClientResponseException.NotFound::class)
-  fun handleSpringNotFound(e: WebClientResponseException.NotFound): ResponseEntity<ErrorResponse?>? {
+  fun handleSpringNotFound(e: WebClientResponseException.NotFound): ResponseEntity<ErrorResponse> {
     log.debug("Not found exception caught: {}", e.message)
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
@@ -134,7 +134,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(NoResourceFoundException::class)
-  fun handleNoResourceFoundException(e: NoResourceFoundException): ResponseEntity<ErrorResponse?>? {
+  fun handleNoResourceFoundException(e: NoResourceFoundException): ResponseEntity<ErrorResponse> {
     log.debug("No resource found exception caught: {}", e.message)
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
@@ -148,7 +148,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(ResponseStatusException::class)
-  fun handleResponseStatusException(e: ResponseStatusException): ResponseEntity<ErrorResponse?>? {
+  fun handleResponseStatusException(e: ResponseStatusException): ResponseEntity<ErrorResponse> {
     log.debug("Response status exception caught: {}", e.message)
     val reason = e.reason ?: "Unknown error"
     return ResponseEntity
@@ -163,7 +163,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(java.lang.Exception::class)
-  fun handleException(e: java.lang.Exception): ResponseEntity<ErrorResponse?>? {
+  fun handleException(e: java.lang.Exception): ResponseEntity<ErrorResponse> {
     log.error("Unexpected exception", e)
     return ResponseEntity
       .status(INTERNAL_SERVER_ERROR)
@@ -177,7 +177,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException::class)
-  fun handleInvalidMethodArgumentException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse>? {
+  fun handleInvalidMethodArgumentException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
     val message = e.allErrors.joinToString(", ") {
       val field = if (it is FieldError) {
         "${it.objectName}.${it.field}"
@@ -200,7 +200,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(PropertyReferenceException::class)
-  fun handlePropertyReferenceException(e: PropertyReferenceException): ResponseEntity<ErrorResponse>? {
+  fun handlePropertyReferenceException(e: PropertyReferenceException): ResponseEntity<ErrorResponse> {
     log.debug("PropertyReferenceException caught: {}", e.message)
 
     return ResponseEntity
@@ -216,7 +216,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(EventNotFoundException::class)
-  fun handleEventNotFound(e: EventNotFoundException): ResponseEntity<ErrorResponse?>? {
+  fun handleEventNotFound(e: EventNotFoundException): ResponseEntity<ErrorResponse> {
     log.debug("Event not found exception caught: {}", e.message)
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
@@ -231,7 +231,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(ReportNotFoundException::class)
-  fun handleReportNotFound(e: ReportNotFoundException): ResponseEntity<ErrorResponse?>? {
+  fun handleReportNotFound(e: ReportNotFoundException): ResponseEntity<ErrorResponse> {
     log.debug("Report not found exception caught: {}", e.message)
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
@@ -246,7 +246,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(ReportAlreadyExistsException::class)
-  fun handleReportAlreadyExists(e: ReportAlreadyExistsException): ResponseEntity<ErrorResponse?>? {
+  fun handleReportAlreadyExists(e: ReportAlreadyExistsException): ResponseEntity<ErrorResponse> {
     log.debug("Report already exists exception caught: {}", e.message)
     return ResponseEntity
       .status(HttpStatus.CONFLICT)
@@ -261,7 +261,7 @@ class ApiExceptionHandler {
   }
 
   @ExceptionHandler(ObjectAtIndexNotFoundException::class)
-  fun handleObjectAtIndexNotFound(e: ObjectAtIndexNotFoundException): ResponseEntity<ErrorResponse?>? {
+  fun handleObjectAtIndexNotFound(e: ObjectAtIndexNotFoundException): ResponseEntity<ErrorResponse> {
     log.debug(e.message)
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)

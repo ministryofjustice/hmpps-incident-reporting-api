@@ -761,7 +761,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue("{}")
+          .bodyValue(
+            // language=json
+            "{}",
+          )
           .exchange()
           .expectStatus().isBadRequest
 
@@ -992,7 +995,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue("[]")
+          .bodyValue(
+            // language=json
+            "[]",
+          )
           .exchange()
           .expectStatus().isBadRequest
 
@@ -1268,6 +1274,556 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
+  @DisplayName("PATCH /incident-reports/{id}/status")
+  @Nested
+  inner class ChangeStatus {
+    private lateinit var url: String
+
+    // language=json
+    private val validPayload = """
+      {"newStatus": "AWAITING_ANALYSIS"}
+    """
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/${existingReport.id}/status"
+    }
+
+    @DisplayName("is secured")
+    @Nested
+    inner class Security {
+      @DisplayName("by role and scope")
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.patch().uri(url).bodyValue(validPayload),
+        "MAINTAIN_INCIDENT_REPORTS",
+        "write",
+      )
+    }
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot change status of a missing report`() {
+        webTestClient.patch().uri("/incident-reports/11111111-2222-3333-4444-555555555555/status")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isNotFound
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `cannot change status of a report with invalid payload`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"status": "CLOSED"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isBadRequest
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `cannot change status of a report to an unknown one`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"newStatus": "OPEN"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isBadRequest
+
+        assertThatNoDomainEventsWereSent()
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can change status of a report but keeping it the same`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"newStatus": "DRAFT"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1",
+              "createdInNomis": false,
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
+                }
+              ]
+            }
+            """,
+            false,
+          )
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `can change status of a report preserving history`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.id}",
+              "incidentNumber": "IR-0000000001124143",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124143",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "AWAITING_ANALYSIS",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false,
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
+                },
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "INCIDENT_REPORTING_API"
+                }
+              ]
+            }
+            """,
+            false,
+          )
+
+        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+      }
+    }
+  }
+
+  @DisplayName("PATCH /incident-reports/{id}/type")
+  @Nested
+  inner class ChangeType {
+    private lateinit var urlWithNoQuestionsOrHistory: String
+
+    // language=json
+    private val validPayload = """
+      {"newType": "DAMAGE"}
+    """
+
+    @BeforeEach
+    fun setUp() {
+      urlWithNoQuestionsOrHistory = "/incident-reports/${existingReport.id}/type"
+    }
+
+    @DisplayName("is secured")
+    @Nested
+    inner class Security {
+      @DisplayName("by role and scope")
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.patch().uri(urlWithNoQuestionsOrHistory).bodyValue(validPayload),
+        "MAINTAIN_INCIDENT_REPORTS",
+        "write",
+      )
+    }
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot change type of a missing report`() {
+        webTestClient.patch().uri("/incident-reports/11111111-2222-3333-4444-555555555555/type")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isNotFound
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `cannot change type of a report with invalid payload`() {
+        webTestClient.patch().uri(urlWithNoQuestionsOrHistory)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"type": "DAMAGE"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isBadRequest
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `cannot change type of a report to an unknown one`() {
+        webTestClient.patch().uri(urlWithNoQuestionsOrHistory)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"newType": "MISSING_TYPE"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isBadRequest
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `cannot change type of a report to inactive one`() {
+        webTestClient.patch().uri(urlWithNoQuestionsOrHistory)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"newType": "OLD_ASSAULT3"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("Inactive incident type OLD_ASSAULT3")
+          }
+
+        assertThatNoDomainEventsWereSent()
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `can change type of a report but keeping it the same`() {
+        val reportWithQuestions = reportRepository.save(
+          buildIncidentReport(
+            incidentNumber = "IR-0000000001124146",
+            reportTime = now.minusMinutes(3),
+            status = Status.AWAITING_ANALYSIS,
+            generateQuestions = 2,
+            generateResponses = 2,
+            generateHistory = 0,
+          ),
+        )
+        webTestClient.patch().uri("/incident-reports/${reportWithQuestions.id}/type")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+              {"newType": "FINDS"}
+            """,
+          )
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """
+            {
+              "id": "${reportWithQuestions.id}",
+              "incidentNumber": "IR-0000000001124146",
+              "type": "FINDS",
+              "incidentDateAndTime": "2023-12-05T11:31:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124146",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:31:56",
+              "status": "AWAITING_ANALYSIS",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:31:56",
+              "modifiedAt": "2023-12-05T12:31:56",
+              "modifiedBy": "USER1",
+              "createdInNomis": false,
+              "history": [],
+              "questions": [
+                {
+                  "code": "QID-000000000001",
+                  "question": "Question #1",
+                  "additionalInformation": "Explanation #1",
+                  "responses": [
+                    {
+                      "response": "Response #1",
+                      "additionalInformation": "Prose #1",
+                      "recordedBy": "some-user",
+                      "recordedAt": "2023-12-05T12:31:56"
+                    },
+                    {
+                      "response": "Response #2",
+                      "additionalInformation": "Prose #2",
+                      "recordedBy": "some-user",
+                      "recordedAt": "2023-12-05T12:31:56"
+                    }
+                  ]
+                },
+                {
+                  "code": "QID-000000000002",
+                  "question": "Question #2",
+                  "additionalInformation": "Explanation #2",
+                  "responses": [
+                    {
+                      "response": "Response #1",
+                      "additionalInformation": "Prose #1",
+                      "recordedBy": "some-user",
+                      "recordedAt": "2023-12-05T12:31:56"
+                    },
+                    {
+                      "response": "Response #2",
+                      "additionalInformation": "Prose #2",
+                      "recordedBy": "some-user",
+                      "recordedAt": "2023-12-05T12:31:56"
+                    }
+                  ]
+                }
+              ]
+            }
+            """,
+            false,
+          )
+
+        assertThatNoDomainEventsWereSent()
+      }
+
+      @Test
+      fun `can change type of a report creating history when there was none`() {
+        val reportWithQuestions = reportRepository.save(
+          buildIncidentReport(
+            incidentNumber = "IR-0000000001124146",
+            reportTime = now.minusMinutes(3),
+            status = Status.AWAITING_ANALYSIS,
+            generateQuestions = 2,
+            generateResponses = 2,
+            generateHistory = 0,
+          ),
+        )
+        webTestClient.patch().uri("/incident-reports/${reportWithQuestions.id}/type")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """
+            {
+              "id": "${reportWithQuestions.id}",
+              "incidentNumber": "IR-0000000001124146",
+              "type": "DAMAGE",
+              "incidentDateAndTime": "2023-12-05T11:31:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124146",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:31:56",
+              "status": "AWAITING_ANALYSIS",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:31:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false,
+              "history": [
+                {
+                  "type": "FINDS",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "INCIDENT_REPORTING_API",
+                  "questions": [
+                    {
+                      "code": "QID-000000000001",
+                      "question": "Question #1",
+                      "additionalInformation": "Explanation #1",
+                      "responses": [
+                        {
+                          "response": "Response #1",
+                          "additionalInformation": "Prose #1",
+                          "recordedBy": "some-user",
+                          "recordedAt": "2023-12-05T12:31:56"
+                        },
+                        {
+                          "response": "Response #2",
+                          "additionalInformation": "Prose #2",
+                          "recordedBy": "some-user",
+                          "recordedAt": "2023-12-05T12:31:56"
+                        }
+                      ]
+                    },
+                    {
+                      "code": "QID-000000000002",
+                      "question": "Question #2",
+                      "additionalInformation": "Explanation #2",
+                      "responses": [
+                        {
+                          "response": "Response #1",
+                          "additionalInformation": "Prose #1",
+                          "recordedBy": "some-user",
+                          "recordedAt": "2023-12-05T12:31:56"
+                        },
+                        {
+                          "response": "Response #2",
+                          "additionalInformation": "Prose #2",
+                          "recordedBy": "some-user",
+                          "recordedAt": "2023-12-05T12:31:56"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "questions": []
+            }
+            """,
+            false,
+          )
+
+        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+      }
+
+      @Test
+      fun `can change type of a report preserving history when it already existed`() {
+        val reportWithQuestionsAndHistory = reportRepository.save(
+          buildIncidentReport(
+            incidentNumber = "IR-0000000001124146",
+            reportTime = now.minusMinutes(3),
+            status = Status.AWAITING_ANALYSIS,
+            generateQuestions = 1,
+            generateResponses = 1,
+            generateHistory = 1,
+          ),
+        )
+        webTestClient.patch().uri("/incident-reports/${reportWithQuestionsAndHistory.id}/type")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """
+            {
+              "id": "${reportWithQuestionsAndHistory.id}",
+              "incidentNumber": "IR-0000000001124146",
+              "type": "DAMAGE",
+              "incidentDateAndTime": "2023-12-05T11:31:56",
+              "prisonId": "MDI",
+              "title": "Incident Report IR-0000000001124146",
+              "description": "A new incident created in the new service of type Finds",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:31:56",
+              "status": "AWAITING_ANALYSIS",
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:31:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "INCIDENT_REPORTING_API",
+              "createdInNomis": false,
+              "history": [
+                {
+                  "type": "ASSAULT",
+                  "changedAt": "2023-12-05T12:31:56",
+                  "changedBy": "some-past-user",
+                  "questions": [
+                    {
+                      "code": "QID-1-000000000001",
+                      "question": "Historical question #1-1",
+                      "additionalInformation": "Explanation #1 in history #1",
+                      "responses": [
+                        {
+                          "response": "Historical response #1-1",
+                          "additionalInformation": "Prose #1 in history #1",
+                          "recordedBy": "some-user",
+                          "recordedAt": "2023-12-05T12:31:56"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "FINDS",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "INCIDENT_REPORTING_API",
+                  "questions": [
+                    {
+                      "code": "QID-000000000001",
+                      "question": "Question #1",
+                      "additionalInformation": "Explanation #1",
+                      "responses": [
+                        {
+                          "response": "Response #1",
+                          "additionalInformation": "Prose #1",
+                          "recordedBy": "some-user",
+                          "recordedAt": "2023-12-05T12:31:56"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "questions": []
+            }
+            """,
+            false,
+          )
+
+        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+      }
+    }
+  }
+
   @DisplayName("DELETE /incident-reports/{id}")
   @Nested
   inner class DeleteReportById {
@@ -1522,16 +2078,24 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `cannot add invalid object to a report`(): List<DynamicTest> {
           val requests = mutableListOf(
-            InvalidRequestTestCase("empty request", "{}"),
-            InvalidRequestTestCase("invalid shape", "[]"),
+            InvalidRequestTestCase(
+              "empty request",
+              // language=json
+              "{}",
+            ),
+            InvalidRequestTestCase(
+              "invalid shape",
+              // language=json
+              "[]",
+            ),
           )
           requests.addAll(invalidRequests)
-          return requests.map { (name, value) ->
+          return requests.map { (name, request) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.post().uri(urlWithoutRelatedObjects)
                 .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                 .header("Content-Type", "application/json")
-                .bodyValue(value)
+                .bodyValue(request)
                 .exchange()
                 .expectStatus().isBadRequest
 
@@ -1649,15 +2213,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `cannot update related object with invalid payload`(): List<DynamicTest> {
           val requests = mutableListOf(
-            InvalidRequestTestCase("invalid shape", "[]"),
+            InvalidRequestTestCase(
+              "invalid shape",
+              // language=json
+              "[]",
+            ),
           )
           requests.addAll(invalidRequests)
-          return requests.map { (name, value) ->
+          return requests.map { (name, request) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.patch().uri(urlForFirstRelatedObject)
                 .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                 .header("Content-Type", "application/json")
-                .bodyValue(value)
+                .bodyValue(request)
                 .exchange()
                 .expectStatus().isBadRequest
 
@@ -1682,7 +2250,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           webTestClient.patch().uri(url)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
-            .bodyValue("{}")
+            .bodyValue(
+              // language=json
+              "{}",
+            )
             .exchange()
             .expectStatus().isOk
             .expectBody().json(
@@ -1749,20 +2320,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @TestFactory
         fun `can update nullable properties`(): List<DynamicTest> {
           return nullablePropertyRequests.flatMap { testCase ->
-            mapOf(
-              "value not provided" to ("{}" to testCase.unchangedValue),
-              "null value" to ("""{"${testCase.field}": null}""" to null),
-              "value provided" to ("""{"${testCase.field}": "${testCase.validValue}"}""" to testCase.validValue),
-            ).map { (name, requestAndExpectation) ->
-              val (request, expectedValue) = requestAndExpectation
-              DynamicTest.dynamicTest("${testCase.field} with $name") {
+            testCase.makeValidRequestTests().map { (name, request, expectedFieldValue) ->
+              DynamicTest.dynamicTest(name) {
                 webTestClient.patch().uri(urlForFirstRelatedObject)
                   .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                   .header("Content-Type", "application/json")
                   .bodyValue(request)
                   .exchange()
                   .expectStatus().isOk
-                  .expectBody().jsonPath("[0].${testCase.field}").isEqualTo(expectedValue)
+                  .expectBody().jsonPath("[0].${testCase.field}").isEqualTo(expectedFieldValue)
               }
             }
           }
@@ -1888,7 +2454,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class UpdateObject : RelatedObjects.UpdateObject(
       invalidRequests = listOf(
         InvalidRequestTestCase(
-
           "short staff username",
           getResource("/related-objects/staff-involved/update-request-short-username.json"),
         ),
@@ -2017,11 +2582,42 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
 data class InvalidRequestTestCase(
   val name: String,
-  val value: String,
+  val request: String,
 )
 
 data class NullablePropertyTestCase(
   val field: String,
   val validValue: String,
   val unchangedValue: String,
-)
+) {
+  data class ValidRequestTestCase(
+    val name: String,
+    val request: String,
+    val expectedFieldValue: String?,
+  )
+
+  fun makeValidRequestTests(): List<ValidRequestTestCase> = listOf(
+    ValidRequestTestCase(
+      "$field with not value provided",
+      // language=json
+      "{}",
+      unchangedValue,
+    ),
+    ValidRequestTestCase(
+      "$field with null value",
+      // language=json
+      """
+      {"$field": null}
+      """,
+      null,
+    ),
+    ValidRequestTestCase(
+      "$field with value provided",
+      // language=json
+      """
+      {"$field": "$validValue"}
+      """,
+      validValue,
+    ),
+  )
+}

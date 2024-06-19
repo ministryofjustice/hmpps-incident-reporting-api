@@ -33,6 +33,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
@@ -424,6 +426,114 @@ class ReportResource(
     }
   }
 
+  @PatchMapping("/{id}/status")
+  @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "Changes the status of an existing incident report",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns updated incident report",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "Invalid request",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Missing required role. Requires the MAINTAIN_INCIDENT_REPORTS role with write scope.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Data not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
+  )
+  fun changeReportStatus(
+    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @PathVariable
+    id: UUID,
+    @RequestBody
+    @Valid
+    changeStatusRequest: ChangeStatusRequest,
+  ): ReportWithDetails {
+    val maybeChangedReport = reportService.changeReportStatus(id, changeStatusRequest)
+      ?: throw ReportNotFoundException(id)
+
+    return maybeChangedReport.alsoIfChanged {
+      eventPublishAndAudit(
+        ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+        InformationSource.DPS,
+      ) {
+        it
+      }
+    }.value
+  }
+
+  @PatchMapping("/{id}/type")
+  @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "Changes the type of an existing incident report",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns updated incident report",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "Invalid request",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Missing required role. Requires the MAINTAIN_INCIDENT_REPORTS role with write scope.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Data not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
+  )
+  fun changeReportType(
+    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @PathVariable
+    id: UUID,
+    @RequestBody
+    @Valid
+    changeTypeRequest: ChangeTypeRequest,
+  ): ReportWithDetails {
+    val maybeChangedReport = reportService.changeReportType(id, changeTypeRequest)
+      ?: throw ReportNotFoundException(id)
+
+    return maybeChangedReport.alsoIfChanged {
+      eventPublishAndAudit(
+        ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+        InformationSource.DPS,
+      ) {
+        it
+      }
+    }.value
+  }
+
   // TODO: decide if a different role should be used!
   @DeleteMapping("/{id}")
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
@@ -438,7 +548,7 @@ class ReportResource(
       ),
       ApiResponse(
         responseCode = "400",
-        description = "Invalid Request",
+        description = "Invalid request",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
