@@ -1,0 +1,40 @@
+[
+  {
+    "code": "QID-000000000001",
+    "question": "Question #1",
+    "responses": [
+      {
+        "response": "Response #1",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56",
+        "additionalInformation": "Prose #1"
+      },
+      {
+        "response": "Response #2",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56",
+        "additionalInformation": "Prose #2"
+      }
+    ],
+    "additionalInformation": "Explanation #1"
+  },
+  {
+    "code": "QID-000000000002",
+    "question": "Question #2",
+    "responses": [
+      {
+        "response": "Response #1",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56",
+        "additionalInformation": "Prose #1"
+      },
+      {
+        "response": "Response #2",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56",
+        "additionalInformation": "Prose #2"
+      }
+    ],
+    "additionalInformation": "Explanation #2"
+  }
+]

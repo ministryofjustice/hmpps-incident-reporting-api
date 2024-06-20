@@ -2582,11 +2582,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   @DisplayName("Questions with responses")
   @Nested
   inner class QuestionsWithResponses {
-    private lateinit var url: String
+    private lateinit var existingReportWithQuestionsAndResponses: Report
+    private lateinit var urlWithoutQuestions: String
+    private lateinit var urlWithQuestionsAndResponses: String
 
     @BeforeEach
     fun setUp() {
-      url = "/incident-reports/${existingReport.id}/questions"
+      urlWithoutQuestions = "/incident-reports/${existingReport.id}/questions"
+
+      existingReportWithQuestionsAndResponses = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "IR-0000000001124146",
+          reportTime = now,
+          generateQuestions = 2,
+          generateResponses = 2,
+        ),
+      )
+      urlWithQuestionsAndResponses = "/incident-reports/${existingReportWithQuestionsAndResponses.id}/questions"
     }
 
     @DisplayName("GET /incident-reports/{reportId}/questions")
@@ -2598,9 +2610,57 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @DisplayName("by role and scope")
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri(url),
+          webTestClient.get().uri(urlWithoutQuestions),
           "VIEW_INCIDENT_REPORTS",
         )
+      }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot list questions and responses for a report if it is not found`() {
+          webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @Test
+        fun `can list questions and responses when there are none`() {
+          webTestClient.get().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              // language=json
+              "[]",
+              true,
+            )
+        }
+
+        @Test
+        fun `can list questions and responses when there are several`() {
+          val expectedResponse = getResource("/questions-with-responses/list-response-with-several.json")
+          webTestClient.get().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+        }
       }
     }
 
@@ -2615,7 +2675,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @DisplayName("by role and scope")
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.post().uri(url).bodyValue(validRequest),
+          webTestClient.post().uri(urlWithQuestionsAndResponses).bodyValue(validRequest),
           "MAINTAIN_INCIDENT_REPORTS",
           "write",
         )
@@ -2631,7 +2691,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @DisplayName("by role and scope")
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.delete().uri(url),
+          webTestClient.delete().uri(urlWithQuestionsAndResponses),
           "MAINTAIN_INCIDENT_REPORTS",
           "write",
         )

@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
@@ -246,6 +247,12 @@ class ReportService(
           reportWithDetails,
         )
       }
+    }
+  }
+
+  fun getQuestionsWithResponses(reportId: UUID): List<Question>? {
+    return reportRepository.findById(reportId).getOrNull()?.run {
+      getQuestions().map { it.toDto() }
     }
   }
 }

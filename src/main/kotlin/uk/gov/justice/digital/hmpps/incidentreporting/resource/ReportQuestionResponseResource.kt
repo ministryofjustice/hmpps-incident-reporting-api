@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddQuestionWithResponses
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import java.util.UUID
 
 @RestController
@@ -29,7 +30,9 @@ import java.util.UUID
   name = "Questions and responses forming an incident report",
   description = "Create, retrieve and delete question-response pairs that form incident reports",
 )
-class ReportQuestionResponseResource : EventBaseResource() {
+class ReportQuestionResponseResource(
+  private val reportService: ReportService,
+) : EventBaseResource() {
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -63,7 +66,8 @@ class ReportQuestionResponseResource : EventBaseResource() {
     @PathVariable
     reportId: UUID,
   ): List<Question> {
-    TODO("stub")
+    return reportService.getQuestionsWithResponses(reportId)
+      ?: throw ReportNotFoundException(reportId)
   }
 
   @PostMapping("")
