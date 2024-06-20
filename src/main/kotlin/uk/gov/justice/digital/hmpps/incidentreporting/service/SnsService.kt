@@ -65,10 +65,26 @@ class SnsService(
   }
 }
 
+enum class WhatChanged {
+  BASIC_REPORT, // changes to a Report's basic information
+  ANYTHING, // anything in the report potentially changed
+  TYPE, // change to the report type
+  STATUS, // change to the report status
+  PRISONERS_INVOLVED,
+  STAFF_INVOLVED,
+  LOCATIONS,
+  EVIDENCE,
+  CORRECTION_REQUESTS,
+
+  // TODO: Just questions? Questions/answers? Endpoint not there yet
+  QUESTIONS,
+}
+
 data class AdditionalInformation(
   val id: UUID,
   val incidentNumber: String,
   val source: InformationSource,
+  val whatChanged: WhatChanged? = null,
 )
 
 data class HMPPSDomainEvent(
