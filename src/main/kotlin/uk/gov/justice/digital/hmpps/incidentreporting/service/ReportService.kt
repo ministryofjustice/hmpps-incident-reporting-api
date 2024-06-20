@@ -251,7 +251,7 @@ class ReportService(
   }
 
   fun getQuestionsWithResponses(reportId: UUID): List<Question>? {
-    return reportRepository.findById(reportId).getOrNull()?.run {
+    return reportRepository.findOneEagerlyById(reportId)?.run {
       getQuestions().map { it.toDto() }
     }
   }
