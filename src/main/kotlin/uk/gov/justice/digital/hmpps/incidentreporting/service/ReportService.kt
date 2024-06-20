@@ -258,7 +258,7 @@ class ReportService(
   }
 
   @Transactional
-  fun addQuestionWithResponses(reportId: UUID, addRequest: AddQuestionWithResponses): List<Question>? {
+  fun addQuestionWithResponses(reportId: UUID, addRequest: AddQuestionWithResponses): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
       with(
         addQuestion(
@@ -276,7 +276,19 @@ class ReportService(
           )
         }
       }
-      getQuestions().map { it.toDto() }
+
+      modifiedAt = LocalDateTime.now(clock)
+      modifiedBy = authenticationFacade.getUserOrSystemInContext()
+
+      val reportBasic = toDtoBasic()
+
+      log.info("Added question to report number=$incidentNumber ID=$id")
+      telemetryClient.trackEvent(
+        "Changed incident report type",
+        reportBasic,
+      )
+
+      reportBasic to getQuestions().map { it.toDto() }
     }
   }
 }

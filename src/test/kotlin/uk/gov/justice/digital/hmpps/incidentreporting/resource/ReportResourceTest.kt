@@ -46,6 +46,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   lateinit var existingReport: Report
 
+  protected fun assertThatReportWasModified(id: UUID) {
+    webTestClient.get().uri("/incident-reports/$id")
+      .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+      .header("Content-Type", "application/json")
+      .exchange()
+      .expectBody().json(
+        // language=json
+        """
+          {
+            "modifiedAt": "2023-12-05T12:34:56",
+            "modifiedBy": "INCIDENT_REPORTING_API"
+          }
+          """,
+        false,
+      )
+  }
+
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
@@ -1961,23 +1978,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       urlForSecondRelatedObject = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/2"
     }
 
-    protected fun assertThatReportWasModified(id: UUID) {
-      webTestClient.get().uri("/incident-reports/$id")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
-        .header("Content-Type", "application/json")
-        .exchange()
-        .expectBody().json(
-          // language=json
-          """
-          {
-            "modifiedAt": "2023-12-05T12:34:56",
-            "modifiedBy": "INCIDENT_REPORTING_API"
-          }
-          """,
-          false,
-        )
-    }
-
     abstract inner class ListObjects {
       @DisplayName("is secured")
       @Nested
@@ -2771,6 +2771,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               expectedResponse,
               true,
             )
+
+          assertThatReportWasModified(existingReport.id!!)
+
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
         }
 
         @Test
@@ -2786,6 +2790,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               expectedResponse,
               true,
             )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
       }
     }

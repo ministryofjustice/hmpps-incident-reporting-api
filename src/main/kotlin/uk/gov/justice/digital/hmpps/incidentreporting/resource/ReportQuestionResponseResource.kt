@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddQuestionWithResponses
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import java.util.UUID
 
@@ -111,8 +113,15 @@ class ReportQuestionResponseResource(
     @Valid
     addQuestionWithResponses: AddQuestionWithResponses,
   ): List<Question> {
-    return reportService.addQuestionWithResponses(reportId, addQuestionWithResponses)
+    val (report, questions) = reportService.addQuestionWithResponses(reportId, addQuestionWithResponses)
       ?: throw ReportNotFoundException(reportId)
+    eventPublishAndAudit(
+      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+      InformationSource.DPS,
+    ) {
+      report
+    }
+    return questions
   }
 
   @DeleteMapping("")
