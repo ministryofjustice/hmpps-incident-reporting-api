@@ -22,7 +22,9 @@ class Question(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
+  // TODO: decide how this works and if it is ever unique (eg within 1 report)
   val code: String,
+
   val question: String,
 
   val additionalInformation: String? = null,
