@@ -2603,7 +2603,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("GET /incident-reports/{reportId}/questions")
     @Nested
-    inner class List {
+    inner class ListQuestions {
       @DisplayName("is secured")
       @Nested
       inner class Security {
@@ -2661,12 +2661,36 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               true,
             )
         }
+
+        @Test
+        fun `can list 50 questions and responses`() {
+          val report = reportRepository.save(
+            buildIncidentReport(
+              incidentNumber = "IR-0000000001124147",
+              reportTime = now,
+              generateQuestions = 50,
+              generateResponses = 3,
+            ),
+          )
+          webTestClient.get().uri("/incident-reports/${report.id}/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().jsonPath("$").value<List<Map<String, Any>>> { questions ->
+              assertThat(questions).hasSize(50)
+              assertThat(questions).allSatisfy { question ->
+                val responses = question["responses"] as List<*>
+                assertThat(responses).hasSize(3)
+              }
+            }
+        }
       }
     }
 
     @DisplayName("POST /incident-reports/{reportId}/questions")
     @Nested
-    inner class Add {
+    inner class AddQuestion {
       private val validRequest = getResource("/questions-with-responses/add-request-with-responses.json")
 
       @DisplayName("is secured")
@@ -2684,7 +2708,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("DELETE /incident-reports/{reportId}/questions")
     @Nested
-    inner class Delete {
+    inner class DeleteQuestion {
       @DisplayName("is secured")
       @Nested
       inner class Security {
