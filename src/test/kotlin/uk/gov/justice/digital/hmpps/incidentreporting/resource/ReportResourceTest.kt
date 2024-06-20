@@ -2704,6 +2704,90 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "write",
         )
       }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot add question and responses to a report if it is not found`() {
+          webTestClient.post().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
+
+        @Test
+        fun `cannot add question and responses if payload is invalid`() {
+          webTestClient.post().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(
+              // language=json
+              "[]",
+            )
+            .exchange()
+            .expectStatus().isBadRequest
+
+          assertThatNoDomainEventsWereSent()
+        }
+
+        @Test
+        fun `cannot add question without responses`() {
+          val invalidRequest = getResource("/questions-with-responses/add-request-without-responses.json")
+          webTestClient.post().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(invalidRequest)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("addQuestionWithResponses.responses: size must be between 1 and 2147483647")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @Test
+        fun `can add question with responses to empty report`() {
+          val expectedResponse = getResource("/questions-with-responses/add-response-without-responses.json")
+          webTestClient.post().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+        }
+
+        @Test
+        fun `can add question with responses to report with existing questions`() {
+          val expectedResponse = getResource("/questions-with-responses/add-response-with-responses.json")
+          webTestClient.post().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+        }
+      }
     }
 
     @DisplayName("DELETE /incident-reports/{reportId}/questions")

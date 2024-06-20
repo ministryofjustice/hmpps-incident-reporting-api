@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddQuestionWithResponses
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
@@ -252,6 +253,29 @@ class ReportService(
 
   fun getQuestionsWithResponses(reportId: UUID): List<Question>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
+      getQuestions().map { it.toDto() }
+    }
+  }
+
+  @Transactional
+  fun addQuestionWithResponses(reportId: UUID, addRequest: AddQuestionWithResponses): List<Question>? {
+    return reportRepository.findOneEagerlyById(reportId)?.run {
+      with(
+        addQuestion(
+          code = addRequest.code,
+          question = addRequest.question,
+          additionalInformation = addRequest.additionalInformation,
+        ),
+      ) {
+        addRequest.responses.forEach {
+          addResponse(
+            response = it.response,
+            recordedBy = it.recordedBy,
+            recordedAt = it.recordedAt,
+            additionalInformation = it.additionalInformation,
+          )
+        }
+      }
       getQuestions().map { it.toDto() }
     }
   }

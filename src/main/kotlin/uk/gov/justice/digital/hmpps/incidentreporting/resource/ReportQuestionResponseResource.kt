@@ -42,7 +42,7 @@ class ReportQuestionResponseResource(
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Returns questions and responses",
+        description = "Returns all questions and responses in report",
       ),
       ApiResponse(
         responseCode = "401",
@@ -79,7 +79,7 @@ class ReportQuestionResponseResource(
     responses = [
       ApiResponse(
         responseCode = "201",
-        description = "Returns created question with responses",
+        description = "Returns all questions and responses in report",
       ),
       ApiResponse(
         responseCode = "400",
@@ -110,8 +110,9 @@ class ReportQuestionResponseResource(
     @RequestBody
     @Valid
     addQuestionWithResponses: AddQuestionWithResponses,
-  ): Question {
-    TODO("stub")
+  ): List<Question> {
+    return reportService.addQuestionWithResponses(reportId, addQuestionWithResponses)
+      ?: throw ReportNotFoundException(reportId)
   }
 
   @DeleteMapping("")
@@ -123,7 +124,7 @@ class ReportQuestionResponseResource(
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Returns deleted question",
+        description = "Returns all questions and responses in report",
       ),
       ApiResponse(
         responseCode = "400",
@@ -151,7 +152,7 @@ class ReportQuestionResponseResource(
     @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
     @PathVariable
     reportId: UUID,
-  ): Question {
+  ): List<Question> {
     TODO("stub")
   }
 }
