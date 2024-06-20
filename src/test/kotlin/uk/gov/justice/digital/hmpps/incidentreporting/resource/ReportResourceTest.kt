@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
 import java.util.UUID
 
@@ -1093,7 +1094,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
       }
 
       @Test
@@ -1136,7 +1142,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
       }
 
       @ParameterizedTest(name = "can update `{0}` of an incident report")
@@ -1210,7 +1221,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
       }
 
       @ParameterizedTest(name = "can propagate updates to parent event when requested: {0}")
@@ -1269,7 +1285,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           false,
         )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
       }
     }
   }

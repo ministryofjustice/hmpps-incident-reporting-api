@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.service.AdditionalInformation
 import uk.gov.justice.digital.hmpps.incidentreporting.service.EventPublishAndAuditService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 
 abstract class EventBaseResource {
 
@@ -15,6 +16,7 @@ abstract class EventBaseResource {
   protected fun <T : ReportBasic> eventPublishAndAudit(
     event: ReportDomainEventType,
     informationSource: InformationSource,
+    whatChanged: WhatChanged? = null,
     block: () -> T,
   ): T =
     block().also { report ->
@@ -24,6 +26,7 @@ abstract class EventBaseResource {
           id = report.id,
           incidentNumber = report.incidentNumber,
           source = informationSource,
+          whatChanged = whatChanged,
         ),
         auditData = report,
       )
