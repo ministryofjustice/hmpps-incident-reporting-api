@@ -2578,6 +2578,66 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class RemoveObject : RelatedObjects.RemoveObject()
   }
+
+  @DisplayName("Questions with responses")
+  @Nested
+  inner class QuestionsWithResponses {
+    private lateinit var url: String
+
+    @BeforeEach
+    fun setUp() {
+      url = "/incident-reports/${existingReport.id}/questions"
+    }
+
+    @DisplayName("GET /incident-reports/{reportId}/questions")
+    @Nested
+    inner class List {
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url),
+          "VIEW_INCIDENT_REPORTS",
+        )
+      }
+    }
+
+    @DisplayName("POST /incident-reports/{reportId}/questions")
+    @Nested
+    inner class Add {
+      private val validRequest = getResource("/questions-with-responses/add-request-with-responses.json")
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.post().uri(url).bodyValue(validRequest),
+          "MAINTAIN_INCIDENT_REPORTS",
+          "write",
+        )
+      }
+    }
+
+    @DisplayName("DELETE /incident-reports/{reportId}/questions")
+    @Nested
+    inner class Delete {
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.delete().uri(url),
+          "MAINTAIN_INCIDENT_REPORTS",
+          "write",
+        )
+      }
+    }
+  }
 }
 
 data class InvalidRequestTestCase(
