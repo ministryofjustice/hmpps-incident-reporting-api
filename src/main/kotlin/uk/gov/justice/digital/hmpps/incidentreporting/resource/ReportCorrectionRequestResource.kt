@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.CorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateCorrectionRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.util.UUID
 
 @RestController
@@ -105,7 +106,10 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     @Valid
     request: AddCorrectionRequest,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound("Added correction request to incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Added correction request to incident report",
+      WhatChanged.CORRECTION_REQUESTS,
+    ) { report ->
       with(request) {
         report.addCorrectionRequest(
           correctionRequestedBy = correctionRequestedBy,
@@ -163,7 +167,10 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     @Valid
     request: UpdateCorrectionRequest,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound("Updated a correction request in incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Updated a correction request in incident report",
+      WhatChanged.CORRECTION_REQUESTS,
+    ) { report ->
       val objects = report.correctionRequests
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -207,7 +214,10 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     @PathVariable
     index: Int,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound("Deleted correction request from incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Deleted correction request from incident report",
+      WhatChanged.CORRECTION_REQUESTS,
+    ) { report ->
       val objects = report.correctionRequests
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }
