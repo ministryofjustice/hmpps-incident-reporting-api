@@ -2515,7 +2515,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Prisoner involvement")
   @Nested
-  inner class PrisonerInvolvement : RelatedObjects("prisoners-involved") {
+  inner class PrisonerInvolvement : RelatedObjects("prisoners-involved", WhatChanged.PRISONERS_INVOLVED) {
     @DisplayName("GET /incident-reports/{reportId}/prisoners-involved")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
