@@ -2568,7 +2568,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Evidence")
   @Nested
-  inner class Evidence : RelatedObjects("evidence") {
+  inner class Evidence : RelatedObjects("evidence", WhatChanged.EVIDENCE) {
     @DisplayName("GET /incident-reports/{reportId}/evidence")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
