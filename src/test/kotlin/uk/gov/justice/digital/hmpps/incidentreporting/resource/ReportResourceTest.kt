@@ -1466,7 +1466,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.STATUS,
+        )
       }
     }
   }
@@ -1752,7 +1757,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124146",
+          InformationSource.DPS,
+          WhatChanged.TYPE,
+        )
       }
 
       @Test
@@ -1840,7 +1850,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124146",
+          InformationSource.DPS,
+          WhatChanged.TYPE,
+        )
       }
     }
   }

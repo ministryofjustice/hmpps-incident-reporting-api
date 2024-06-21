@@ -476,6 +476,7 @@ class ReportResource(
       eventPublishAndAudit(
         ReportDomainEventType.INCIDENT_REPORT_AMENDED,
         InformationSource.DPS,
+        WhatChanged.STATUS,
       ) {
         it
       }
@@ -530,6 +531,7 @@ class ReportResource(
       eventPublishAndAudit(
         ReportDomainEventType.INCIDENT_REPORT_AMENDED,
         InformationSource.DPS,
+        WhatChanged.TYPE,
       ) {
         it
       }
