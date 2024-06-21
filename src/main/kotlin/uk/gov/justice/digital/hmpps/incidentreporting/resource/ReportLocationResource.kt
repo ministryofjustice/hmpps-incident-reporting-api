@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Location
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddLocation
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateLocation
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.util.UUID
 
 @RestController
@@ -105,7 +106,10 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
     @Valid
     request: AddLocation,
   ): List<Location> {
-    return reportId.updateReportOrThrowNotFound("Added location to incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Added location to incident report",
+      WhatChanged.LOCATIONS,
+    ) { report ->
       with(request) {
         report.addLocation(
           locationId = locationId,
@@ -162,7 +166,10 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
     @Valid
     request: UpdateLocation,
   ): List<Location> {
-    return reportId.updateReportOrThrowNotFound("Updated location in incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Updated location in incident report",
+      WhatChanged.LOCATIONS,
+    ) { report ->
       val objects = report.locations
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -206,7 +213,10 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
     @PathVariable
     index: Int,
   ): List<Location> {
-    return reportId.updateReportOrThrowNotFound("Deleted location from incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Deleted location from incident report",
+      WhatChanged.LOCATIONS,
+    ) { report ->
       val objects = report.locations
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }

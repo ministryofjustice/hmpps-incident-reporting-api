@@ -2548,7 +2548,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Locations")
   @Nested
-  inner class Locations : RelatedObjects("locations") {
+  inner class Locations : RelatedObjects("locations", WhatChanged.LOCATIONS) {
     @DisplayName("GET /incident-reports/{reportId}/locations")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
