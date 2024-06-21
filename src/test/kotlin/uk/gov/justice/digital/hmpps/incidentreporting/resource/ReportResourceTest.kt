@@ -1970,7 +1970,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   }
 
   @Nested
-  abstract inner class RelatedObjects(val urlSuffix: String) {
+  abstract inner class RelatedObjects(val urlSuffix: String, val whatChanged: WhatChanged? = null) {
     protected lateinit var existingReportWithRelatedObjects: Report
     protected lateinit var urlWithRelatedObjects: String
     protected lateinit var urlWithoutRelatedObjects: String
@@ -2157,7 +2157,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReport.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124143",
+            InformationSource.DPS,
+            whatChanged,
+          )
         }
 
         @Test
@@ -2173,7 +2178,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
       }
     }
@@ -2299,7 +2304,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
 
         @ParameterizedTest(name = "can update {0} related object fully")
@@ -2324,7 +2329,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
 
         @ParameterizedTest(name = "can update {0} related object partially")
@@ -2349,7 +2354,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
 
         @DisplayName("can update nullable properties")
@@ -2446,7 +2451,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
 
         @Test
@@ -2461,7 +2466,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
       }
     }
@@ -2469,7 +2474,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Staff involvement")
   @Nested
-  inner class StaffInvolvement : RelatedObjects("staff-involved") {
+  inner class StaffInvolvement : RelatedObjects("staff-involved", WhatChanged.STAFF_INVOLVED) {
     @DisplayName("GET /incident-reports/{reportId}/staff-involved")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()

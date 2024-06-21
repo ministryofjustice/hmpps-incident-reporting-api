@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService.Companion.log
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -41,7 +42,7 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
       ?: throw ReportNotFoundException(this)
   }
 
-  protected fun <T> (UUID).updateReportOrThrowNotFound(changeMessage: String, block: (Report) -> T): T {
+  protected fun <T> (UUID).updateReportOrThrowNotFound(changeMessage: String, whatChanged: WhatChanged? = null, block: (Report) -> T): T {
     val report = findReportOrThrowNotFound()
     return block(report).also {
       report.modifiedAt = LocalDateTime.now(clock)
@@ -52,6 +53,7 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
         // TODO: should different related object actions raise different events?
         ReportDomainEventType.INCIDENT_REPORT_AMENDED,
         InformationSource.DPS,
+        whatChanged,
       ) {
         basicReport
       }
