@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
+import jakarta.validation.ValidationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
@@ -296,6 +297,7 @@ class ReportService(
   fun deleteLastQuestionAndResponses(reportId: UUID): List<Question>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
       popLastQuestion()
+        ?: throw ValidationException("Question list is empty")
       getQuestions().map { it.toDto() }
     }
   }

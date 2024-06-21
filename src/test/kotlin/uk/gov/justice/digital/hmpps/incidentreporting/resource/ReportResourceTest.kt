@@ -2829,6 +2829,20 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatNoDomainEventsWereSent()
         }
+
+        @Test
+        fun `cannot delete question from a report when the question list is empty`() {
+          webTestClient.delete().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("Question list is empty")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
       }
 
       @DisplayName("works")
