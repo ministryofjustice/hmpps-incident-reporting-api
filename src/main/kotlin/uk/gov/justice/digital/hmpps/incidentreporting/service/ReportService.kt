@@ -283,9 +283,9 @@ class ReportService(
 
       val reportBasic = toDtoBasic()
 
-      log.info("Added question to report number=$incidentNumber ID=$id")
+      log.info("Added question with ${addRequest.responses.size} responses to report number=$incidentNumber ID=$id")
       telemetryClient.trackEvent(
-        "Changed incident report type",
+        "Added question with ${addRequest.responses.size} responses",
         reportBasic,
       )
 
@@ -294,11 +294,23 @@ class ReportService(
   }
 
   @Transactional
-  fun deleteLastQuestionAndResponses(reportId: UUID): List<Question>? {
+  fun deleteLastQuestionAndResponses(reportId: UUID): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
       popLastQuestion()
         ?: throw ValidationException("Question list is empty")
-      getQuestions().map { it.toDto() }
+
+      modifiedAt = LocalDateTime.now(clock)
+      modifiedBy = authenticationFacade.getUserOrSystemInContext()
+
+      val reportBasic = toDtoBasic()
+
+      log.info("Deleted last question and responses from report number=$incidentNumber ID=$id")
+      telemetryClient.trackEvent(
+        "Deleted last question and responses",
+        reportBasic,
+      )
+
+      reportBasic to getQuestions().map { it.toDto() }
     }
   }
 }

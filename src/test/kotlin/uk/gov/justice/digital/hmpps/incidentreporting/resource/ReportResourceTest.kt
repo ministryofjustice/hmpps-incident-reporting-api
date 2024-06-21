@@ -2857,6 +2857,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isOk
             .expectBody().json(expectedResponse, true)
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
 
         @Test
@@ -2866,6 +2870,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
+
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+
           webTestClient.delete().uri(urlWithQuestionsAndResponses)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
@@ -2876,6 +2883,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "[]",
               true,
             )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
         }
       }
     }

@@ -162,7 +162,14 @@ class ReportQuestionResponseResource(
     @PathVariable
     reportId: UUID,
   ): List<Question> {
-    return reportService.deleteLastQuestionAndResponses(reportId)
+    val (report, questions) = reportService.deleteLastQuestionAndResponses(reportId)
       ?: throw ReportNotFoundException(reportId)
+    eventPublishAndAudit(
+      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+      InformationSource.DPS,
+    ) {
+      report
+    }
+    return questions
   }
 }
