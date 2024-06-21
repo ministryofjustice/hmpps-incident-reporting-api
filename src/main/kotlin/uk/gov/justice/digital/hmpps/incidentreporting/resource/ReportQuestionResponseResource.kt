@@ -162,6 +162,7 @@ class ReportQuestionResponseResource(
     @PathVariable
     reportId: UUID,
   ): List<Question> {
-    TODO("stub")
+    return reportService.deleteLastQuestionAndResponses(reportId)
+      ?: throw ReportNotFoundException(reportId)
   }
 }

@@ -291,4 +291,12 @@ class ReportService(
       reportBasic to getQuestions().map { it.toDto() }
     }
   }
+
+  @Transactional
+  fun deleteLastQuestionAndResponses(reportId: UUID): List<Question>? {
+    return reportRepository.findOneEagerlyById(reportId)?.run {
+      popLastQuestion()
+      getQuestions().map { it.toDto() }
+    }
+  }
 }

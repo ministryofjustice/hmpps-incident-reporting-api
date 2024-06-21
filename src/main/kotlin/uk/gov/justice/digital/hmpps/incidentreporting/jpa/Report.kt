@@ -149,6 +149,8 @@ class Report(
 
   fun getQuestions(): List<Question> = questions
 
+  fun popLastQuestion(): Question? = questions.removeLastOrNull()
+
   fun changeType(newType: Type, changedAt: LocalDateTime, changedBy: String): Report {
     copyToHistory(changedAt, changedBy)
     questions.clear()
