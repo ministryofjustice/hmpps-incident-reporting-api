@@ -1,0 +1,19 @@
+{
+  "code": "1234567890123456789012345678901234567890123456789012345678901",
+  "question": "List every “find”",
+  "additionalInformation": "Amounts do not matter",
+  "responses": [
+    {
+      "response": "Note with phone number",
+      "recordedBy": "responding-user",
+      "recordedAt": "2023-12-05T12:34:56",
+      "additionalInformation": "020 1111 2222"
+    },
+    {
+      "response": "Mobile phone",
+      "recordedBy": "responding-user",
+      "recordedAt": "2023-12-05T12:34:56",
+      "additionalInformation": "Not a smartphone"
+    }
+  ]
+}

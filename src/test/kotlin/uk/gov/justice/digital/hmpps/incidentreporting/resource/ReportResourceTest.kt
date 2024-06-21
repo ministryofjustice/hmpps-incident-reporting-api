@@ -2723,19 +2723,45 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatNoDomainEventsWereSent()
         }
 
-        @Test
-        fun `cannot add question and responses if payload is invalid`() {
-          webTestClient.post().uri(urlWithoutQuestions)
-            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-            .header("Content-Type", "application/json")
-            .bodyValue(
+        @DisplayName("cannot add question and responses if payload is invalid")
+        @TestFactory
+        fun `cannot add question and responses if payload is invalid`(): List<DynamicTest> {
+          return listOf(
+            InvalidRequestTestCase(
+              "invalid payload",
               // language=json
               "[]",
-            )
-            .exchange()
-            .expectStatus().isBadRequest
+            ),
+            InvalidRequestTestCase(
+              "long code",
+              getResource("/questions-with-responses/add-request-long-code.json"),
+            ),
+            InvalidRequestTestCase(
+              "empty question",
+              getResource("/questions-with-responses/add-request-empty-question.json"),
+            ),
+            InvalidRequestTestCase(
+              "empty response",
+              getResource("/questions-with-responses/add-request-empty-response.json"),
+            ),
+            InvalidRequestTestCase(
+              "short staff username",
+              getResource("/questions-with-responses/add-request-short-staff-username.json"),
+            ),
+          )
+            .map { (name, request) ->
+              DynamicTest.dynamicTest(name) {
+                webTestClient.post().uri(urlWithoutQuestions)
+                  .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+                  .header("Content-Type", "application/json")
+                  .bodyValue(request)
+                  .exchange()
+                  .expectStatus().isBadRequest
+                  .expectBody().jsonPath("developerMessage").hasJsonPath()
 
-          assertThatNoDomainEventsWereSent()
+                assertThatNoDomainEventsWereSent()
+              }
+            }
         }
 
         @Test
@@ -2784,6 +2810,26 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+        }
+
+        @Test
+        fun `can add question with responses that have nullable fields`() {
+          val validRequestWithNulls = getResource("/questions-with-responses/add-request-with-responses-and-null-fields.json")
+          val expectedResponse = getResource("/questions-with-responses/add-response-with-responses-and-null-fields.json")
+          webTestClient.post().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequestWithNulls)
             .exchange()
             .expectStatus().isCreated
             .expectBody().json(
