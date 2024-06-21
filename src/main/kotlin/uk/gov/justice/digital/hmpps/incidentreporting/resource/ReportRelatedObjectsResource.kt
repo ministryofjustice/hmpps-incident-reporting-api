@@ -50,7 +50,6 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
 
       val basicReport = report.toDtoBasic()
       eventPublishAndAudit(
-        // TODO: should different related object actions raise different events?
         ReportDomainEventType.INCIDENT_REPORT_AMENDED,
         InformationSource.DPS,
         whatChanged,
