@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSDomainEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSMessage
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import uk.gov.justice.hmpps.sqs.HmppsQueue
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
@@ -95,6 +96,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     eventType: String,
     incidentNumber: String?,
     source: InformationSource = InformationSource.DPS,
+    whatChanged: WhatChanged? = null,
   ) {
     getDomainEvents(1).let {
       val event = it[0]
@@ -103,6 +105,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
         assertThat(event.additionalInformation?.incidentNumber).isEqualTo(incidentNumber)
       }
       assertThat(event.additionalInformation?.source).isEqualTo(source)
+      assertThat(event.additionalInformation?.whatChanged).isEqualTo(whatChanged)
     }
   }
 

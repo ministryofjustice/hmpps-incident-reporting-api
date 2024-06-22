@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import java.time.Clock
 import java.time.LocalDateTime
-import java.util.UUID
 
 @Service
 class EventPublishAndAuditService(
@@ -15,22 +13,18 @@ class EventPublishAndAuditService(
 
   fun publishEvent(
     eventType: ReportDomainEventType,
-    reportId: UUID,
-    incidentNumber: String,
+    additionalInformation: AdditionalInformation,
     auditData: Any? = null,
-    source: InformationSource,
   ) {
     sendDomainEvent(
       eventType = eventType,
-      reportId = reportId,
-      incidentNumber = incidentNumber,
-      source = source,
+      additionalInformation = additionalInformation,
     )
 
     auditData?.let {
       sendAuditEvent(
         auditType = eventType.auditType,
-        id = reportId.toString(),
+        id = additionalInformation.id.toString(),
         auditData = it,
       )
     }
@@ -38,19 +32,13 @@ class EventPublishAndAuditService(
 
   private fun sendDomainEvent(
     eventType: ReportDomainEventType,
-    reportId: UUID,
-    incidentNumber: String,
-    source: InformationSource,
+    additionalInformation: AdditionalInformation,
   ) {
     snsService.publishDomainEvent(
       eventType = eventType,
-      description = "$reportId ${eventType.description}",
+      description = "${additionalInformation.id} ${eventType.description}",
       occurredAt = LocalDateTime.now(clock),
-      additionalInformation = AdditionalInformation(
-        id = reportId,
-        incidentNumber = incidentNumber,
-        source = source,
-      ),
+      additionalInformation = additionalInformation,
     )
   }
 

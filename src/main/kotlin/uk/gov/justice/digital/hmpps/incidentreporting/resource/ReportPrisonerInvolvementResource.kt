@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.PrisonerInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddPrisonerInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdatePrisonerInvolvement
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.util.UUID
 
 @RestController
@@ -105,7 +106,10 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @Valid
     request: AddPrisonerInvolvement,
   ): List<PrisonerInvolvement> {
-    return reportId.updateReportOrThrowNotFound("Added an involved prisoner to incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Added an involved prisoner to incident report",
+      WhatChanged.PRISONERS_INVOLVED,
+    ) { report ->
       with(request) {
         report.addPrisonerInvolved(
           prisonerNumber = prisonerNumber,
@@ -163,7 +167,10 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @Valid
     request: UpdatePrisonerInvolvement,
   ): List<PrisonerInvolvement> {
-    return reportId.updateReportOrThrowNotFound("Updated an involved prisoner in incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Updated an involved prisoner in incident report",
+      WhatChanged.PRISONERS_INVOLVED,
+    ) { report ->
       val objects = report.prisonersInvolved
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -207,7 +214,10 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @PathVariable
     index: Int,
   ): List<PrisonerInvolvement> {
-    return reportId.updateReportOrThrowNotFound("Deleted an involved prisoner from incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Deleted an involved prisoner from incident report",
+      WhatChanged.PRISONERS_INVOLVED,
+    ) { report ->
       val objects = report.prisonersInvolved
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }
