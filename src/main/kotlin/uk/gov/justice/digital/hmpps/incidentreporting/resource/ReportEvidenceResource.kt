@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Evidence
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddEvidence
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateEvidence
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.util.UUID
 
 @RestController
@@ -105,7 +106,10 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @Valid
     request: AddEvidence,
   ): List<Evidence> {
-    return reportId.updateReportOrThrowNotFound("Added evidence to incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Added evidence to incident report",
+      WhatChanged.EVIDENCE,
+    ) { report ->
       with(request) {
         report.addEvidence(
           type = type,
@@ -161,7 +165,10 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @Valid
     request: UpdateEvidence,
   ): List<Evidence> {
-    return reportId.updateReportOrThrowNotFound("Updated evidence in incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Updated evidence in incident report",
+      WhatChanged.EVIDENCE,
+    ) { report ->
       val objects = report.evidence
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -205,7 +212,10 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @PathVariable
     index: Int,
   ): List<Evidence> {
-    return reportId.updateReportOrThrowNotFound("Deleted evidence from incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Deleted evidence from incident report",
+      WhatChanged.EVIDENCE,
+    ) { report ->
       val objects = report.evidence
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }

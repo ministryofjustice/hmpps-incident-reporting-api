@@ -41,6 +41,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.LocalDate
 import java.util.UUID
 
@@ -420,6 +421,7 @@ class ReportResource(
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_AMENDED,
       InformationSource.DPS,
+      WhatChanged.BASIC_REPORT,
     ) {
       reportService.updateReport(id, updateReportRequest)
         ?: throw ReportNotFoundException(id)
@@ -474,6 +476,7 @@ class ReportResource(
       eventPublishAndAudit(
         ReportDomainEventType.INCIDENT_REPORT_AMENDED,
         InformationSource.DPS,
+        WhatChanged.STATUS,
       ) {
         it
       }
@@ -528,6 +531,7 @@ class ReportResource(
       eventPublishAndAudit(
         ReportDomainEventType.INCIDENT_REPORT_AMENDED,
         InformationSource.DPS,
+        WhatChanged.TYPE,
       ) {
         it
       }

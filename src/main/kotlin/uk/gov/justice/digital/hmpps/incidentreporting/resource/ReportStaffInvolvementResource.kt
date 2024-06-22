@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.StaffInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddStaffInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateStaffInvolvement
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.util.UUID
 
 @RestController
@@ -105,7 +106,10 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
     @Valid
     request: AddStaffInvolvement,
   ): List<StaffInvolvement> {
-    return reportId.updateReportOrThrowNotFound("Added an involved member of staff to incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Added an involved member of staff to incident report",
+      WhatChanged.STAFF_INVOLVED,
+    ) { report ->
       with(request) {
         report.addStaffInvolved(
           staffUsername = staffUsername,
@@ -162,7 +166,10 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
     @Valid
     request: UpdateStaffInvolvement,
   ): List<StaffInvolvement> {
-    return reportId.updateReportOrThrowNotFound("Updated an involved member of staff in incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Updated an involved member of staff in incident report",
+      WhatChanged.STAFF_INVOLVED,
+    ) { report ->
       val objects = report.staffInvolved
       objects.elementAtIndex(index).updateWith(request)
       objects.map { it.toDto() }
@@ -206,7 +213,10 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
     @PathVariable
     index: Int,
   ): List<StaffInvolvement> {
-    return reportId.updateReportOrThrowNotFound("Deleted an involved member of staff from incident report") { report ->
+    return reportId.updateReportOrThrowNotFound(
+      "Deleted an involved member of staff from incident report",
+      WhatChanged.STAFF_INVOLVED,
+    ) { report ->
       val objects = report.staffInvolved
       objects.removeElementAtIndex(index)
       objects.map { it.toDto() }

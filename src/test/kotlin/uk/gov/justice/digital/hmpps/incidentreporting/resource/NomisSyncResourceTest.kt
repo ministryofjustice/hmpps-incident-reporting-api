@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
 import java.time.LocalDate
 import java.util.UUID
@@ -1343,7 +1344,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             )
           }
 
-        assertThatDomainEventWasSent("incident.report.amended", "$INCIDENT_NUMBER", InformationSource.NOMIS)
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "$INCIDENT_NUMBER",
+          InformationSource.NOMIS,
+          WhatChanged.ANYTHING,
+        )
       }
     }
   }

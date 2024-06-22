@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
 import java.util.UUID
 
@@ -1110,7 +1111,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
       }
 
       @Test
@@ -1153,7 +1159,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
       }
 
       @ParameterizedTest(name = "can update `{0}` of an incident report")
@@ -1227,7 +1238,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             true,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
       }
 
       @ParameterizedTest(name = "can propagate updates to parent event when requested: {0}")
@@ -1286,7 +1302,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           false,
         )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
       }
     }
   }
@@ -1462,7 +1483,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124143",
+          InformationSource.DPS,
+          WhatChanged.STATUS,
+        )
       }
     }
   }
@@ -1748,7 +1774,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124146",
+          InformationSource.DPS,
+          WhatChanged.TYPE,
+        )
       }
 
       @Test
@@ -1836,7 +1867,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             false,
           )
 
-        assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "IR-0000000001124146",
+          InformationSource.DPS,
+          WhatChanged.TYPE,
+        )
       }
     }
   }
@@ -1951,7 +1987,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   }
 
   @Nested
-  abstract inner class RelatedObjects(val urlSuffix: String) {
+  abstract inner class RelatedObjects(val urlSuffix: String, val whatChanged: WhatChanged? = null) {
     protected lateinit var existingReportWithRelatedObjects: Report
     protected lateinit var urlWithRelatedObjects: String
     protected lateinit var urlWithoutRelatedObjects: String
@@ -2121,7 +2157,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReport.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124143",
+            InformationSource.DPS,
+            whatChanged,
+          )
         }
 
         @Test
@@ -2137,7 +2178,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
       }
     }
@@ -2263,7 +2304,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
 
         @ParameterizedTest(name = "can update {0} related object fully")
@@ -2288,7 +2329,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
 
         @ParameterizedTest(name = "can update {0} related object partially")
@@ -2313,7 +2354,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
 
         @DisplayName("can update nullable properties")
@@ -2410,7 +2451,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
 
         @Test
@@ -2425,7 +2466,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
         }
       }
     }
@@ -2433,7 +2474,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Staff involvement")
   @Nested
-  inner class StaffInvolvement : RelatedObjects("staff-involved") {
+  inner class StaffInvolvement : RelatedObjects("staff-involved", WhatChanged.STAFF_INVOLVED) {
     @DisplayName("GET /incident-reports/{reportId}/staff-involved")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
@@ -2474,7 +2515,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Prisoner involvement")
   @Nested
-  inner class PrisonerInvolvement : RelatedObjects("prisoners-involved") {
+  inner class PrisonerInvolvement : RelatedObjects("prisoners-involved", WhatChanged.PRISONERS_INVOLVED) {
     @DisplayName("GET /incident-reports/{reportId}/prisoners-involved")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
@@ -2507,7 +2548,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Locations")
   @Nested
-  inner class Locations : RelatedObjects("locations") {
+  inner class Locations : RelatedObjects("locations", WhatChanged.LOCATIONS) {
     @DisplayName("GET /incident-reports/{reportId}/locations")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
@@ -2527,7 +2568,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Evidence")
   @Nested
-  inner class Evidence : RelatedObjects("evidence") {
+  inner class Evidence : RelatedObjects("evidence", WhatChanged.EVIDENCE) {
     @DisplayName("GET /incident-reports/{reportId}/evidence")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()
@@ -2547,7 +2588,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @DisplayName("Correction requests")
   @Nested
-  inner class CorrectionRequests : RelatedObjects("correction-requests") {
+  inner class CorrectionRequests : RelatedObjects("correction-requests", WhatChanged.CORRECTION_REQUESTS) {
     @DisplayName("GET /incident-reports/{reportId}/correction-requests")
     @Nested
     inner class ListObjects : RelatedObjects.ListObjects()

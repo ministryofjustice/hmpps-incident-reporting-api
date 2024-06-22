@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncReque
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncReportId
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 
 @RestController
 @Validated
@@ -73,19 +74,23 @@ class NomisSyncResource(
     @Valid
     syncRequest: NomisSyncRequest,
   ): ResponseEntity<NomisSyncReportId> {
+    val isUpdate = syncRequest.id != null
     val report = syncService.upsert(syncRequest)
+
     if (!syncRequest.initialMigration) {
-      val eventType = if (syncRequest.id != null) {
-        ReportDomainEventType.INCIDENT_REPORT_AMENDED
+      val (eventType, whatChanged) = if (isUpdate) {
+        Pair(ReportDomainEventType.INCIDENT_REPORT_AMENDED, WhatChanged.ANYTHING)
       } else {
-        ReportDomainEventType.INCIDENT_REPORT_CREATED
+        Pair(ReportDomainEventType.INCIDENT_REPORT_CREATED, null)
       }
+
       eventPublishAndAudit(
         eventType,
         informationSource = InformationSource.NOMIS,
+        whatChanged,
       ) { report }
     }
-    val status = if (syncRequest.id != null) {
+    val status = if (isUpdate) {
       HttpStatus.OK
     } else {
       HttpStatus.CREATED
