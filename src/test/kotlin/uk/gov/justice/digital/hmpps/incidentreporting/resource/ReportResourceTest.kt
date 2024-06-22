@@ -2841,7 +2841,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReport.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124143")
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124143",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
         }
 
         @Test
@@ -2860,7 +2864,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
         }
 
         @Test
@@ -2880,7 +2888,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
         }
       }
     }
@@ -2947,7 +2959,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
         }
 
         @Test
@@ -2958,7 +2974,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isOk
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
 
           webTestClient.delete().uri(urlWithQuestionsAndResponses)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -2973,7 +2993,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146")
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
         }
       }
     }

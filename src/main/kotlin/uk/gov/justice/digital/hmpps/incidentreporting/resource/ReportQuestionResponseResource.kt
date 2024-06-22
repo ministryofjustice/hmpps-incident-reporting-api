@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddQuestionWithResponses
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
+import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.util.UUID
 
 @RestController
@@ -118,6 +119,7 @@ class ReportQuestionResponseResource(
     eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_AMENDED,
       InformationSource.DPS,
+      WhatChanged.QUESTIONS,
     ) {
       report
     }
@@ -167,6 +169,7 @@ class ReportQuestionResponseResource(
     eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_AMENDED,
       InformationSource.DPS,
+      WhatChanged.QUESTIONS,
     ) {
       report
     }

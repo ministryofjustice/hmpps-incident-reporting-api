@@ -65,18 +65,29 @@ class SnsService(
   }
 }
 
+@Suppress("ktlint:standard:spacing-between-declarations-with-comments")
 enum class WhatChanged {
-  BASIC_REPORT, // changes to a Report's basic information
-  ANYTHING, // anything in the report potentially changed
-  TYPE, // change to the report type
-  STATUS, // change to the report status
+  /** Anything in the report potentially changed */
+  ANYTHING,
+  /** Changes to a report’s basic information */
+  BASIC_REPORT,
+  /** Report type changed */
+  TYPE,
+  /** Report status changed */
+  STATUS,
+
+  /** Added, updated or deleted an involved prisoner */
   PRISONERS_INVOLVED,
+  /** Added, updated or deleted an involved member of staff */
   STAFF_INVOLVED,
+  /** Added, updated or deleted a location */
   LOCATIONS,
+  /** Added, updated or deleted evidence */
   EVIDENCE,
+  /** Added, updated or deleted a correction request */
   CORRECTION_REQUESTS,
 
-  // TODO: Just questions? Questions/answers? Endpoint not there yet
+  /** Added or deleted a question with responses */
   QUESTIONS,
 }
 
