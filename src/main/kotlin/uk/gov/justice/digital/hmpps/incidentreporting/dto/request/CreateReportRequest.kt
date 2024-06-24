@@ -34,7 +34,6 @@ data class CreateReportRequest(
   val reportedBy: String,
   @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
   val reportedAt: LocalDateTime,
-  // TODO: there is not yet a way to add any more details to a report, question-response pairs, etc
 ) {
   fun validate() {
     if (!createNewEvent && linkedEventId.isNullOrEmpty()) {
