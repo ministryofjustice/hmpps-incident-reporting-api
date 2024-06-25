@@ -2598,8 +2598,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class AddObject : RelatedObjects.AddObject(
       invalidRequests = listOf(
         InvalidRequestTestCase(
-          "short requester username",
-          getResource("/related-objects/correction-requests/add-request-short-username.json"),
+          "empty description of change",
+          getResource("/related-objects/correction-requests/add-request-empty-description.json"),
         ),
       ),
     )

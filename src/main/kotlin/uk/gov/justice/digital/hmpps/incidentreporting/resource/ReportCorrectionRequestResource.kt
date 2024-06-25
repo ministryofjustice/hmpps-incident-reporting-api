@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.CorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
+import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
@@ -112,10 +113,10 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     ) { report ->
       with(request) {
         report.addCorrectionRequest(
-          correctionRequestedBy = correctionRequestedBy,
-          correctionRequestedAt = correctionRequestedAt,
           reason = reason,
           descriptionOfChange = descriptionOfChange,
+          correctionRequestedBy = authenticationFacade.getUserOrSystemInContext(),
+          correctionRequestedAt = LocalDateTime.now(clock),
         )
       }
       report.correctionRequests.map { it.toDto() }

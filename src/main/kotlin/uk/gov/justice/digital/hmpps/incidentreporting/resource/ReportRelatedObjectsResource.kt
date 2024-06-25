@@ -29,7 +29,7 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
   protected lateinit var clock: Clock
 
   @Autowired
-  private lateinit var authenticationFacade: AuthenticationFacade
+  protected lateinit var authenticationFacade: AuthenticationFacade
 
   @Autowired
   private lateinit var telemetryClient: TelemetryClient
