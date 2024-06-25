@@ -336,7 +336,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Creates a draft incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s creator.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -382,7 +382,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Updates key properties of an existing incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -433,7 +433,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Changes the status of an existing incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -488,7 +488,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Changes the type of an existing incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -544,7 +544,7 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Deletes an incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope.",
     responses = [
       ApiResponse(
         responseCode = "200",

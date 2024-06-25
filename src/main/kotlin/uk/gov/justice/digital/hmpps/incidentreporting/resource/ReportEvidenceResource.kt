@@ -69,7 +69,7 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Adds evidence to this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -125,7 +125,7 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Update evidence in this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -180,7 +180,7 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Remove evidence from this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",

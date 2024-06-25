@@ -69,7 +69,7 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Adds an involved member of staff to this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -126,7 +126,7 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Update an involved member of staff in this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -181,7 +181,7 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Remove an involved member of staff from this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",

@@ -70,7 +70,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Adds a correction request to this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the correction requester and report modifier.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -128,7 +128,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Update a correction request in this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which overrides current correction requester and report modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -187,7 +187,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Remove a correction request from this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
