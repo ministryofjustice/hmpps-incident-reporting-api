@@ -171,13 +171,16 @@ class ReportService(
 
   @Transactional
   fun updateReport(id: UUID, updateReportRequest: UpdateReportRequest): ReportBasic? {
-    updateReportRequest.validate()
+    val now = LocalDateTime.now(clock)
+    val requestUsername = authenticationFacade.getUserOrSystemInContext()
+
+    updateReportRequest.validate(now)
 
     return reportRepository.findById(id).map {
       updateReportRequest.updateExistingReport(
         report = it,
-        updatedBy = authenticationFacade.getUserOrSystemInContext(),
-        clock = clock,
+        requestUsername = requestUsername,
+        now = now,
       ).toDtoBasic().apply {
         val changeMessage = if (updateReportRequest.updateEvent) {
           "Updated incident report and event"
