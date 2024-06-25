@@ -14,4 +14,7 @@ data class UpdateStaffInvolvement(
   val staffRole: StaffRole? = null,
   @Schema(description = "Optional comment on staff member involvement – omit to preserve existing comment, provide null to clear it", required = false, defaultValue = "null")
   val comment: Optional<String>? = null,
-)
+) {
+  val isEmpty: Boolean =
+    staffUsername == null && staffRole == null && comment == null
+}

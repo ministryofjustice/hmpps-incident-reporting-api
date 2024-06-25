@@ -135,7 +135,10 @@ class ReportService(
 
   @Transactional
   fun createReport(createReportRequest: CreateReportRequest): ReportWithDetails {
-    createReportRequest.validate()
+    val now = LocalDateTime.now(clock)
+    val requestUsername = authenticationFacade.getUserOrSystemInContext()
+
+    createReportRequest.validate(now = now)
 
     val event = if (createReportRequest.linkedEventId != null) {
       eventRepository.findOneByEventId(createReportRequest.linkedEventId)
@@ -143,16 +146,16 @@ class ReportService(
     } else {
       createReportRequest.toNewEvent(
         eventRepository.generateEventId(),
-        createdBy = authenticationFacade.getUserOrSystemInContext(),
-        clock = clock,
+        requestUsername = requestUsername,
+        now = now,
       )
     }
 
     val newReport = createReportRequest.toNewEntity(
       incidentNumber = reportRepository.generateIncidentNumber(),
-      createdBy = authenticationFacade.getUserOrSystemInContext(),
-      clock = clock,
       event = event,
+      requestUsername = requestUsername,
+      now = now,
     )
 
     val report = reportRepository.save(newReport).toDtoWithDetails()
@@ -168,13 +171,16 @@ class ReportService(
 
   @Transactional
   fun updateReport(id: UUID, updateReportRequest: UpdateReportRequest): ReportBasic? {
-    updateReportRequest.validate()
+    val now = LocalDateTime.now(clock)
+    val requestUsername = authenticationFacade.getUserOrSystemInContext()
+
+    updateReportRequest.validate(now)
 
     return reportRepository.findById(id).map {
       updateReportRequest.updateExistingReport(
         report = it,
-        updatedBy = authenticationFacade.getUserOrSystemInContext(),
-        clock = clock,
+        requestUsername = requestUsername,
+        now = now,
       ).toDtoBasic().apply {
         val changeMessage = if (updateReportRequest.updateEvent) {
           "Updated incident report and event"
@@ -261,6 +267,9 @@ class ReportService(
   @Transactional
   fun addQuestionWithResponses(reportId: UUID, addRequest: AddQuestionWithResponses): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
+      val now = LocalDateTime.now(clock)
+      val requestUsername = authenticationFacade.getUserOrSystemInContext()
+
       with(
         addQuestion(
           code = addRequest.code,
@@ -271,15 +280,15 @@ class ReportService(
         addRequest.responses.forEach {
           addResponse(
             response = it.response,
-            recordedBy = it.recordedBy,
-            recordedAt = it.recordedAt,
+            recordedBy = requestUsername,
+            recordedAt = now,
             additionalInformation = it.additionalInformation,
           )
         }
       }
 
-      modifiedAt = LocalDateTime.now(clock)
-      modifiedBy = authenticationFacade.getUserOrSystemInContext()
+      modifiedAt = now
+      modifiedBy = requestUsername
 
       val reportBasic = toDtoBasic()
 

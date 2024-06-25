@@ -78,7 +78,7 @@ class ReportQuestionResponseResource(
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Adds a new question with responses to the end of the list",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -131,7 +131,7 @@ class ReportQuestionResponseResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Deletes the last question from an incident report along with its responses",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",

@@ -6,13 +6,13 @@
     "responses": [
       {
         "response": "Note with phone number",
-        "recordedBy": "responding-user",
+        "recordedBy": "request-user",
         "recordedAt": "2023-12-05T12:34:56",
         "additionalInformation": "020 1111 2222"
       },
       {
         "response": "Mobile phone",
-        "recordedBy": "responding-user",
+        "recordedBy": "request-user",
         "recordedAt": "2023-12-05T12:34:56",
         "additionalInformation": "Not a smartphone"
       }

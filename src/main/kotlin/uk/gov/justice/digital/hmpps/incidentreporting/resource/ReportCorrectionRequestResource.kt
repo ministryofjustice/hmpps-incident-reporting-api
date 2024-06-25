@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.CorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
+import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
@@ -69,7 +70,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Adds a correction request to this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the correction requester and report modifier.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -112,10 +113,10 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     ) { report ->
       with(request) {
         report.addCorrectionRequest(
-          correctionRequestedBy = correctionRequestedBy,
-          correctionRequestedAt = correctionRequestedAt,
           reason = reason,
           descriptionOfChange = descriptionOfChange,
+          correctionRequestedBy = authenticationFacade.getUserOrSystemInContext(),
+          correctionRequestedAt = LocalDateTime.now(clock),
         )
       }
       report.correctionRequests.map { it.toDto() }
@@ -127,7 +128,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Update a correction request in this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which overrides current correction requester and report modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -167,12 +168,20 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     @Valid
     request: UpdateCorrectionRequest,
   ): List<CorrectionRequest> {
+    if (request.isEmpty) {
+      return reportId.findReportOrThrowNotFound().correctionRequests.map { it.toDto() }
+    }
+
     return reportId.updateReportOrThrowNotFound(
       "Updated a correction request in incident report",
       WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
       val objects = report.correctionRequests
-      objects.elementAtIndex(index).updateWith(request)
+      objects.elementAtIndex(index).updateWith(
+        request,
+        requestUsername = authenticationFacade.getUserOrSystemInContext(),
+        now = LocalDateTime.now(clock),
+      )
       objects.map { it.toDto() }
     }
   }
@@ -182,7 +191,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Remove a correction request from this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",

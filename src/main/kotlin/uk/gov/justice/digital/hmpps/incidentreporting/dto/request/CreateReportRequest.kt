@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import java.time.Clock
 import java.time.LocalDateTime
 
 @Schema(description = "Payload to create a new draft incident report")
@@ -24,31 +23,26 @@ data class CreateReportRequest(
   @field:Size(min = 5, max = 255)
   val title: String,
   @Schema(description = "Longer summary of the incident", required = true)
+  @field:Size(min = 1)
   val description: String,
   @Schema(description = "Whether to link to a new event", required = false, defaultValue = "false")
   val createNewEvent: Boolean = false,
   @Schema(description = "Which existing event to link to", required = false, defaultValue = "null")
   val linkedEventId: String? = null,
-  @Schema(description = "Username of person who created the incident report", required = true)
-  @field:Size(min = 3, max = 120)
-  val reportedBy: String,
-  @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
-  val reportedAt: LocalDateTime,
 ) {
-  fun validate() {
+  fun validate(now: LocalDateTime) {
     if (!createNewEvent && linkedEventId.isNullOrEmpty()) {
       throw ValidationException("Either createNewEvent or linkedEventId must be provided")
     }
     if (!type.active) {
       throw ValidationException("Inactive incident type $type")
     }
-    if (reportedAt < incidentDateAndTime) {
-      throw ValidationException("incidentDateAndTime must be before reportedAt")
+    if (incidentDateAndTime > now) {
+      throw ValidationException("incidentDateAndTime cannot be in the future")
     }
   }
 
-  fun toNewEntity(incidentNumber: String, event: Event, createdBy: String, clock: Clock): Report {
-    val now = LocalDateTime.now(clock)
+  fun toNewEntity(incidentNumber: String, event: Event, requestUsername: String, now: LocalDateTime): Report {
     val status = Status.DRAFT
     val report = Report(
       incidentNumber = incidentNumber,
@@ -57,22 +51,21 @@ data class CreateReportRequest(
       incidentDateAndTime = incidentDateAndTime,
       prisonId = prisonId,
       description = description,
-      reportedBy = reportedBy,
-      reportedAt = reportedAt,
+      reportedBy = requestUsername,
+      reportedAt = now,
       status = status,
       createdAt = now,
       modifiedAt = now,
-      modifiedBy = createdBy,
+      modifiedBy = requestUsername,
       source = InformationSource.DPS,
-      assignedTo = reportedBy,
+      assignedTo = requestUsername,
       event = event,
     )
-    report.addStatusHistory(status, now, createdBy)
+    report.addStatusHistory(status, now, requestUsername)
     return report
   }
 
-  fun toNewEvent(generateEventId: String, createdBy: String, clock: Clock): Event {
-    val now = LocalDateTime.now(clock)
+  fun toNewEvent(generateEventId: String, requestUsername: String, now: LocalDateTime): Event {
     return Event(
       eventId = generateEventId,
       eventDateAndTime = incidentDateAndTime,
@@ -81,7 +74,7 @@ data class CreateReportRequest(
       description = description,
       createdAt = now,
       modifiedAt = now,
-      modifiedBy = createdBy,
+      modifiedBy = requestUsername,
     )
   }
 }

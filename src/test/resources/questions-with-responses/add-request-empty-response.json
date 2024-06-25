@@ -5,14 +5,10 @@
   "responses": [
     {
       "response": "Note with phone number",
-      "recordedBy": "responding-user",
-      "recordedAt": "2023-12-05T12:34:56",
       "additionalInformation": "020 1111 2222"
     },
     {
       "response": "",
-      "recordedBy": "responding-user",
-      "recordedAt": "2023-12-05T12:34:56",
       "additionalInformation": "Mobile phone"
     }
   ]

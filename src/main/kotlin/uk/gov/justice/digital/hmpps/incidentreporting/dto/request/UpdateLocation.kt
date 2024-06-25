@@ -10,4 +10,7 @@ data class UpdateLocation(
   val type: String? = null,
   @Schema(description = "Description of location", required = false, defaultValue = "null")
   val description: String? = null,
-)
+) {
+  val isEmpty: Boolean =
+    locationId == null && type == null && description == null
+}

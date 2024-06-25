@@ -69,7 +69,7 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Adds a location request to this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -126,7 +126,7 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Update a location in this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -166,6 +166,10 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
     @Valid
     request: UpdateLocation,
   ): List<Location> {
+    if (request.isEmpty) {
+      return reportId.findReportOrThrowNotFound().locations.map { it.toDto() }
+    }
+
     return reportId.updateReportOrThrowNotFound(
       "Updated location in incident report",
       WhatChanged.LOCATIONS,
@@ -181,7 +185,7 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Remove a location from this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",

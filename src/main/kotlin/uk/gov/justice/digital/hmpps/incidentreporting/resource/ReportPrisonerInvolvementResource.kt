@@ -69,7 +69,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Adds an invovled prisoner to this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -127,7 +127,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Update an involved prisoner in this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -167,6 +167,10 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @Valid
     request: UpdatePrisonerInvolvement,
   ): List<PrisonerInvolvement> {
+    if (request.isEmpty) {
+      return reportId.findReportOrThrowNotFound().prisonersInvolved.map { it.toDto() }
+    }
+
     return reportId.updateReportOrThrowNotFound(
       "Updated an involved prisoner in incident report",
       WhatChanged.PRISONERS_INVOLVED,
@@ -182,7 +186,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Remove an involved prisoner from this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",

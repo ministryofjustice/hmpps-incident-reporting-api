@@ -57,7 +57,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         """
           {
             "modifiedAt": "2023-12-05T12:34:56",
-            "modifiedBy": "INCIDENT_REPORTING_API"
+            "modifiedBy": "request-user"
           }
           """,
         false,
@@ -754,8 +754,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       description = "Longer explanation of incident",
       type = Type.SELF_HARM,
       prisonId = "MDI",
-      reportedBy = "user2",
-      reportedAt = now,
       createNewEvent = true,
     )
 
@@ -790,12 +788,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "cannot create a report with invalid `{0}` field")
-      @ValueSource(strings = ["prisonId", "title", "reportedBy"])
+      @ValueSource(strings = ["prisonId", "title", "description"])
       fun `cannot create a report with invalid fields`(fieldName: String) {
         val invalidPayload = createReportRequest.copy(
           prisonId = if (fieldName == "prisonId") "" else createReportRequest.prisonId,
           title = if (fieldName == "title") "" else createReportRequest.title,
-          reportedBy = if (fieldName == "reportedBy") "" else createReportRequest.reportedBy,
+          description = if (fieldName == "description") "" else createReportRequest.description,
         ).toJson()
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -811,10 +809,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `cannot create a report with invalid dates`() {
+      fun `cannot create a report for future time`() {
         val invalidPayload = createReportRequest.copy(
-          incidentDateAndTime = now.minusMinutes(10),
-          reportedAt = now.minusMinutes(20),
+          incidentDateAndTime = now.plusMinutes(10),
         ).toJson()
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -823,7 +820,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
-            assertThat(it).contains("incidentDateAndTime must be before reportedAt")
+            assertThat(it).contains("incidentDateAndTime cannot be in the future")
           }
 
         assertThatNoDomainEventsWereSent()
@@ -887,7 +884,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "description": "Longer explanation of incident",
                 "createdAt": "2023-12-05T12:34:56",
                 "modifiedAt": "2023-12-05T12:34:56",
-                "modifiedBy": "INCIDENT_REPORTING_API"
+                "modifiedBy": "request-user"
               },
               "questions": [],
               "history": [],
@@ -895,7 +892,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API"
+                  "changedBy": "request-user"
                 }
               ],
               "staffInvolved": [],
@@ -903,13 +900,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "locations": [],
               "evidence": [],
               "correctionRequests": [],
-              "reportedBy": "user2",
+              "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
-              "assignedTo": "user2",
+              "assignedTo": "request-user",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false
             }
             """,
@@ -957,7 +954,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API"
+                  "changedBy": "request-user"
                 }
               ],
               "staffInvolved": [],
@@ -965,13 +962,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "locations": [],
               "evidence": [],
               "correctionRequests": [],
-              "reportedBy": "user2",
+              "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
-              "assignedTo": "user2",
+              "assignedTo": "request-user",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false
             }
             """,
@@ -1024,12 +1021,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "cannot update a report with invalid `{0}` field")
-      @ValueSource(strings = ["prisonId", "title", "reportedBy"])
+      @ValueSource(strings = ["prisonId", "title", "description"])
       fun `cannot update a report with invalid fields`(fieldName: String) {
         val invalidPayload = UpdateReportRequest(
           prisonId = if (fieldName == "prisonId") "" else null,
           title = if (fieldName == "title") "" else null,
-          reportedBy = if (fieldName == "reportedBy") "" else null,
+          description = if (fieldName == "description") "" else null,
         ).toJson()
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1045,10 +1042,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `cannot update a report with invalid dates`() {
+      fun `cannot update a report to a future time`() {
         val invalidPayload = UpdateReportRequest(
-          incidentDateAndTime = now.minusMinutes(10),
-          reportedAt = now.minusMinutes(20),
+          incidentDateAndTime = now.plusMinutes(10),
         ).toJson()
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1057,7 +1053,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
-            assertThat(it).contains("incidentDateAndTime must be before reportedAt")
+            assertThat(it).contains("incidentDateAndTime cannot be in the future")
           }
 
         assertThatNoDomainEventsWereSent()
@@ -1104,19 +1100,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "USER1",
               "createdInNomis": false
             }
             """,
             true,
           )
 
-        assertThatDomainEventWasSent(
-          "incident.report.amended",
-          "IR-0000000001124143",
-          InformationSource.DPS,
-          WhatChanged.BASIC_REPORT,
-        )
+        assertThatNoDomainEventsWereSent()
       }
 
       @Test
@@ -1126,8 +1117,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           prisonId = "LEI",
           title = "Updated report IR-0000000001124143",
           description = "Updated incident report of type Finds",
-          reportedBy = "different-user",
-          reportedAt = now.minusMinutes(2),
         )
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1146,13 +1135,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "prisonId": "LEI",
               "title": "Updated report IR-0000000001124143",
               "description": "Updated incident report of type Finds",
-              "reportedBy": "different-user",
-              "reportedAt": "2023-12-05T12:32:56",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false
             }
             """,
@@ -1168,15 +1157,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "can update `{0}` of an incident report")
-      @ValueSource(strings = ["incidentDateAndTime", "prisonId", "title", "description", "reportedBy", "reportedAt"])
+      @ValueSource(strings = ["incidentDateAndTime", "prisonId", "title", "description"])
       fun `can update an incident report field`(fieldName: String) {
         val updateReportRequest = UpdateReportRequest(
           incidentDateAndTime = if (fieldName == "incidentDateAndTime") now.minusHours(2) else null,
           prisonId = if (fieldName == "prisonId") "LEI" else null,
           title = if (fieldName == "title") "Updated report IR-0000000001124143" else null,
           description = if (fieldName == "description") "Updated incident report of type Finds" else null,
-          reportedBy = if (fieldName == "reportedBy") "different-user" else null,
-          reportedAt = if (fieldName == "reportedAt") now.minusMinutes(2) else null,
         )
         val expectedIncidentDateAndTime = if (fieldName == "incidentDateAndTime") {
           "2023-12-05T10:34:56"
@@ -1198,16 +1185,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         } else {
           "A new incident created in the new service of type Finds"
         }
-        val expectedReportedBy = if (fieldName == "reportedBy") {
-          "different-user"
-        } else {
-          "USER1"
-        }
-        val expectedReportedAt = if (fieldName == "reportedAt") {
-          "2023-12-05T12:32:56"
-        } else {
-          "2023-12-05T12:34:56"
-        }
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
@@ -1225,13 +1202,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "prisonId": "$expectedPrisonId",
               "title": "$expectedTitle",
               "description": "$expectedDescription",
-              "reportedBy": "$expectedReportedBy",
-              "reportedAt": "$expectedReportedAt",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false
             }
             """,
@@ -1254,8 +1231,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           prisonId = "LEI",
           title = "Updated report IR-0000000001124143",
           description = "Updated incident report of type Finds",
-          reportedBy = "different-user",
-          reportedAt = now.minusMinutes(2),
 
           updateEvent = updateEvent,
         )
@@ -1280,7 +1255,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "description": "Updated incident report of type Finds",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API"
+              "modifiedBy": "request-user"
             }
             """
           } else {
@@ -1464,7 +1439,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false,
               "historyOfStatuses": [
                 {
@@ -1475,7 +1450,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "AWAITING_ANALYSIS",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API"
+                  "changedBy": "request-user"
                 }
               ]
             }
@@ -1719,13 +1694,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false,
               "history": [
                 {
                   "type": "FINDS",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API",
+                  "changedBy": "request-user",
                   "questions": [
                     {
                       "code": "QID-000000000001",
@@ -1817,7 +1792,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false,
               "history": [
                 {
@@ -1843,7 +1818,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "type": "FINDS",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API",
+                  "changedBy": "request-user",
                   "questions": [
                     {
                       "code": "QID-000000000001",
@@ -2302,9 +2277,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               true,
             )
 
-          assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
-
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
+          assertThatNoDomainEventsWereSent()
         }
 
         @ParameterizedTest(name = "can update {0} related object fully")
@@ -2598,8 +2571,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class AddObject : RelatedObjects.AddObject(
       invalidRequests = listOf(
         InvalidRequestTestCase(
-          "short requester username",
-          getResource("/related-objects/correction-requests/add-request-short-username.json"),
+          "empty description of change",
+          getResource("/related-objects/correction-requests/add-request-empty-description.json"),
         ),
       ),
     )
@@ -2609,8 +2582,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class UpdateObject : RelatedObjects.UpdateObject(
       invalidRequests = listOf(
         InvalidRequestTestCase(
-          "short requester username",
-          getResource("/related-objects/correction-requests/update-request-short-username.json"),
+          "empty description of change",
+          getResource("/related-objects/correction-requests/update-request-empty-description.json"),
         ),
       ),
     )
@@ -2784,10 +2757,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             InvalidRequestTestCase(
               "empty response",
               getResource("/questions-with-responses/add-request-empty-response.json"),
-            ),
-            InvalidRequestTestCase(
-              "short staff username",
-              getResource("/questions-with-responses/add-request-short-staff-username.json"),
             ),
           )
             .map { (name, request) ->
