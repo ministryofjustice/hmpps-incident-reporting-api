@@ -165,6 +165,10 @@ class ReportEvidenceResource : ReportRelatedObjectsResource<Evidence, AddEvidenc
     @Valid
     request: UpdateEvidence,
   ): List<Evidence> {
+    if (request.isEmpty) {
+      return reportId.findReportOrThrowNotFound().evidence.map { it.toDto() }
+    }
+
     return reportId.updateReportOrThrowNotFound(
       "Updated evidence in incident report",
       WhatChanged.EVIDENCE,

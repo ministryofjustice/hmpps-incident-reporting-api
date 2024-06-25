@@ -8,4 +8,7 @@ data class UpdateEvidence(
   val type: String? = null,
   @Schema(description = "Description of evidence", required = false, defaultValue = "null")
   val description: String? = null,
-)
+) {
+  val isEmpty: Boolean =
+    type == null && description == null
+}

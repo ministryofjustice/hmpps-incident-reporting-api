@@ -418,6 +418,11 @@ class ReportResource(
     @Valid
     updateReportRequest: UpdateReportRequest,
   ): ReportBasic {
+    if (updateReportRequest.isEmpty) {
+      return reportService.getBasicReportById(id)
+        ?: throw ReportNotFoundException(id)
+    }
+
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_AMENDED,
       InformationSource.DPS,

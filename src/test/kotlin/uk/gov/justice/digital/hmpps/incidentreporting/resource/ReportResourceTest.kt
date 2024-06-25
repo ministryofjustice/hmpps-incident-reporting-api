@@ -1100,19 +1100,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "USER1",
               "createdInNomis": false
             }
             """,
             true,
           )
 
-        assertThatDomainEventWasSent(
-          "incident.report.amended",
-          "IR-0000000001124143",
-          InformationSource.DPS,
-          WhatChanged.BASIC_REPORT,
-        )
+        assertThatNoDomainEventsWereSent()
       }
 
       @Test
@@ -2282,9 +2277,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               true,
             )
 
-          assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
-
-          assertThatDomainEventWasSent("incident.report.amended", "IR-0000000001124146", InformationSource.DPS, whatChanged)
+          assertThatNoDomainEventsWereSent()
         }
 
         @ParameterizedTest(name = "can update {0} related object fully")

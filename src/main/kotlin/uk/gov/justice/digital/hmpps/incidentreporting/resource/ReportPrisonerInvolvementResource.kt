@@ -167,6 +167,10 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
     @Valid
     request: UpdatePrisonerInvolvement,
   ): List<PrisonerInvolvement> {
+    if (request.isEmpty) {
+      return reportId.findReportOrThrowNotFound().prisonersInvolved.map { it.toDto() }
+    }
+
     return reportId.updateReportOrThrowNotFound(
       "Updated an involved prisoner in incident report",
       WhatChanged.PRISONERS_INVOLVED,

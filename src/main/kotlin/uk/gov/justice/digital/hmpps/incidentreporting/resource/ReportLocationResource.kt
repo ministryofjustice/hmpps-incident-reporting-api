@@ -166,6 +166,10 @@ class ReportLocationResource : ReportRelatedObjectsResource<Location, AddLocatio
     @Valid
     request: UpdateLocation,
   ): List<Location> {
+    if (request.isEmpty) {
+      return reportId.findReportOrThrowNotFound().locations.map { it.toDto() }
+    }
+
     return reportId.updateReportOrThrowNotFound(
       "Updated location in incident report",
       WhatChanged.LOCATIONS,

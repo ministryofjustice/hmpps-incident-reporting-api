@@ -166,6 +166,10 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
     @Valid
     request: UpdateStaffInvolvement,
   ): List<StaffInvolvement> {
+    if (request.isEmpty) {
+      return reportId.findReportOrThrowNotFound().staffInvolved.map { it.toDto() }
+    }
+
     return reportId.updateReportOrThrowNotFound(
       "Updated an involved member of staff in incident report",
       WhatChanged.STAFF_INVOLVED,

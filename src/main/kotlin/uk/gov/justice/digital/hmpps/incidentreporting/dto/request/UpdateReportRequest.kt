@@ -23,6 +23,9 @@ data class UpdateReportRequest(
   @Schema(description = "Whether the parent event should also be updated", required = false, defaultValue = "false", example = "true")
   val updateEvent: Boolean = false,
 ) {
+  val isEmpty: Boolean =
+    incidentDateAndTime == null && prisonId == null && title == null && description == null
+
   fun validate(now: LocalDateTime) {
     if (incidentDateAndTime != null && incidentDateAndTime > now) {
       throw ValidationException("incidentDateAndTime cannot be in the future")

@@ -11,4 +11,7 @@ data class UpdateCorrectionRequest(
   @Schema(description = "The changes being requested", required = false, defaultValue = "null")
   @field:Size(min = 1)
   val descriptionOfChange: String? = null,
-)
+) {
+  val isEmpty: Boolean =
+    reason == null && descriptionOfChange == null
+}

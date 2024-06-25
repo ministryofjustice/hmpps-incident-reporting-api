@@ -168,6 +168,10 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
     @Valid
     request: UpdateCorrectionRequest,
   ): List<CorrectionRequest> {
+    if (request.isEmpty) {
+      return reportId.findReportOrThrowNotFound().correctionRequests.map { it.toDto() }
+    }
+
     return reportId.updateReportOrThrowNotFound(
       "Updated a correction request in incident report",
       WhatChanged.CORRECTION_REQUESTS,

@@ -37,10 +37,8 @@ class CorrectionRequest(
   fun updateWith(request: UpdateCorrectionRequest, requestUsername: String, now: LocalDateTime) {
     request.reason?.let { reason = it }
     request.descriptionOfChange?.let { descriptionOfChange = it }
-    if (request.reason != null || request.descriptionOfChange != null) {
-      correctionRequestedBy = requestUsername
-      correctionRequestedAt = now
-    }
+    correctionRequestedBy = requestUsername
+    correctionRequestedAt = now
   }
 
   fun toDto() = CorrectionRequestDto(
