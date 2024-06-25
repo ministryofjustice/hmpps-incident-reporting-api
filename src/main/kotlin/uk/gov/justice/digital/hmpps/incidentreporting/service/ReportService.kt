@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
+import jakarta.validation.ValidationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
@@ -15,8 +16,10 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddQuestionWithResponses
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
@@ -246,6 +249,68 @@ class ReportService(
           reportWithDetails,
         )
       }
+    }
+  }
+
+  fun getQuestionsWithResponses(reportId: UUID): List<Question>? {
+    return reportRepository.findOneEagerlyById(reportId)?.run {
+      getQuestions().map { it.toDto() }
+    }
+  }
+
+  @Transactional
+  fun addQuestionWithResponses(reportId: UUID, addRequest: AddQuestionWithResponses): Pair<ReportBasic, List<Question>>? {
+    return reportRepository.findOneEagerlyById(reportId)?.run {
+      with(
+        addQuestion(
+          code = addRequest.code,
+          question = addRequest.question,
+          additionalInformation = addRequest.additionalInformation,
+        ),
+      ) {
+        addRequest.responses.forEach {
+          addResponse(
+            response = it.response,
+            recordedBy = it.recordedBy,
+            recordedAt = it.recordedAt,
+            additionalInformation = it.additionalInformation,
+          )
+        }
+      }
+
+      modifiedAt = LocalDateTime.now(clock)
+      modifiedBy = authenticationFacade.getUserOrSystemInContext()
+
+      val reportBasic = toDtoBasic()
+
+      log.info("Added question with ${addRequest.responses.size} responses to report number=$incidentNumber ID=$id")
+      telemetryClient.trackEvent(
+        "Added question with ${addRequest.responses.size} responses",
+        reportBasic,
+      )
+
+      reportBasic to getQuestions().map { it.toDto() }
+    }
+  }
+
+  @Transactional
+  fun deleteLastQuestionAndResponses(reportId: UUID): Pair<ReportBasic, List<Question>>? {
+    return reportRepository.findOneEagerlyById(reportId)?.run {
+      popLastQuestion()
+        ?: throw ValidationException("Question list is empty")
+
+      modifiedAt = LocalDateTime.now(clock)
+      modifiedBy = authenticationFacade.getUserOrSystemInContext()
+
+      val reportBasic = toDtoBasic()
+
+      log.info("Deleted last question and responses from report number=$incidentNumber ID=$id")
+      telemetryClient.trackEvent(
+        "Deleted last question and responses",
+        reportBasic,
+      )
+
+      reportBasic to getQuestions().map { it.toDto() }
     }
   }
 }

@@ -47,6 +47,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   lateinit var existingReport: Report
 
+  protected fun assertThatReportWasModified(id: UUID) {
+    webTestClient.get().uri("/incident-reports/$id")
+      .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+      .header("Content-Type", "application/json")
+      .exchange()
+      .expectBody().json(
+        // language=json
+        """
+          {
+            "modifiedAt": "2023-12-05T12:34:56",
+            "modifiedBy": "INCIDENT_REPORTING_API"
+          }
+          """,
+        false,
+      )
+  }
+
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
@@ -1997,23 +2014,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       urlForSecondRelatedObject = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix/2"
     }
 
-    protected fun assertThatReportWasModified(id: UUID) {
-      webTestClient.get().uri("/incident-reports/$id")
-        .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
-        .header("Content-Type", "application/json")
-        .exchange()
-        .expectBody().json(
-          // language=json
-          """
-          {
-            "modifiedAt": "2023-12-05T12:34:56",
-            "modifiedBy": "INCIDENT_REPORTING_API"
-          }
-          """,
-          false,
-        )
-    }
-
     abstract inner class ListObjects {
       @DisplayName("is secured")
       @Nested
@@ -2618,6 +2618,389 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("DELETE /incident-reports/{reportId}/correction-requests/{index}")
     @Nested
     inner class RemoveObject : RelatedObjects.RemoveObject()
+  }
+
+  @DisplayName("Questions with responses")
+  @Nested
+  inner class QuestionsWithResponses {
+    private lateinit var existingReportWithQuestionsAndResponses: Report
+    private lateinit var urlWithoutQuestions: String
+    private lateinit var urlWithQuestionsAndResponses: String
+
+    @BeforeEach
+    fun setUp() {
+      urlWithoutQuestions = "/incident-reports/${existingReport.id}/questions"
+
+      existingReportWithQuestionsAndResponses = reportRepository.save(
+        buildIncidentReport(
+          incidentNumber = "IR-0000000001124146",
+          reportTime = now,
+          generateQuestions = 2,
+          generateResponses = 2,
+        ),
+      )
+      urlWithQuestionsAndResponses = "/incident-reports/${existingReportWithQuestionsAndResponses.id}/questions"
+    }
+
+    @DisplayName("GET /incident-reports/{reportId}/questions")
+    @Nested
+    inner class ListQuestions {
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(urlWithoutQuestions),
+          "VIEW_INCIDENT_REPORTS",
+        )
+      }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot list questions and responses for a report if it is not found`() {
+          webTestClient.get().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @Test
+        fun `can list questions and responses when there are none`() {
+          webTestClient.get().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              // language=json
+              "[]",
+              true,
+            )
+        }
+
+        @Test
+        fun `can list questions and responses when there are several`() {
+          val expectedResponse = getResource("/questions-with-responses/list-response-with-several.json")
+          webTestClient.get().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+        }
+
+        @Test
+        fun `can list 50 questions and responses`() {
+          val report = reportRepository.save(
+            buildIncidentReport(
+              incidentNumber = "IR-0000000001124147",
+              reportTime = now,
+              generateQuestions = 50,
+              generateResponses = 3,
+            ),
+          )
+          webTestClient.get().uri("/incident-reports/${report.id}/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().jsonPath("$").value<List<Map<String, Any>>> { questions ->
+              assertThat(questions).hasSize(50)
+              assertThat(questions).allSatisfy { question ->
+                val responses = question["responses"] as List<*>
+                assertThat(responses).hasSize(3)
+              }
+            }
+        }
+      }
+    }
+
+    @DisplayName("POST /incident-reports/{reportId}/questions")
+    @Nested
+    inner class AddQuestion {
+      private val validRequest = getResource("/questions-with-responses/add-request-with-responses.json")
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.post().uri(urlWithQuestionsAndResponses).bodyValue(validRequest),
+          "MAINTAIN_INCIDENT_REPORTS",
+          "write",
+        )
+      }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot add question and responses to a report if it is not found`() {
+          webTestClient.post().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
+
+        @DisplayName("cannot add question and responses if payload is invalid")
+        @TestFactory
+        fun `cannot add question and responses if payload is invalid`(): List<DynamicTest> {
+          return listOf(
+            InvalidRequestTestCase(
+              "invalid payload",
+              // language=json
+              "[]",
+            ),
+            InvalidRequestTestCase(
+              "long code",
+              getResource("/questions-with-responses/add-request-long-code.json"),
+            ),
+            InvalidRequestTestCase(
+              "empty question",
+              getResource("/questions-with-responses/add-request-empty-question.json"),
+            ),
+            InvalidRequestTestCase(
+              "empty response",
+              getResource("/questions-with-responses/add-request-empty-response.json"),
+            ),
+            InvalidRequestTestCase(
+              "short staff username",
+              getResource("/questions-with-responses/add-request-short-staff-username.json"),
+            ),
+          )
+            .map { (name, request) ->
+              DynamicTest.dynamicTest(name) {
+                webTestClient.post().uri(urlWithoutQuestions)
+                  .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+                  .header("Content-Type", "application/json")
+                  .bodyValue(request)
+                  .exchange()
+                  .expectStatus().isBadRequest
+                  .expectBody().jsonPath("developerMessage").hasJsonPath()
+
+                assertThatNoDomainEventsWereSent()
+              }
+            }
+        }
+
+        @Test
+        fun `cannot add question without responses`() {
+          val invalidRequest = getResource("/questions-with-responses/add-request-without-responses.json")
+          webTestClient.post().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(invalidRequest)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("addQuestionWithResponses.responses: size must be between 1 and 2147483647")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @Test
+        fun `can add question with responses to empty report`() {
+          val expectedResponse = getResource("/questions-with-responses/add-response-without-responses.json")
+          webTestClient.post().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          assertThatReportWasModified(existingReport.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124143",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+
+        @Test
+        fun `can add question with responses to report with existing questions`() {
+          val expectedResponse = getResource("/questions-with-responses/add-response-with-responses.json")
+          webTestClient.post().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+
+        @Test
+        fun `can add question with responses that have nullable fields`() {
+          val validRequestWithNulls = getResource("/questions-with-responses/add-request-with-responses-and-null-fields.json")
+          val expectedResponse = getResource("/questions-with-responses/add-response-with-responses-and-null-fields.json")
+          webTestClient.post().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequestWithNulls)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+      }
+    }
+
+    @DisplayName("DELETE /incident-reports/{reportId}/questions")
+    @Nested
+    inner class DeleteQuestion {
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.delete().uri(urlWithQuestionsAndResponses),
+          "MAINTAIN_INCIDENT_REPORTS",
+          "write",
+        )
+      }
+
+      @DisplayName("validates requests")
+      @Nested
+      inner class Validation {
+        @Test
+        fun `cannot delete last question from a report if it is not found`() {
+          webTestClient.delete().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("There is no report found")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
+
+        @Test
+        fun `cannot delete question from a report when the question list is empty`() {
+          webTestClient.delete().uri(urlWithoutQuestions)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("Question list is empty")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+        @Test
+        fun `can delete last question from a report when there are several`() {
+          val expectedResponse = getResource("/questions-with-responses/delete-response.json")
+          webTestClient.delete().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(expectedResponse, true)
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+
+        @Test
+        fun `can delete all questions from a report`() {
+          webTestClient.delete().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+
+          webTestClient.delete().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              // language=json
+              "[]",
+              true,
+            )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "IR-0000000001124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+      }
+    }
   }
 }
 
