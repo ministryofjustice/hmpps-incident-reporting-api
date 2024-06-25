@@ -57,7 +57,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         """
           {
             "modifiedAt": "2023-12-05T12:34:56",
-            "modifiedBy": "INCIDENT_REPORTING_API"
+            "modifiedBy": "request-user"
           }
           """,
         false,
@@ -884,7 +884,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "description": "Longer explanation of incident",
                 "createdAt": "2023-12-05T12:34:56",
                 "modifiedAt": "2023-12-05T12:34:56",
-                "modifiedBy": "INCIDENT_REPORTING_API"
+                "modifiedBy": "request-user"
               },
               "questions": [],
               "history": [],
@@ -892,7 +892,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API"
+                  "changedBy": "request-user"
                 }
               ],
               "staffInvolved": [],
@@ -900,13 +900,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "locations": [],
               "evidence": [],
               "correctionRequests": [],
-              "reportedBy": "INCIDENT_REPORTING_API",
+              "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
-              "assignedTo": "INCIDENT_REPORTING_API",
+              "assignedTo": "request-user",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false
             }
             """,
@@ -954,7 +954,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API"
+                  "changedBy": "request-user"
                 }
               ],
               "staffInvolved": [],
@@ -962,13 +962,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "locations": [],
               "evidence": [],
               "correctionRequests": [],
-              "reportedBy": "INCIDENT_REPORTING_API",
+              "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
-              "assignedTo": "INCIDENT_REPORTING_API",
+              "assignedTo": "request-user",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false
             }
             """,
@@ -1141,7 +1141,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false
             }
             """,
@@ -1208,7 +1208,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false
             }
             """,
@@ -1255,7 +1255,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "description": "Updated incident report of type Finds",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API"
+              "modifiedBy": "request-user"
             }
             """
           } else {
@@ -1439,7 +1439,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false,
               "historyOfStatuses": [
                 {
@@ -1450,7 +1450,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "AWAITING_ANALYSIS",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API"
+                  "changedBy": "request-user"
                 }
               ]
             }
@@ -1694,13 +1694,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false,
               "history": [
                 {
                   "type": "FINDS",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API",
+                  "changedBy": "request-user",
                   "questions": [
                     {
                       "code": "QID-000000000001",
@@ -1792,7 +1792,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
               "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "INCIDENT_REPORTING_API",
+              "modifiedBy": "request-user",
               "createdInNomis": false,
               "history": [
                 {
@@ -1818,7 +1818,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "type": "FINDS",
                   "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "INCIDENT_REPORTING_API",
+                  "changedBy": "request-user",
                   "questions": [
                     {
                       "code": "QID-000000000001",

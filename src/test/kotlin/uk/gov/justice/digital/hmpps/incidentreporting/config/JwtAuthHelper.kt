@@ -27,7 +27,7 @@ class JwtAuthHelper {
   fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withPublicKey(keyPair.public as RSAPublicKey).build()
 
   fun setAuthorisation(
-    user: String = SYSTEM_USERNAME,
+    user: String,
     roles: List<String> = emptyList(),
     scopes: List<String> = emptyList(),
   ): (HttpHeaders) -> Unit {
@@ -40,7 +40,7 @@ class JwtAuthHelper {
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
   }
 
-  internal fun createJwt(
+  private fun createJwt(
     subject: String?,
     scope: List<String>? = emptyList(),
     roles: List<String>? = emptyList(),

@@ -20,7 +20,6 @@ import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.config.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer.setLocalStackProperties
-import uk.gov.justice.digital.hmpps.incidentreporting.config.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSDomainEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSMessage
@@ -127,7 +126,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   }
 
   protected fun setAuthorisation(
-    user: String = SYSTEM_USERNAME,
+    user: String = "request-user",
     roles: List<String> = emptyList(),
     scopes: List<String> = emptyList(),
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
