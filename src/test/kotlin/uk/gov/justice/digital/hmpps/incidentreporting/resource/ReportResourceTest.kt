@@ -2785,10 +2785,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "empty response",
               getResource("/questions-with-responses/add-request-empty-response.json"),
             ),
-            InvalidRequestTestCase(
-              "short staff username",
-              getResource("/questions-with-responses/add-request-short-staff-username.json"),
-            ),
           )
             .map { (name, request) ->
               DynamicTest.dynamicTest(name) {

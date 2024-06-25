@@ -4,14 +4,10 @@
   "additionalInformation": null,
   "responses": [
     {
-      "response": "Note with phone number",
-      "recordedBy": "responding-user",
-      "recordedAt": "2023-12-05T12:34:56"
+      "response": "Note with phone number"
     },
     {
       "response": "Mobile phone",
-      "recordedBy": "responding-user",
-      "recordedAt": "2023-12-05T12:34:56",
       "additionalInformation": null
     }
   ]

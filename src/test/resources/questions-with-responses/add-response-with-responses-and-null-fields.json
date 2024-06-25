@@ -44,13 +44,13 @@
     "responses": [
       {
         "response": "Note with phone number",
-        "recordedBy": "responding-user",
+        "recordedBy": "INCIDENT_REPORTING_API",
         "recordedAt": "2023-12-05T12:34:56",
         "additionalInformation": null
       },
       {
         "response": "Mobile phone",
-        "recordedBy": "responding-user",
+        "recordedBy": "INCIDENT_REPORTING_API",
         "recordedAt": "2023-12-05T12:34:56",
         "additionalInformation": null
       }

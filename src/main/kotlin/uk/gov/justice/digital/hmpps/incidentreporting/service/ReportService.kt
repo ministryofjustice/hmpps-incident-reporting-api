@@ -261,6 +261,9 @@ class ReportService(
   @Transactional
   fun addQuestionWithResponses(reportId: UUID, addRequest: AddQuestionWithResponses): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
+      val now = LocalDateTime.now(clock)
+      val requestUsername = authenticationFacade.getUserOrSystemInContext()
+
       with(
         addQuestion(
           code = addRequest.code,
@@ -271,15 +274,15 @@ class ReportService(
         addRequest.responses.forEach {
           addResponse(
             response = it.response,
-            recordedBy = it.recordedBy,
-            recordedAt = it.recordedAt,
+            recordedBy = requestUsername,
+            recordedAt = now,
             additionalInformation = it.additionalInformation,
           )
         }
       }
 
-      modifiedAt = LocalDateTime.now(clock)
-      modifiedBy = authenticationFacade.getUserOrSystemInContext()
+      modifiedAt = now
+      modifiedBy = requestUsername
 
       val reportBasic = toDtoBasic()
 
