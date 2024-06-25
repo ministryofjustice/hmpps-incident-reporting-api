@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 
 @Schema(description = "Add an involved member of staff to an incident report")
 data class AddStaffInvolvement(
-  @Schema(description = "Username", required = true)
+  @Schema(description = "Username", required = true, minLength = 3, maxLength = 120)
   @field:Size(min = 3, max = 120)
   val staffUsername: String,
   @Schema(description = "Their role", required = true)

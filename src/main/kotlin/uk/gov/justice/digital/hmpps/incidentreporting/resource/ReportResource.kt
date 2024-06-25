@@ -90,7 +90,7 @@ class ReportResource(
       defaultValue = "null",
       example = "MDI",
       minLength = 2,
-      maxLength = 10,
+      maxLength = 6,
     )
     @RequestParam(required = false)
     @Size(min = 2, max = 6)

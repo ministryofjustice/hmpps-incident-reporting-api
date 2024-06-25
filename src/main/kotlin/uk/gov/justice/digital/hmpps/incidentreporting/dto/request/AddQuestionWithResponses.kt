@@ -6,13 +6,13 @@ import jakarta.validation.constraints.Size
 
 @Schema(description = "Payload to add question with responses to an incident report")
 data class AddQuestionWithResponses(
-  @Schema(description = "The question code", required = true)
-  @field:Size(max = 60)
+  @Schema(description = "The question code", required = true, minLength = 1, maxLength = 60)
+  @field:Size(min = 1, max = 60)
   val code: String,
-  @Schema(description = "The question", required = true)
+  @Schema(description = "The question", required = true, minLength = 1)
   @field:Size(min = 1)
   val question: String,
-  @Schema(description = "The responses to this question", required = true)
+  @Schema(description = "The responses to this question", required = true, minLength = 1)
   @field:Valid
   @field:Size(min = 1)
   val responses: List<AddQuestionResponse>,
@@ -21,7 +21,7 @@ data class AddQuestionWithResponses(
 )
 
 data class AddQuestionResponse(
-  @Schema(description = "The response", required = true)
+  @Schema(description = "The response", required = true, minLength = 1)
   @field:Size(min = 1)
   val response: String,
   @Schema(description = "Optional additional information", required = false, defaultValue = "null")
