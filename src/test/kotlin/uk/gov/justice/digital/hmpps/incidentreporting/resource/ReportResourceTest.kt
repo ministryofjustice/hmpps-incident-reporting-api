@@ -754,8 +754,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       description = "Longer explanation of incident",
       type = Type.SELF_HARM,
       prisonId = "MDI",
-      reportedBy = "user2",
-      reportedAt = now,
       createNewEvent = true,
     )
 
@@ -790,12 +788,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "cannot create a report with invalid `{0}` field")
-      @ValueSource(strings = ["prisonId", "title", "reportedBy"])
+      @ValueSource(strings = ["prisonId", "title", "description"])
       fun `cannot create a report with invalid fields`(fieldName: String) {
         val invalidPayload = createReportRequest.copy(
           prisonId = if (fieldName == "prisonId") "" else createReportRequest.prisonId,
           title = if (fieldName == "title") "" else createReportRequest.title,
-          reportedBy = if (fieldName == "reportedBy") "" else createReportRequest.reportedBy,
+          description = if (fieldName == "description") "" else createReportRequest.description,
         ).toJson()
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -811,10 +809,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `cannot create a report with invalid dates`() {
+      fun `cannot create a report for future time`() {
         val invalidPayload = createReportRequest.copy(
-          incidentDateAndTime = now.minusMinutes(10),
-          reportedAt = now.minusMinutes(20),
+          incidentDateAndTime = now.plusMinutes(10),
         ).toJson()
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -823,7 +820,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
-            assertThat(it).contains("incidentDateAndTime must be before reportedAt")
+            assertThat(it).contains("incidentDateAndTime cannot be in the future")
           }
 
         assertThatNoDomainEventsWereSent()
@@ -903,10 +900,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "locations": [],
               "evidence": [],
               "correctionRequests": [],
-              "reportedBy": "user2",
+              "reportedBy": "INCIDENT_REPORTING_API",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
-              "assignedTo": "user2",
+              "assignedTo": "INCIDENT_REPORTING_API",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "INCIDENT_REPORTING_API",
@@ -965,10 +962,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "locations": [],
               "evidence": [],
               "correctionRequests": [],
-              "reportedBy": "user2",
+              "reportedBy": "INCIDENT_REPORTING_API",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
-              "assignedTo": "user2",
+              "assignedTo": "INCIDENT_REPORTING_API",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "INCIDENT_REPORTING_API",

@@ -135,7 +135,10 @@ class ReportService(
 
   @Transactional
   fun createReport(createReportRequest: CreateReportRequest): ReportWithDetails {
-    createReportRequest.validate()
+    val now = LocalDateTime.now(clock)
+    val requestUsername = authenticationFacade.getUserOrSystemInContext()
+
+    createReportRequest.validate(now = now)
 
     val event = if (createReportRequest.linkedEventId != null) {
       eventRepository.findOneByEventId(createReportRequest.linkedEventId)
@@ -143,16 +146,16 @@ class ReportService(
     } else {
       createReportRequest.toNewEvent(
         eventRepository.generateEventId(),
-        createdBy = authenticationFacade.getUserOrSystemInContext(),
-        clock = clock,
+        requestUsername = requestUsername,
+        now = now,
       )
     }
 
     val newReport = createReportRequest.toNewEntity(
       incidentNumber = reportRepository.generateIncidentNumber(),
-      createdBy = authenticationFacade.getUserOrSystemInContext(),
-      clock = clock,
       event = event,
+      requestUsername = requestUsername,
+      now = now,
     )
 
     val report = reportRepository.save(newReport).toDtoWithDetails()
