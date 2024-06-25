@@ -16,13 +16,13 @@ data class CreateReportRequest(
   val type: Type,
   @Schema(description = "When the incident took place", required = true, example = "2024-04-29T12:34:56.789012")
   val incidentDateAndTime: LocalDateTime,
-  @Schema(description = "The NOMIS id of the prison where incident took place", required = true, example = "MDI")
+  @Schema(description = "The NOMIS id of the prison where incident took place", required = true, example = "MDI", minLength = 2, maxLength = 6)
   @field:Size(min = 2, max = 6)
   val prisonId: String,
-  @Schema(description = "Brief title describing the incident", required = true)
+  @Schema(description = "Brief title describing the incident", required = true, minLength = 5, maxLength = 255)
   @field:Size(min = 5, max = 255)
   val title: String,
-  @Schema(description = "Longer summary of the incident", required = true)
+  @Schema(description = "Longer summary of the incident", required = true, minLength = 1)
   @field:Size(min = 1)
   val description: String,
   @Schema(description = "Whether to link to a new event", required = false, defaultValue = "false")

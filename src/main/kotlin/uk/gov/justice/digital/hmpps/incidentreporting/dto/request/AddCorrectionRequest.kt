@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 data class AddCorrectionRequest(
   @Schema(description = "Why the correction is needed", required = true)
   val reason: CorrectionReason,
-  @Schema(description = "The changes being requested", required = true)
+  @Schema(description = "The changes being requested", required = true, minLength = 1)
   @field:Size(min = 1)
   val descriptionOfChange: String,
 )

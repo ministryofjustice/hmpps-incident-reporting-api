@@ -10,13 +10,13 @@ import java.time.LocalDateTime
 data class UpdateReportRequest(
   @Schema(description = "When the incident took place", required = false, defaultValue = "null", example = "2024-04-29T12:34:56.789012")
   val incidentDateAndTime: LocalDateTime? = null,
-  @Schema(description = "The NOMIS id of the prison where incident took place", required = false, defaultValue = "null", example = "MDI")
+  @Schema(description = "The NOMIS id of the prison where incident took place", required = false, defaultValue = "null", example = "MDI", minLength = 2, maxLength = 6)
   @field:Size(min = 2, max = 6)
   val prisonId: String? = null,
-  @Schema(description = "Brief title describing the incident", required = false, defaultValue = "null")
+  @Schema(description = "Brief title describing the incident", required = false, defaultValue = "null", minLength = 5, maxLength = 255)
   @field:Size(min = 5, max = 255)
   val title: String? = null,
-  @Schema(description = "Longer summary of the incident", required = false, defaultValue = "null")
+  @Schema(description = "Longer summary of the incident", required = false, defaultValue = "null", minLength = 1)
   @field:Size(min = 1)
   val description: String? = null,
 

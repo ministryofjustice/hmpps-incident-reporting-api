@@ -7,7 +7,7 @@ import java.util.Optional
 
 @Schema(description = "Update an involved member of staff in an incident report")
 data class UpdateStaffInvolvement(
-  @Schema(description = "Username", required = false, defaultValue = "null")
+  @Schema(description = "Username", required = false, defaultValue = "null", minLength = 3, maxLength = 120)
   @field:Size(min = 3, max = 120)
   val staffUsername: String? = null,
   @Schema(description = "Their role", required = false, defaultValue = "null")
