@@ -2,7 +2,7 @@
   {
     "reason": "NOT_SPECIFIED",
     "descriptionOfChange": "Description needs to mention prisoner numbers",
-    "correctionRequestedBy": "qa",
+    "correctionRequestedBy": "INCIDENT_REPORTING_API",
     "correctionRequestedAt": "2023-12-05T12:34:56"
   },
   {

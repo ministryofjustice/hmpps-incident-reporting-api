@@ -34,11 +34,13 @@ class CorrectionRequest(
 
   fun getReport() = report
 
-  fun updateWith(request: UpdateCorrectionRequest) {
+  fun updateWith(request: UpdateCorrectionRequest, requestUsername: String, now: LocalDateTime) {
     request.reason?.let { reason = it }
     request.descriptionOfChange?.let { descriptionOfChange = it }
-    request.correctionRequestedBy?.let { correctionRequestedBy = it }
-    request.correctionRequestedAt?.let { correctionRequestedAt = it }
+    if (request.reason != null || request.descriptionOfChange != null) {
+      correctionRequestedBy = requestUsername
+      correctionRequestedAt = now
+    }
   }
 
   fun toDto() = CorrectionRequestDto(

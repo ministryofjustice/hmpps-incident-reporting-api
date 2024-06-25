@@ -173,7 +173,11 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
       WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
       val objects = report.correctionRequests
-      objects.elementAtIndex(index).updateWith(request)
+      objects.elementAtIndex(index).updateWith(
+        request,
+        requestUsername = authenticationFacade.getUserOrSystemInContext(),
+        now = LocalDateTime.now(clock),
+      )
       objects.map { it.toDto() }
     }
   }
