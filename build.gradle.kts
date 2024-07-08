@@ -22,23 +22,23 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-validation")
 
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.0.1")
-  implementation("io.opentelemetry:opentelemetry-api:1.39.0")
+  implementation("io.opentelemetry:opentelemetry-api:1.40.0")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.5.0")
 
   implementation("com.zaxxer:HikariCP:5.1.0")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.3")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-  testImplementation("org.wiremock:wiremock-standalone:3.7.0")
+  testImplementation("org.wiremock:wiremock-standalone:3.8.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.6")
   testImplementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
