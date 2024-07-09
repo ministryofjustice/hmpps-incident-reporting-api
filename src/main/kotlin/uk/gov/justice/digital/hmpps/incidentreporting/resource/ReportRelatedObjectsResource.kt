@@ -6,7 +6,7 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
-import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
+import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
@@ -14,6 +14,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService.Companion.log
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
+import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -29,7 +30,7 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
   protected lateinit var clock: Clock
 
   @Autowired
-  protected lateinit var authenticationFacade: AuthenticationFacade
+  protected lateinit var authenticationHolder: HmppsAuthenticationHolder
 
   @Autowired
   private lateinit var telemetryClient: TelemetryClient
@@ -46,7 +47,7 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
     val report = findReportOrThrowNotFound()
     return block(report).also {
       report.modifiedAt = LocalDateTime.now(clock)
-      report.modifiedBy = authenticationFacade.getUserOrSystemInContext()
+      report.modifiedBy = authenticationHolder.username ?: SYSTEM_USERNAME
 
       val basicReport = report.toDtoBasic()
       eventPublishAndAudit(

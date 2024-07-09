@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.incidentreporting.config.AuthenticationFacade
+import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
@@ -38,6 +38,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatuses
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundException
+import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -50,7 +51,7 @@ class ReportService(
   private val reportRepository: ReportRepository,
   private val eventRepository: EventRepository,
   private val telemetryClient: TelemetryClient,
-  private val authenticationFacade: AuthenticationFacade,
+  private val authenticationHolder: HmppsAuthenticationHolder,
   private val clock: Clock,
 ) {
   companion object {
@@ -136,7 +137,7 @@ class ReportService(
   @Transactional
   fun createReport(createReportRequest: CreateReportRequest): ReportWithDetails {
     val now = LocalDateTime.now(clock)
-    val requestUsername = authenticationFacade.getUserOrSystemInContext()
+    val requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME
 
     createReportRequest.validate(now = now)
 
@@ -172,7 +173,7 @@ class ReportService(
   @Transactional
   fun updateReport(id: UUID, updateReportRequest: UpdateReportRequest): ReportBasic? {
     val now = LocalDateTime.now(clock)
-    val requestUsername = authenticationFacade.getUserOrSystemInContext()
+    val requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME
 
     updateReportRequest.validate(now)
 
@@ -203,7 +204,7 @@ class ReportService(
         // TODO: determine which transitions are allowed
 
         val now = LocalDateTime.now(clock)
-        val user = authenticationFacade.getUserOrSystemInContext()
+        val user = authenticationHolder.username ?: SYSTEM_USERNAME
         reportEntity.changeStatus(
           newStatus = changeStatusRequest.newStatus,
           changedAt = now,
@@ -234,7 +235,7 @@ class ReportService(
     return reportRepository.findOneEagerlyById(id)?.let { reportEntity ->
       val maybeChangedReport = if (reportEntity.type != changeTypeRequest.newType) {
         val now = LocalDateTime.now(clock)
-        val user = authenticationFacade.getUserOrSystemInContext()
+        val user = authenticationHolder.username ?: SYSTEM_USERNAME
         reportEntity.changeType(
           newType = changeTypeRequest.newType,
           changedAt = now,
@@ -268,7 +269,7 @@ class ReportService(
   fun addQuestionWithResponses(reportId: UUID, addRequest: AddQuestionWithResponses): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
       val now = LocalDateTime.now(clock)
-      val requestUsername = authenticationFacade.getUserOrSystemInContext()
+      val requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME
 
       with(
         addQuestion(
@@ -309,7 +310,7 @@ class ReportService(
         ?: throw ValidationException("Question list is empty")
 
       modifiedAt = LocalDateTime.now(clock)
-      modifiedBy = authenticationFacade.getUserOrSystemInContext()
+      modifiedBy = authenticationHolder.username ?: SYSTEM_USERNAME
 
       val reportBasic = toDtoBasic()
 
