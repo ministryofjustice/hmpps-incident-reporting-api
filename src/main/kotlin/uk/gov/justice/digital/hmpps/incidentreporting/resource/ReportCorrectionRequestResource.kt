@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.CorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateCorrectionRequest
@@ -115,7 +116,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
         report.addCorrectionRequest(
           reason = reason,
           descriptionOfChange = descriptionOfChange,
-          correctionRequestedBy = authenticationFacade.getUserOrSystemInContext(),
+          correctionRequestedBy = authenticationHolder.username ?: SYSTEM_USERNAME,
           correctionRequestedAt = LocalDateTime.now(clock),
         )
       }
@@ -179,7 +180,7 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
       val objects = report.correctionRequests
       objects.elementAtIndex(index).updateWith(
         request,
-        requestUsername = authenticationFacade.getUserOrSystemInContext(),
+        requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME,
         now = LocalDateTime.now(clock),
       )
       objects.map { it.toDto() }

@@ -17,7 +17,6 @@ import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
-import uk.gov.justice.digital.hmpps.incidentreporting.config.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer.setLocalStackProperties
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -30,6 +29,7 @@ import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
 import uk.gov.justice.hmpps.sqs.MissingQueueException
 import uk.gov.justice.hmpps.sqs.MissingTopicException
 import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
+import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -39,7 +39,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   lateinit var webTestClient: WebTestClient
 
   @Autowired
-  protected lateinit var jwtAuthHelper: JwtAuthHelper
+  protected lateinit var jwtAuthorisationHelper: JwtAuthorisationHelper
 
   @Autowired
   protected lateinit var objectMapper: ObjectMapper
@@ -129,7 +129,12 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     user: String = "request-user",
     roles: List<String> = emptyList(),
     scopes: List<String> = emptyList(),
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
+  ): (HttpHeaders) -> Unit = jwtAuthorisationHelper.setAuthorisationHeader(
+    clientId = "hmpps-incident-reporting-api",
+    username = user,
+    scope = scopes,
+    roles = roles,
+  )
 
   protected fun endpointRequiresAuthorisation(
     endpoint: WebTestClient.RequestHeadersSpec<*>,
