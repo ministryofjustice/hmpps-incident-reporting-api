@@ -151,7 +151,7 @@ class NomisSyncServiceTest {
   /** saved entity based on successful `sampleSyncRequest` */
   private val sampleReport = Report(
     id = sampleReportId,
-    incidentNumber = "112414323",
+    reportReference = "112414323",
     incidentDateAndTime = whenIncidentHappened,
     type = Type.SELF_HARM,
     title = "Cutting",
@@ -201,7 +201,7 @@ class NomisSyncServiceTest {
   private fun isEqualToSampleReport(report: Report, expectedId: UUID?): Boolean {
     // NB: cannot compare arg to sampleReport directly
     return report.id == expectedId &&
-      report.incidentNumber == sampleReport.incidentNumber &&
+      report.reportReference == sampleReport.reportReference &&
       report.incidentDateAndTime == sampleReport.incidentDateAndTime &&
       report.type == sampleReport.type &&
       report.title == sampleReport.title &&
@@ -233,7 +233,7 @@ class NomisSyncServiceTest {
 
   private fun assertSampleReportConvertedToDto(report: ReportWithDetails) {
     assertThat(report.id).isEqualTo(sampleReportId)
-    assertThat(report.incidentNumber).isEqualTo("112414323")
+    assertThat(report.reportReference).isEqualTo("112414323")
     assertThat(report.type).isEqualTo(Type.SELF_HARM)
     assertThat(report.incidentDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.prisonId).isEqualTo("MDI")
@@ -329,7 +329,7 @@ class NomisSyncServiceTest {
         "created" to "true",
         "updated" to "false",
         "id" to "11111111-2222-3333-4444-555555555555",
-        "incidentNumber" to "112414323",
+        "reportReference" to "112414323",
         "prisonId" to "MDI",
       ),
       null,
@@ -360,7 +360,7 @@ class NomisSyncServiceTest {
         "created" to "false",
         "updated" to "true",
         "id" to "11111111-2222-3333-4444-555555555555",
-        "incidentNumber" to "112414323",
+        "reportReference" to "112414323",
         "prisonId" to "MDI",
       ),
       null,
@@ -410,7 +410,7 @@ class NomisSyncServiceTest {
   }
 
   @ParameterizedTest(name = "throws report-already-exists exception if {0} constraint failed")
-  @ValueSource(strings = ["event_reference", "incident_number"])
+  @ValueSource(strings = ["event_reference", "report_reference"])
   fun `throws report-already-exists exception if identifier constraints failed`(constraint: String) {
     val syncRequest = sampleSyncRequest.copy(
       id = null,

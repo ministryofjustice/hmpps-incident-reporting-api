@@ -28,7 +28,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventReference
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentNumber
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
@@ -92,8 +92,8 @@ class ReportService(
       ?.toDtoBasic()
   }
 
-  fun getBasicReportByIncidentNumber(incidentNumber: String): ReportBasic? {
-    return reportRepository.findByIncidentNumber(incidentNumber)
+  fun getBasicReportByReference(reportReference: String): ReportBasic? {
+    return reportRepository.findByReportReference(reportReference)
       ?.toDtoBasic()
   }
 
@@ -102,8 +102,8 @@ class ReportService(
       ?.toDtoWithDetails()
   }
 
-  fun getReportWithDetailsByIncidentNumber(incidentNumber: String): ReportWithDetails? {
-    return reportRepository.findOneEagerlyByIncidentNumber(incidentNumber)
+  fun getReportWithDetailsByReference(reportReference: String): ReportWithDetails? {
+    return reportRepository.findOneEagerlyByReportReference(reportReference)
       ?.toDtoWithDetails()
   }
 
@@ -119,7 +119,7 @@ class ReportService(
         report.event.reports.removeIf { it.id == id }
         reportRepository.deleteById(id)
 
-        log.info("Deleted incident report number=${report.incidentNumber} ID=${report.id}")
+        log.info("Deleted incident report reference=${report.reportReference} ID=${report.id}")
         telemetryClient.trackEvent(
           "Deleted incident report",
           it,
@@ -153,7 +153,7 @@ class ReportService(
     }
 
     val newReport = createReportRequest.toNewEntity(
-      incidentNumber = reportRepository.generateIncidentNumber(),
+      reportReference = reportRepository.generateReportReference(),
       event = event,
       requestUsername = requestUsername,
       now = now,
@@ -161,7 +161,7 @@ class ReportService(
 
     val report = reportRepository.save(newReport).toDtoWithDetails()
 
-    log.info("Created draft incident report number=${report.incidentNumber} ID=${report.id}")
+    log.info("Created draft incident report reference=${report.reportReference} ID=${report.id}")
     telemetryClient.trackEvent(
       "Created draft incident report",
       report,
@@ -188,7 +188,7 @@ class ReportService(
         } else {
           "Updated incident report"
         }
-        log.info("$changeMessage number=$incidentNumber ID=$id")
+        log.info("$changeMessage reference=$reportReference ID=$id")
         telemetryClient.trackEvent(
           changeMessage,
           this,
@@ -219,7 +219,7 @@ class ReportService(
       }
 
       maybeChangedReport.alsoIfChanged { reportWithDetails ->
-        log.info("Changed incident report status to ${changeStatusRequest.newStatus} for number=${reportWithDetails.incidentNumber} ID=$id")
+        log.info("Changed incident report status to ${changeStatusRequest.newStatus} for reference=${reportWithDetails.reportReference} ID=$id")
         telemetryClient.trackEvent(
           "Changed incident report status",
           reportWithDetails,
@@ -250,7 +250,7 @@ class ReportService(
       }
 
       maybeChangedReport.alsoIfChanged { reportWithDetails ->
-        log.info("Changed incident report type to ${changeTypeRequest.newType} for number=${reportWithDetails.incidentNumber} ID=$id")
+        log.info("Changed incident report type to ${changeTypeRequest.newType} for reference=${reportWithDetails.reportReference} ID=$id")
         telemetryClient.trackEvent(
           "Changed incident report type",
           reportWithDetails,
@@ -293,7 +293,7 @@ class ReportService(
 
       val reportBasic = toDtoBasic()
 
-      log.info("Added question with ${addRequest.responses.size} responses to report number=$incidentNumber ID=$id")
+      log.info("Added question with ${addRequest.responses.size} responses to report reference=$reportReference ID=$id")
       telemetryClient.trackEvent(
         "Added question with ${addRequest.responses.size} responses",
         reportBasic,
@@ -314,7 +314,7 @@ class ReportService(
 
       val reportBasic = toDtoBasic()
 
-      log.info("Deleted last question and responses from report number=$incidentNumber ID=$id")
+      log.info("Deleted last question and responses from report reference=$reportReference ID=$id")
       telemetryClient.trackEvent(
         "Deleted last question and responses",
         reportBasic,

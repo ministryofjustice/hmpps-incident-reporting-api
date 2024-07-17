@@ -58,7 +58,7 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
         basicReport
       }
 
-      log.info("$changeMessage number=${report.incidentNumber} ID=${report.id}")
+      log.info("$changeMessage reference=${report.reportReference} ID=${report.id}")
       telemetryClient.trackEvent(
         // TODO: should different related object actions raise different events?
         changeMessage,

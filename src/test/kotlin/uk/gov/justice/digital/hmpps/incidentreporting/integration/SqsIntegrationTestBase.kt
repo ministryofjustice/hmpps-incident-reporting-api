@@ -93,15 +93,15 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
 
   fun assertThatDomainEventWasSent(
     eventType: String,
-    incidentNumber: String?,
+    reportReference: String?,
     source: InformationSource = InformationSource.DPS,
     whatChanged: WhatChanged? = null,
   ) {
     getDomainEvents(1).let {
       val event = it[0]
       assertThat(event.eventType).isEqualTo(eventType)
-      incidentNumber?.let {
-        assertThat(event.additionalInformation?.incidentNumber).isEqualTo(incidentNumber)
+      reportReference?.let {
+        assertThat(event.additionalInformation?.reportReference).isEqualTo(reportReference)
       }
       assertThat(event.additionalInformation?.source).isEqualTo(source)
       assertThat(event.additionalInformation?.whatChanged).isEqualTo(whatChanged)

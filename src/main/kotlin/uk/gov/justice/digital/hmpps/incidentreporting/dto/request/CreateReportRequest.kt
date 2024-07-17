@@ -42,10 +42,10 @@ data class CreateReportRequest(
     }
   }
 
-  fun toNewEntity(incidentNumber: String, event: Event, requestUsername: String, now: LocalDateTime): Report {
+  fun toNewEntity(reportReference: String, event: Event, requestUsername: String, now: LocalDateTime): Report {
     val status = Status.DRAFT
     val report = Report(
-      incidentNumber = incidentNumber,
+      reportReference = reportReference,
       type = type,
       title = title,
       incidentDateAndTime = incidentDateAndTime,

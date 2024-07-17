@@ -58,18 +58,21 @@ import java.util.UUID
   ],
 )
 class Report(
+  /**
+   * Internal ID which should not be seen by users
+   */
   @Id
   @GeneratedUuidV7
   @Column(name = "id", updatable = false, nullable = false)
   val id: UUID? = null,
 
   /**
-   * Human readable ID.
+   * Human-readable reference. Previously known as ”incident number” in NOMIS.
    * A number when sourced from NOMIS.
    * Prefixed with “IR-” when sourced from DPS.
    */
   @Column(nullable = false, unique = true, length = 25)
-  val incidentNumber: String,
+  val reportReference: String,
 
   var incidentDateAndTime: LocalDateTime,
 
@@ -144,7 +147,7 @@ class Report(
   var modifiedBy: String,
 ) {
   override fun toString(): String {
-    return "Report(incidentNumber=$incidentNumber)"
+    return "Report(reportReference=$reportReference)"
   }
 
   fun getQuestions(): List<Question> = questions
@@ -336,7 +339,7 @@ class Report(
 
   fun toDtoBasic() = ReportBasic(
     id = id!!,
-    incidentNumber = incidentNumber,
+    reportReference = reportReference,
     incidentDateAndTime = incidentDateAndTime,
     prisonId = prisonId,
     type = type,
@@ -354,7 +357,7 @@ class Report(
 
   fun toDtoWithDetails() = ReportWithDetails(
     id = id!!,
-    incidentNumber = incidentNumber,
+    reportReference = reportReference,
     incidentDateAndTime = incidentDateAndTime,
     prisonId = prisonId,
     type = type,

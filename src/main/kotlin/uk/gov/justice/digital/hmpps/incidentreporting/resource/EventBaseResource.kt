@@ -24,7 +24,7 @@ abstract class EventBaseResource {
         eventType = event,
         additionalInformation = AdditionalInformation(
           id = report.id,
-          incidentNumber = report.incidentNumber,
+          reportReference = report.reportReference,
           source = informationSource,
           whatChanged = whatChanged,
         ),

@@ -24,7 +24,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTes
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventReference
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentNumber
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
@@ -67,7 +67,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     fun `can filter reports by simple property specification`() {
       val report = reportRepository.save(
         buildIncidentReport(
-          incidentNumber = "12345",
+          reportReference = "12345",
           reportTime = now.minusDays(1),
         ),
       )
@@ -115,7 +115,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     fun `can filter reports by a combination of specifications`() {
       val report1Id = reportRepository.save(
         buildIncidentReport(
-          incidentNumber = "12345",
+          reportReference = "12345",
           reportTime = now.minusDays(3),
           prisonId = "MDI",
           source = InformationSource.DPS,
@@ -125,7 +125,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       ).id!!
       val report2Id = reportRepository.save(
         buildIncidentReport(
-          incidentNumber = "12346",
+          reportReference = "12346",
           reportTime = now.minusDays(2),
           prisonId = "LEI",
           source = InformationSource.DPS,
@@ -135,7 +135,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       ).id!!
       val report3Id = reportRepository.save(
         buildIncidentReport(
-          incidentNumber = "IR-0000000001124143",
+          reportReference = "IR-0000000001124143",
           reportTime = now.minusDays(1),
           prisonId = "MDI",
           source = InformationSource.NOMIS,
@@ -219,7 +219,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     var report =
       reportRepository.save(
         Report(
-          incidentNumber = reportRepository.generateIncidentNumber(),
+          reportReference = reportRepository.generateReportReference(),
           incidentDateAndTime = hourAgo,
           status = Status.AWAITING_ANALYSIS,
           type = Type.SELF_HARM,
@@ -254,7 +254,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     TestTransaction.end()
     TestTransaction.start()
 
-    report = reportRepository.findOneEagerlyByIncidentNumber(report.incidentNumber)
+    report = reportRepository.findOneEagerlyByReportReference(report.reportReference)
       ?: throw EntityNotFoundException()
 
     report.addQuestion("WHERE_OCCURRED", "Where did this occur?")
@@ -284,7 +284,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     TestTransaction.end()
     TestTransaction.start()
 
-    report = reportRepository.findOneEagerlyByIncidentNumber(report.incidentNumber)
+    report = reportRepository.findOneEagerlyByReportReference(report.reportReference)
       ?: throw EntityNotFoundException()
     report.changeType(Type.ASSAULT, now, "user5")
 
@@ -298,7 +298,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     TestTransaction.end()
     TestTransaction.start()
 
-    report = reportRepository.findOneEagerlyByIncidentNumber(report.incidentNumber)
+    report = reportRepository.findOneEagerlyByReportReference(report.reportReference)
       ?: throw EntityNotFoundException()
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
     assertThat(report.type).isEqualTo(Type.ASSAULT)

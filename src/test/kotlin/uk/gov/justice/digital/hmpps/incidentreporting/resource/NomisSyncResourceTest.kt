@@ -39,7 +39,8 @@ import java.time.Clock
 import java.time.LocalDate
 import java.util.UUID
 
-private const val INCIDENT_NUMBER: Long = 112414323
+/** NOMIS incident number maps to a report’s reference */
+private const val NOMIS_INCIDENT_NUMBER: Long = 112414323
 
 @DisplayName("NOMIS sync resource")
 @Transactional
@@ -71,7 +72,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
     existingNomisReport = reportRepository.save(
       buildIncidentReport(
-        incidentNumber = "$INCIDENT_NUMBER",
+        reportReference = "$NOMIS_INCIDENT_NUMBER",
         reportTime = now,
         source = InformationSource.NOMIS,
       ),
@@ -85,7 +86,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
     val syncRequest = NomisSyncRequest(
       initialMigration = false,
       incidentReport = NomisReport(
-        incidentId = INCIDENT_NUMBER,
+        incidentId = NOMIS_INCIDENT_NUMBER,
         title = "An incident occurred updated",
         description = "More details about the incident",
         prison = NomisCode("MDI", "Moorland"),
@@ -393,7 +394,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               // language=json
               """
               {
-                "incidentNumber": "112414666",
+                "reportReference": "112414666",
                 "type": "SELF_HARM",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
@@ -628,7 +629,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
       @Test
       fun `can sync a new incident report after migration created in NOMIS`() {
-        val newIncidentId = INCIDENT_NUMBER + 1
+        val newIncidentId = NOMIS_INCIDENT_NUMBER + 1
         val newIncident = syncRequest.copy(
           initialMigration = false,
           incidentReport = syncRequest.incidentReport.copy(
@@ -651,7 +652,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               // language=json
               """
               {
-                "incidentNumber": "$newIncidentId",
+                "reportReference": "$newIncidentId",
                 "type": "ASSAULT",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
@@ -890,7 +891,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           initialMigration = false,
           id = existingNomisReport.id,
           incidentReport = syncRequest.incidentReport.copy(
-            incidentId = INCIDENT_NUMBER,
+            incidentId = NOMIS_INCIDENT_NUMBER,
             title = "Updated title",
             description = "Updated details",
             reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
@@ -1115,14 +1116,14 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               """
               {
                 "id": "${existingNomisReport.id}",
-                "incidentNumber": "$INCIDENT_NUMBER",
+                "reportReference": "$NOMIS_INCIDENT_NUMBER",
                 "type": "ASSAULT",
                 "incidentDateAndTime": "2023-11-25T12:34:56",
                 "prisonId": "FBI",
                 "title": "Updated title",
                 "description": "Updated details",
                 "event": {
-                  "eventReference": "$INCIDENT_NUMBER",
+                  "eventReference": "$NOMIS_INCIDENT_NUMBER",
                   "eventDateAndTime": "2023-11-25T12:34:56",
                   "prisonId": "FBI",
                   "title": "Updated title",
@@ -1346,7 +1347,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
         assertThatDomainEventWasSent(
           "incident.report.amended",
-          "$INCIDENT_NUMBER",
+          "$NOMIS_INCIDENT_NUMBER",
           InformationSource.NOMIS,
           WhatChanged.ANYTHING,
         )
@@ -1400,7 +1401,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
     @Test
     fun `can create a report during initial migration`() {
-      deleteAllReports() // drop reports from test setup to prevent incident number and event id clashes
+      deleteAllReports() // drop reports from test setup to prevent report and event reference clashes
 
       sendAuthorisedSyncRequest(
         initialMigration = true,
@@ -1416,7 +1417,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
     @Test
     fun `can create a report after initial migration`() {
-      deleteAllReports() // drop reports from test setup to prevent incident number and event id clashes
+      deleteAllReports() // drop reports from test setup to prevent report and event reference clashes
 
       sendAuthorisedSyncRequest(
         initialMigration = false,

@@ -53,7 +53,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       val reportEntity = reportDto.toNewEntity()
       assertThat(reportEntity.title).isEqualTo("TITLE")
       assertThat(reportEntity.description).isEqualTo("DESCRIPTION")
-      assertThat(reportEntity.incidentNumber).isEqualTo("112414323")
+      assertThat(reportEntity.reportReference).isEqualTo("112414323")
       assertThat(reportEntity.prisonId).isEqualTo("MDI")
       assertThat(reportEntity.questionSetId).isEqualTo("2124")
       assertThat(reportEntity.assignedTo).isEqualTo("user1")
@@ -111,7 +111,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
 
     /** existing report created in NOMIS yesterday by a different user */
     private fun buildExistingReport() = buildIncidentReport(
-      incidentNumber = "112414323",
+      reportReference = "112414323",
       reportingUsername = "old-user",
       reportTime = yesterday,
       source = InformationSource.NOMIS,

@@ -14,7 +14,7 @@ open class ReportBasic(
   @Schema(description = "The internal ID of this report", required = true)
   val id: UUID,
   @Schema(description = "The human-readable identifier of this report", required = true)
-  val incidentNumber: String,
+  val reportReference: String,
   @Schema(description = "Incident report type", required = true)
   val type: Type,
   @Schema(description = "When the incident took place", required = true, example = "2024-04-29T12:34:56.789012")

@@ -92,8 +92,10 @@ enum class WhatChanged {
 }
 
 data class AdditionalInformation(
+  /** Internal ID */
   val id: UUID,
-  val incidentNumber: String,
+  /** Human-readable reference */
+  val reportReference: String,
   val source: InformationSource,
   val whatChanged: WhatChanged? = null,
 )
