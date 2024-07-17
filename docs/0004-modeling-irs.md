@@ -29,7 +29,7 @@ classDiagram
         LocalDateTime  createdAt
         String  description
         LocalDateTime  eventDateAndTime
-        String  eventId
+        String  eventReference
         LocalDateTime  modifiedAt
         String  modifiedBy
         String  prisonId
@@ -84,11 +84,11 @@ classDiagram
         LocalDateTime  createdAt
         String  description
         LocalDateTime  incidentDateAndTime
-        String  incidentNumber
         LocalDateTime  modifiedAt
         String  modifiedBy
         String  prisonId
         String  questionSetId
+        String  reportReference
         LocalDateTime  reportedAt
         String  reportedBy
         InformationSource  source
@@ -117,11 +117,11 @@ classDiagram
     }
 
 CorrectionRequest "0..*" <--> "1" Report
-Evidence "0..*" <--> "1" Report
 HistoricalQuestion "0..*" <--> "1" History
 HistoricalResponse "0..*" <--> "1" HistoricalQuestion
 Question "1" <--> "0..*" Response
 Report "1..*" <--> "1" Event
+Report "1" <--> "0..*" Evidence
 Report "1" <--> "0..*" History
 Report "1" <--> "0..*" Location
 Report "1" <--> "0..*" PrisonerInvolvement
@@ -144,7 +144,7 @@ classDiagram
         integer id
     }
     class event {
-        varchar(25) event_id
+        varchar(25) event_reference
         timestamp event_date_and_time
         varchar(255) title
         text description
@@ -209,7 +209,7 @@ classDiagram
     }
     class report {
         integer event_id
-        varchar(25) incident_number
+        varchar(25) report_reference
         varchar(255) title
         text description
         varchar(6) prison_id
@@ -250,16 +250,16 @@ classDiagram
         integer id
     }
 
-correction_request --> report: report_id
-evidence --> report: report_id
-historical_question --> history: history_id
-historical_response --> historical_question: historical_question_id
-history --> report: report_id
-location --> report: report_id
-prisoner_involvement --> report: report_id
-question --> report: report_id
-report --> event: event_id
-response --> question: question_id
-staff_involvement --> report: report_id
-status_history --> report: report_id
+correction_request  -->  report : report_id
+evidence  -->  report : report_id
+historical_question  -->  history : history_id
+historical_response  -->  historical_question : historical_question_id
+history  -->  report : report_id
+location  -->  report : report_id
+prisoner_involvement  -->  report : report_id
+question  -->  report : report_id
+report  -->  event : event_id
+response  -->  question : question_id
+staff_involvement  -->  report : report_id
+status_history  -->  report : report_id
 ```
