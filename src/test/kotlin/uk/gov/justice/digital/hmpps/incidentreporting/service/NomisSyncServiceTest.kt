@@ -147,6 +147,7 @@ class NomisSyncServiceTest {
   )
 
   private val sampleReportId = UUID.fromString("11111111-2222-3333-4444-555555555555")
+  private val sampleEventId = UUID.fromString("11111111-2222-3333-4444-666666666666")
 
   /** saved entity based on successful `sampleSyncRequest` */
   private val sampleReport = Report(
@@ -158,6 +159,7 @@ class NomisSyncServiceTest {
     description = "Offender was found in own cell with a razor",
     prisonId = "MDI",
     event = Event(
+      id = sampleEventId,
       eventReference = "112414323",
       eventDateAndTime = whenIncidentHappened,
       prisonId = "MDI",
@@ -239,6 +241,7 @@ class NomisSyncServiceTest {
     assertThat(report.prisonId).isEqualTo("MDI")
     assertThat(report.title).isEqualTo("Cutting")
     assertThat(report.description).isEqualTo("Offender was found in own cell with a razor")
+    assertThat(report.event.id).isEqualTo(sampleEventId)
     assertThat(report.event.eventReference).isEqualTo("112414323")
     assertThat(report.event.eventDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.event.description).isEqualTo("Offender was found in own cell with a razor")

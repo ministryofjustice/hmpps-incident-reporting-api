@@ -54,6 +54,7 @@ class Event(
   }
 
   fun toDto() = EventDto(
+    id = id!!,
     eventReference = eventReference,
     prisonId = prisonId,
     eventDateAndTime = eventDateAndTime,

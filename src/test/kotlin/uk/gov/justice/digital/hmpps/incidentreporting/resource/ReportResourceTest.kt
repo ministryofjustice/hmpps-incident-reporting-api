@@ -538,6 +538,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "Incident Report IR-0000000001124143",
               "description": "A new incident created in the new service of type Finds",
               "event": {
+                "id": "${existingReport.event.id}",
                 "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
@@ -704,6 +705,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "Incident Report IR-0000000001124143",
               "description": "A new incident created in the new service of type Finds",
               "event": {
+                "id": "${existingReport.event.id}",
                 "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
