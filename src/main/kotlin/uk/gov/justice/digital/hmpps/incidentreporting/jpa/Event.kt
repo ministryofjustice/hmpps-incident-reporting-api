@@ -4,11 +4,11 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import java.time.LocalDateTime
+import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
 
 @Entity
@@ -17,8 +17,9 @@ class Event(
    * Internal ID which should not be seen by users
    */
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: Long? = null,
+  @GeneratedUuidV7
+  @Column(name = "id", updatable = false, nullable = false)
+  val id: UUID? = null,
 
   /**
    * Human-readable reference.
