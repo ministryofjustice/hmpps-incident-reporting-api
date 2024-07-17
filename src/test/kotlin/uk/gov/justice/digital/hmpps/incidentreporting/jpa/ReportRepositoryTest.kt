@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
-import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
@@ -66,7 +66,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     @Test
     fun `can filter reports by simple property specification`() {
       val report = reportRepository.save(
-        buildIncidentReport(
+        buildReport(
           reportReference = "12345",
           reportTime = now.minusDays(1),
         ),
@@ -114,7 +114,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     @Test
     fun `can filter reports by a combination of specifications`() {
       val report1Id = reportRepository.save(
-        buildIncidentReport(
+        buildReport(
           reportReference = "12345",
           reportTime = now.minusDays(3),
           prisonId = "MDI",
@@ -124,7 +124,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         ),
       ).id!!
       val report2Id = reportRepository.save(
-        buildIncidentReport(
+        buildReport(
           reportReference = "12346",
           reportTime = now.minusDays(2),
           prisonId = "LEI",
@@ -134,7 +134,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         ),
       ).id!!
       val report3Id = reportRepository.save(
-        buildIncidentReport(
+        buildReport(
           reportReference = "IR-0000000001124143",
           reportTime = now.minusDays(1),
           prisonId = "MDI",
