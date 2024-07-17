@@ -400,7 +400,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "title": "An incident occurred updated",
                 "description": "A New Incident From NOMIS",
                 "event": {
-                  "eventId": "112414666",
+                  "eventReference": "112414666",
                   "eventDateAndTime": "2023-12-05T11:34:56",
                   "prisonId": "MDI",
                   "title": "An incident occurred updated",
@@ -658,7 +658,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "title": "An incident occurred updated",
                 "description": "New NOMIS incident",
                 "event": {
-                  "eventId": "$newIncidentId",
+                  "eventReference": "$newIncidentId",
                   "eventDateAndTime": "2023-12-05T11:34:56",
                   "prisonId": "MDI",
                   "title": "An incident occurred updated",
@@ -1122,7 +1122,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "title": "Updated title",
                 "description": "Updated details",
                 "event": {
-                  "eventId": "$INCIDENT_NUMBER",
+                  "eventReference": "$INCIDENT_NUMBER",
                   "eventDateAndTime": "2023-11-25T12:34:56",
                   "prisonId": "FBI",
                   "title": "Updated title",

@@ -538,7 +538,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "Incident Report IR-0000000001124143",
               "description": "A new incident created in the new service of type Finds",
               "event": {
-                "eventId": "IE-0000000001124143",
+                "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
@@ -704,7 +704,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "Incident Report IR-0000000001124143",
               "description": "A new incident created in the new service of type Finds",
               "event": {
-                "eventId": "IE-0000000001124143",
+                "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
@@ -835,7 +835,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
-            assertThat(it).contains("Either createNewEvent or linkedEventId must be provided")
+            assertThat(it).contains("Either createNewEvent or linkedEventReference must be provided")
           }
 
         assertThatNoDomainEventsWereSent()
@@ -924,7 +924,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue(
             createReportRequest.copy(
               createNewEvent = false,
-              linkedEventId = existingReport.event.eventId,
+              linkedEventReference = existingReport.event.eventReference,
             ).toJson(),
           )
           .exchange()
@@ -939,7 +939,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "An incident occurred",
               "description": "Longer explanation of incident",
               "event": {
-                "eventId": "${existingReport.event.eventId}",
+                "eventReference": "${existingReport.event.eventReference}",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
@@ -1241,14 +1241,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
 
-        val eventJson = eventRepository.findOneByEventId("IE-0000000001124143")!!
+        val eventJson = eventRepository.findOneByEventReference("IE-0000000001124143")!!
           .toDto().toJson()
         JsonExpectationsHelper().assertJsonEqual(
           if (updateEvent) {
             // language=json
             """
             {
-              "eventId": "IE-0000000001124143",
+              "eventReference": "IE-0000000001124143",
               "eventDateAndTime": "2023-12-05T10:34:56",
               "prisonId": "LEI",
               "title": "Updated report IR-0000000001124143",
@@ -1262,7 +1262,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             // language=json
             """
             {
-              "eventId": "IE-0000000001124143",
+              "eventReference": "IE-0000000001124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An event occurred",

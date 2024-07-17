@@ -7,8 +7,8 @@ import java.time.LocalDateTime
 @Schema(description = "Event linking multiple incident reports")
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class Event(
-  @Schema(description = "The human-readable identifier of this report", required = true)
-  val eventId: String,
+  @Schema(description = "The human-readable identifier of this event", required = true)
+  val eventReference: String,
   @Schema(description = "When the incident took place", required = true, example = "2024-04-29T12:34:56.789012")
   val eventDateAndTime: LocalDateTime,
   @Schema(description = "The NOMIS id of the prison where incident took place", required = true, example = "MDI")
@@ -19,10 +19,10 @@ data class Event(
   @Schema(description = "Longer summary of the event", required = true)
   val description: String,
 
-  @Schema(description = "When the report was first created", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the event was first created", required = true, example = "2024-04-29T12:34:56.789012")
   val createdAt: LocalDateTime,
-  @Schema(description = "When the report was last changed", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the event was last changed", required = true, example = "2024-04-29T12:34:56.789012")
   val modifiedAt: LocalDateTime,
-  @Schema(description = "Username of the person who last changed this report", required = true)
+  @Schema(description = "Username of the person who last changed this event", required = true)
   val modifiedBy: String,
 )

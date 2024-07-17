@@ -2,8 +2,8 @@ create table event
 (
     id                  serial
         constraint event_pk primary key,
-    event_id            varchar(25)                         not null
-        constraint event_id unique,
+    event_reference     varchar(25)                         not null
+        constraint event_reference unique,
     event_date_and_time timestamp                           not null,
 
     title               varchar(255)                        not null,
@@ -17,7 +17,7 @@ create table event
 
 create sequence event_sequence
     start with 1000000
-    owned by event.event_id;
+    owned by event.event_reference;
 
 create index event_event_date_and_time_idx on event (event_date_and_time);
 create index event_created_at_idx on event (created_at);

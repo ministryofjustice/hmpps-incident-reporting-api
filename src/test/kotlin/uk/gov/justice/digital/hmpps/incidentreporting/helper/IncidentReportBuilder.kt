@@ -46,7 +46,7 @@ fun buildIncidentReport(
     assignedTo = reportingUsername,
     modifiedBy = reportingUsername,
     event = Event(
-      eventId = when (source) {
+      eventReference = when (source) {
         InformationSource.DPS -> "IE-${incidentNumber.removePrefix("IR-")}"
         InformationSource.NOMIS -> incidentNumber
       },

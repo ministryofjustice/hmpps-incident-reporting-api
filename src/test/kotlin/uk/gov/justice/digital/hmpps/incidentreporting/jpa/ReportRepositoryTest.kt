@@ -23,7 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentNumber
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
@@ -228,7 +228,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
           reportedBy = "user1",
           prisonId = "MDI",
           event = Event(
-            eventId = eventRepository.generateEventId(),
+            eventReference = eventRepository.generateEventReference(),
             eventDateAndTime = hourAgo,
             prisonId = "MDI",
             title = "Event summary",

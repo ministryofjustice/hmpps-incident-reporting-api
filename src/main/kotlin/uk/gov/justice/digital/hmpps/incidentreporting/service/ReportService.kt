@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRe
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateIncidentNumber
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
@@ -141,12 +141,12 @@ class ReportService(
 
     createReportRequest.validate(now = now)
 
-    val event = if (createReportRequest.linkedEventId != null) {
-      eventRepository.findOneByEventId(createReportRequest.linkedEventId)
-        ?: throw EventNotFoundException(createReportRequest.linkedEventId)
+    val event = if (createReportRequest.linkedEventReference != null) {
+      eventRepository.findOneByEventReference(createReportRequest.linkedEventReference)
+        ?: throw EventNotFoundException(createReportRequest.linkedEventReference)
     } else {
       createReportRequest.toNewEvent(
-        eventRepository.generateEventId(),
+        eventRepository.generateEventReference(),
         requestUsername = requestUsername,
         now = now,
       )

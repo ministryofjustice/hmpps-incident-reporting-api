@@ -28,11 +28,11 @@ data class CreateReportRequest(
   @Schema(description = "Whether to link to a new event", required = false, defaultValue = "false")
   val createNewEvent: Boolean = false,
   @Schema(description = "Which existing event to link to", required = false, defaultValue = "null")
-  val linkedEventId: String? = null,
+  val linkedEventReference: String? = null,
 ) {
   fun validate(now: LocalDateTime) {
-    if (!createNewEvent && linkedEventId.isNullOrEmpty()) {
-      throw ValidationException("Either createNewEvent or linkedEventId must be provided")
+    if (!createNewEvent && linkedEventReference.isNullOrEmpty()) {
+      throw ValidationException("Either createNewEvent or linkedEventReference must be provided")
     }
     if (!type.active) {
       throw ValidationException("Inactive incident type $type")
@@ -65,9 +65,9 @@ data class CreateReportRequest(
     return report
   }
 
-  fun toNewEvent(generateEventId: String, requestUsername: String, now: LocalDateTime): Event {
+  fun toNewEvent(generatedEventReference: String, requestUsername: String, now: LocalDateTime): Event {
     return Event(
-      eventId = generateEventId,
+      eventReference = generatedEventReference,
       eventDateAndTime = incidentDateAndTime,
       prisonId = prisonId,
       title = title,

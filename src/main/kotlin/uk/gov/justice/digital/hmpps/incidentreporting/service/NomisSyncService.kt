@@ -64,7 +64,7 @@ class NomisSyncService(
       val constraintViolation = e.cause as? org.hibernate.exception.ConstraintViolationException
       if (
         constraintViolation != null &&
-        listOf("event_id", "incident_number").contains(constraintViolation.constraintName)
+        listOf("event_reference", "incident_number").contains(constraintViolation.constraintName)
       ) {
         throw ReportAlreadyExistsException("${incidentReport.incidentId}")
       } else {

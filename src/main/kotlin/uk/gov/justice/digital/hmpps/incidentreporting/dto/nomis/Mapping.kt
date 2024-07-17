@@ -30,7 +30,7 @@ fun NomisReport.toNewEntity(): Report {
     source = InformationSource.NOMIS,
     assignedTo = reportingStaff.username,
     event = Event(
-      eventId = "$incidentId",
+      eventReference = "$incidentId",
       eventDateAndTime = incidentDateTime,
       prisonId = prison.code,
       title = title ?: NO_DETAILS_GIVEN,

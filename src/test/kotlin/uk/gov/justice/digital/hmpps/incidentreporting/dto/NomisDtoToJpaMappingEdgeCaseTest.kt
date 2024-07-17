@@ -72,7 +72,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       val eventEntity = reportEntity.event
       assertThat(eventEntity.title).isEqualTo("TITLE")
       assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
-      assertThat(eventEntity.eventId).isEqualTo("112414323")
+      assertThat(eventEntity.eventReference).isEqualTo("112414323")
       assertThat(eventEntity.prisonId).isEqualTo("MDI")
       assertThat(eventEntity.modifiedBy).isEqualTo("user1")
     }

@@ -158,7 +158,7 @@ class NomisSyncServiceTest {
     description = "Offender was found in own cell with a razor",
     prisonId = "MDI",
     event = Event(
-      eventId = "112414323",
+      eventReference = "112414323",
       eventDateAndTime = whenIncidentHappened,
       prisonId = "MDI",
       title = "Cutting",
@@ -199,7 +199,7 @@ class NomisSyncServiceTest {
 
   /** compare report entity about to be saved with the mocked response */
   private fun isEqualToSampleReport(report: Report, expectedId: UUID?): Boolean {
-    // NB: cannot compare arg to sampleReport because IncidentReport.equals only compares incidentNumber
+    // NB: cannot compare arg to sampleReport directly
     return report.id == expectedId &&
       report.incidentNumber == sampleReport.incidentNumber &&
       report.incidentDateAndTime == sampleReport.incidentDateAndTime &&
@@ -220,9 +220,9 @@ class NomisSyncServiceTest {
 
   /** compare event entity about to be saved with the mocked response */
   private fun isEqualToSampleEvent(event: Event): Boolean {
-    // NB: cannot compare arg to sampleReport because IncidentEvent.equals only compares eventId
+    // NB: cannot compare arg to sampleReport directly
     val sampleEvent = sampleReport.event
-    return event.eventId == sampleEvent.eventId &&
+    return event.eventReference == sampleEvent.eventReference &&
       event.eventDateAndTime == sampleEvent.eventDateAndTime &&
       event.prisonId == sampleEvent.prisonId &&
       event.description == sampleEvent.description &&
@@ -239,7 +239,7 @@ class NomisSyncServiceTest {
     assertThat(report.prisonId).isEqualTo("MDI")
     assertThat(report.title).isEqualTo("Cutting")
     assertThat(report.description).isEqualTo("Offender was found in own cell with a razor")
-    assertThat(report.event.eventId).isEqualTo("112414323")
+    assertThat(report.event.eventReference).isEqualTo("112414323")
     assertThat(report.event.eventDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.event.description).isEqualTo("Offender was found in own cell with a razor")
     assertThat(report.event.prisonId).isEqualTo("MDI")
@@ -410,7 +410,7 @@ class NomisSyncServiceTest {
   }
 
   @ParameterizedTest(name = "throws report-already-exists exception if {0} constraint failed")
-  @ValueSource(strings = ["event_id", "incident_number"])
+  @ValueSource(strings = ["event_reference", "incident_number"])
   fun `throws report-already-exists exception if identifier constraints failed`(constraint: String) {
     val syncRequest = sampleSyncRequest.copy(
       id = null,
