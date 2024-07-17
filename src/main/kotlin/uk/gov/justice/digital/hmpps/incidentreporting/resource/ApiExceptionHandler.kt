@@ -280,7 +280,7 @@ class ApiExceptionHandler {
 }
 
 class EventNotFoundException(description: String) : Exception("There is no event found: $description") {
-  constructor(id: Long) : this(id.toString())
+  constructor(id: UUID) : this(id.toString())
 }
 
 class ReportNotFoundException(description: String) : Exception("There is no report found: $description") {
