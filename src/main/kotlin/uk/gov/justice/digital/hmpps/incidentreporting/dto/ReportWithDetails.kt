@@ -11,7 +11,7 @@ import java.util.UUID
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class ReportWithDetails(
   id: UUID,
-  incidentNumber: String,
+  reportReference: String,
   type: Type,
   incidentDateAndTime: LocalDateTime,
   prisonId: String,
@@ -48,7 +48,7 @@ class ReportWithDetails(
   val correctionRequests: List<CorrectionRequest>,
 ) : ReportBasic(
   id = id,
-  incidentNumber = incidentNumber,
+  reportReference = reportReference,
   type = type,
   incidentDateAndTime = incidentDateAndTime,
   prisonId = prisonId,

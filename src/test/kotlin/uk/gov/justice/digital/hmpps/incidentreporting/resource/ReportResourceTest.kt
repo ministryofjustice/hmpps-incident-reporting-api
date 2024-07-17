@@ -71,7 +71,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     existingReport = reportRepository.save(
       buildIncidentReport(
-        incidentNumber = "IR-0000000001124143",
+        reportReference = "IR-0000000001124143",
         reportTime = now,
       ),
     )
@@ -186,7 +186,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """{
               "content": [{
                 "id": "${existingReport.id}",
-                "incidentNumber": "IR-0000000001124143",
+                "reportReference": "IR-0000000001124143",
                 "incidentDateAndTime": "2023-12-05T11:34:56"
               }],
               "number": 0,
@@ -208,11 +208,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           // makes an additional 4 older reports, 2 of which are from NOMIS
           reportRepository.saveAll(
             listOf("IR-0000000001017203", "IR-0000000001006603", "94728", "31934")
-              .mapIndexed { index, incidentNumber ->
-                val fromDps = incidentNumber.startsWith("IR-")
+              .mapIndexed { index, reportReference ->
+                val fromDps = reportReference.startsWith("IR-")
                 val daysBefore = index.toLong() + 1
                 buildIncidentReport(
-                  incidentNumber = incidentNumber,
+                  reportReference = reportReference,
                   reportTime = now.minusDays(daysBefore),
                   prisonId = if (index < 2) "LEI" else "MDI",
                   status = if (fromDps) Status.DRAFT else Status.AWAITING_ANALYSIS,
@@ -235,23 +235,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               """{
                 "content": [
                   {
-                    "incidentNumber": "IR-0000000001124143",
+                    "reportReference": "IR-0000000001124143",
                     "incidentDateAndTime": "2023-12-05T11:34:56"
                   },
                   {
-                    "incidentNumber": "IR-0000000001017203",
+                    "reportReference": "IR-0000000001017203",
                     "incidentDateAndTime": "2023-12-04T11:34:56"
                   },
                   {
-                    "incidentNumber": "IR-0000000001006603",
+                    "reportReference": "IR-0000000001006603",
                     "incidentDateAndTime": "2023-12-03T11:34:56"
                   },
                   {
-                    "incidentNumber": "94728",
+                    "reportReference": "94728",
                     "incidentDateAndTime": "2023-12-02T11:34:56"
                   },
                   {
-                    "incidentNumber": "31934",
+                    "reportReference": "31934",
                     "incidentDateAndTime": "2023-12-01T11:34:56"
                   }
                 ],
@@ -278,11 +278,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               """{
                 "content": [
                   {
-                    "incidentNumber": "IR-0000000001124143",
+                    "reportReference": "IR-0000000001124143",
                     "incidentDateAndTime": "2023-12-05T11:34:56"
                   },
                   {
-                    "incidentNumber": "IR-0000000001017203",
+                    "reportReference": "IR-0000000001017203",
                     "incidentDateAndTime": "2023-12-04T11:34:56"
                   }
                 ],
@@ -309,11 +309,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               """{
                 "content": [
                   {
-                    "incidentNumber": "IR-0000000001006603",
+                    "reportReference": "IR-0000000001006603",
                     "incidentDateAndTime": "2023-12-03T11:34:56"
                   },
                   {
-                    "incidentNumber": "94728",
+                    "reportReference": "94728",
                     "incidentDateAndTime": "2023-12-02T11:34:56"
                   }
                 ],
@@ -333,18 +333,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           strings = [
             "incidentDateAndTime,ASC",
             "incidentDateAndTime,DESC",
-            "incidentNumber,ASC",
-            "incidentNumber,DESC",
+            "reportReference,ASC",
+            "reportReference,DESC",
             "id,ASC",
             "id,DESC",
           ],
         )
         fun `can sort reports`(sortParam: String) {
-          val expectedIncidentNumbers = mapOf(
+          val expectedReportReferences = mapOf(
             "incidentDateAndTime,ASC" to listOf("31934", "94728", "IR-0000000001006603", "IR-0000000001017203", "IR-0000000001124143"),
             "incidentDateAndTime,DESC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
-            "incidentNumber,ASC" to listOf("31934", "94728", "IR-0000000001006603", "IR-0000000001017203", "IR-0000000001124143"),
-            "incidentNumber,DESC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
+            "reportReference,ASC" to listOf("31934", "94728", "IR-0000000001006603", "IR-0000000001017203", "IR-0000000001124143"),
+            "reportReference,DESC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
             // id, being a UUIDv7, should follow table insertion order (i.e. what setUp methods do above)
             "id,ASC" to listOf("IR-0000000001124143", "IR-0000000001017203", "IR-0000000001006603", "94728", "31934"),
             "id,DESC" to listOf("31934", "94728", "IR-0000000001006603", "IR-0000000001017203", "IR-0000000001124143"),
@@ -366,8 +366,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "sort": ["$sortParam"]
               }""",
               false,
-            ).jsonPath("content[*].incidentNumber").value<List<String>> {
-              assertThat(it).isEqualTo(expectedIncidentNumbers)
+            ).jsonPath("content[*].reportReference").value<List<String>> {
+              assertThat(it).isEqualTo(expectedReportReferences)
             }
         }
 
@@ -460,7 +460,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
@@ -531,14 +531,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "Incident Report IR-0000000001124143",
               "description": "A new incident created in the new service of type Finds",
               "event": {
-                "eventId": "IE-0000000001124143",
+                "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
@@ -577,14 +577,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
-  @DisplayName("GET /incident-reports/incident-number/{incident-number}")
+  @DisplayName("GET /incident-reports/reference/{reference}")
   @Nested
-  inner class GetBasicReportByIncidentNumber {
+  inner class GetBasicReportByReference {
     private lateinit var url: String
 
     @BeforeEach
     fun setUp() {
-      url = "/incident-reports/incident-number/${existingReport.incidentNumber}"
+      url = "/incident-reports/reference/${existingReport.reportReference}"
     }
 
     @DisplayName("is secured")
@@ -602,8 +602,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class Validation {
       @Test
-      fun `cannot get a report by incident number if it is not found`() {
-        webTestClient.get().uri("/incident-reports/incident-number/IR-11111111")
+      fun `cannot get a report by reference if it is not found`() {
+        webTestClient.get().uri("/incident-reports/reference/IR-11111111")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -615,7 +615,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can get a report by incident number`() {
+      fun `can get a report by reference`() {
         webTestClient.get().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
@@ -626,7 +626,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
@@ -648,14 +648,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
-  @DisplayName("GET /incident-reports/incident-number/{incident-number}/with-details")
+  @DisplayName("GET /incident-reports/reference/{reference}/with-details")
   @Nested
-  inner class GetReportWithDetailsByIncidentNumber {
+  inner class GetReportWithDetailsByReference {
     private lateinit var url: String
 
     @BeforeEach
     fun setUp() {
-      url = "/incident-reports/incident-number/${existingReport.incidentNumber}/with-details"
+      url = "/incident-reports/reference/${existingReport.reportReference}/with-details"
     }
 
     @DisplayName("is secured")
@@ -673,8 +673,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class Validation {
       @Test
-      fun `cannot get a report by incident number if it is not found`() {
-        webTestClient.get().uri("/incident-reports/incident-number/IR-11111111/with-details")
+      fun `cannot get a report by reference if it is not found`() {
+        webTestClient.get().uri("/incident-reports/reference/IR-11111111/with-details")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -686,7 +686,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can get a report by incident number`() {
+      fun `can get a report by reference`() {
         webTestClient.get().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
@@ -697,14 +697,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "Incident Report IR-0000000001124143",
               "description": "A new incident created in the new service of type Finds",
               "event": {
-                "eventId": "IE-0000000001124143",
+                "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
@@ -835,7 +835,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
-            assertThat(it).contains("Either createNewEvent or linkedEventId must be provided")
+            assertThat(it).contains("Either createNewEvent or linkedEventReference must be provided")
           }
 
         assertThatNoDomainEventsWereSent()
@@ -924,7 +924,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue(
             createReportRequest.copy(
               createNewEvent = false,
-              linkedEventId = existingReport.event.eventId,
+              linkedEventReference = existingReport.event.eventReference,
             ).toJson(),
           )
           .exchange()
@@ -939,7 +939,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "An incident occurred",
               "description": "Longer explanation of incident",
               "event": {
-                "eventId": "${existingReport.event.eventId}",
+                "eventReference": "${existingReport.event.eventReference}",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
                 "title": "An event occurred",
@@ -1088,7 +1088,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
@@ -1129,7 +1129,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T10:34:56",
               "prisonId": "LEI",
@@ -1196,7 +1196,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "$expectedIncidentDateAndTime",
               "prisonId": "$expectedPrisonId",
@@ -1241,14 +1241,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
 
-        val eventJson = eventRepository.findOneByEventId("IE-0000000001124143")!!
+        val eventJson = eventRepository.findOneByEventReference("IE-0000000001124143")!!
           .toDto().toJson()
         JsonExpectationsHelper().assertJsonEqual(
           if (updateEvent) {
             // language=json
             """
             {
-              "eventId": "IE-0000000001124143",
+              "eventReference": "IE-0000000001124143",
               "eventDateAndTime": "2023-12-05T10:34:56",
               "prisonId": "LEI",
               "title": "Updated report IR-0000000001124143",
@@ -1262,7 +1262,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             // language=json
             """
             {
-              "eventId": "IE-0000000001124143",
+              "eventReference": "IE-0000000001124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An event occurred",
@@ -1385,7 +1385,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
@@ -1427,7 +1427,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.id}",
-              "incidentNumber": "IR-0000000001124143",
+              "reportReference": "IR-0000000001124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
@@ -1572,7 +1572,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       fun `can change type of a report but keeping it the same`() {
         val reportWithQuestions = reportRepository.save(
           buildIncidentReport(
-            incidentNumber = "IR-0000000001124146",
+            reportReference = "IR-0000000001124146",
             reportTime = now.minusMinutes(3),
             status = Status.AWAITING_ANALYSIS,
             generateQuestions = 2,
@@ -1596,7 +1596,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """
             {
               "id": "${reportWithQuestions.id}",
-              "incidentNumber": "IR-0000000001124146",
+              "reportReference": "IR-0000000001124146",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "prisonId": "MDI",
@@ -1663,7 +1663,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       fun `can change type of a report creating history when there was none`() {
         val reportWithQuestions = reportRepository.save(
           buildIncidentReport(
-            incidentNumber = "IR-0000000001124146",
+            reportReference = "IR-0000000001124146",
             reportTime = now.minusMinutes(3),
             status = Status.AWAITING_ANALYSIS,
             generateQuestions = 2,
@@ -1682,7 +1682,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """
             {
               "id": "${reportWithQuestions.id}",
-              "incidentNumber": "IR-0000000001124146",
+              "reportReference": "IR-0000000001124146",
               "type": "DAMAGE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "prisonId": "MDI",
@@ -1761,7 +1761,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       fun `can change type of a report preserving history when it already existed`() {
         val reportWithQuestionsAndHistory = reportRepository.save(
           buildIncidentReport(
-            incidentNumber = "IR-0000000001124146",
+            reportReference = "IR-0000000001124146",
             reportTime = now.minusMinutes(3),
             status = Status.AWAITING_ANALYSIS,
             generateQuestions = 1,
@@ -1780,7 +1780,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """
             {
               "id": "${reportWithQuestionsAndHistory.id}",
-              "incidentNumber": "IR-0000000001124146",
+              "reportReference": "IR-0000000001124146",
               "type": "DAMAGE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "prisonId": "MDI",
@@ -1908,7 +1908,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "$reportId",
-              "incidentNumber": "IR-0000000001124143"
+              "reportReference": "IR-0000000001124143"
             }
             """,
             false,
@@ -1931,7 +1931,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         existingReport.event.addReport(
           buildIncidentReport(
-            incidentNumber = "IR-0000000001124142",
+            reportReference = "IR-0000000001124142",
             reportTime = now.minusMinutes(5),
           ),
         )
@@ -1948,7 +1948,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "$reportId",
-              "incidentNumber": "IR-0000000001124143"
+              "reportReference": "IR-0000000001124143"
             }
             """,
             false,
@@ -1975,7 +1975,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
       existingReportWithRelatedObjects = reportRepository.save(
         buildIncidentReport(
-          incidentNumber = "IR-0000000001124146",
+          reportReference = "IR-0000000001124146",
           reportTime = now,
           generateStaffInvolvement = 2,
           generatePrisonerInvolvement = 2,
@@ -2606,7 +2606,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
       existingReportWithQuestionsAndResponses = reportRepository.save(
         buildIncidentReport(
-          incidentNumber = "IR-0000000001124146",
+          reportReference = "IR-0000000001124146",
           reportTime = now,
           generateQuestions = 2,
           generateResponses = 2,
@@ -2680,7 +2680,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         fun `can list 50 questions and responses`() {
           val report = reportRepository.save(
             buildIncidentReport(
-              incidentNumber = "IR-0000000001124147",
+              reportReference = "IR-0000000001124147",
               reportTime = now,
               generateQuestions = 50,
               generateResponses = 3,

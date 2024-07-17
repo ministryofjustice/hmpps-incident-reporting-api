@@ -21,7 +21,7 @@ fun TelemetryClient.trackEvent(name: String, properties: Map<String, String>) {
 fun TelemetryClient.trackEvent(name: String, report: ReportBasic, extraProperties: Map<String, String>? = null) {
   val properties = mutableMapOf(
     "id" to report.id.toString(),
-    "incidentNumber" to report.incidentNumber,
+    "reportReference" to report.reportReference,
     "prisonId" to report.prisonId,
   )
   extraProperties?.let { properties.putAll(it) }

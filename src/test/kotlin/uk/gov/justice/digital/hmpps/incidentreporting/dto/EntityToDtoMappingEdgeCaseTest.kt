@@ -37,7 +37,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
   @Test
   fun `report must have a non-null id to map to the dto`() {
     val unsavedReport = buildIncidentReport(
-      incidentNumber = "1234",
+      reportReference = "1234",
       reportTime = now,
     )
     assertThat(unsavedReport.id).isNull()
@@ -56,7 +56,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
   fun `report dto reflects whether the entity's source was NOMIS`() {
     val reportFromNomis = reportRepository.save(
       buildIncidentReport(
-        incidentNumber = "1234",
+        reportReference = "1234",
         reportTime = now,
         source = InformationSource.NOMIS,
       ),
@@ -66,7 +66,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
 
     val reportFromDps = reportRepository.save(
       buildIncidentReport(
-        incidentNumber = "1235",
+        reportReference = "1235",
         reportTime = now,
         source = InformationSource.DPS,
       ),
@@ -84,7 +84,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
     fun setUp() {
       report = reportRepository.save(
         buildIncidentReport(
-          incidentNumber = "IR-0000000001124143",
+          reportReference = "IR-0000000001124143",
           reportTime = now,
           source = InformationSource.DPS,
           generateStaffInvolvement = 2,

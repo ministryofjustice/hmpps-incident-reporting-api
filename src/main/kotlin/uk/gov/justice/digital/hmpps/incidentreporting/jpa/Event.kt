@@ -13,17 +13,20 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
 
 @Entity
 class Event(
+  /**
+   * Internal ID which should not be seen by users
+   */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
 
   /**
-   * Human readable ID.
-   * Matches incident report number when sourced from NOMIS.
+   * Human-readable reference.
+   * Matches incident number when sourced from NOMIS.
    * Prefixed with “IE-” when sourced from DPS.
    */
   @Column(nullable = false, unique = true, length = 25)
-  val eventId: String,
+  val eventReference: String,
 
   var eventDateAndTime: LocalDateTime,
   var prisonId: String,
@@ -39,7 +42,7 @@ class Event(
   var modifiedBy: String,
 ) {
   override fun toString(): String {
-    return "Event(eventId=$eventId)"
+    return "Event(eventReference=$eventReference)"
   }
 
   fun addReport(report: Report): Report {
@@ -50,7 +53,7 @@ class Event(
   }
 
   fun toDto() = EventDto(
-    eventId = eventId,
+    eventReference = eventReference,
     prisonId = prisonId,
     eventDateAndTime = eventDateAndTime,
     title = title,

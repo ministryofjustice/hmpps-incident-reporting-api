@@ -13,13 +13,13 @@ interface ReportRepository : JpaRepository<Report, UUID>, JpaSpecificationExecut
   @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.FETCH)
   fun findOneEagerlyById(id: UUID): Report?
 
-  fun findByIncidentNumber(incidentNumber: String): Report?
+  fun findByReportReference(reportReference: String): Report?
 
   @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.FETCH)
-  fun findOneEagerlyByIncidentNumber(incidentNumber: String): Report?
+  fun findOneEagerlyByReportReference(reportReference: String): Report?
 
   @Query(value = "SELECT nextval('report_sequence')", nativeQuery = true)
-  fun getNextIncidentNumber(): Long
+  fun getNextReportReference(): Long
 }
 
-fun ReportRepository.generateIncidentNumber() = "IR-%016d".format(getNextIncidentNumber())
+fun ReportRepository.generateReportReference() = "IR-%016d".format(getNextReportReference())

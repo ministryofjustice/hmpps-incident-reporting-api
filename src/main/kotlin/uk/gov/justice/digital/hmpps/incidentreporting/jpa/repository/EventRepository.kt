@@ -7,10 +7,10 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 
 @Repository
 interface EventRepository : JpaRepository<Event, Long> {
-  fun findOneByEventId(eventId: String): Event?
+  fun findOneByEventReference(eventReference: String): Event?
 
   @Query(value = "SELECT nextval('event_sequence')", nativeQuery = true)
-  fun getNextEventId(): Long
+  fun getNextEventReference(): Long
 }
 
-fun EventRepository.generateEventId() = "IE-%016d".format(getNextEventId())
+fun EventRepository.generateEventReference() = "IE-%016d".format(getNextEventReference())

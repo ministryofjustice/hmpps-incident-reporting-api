@@ -2,8 +2,8 @@ create table event
 (
     id                  serial
         constraint event_pk primary key,
-    event_id            varchar(25)                         not null
-        constraint event_id unique,
+    event_reference     varchar(25)                         not null
+        constraint event_reference unique,
     event_date_and_time timestamp                           not null,
 
     title               varchar(255)                        not null,
@@ -17,7 +17,7 @@ create table event
 
 create sequence event_sequence
     start with 1000000
-    owned by event.event_id;
+    owned by event.event_reference;
 
 create index event_event_date_and_time_idx on event (event_date_and_time);
 create index event_created_at_idx on event (created_at);
@@ -28,8 +28,8 @@ create table report
         constraint report_pk primary key,
     event_id               integer                              not null
         constraint report_event_fk references event (id) on delete restrict,
-    incident_number        varchar(25)                          not null
-        constraint incident_number unique,
+    report_reference       varchar(25)                          not null
+        constraint report_reference unique,
 
     title                  varchar(255)                         not null,
     description            text                                 not null,
@@ -52,7 +52,7 @@ create table report
 
 create sequence report_sequence
     start with 1000000
-    owned by report.incident_number;
+    owned by report.report_reference;
 
 create index report_incident_date_and_time_idx on report (incident_date_and_time);
 create index report_reported_at_idx on report (reported_at);

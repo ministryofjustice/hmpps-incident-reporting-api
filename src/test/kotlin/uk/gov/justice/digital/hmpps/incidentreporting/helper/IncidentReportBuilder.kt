@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 
 fun buildIncidentReport(
-  incidentNumber: String,
+  reportReference: String,
   reportTime: LocalDateTime,
   prisonId: String = "MDI",
   source: InformationSource = InformationSource.DPS,
@@ -31,13 +31,13 @@ fun buildIncidentReport(
 ): Report {
   val eventDateAndTime = reportTime.minusHours(1)
   val report = Report(
-    incidentNumber = incidentNumber,
+    reportReference = reportReference,
     incidentDateAndTime = eventDateAndTime,
     prisonId = prisonId,
     source = source,
     status = status,
     type = type,
-    title = "Incident Report $incidentNumber",
+    title = "Incident Report $reportReference",
     description = "A new incident created in the new service of type ${type.description}",
     reportedAt = reportTime,
     createdAt = reportTime,
@@ -46,9 +46,9 @@ fun buildIncidentReport(
     assignedTo = reportingUsername,
     modifiedBy = reportingUsername,
     event = Event(
-      eventId = when (source) {
-        InformationSource.DPS -> "IE-${incidentNumber.removePrefix("IR-")}"
-        InformationSource.NOMIS -> incidentNumber
+      eventReference = when (source) {
+        InformationSource.DPS -> "IE-${reportReference.removePrefix("IR-")}"
+        InformationSource.NOMIS -> reportReference
       },
       eventDateAndTime = eventDateAndTime,
       prisonId = prisonId,

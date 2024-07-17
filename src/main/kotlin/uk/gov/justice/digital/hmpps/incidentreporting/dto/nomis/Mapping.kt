@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 fun NomisReport.toNewEntity(): Report {
   val status = Status.fromNomisCode(status.code)
   val report = Report(
-    incidentNumber = "$incidentId",
+    reportReference = "$incidentId",
     type = Type.fromNomisCode(type),
     incidentDateAndTime = incidentDateTime,
     prisonId = prison.code,
@@ -30,7 +30,7 @@ fun NomisReport.toNewEntity(): Report {
     source = InformationSource.NOMIS,
     assignedTo = reportingStaff.username,
     event = Event(
-      eventId = "$incidentId",
+      eventReference = "$incidentId",
       eventDateAndTime = incidentDateTime,
       prisonId = prison.code,
       title = title ?: NO_DETAILS_GIVEN,

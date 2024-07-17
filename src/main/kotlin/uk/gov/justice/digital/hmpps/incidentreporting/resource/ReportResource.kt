@@ -257,11 +257,11 @@ class ReportResource(
       ?: throw ReportNotFoundException(id)
   }
 
-  @GetMapping("/incident-number/{incidentNumber}")
+  @GetMapping("/reference/{reportReference}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns the incident report (with only basic information) for this incident number",
+    summary = "Returns the incident report (with only basic information) for this reference",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(
@@ -285,20 +285,20 @@ class ReportResource(
       ),
     ],
   )
-  fun getBasicReportByIncidentNumber(
-    @Schema(description = "The incident report number", example = "2342341242", required = true)
+  fun getBasicReportByReference(
+    @Schema(description = "The incident report reference", example = "2342341242", required = true)
     @PathVariable
-    incidentNumber: String,
+    reportReference: String,
   ): ReportBasic {
-    return reportService.getBasicReportByIncidentNumber(incidentNumber)
-      ?: throw ReportNotFoundException(incidentNumber)
+    return reportService.getBasicReportByReference(reportReference)
+      ?: throw ReportNotFoundException(reportReference)
   }
 
-  @GetMapping("/incident-number/{incidentNumber}/with-details")
+  @GetMapping("/reference/{reportReference}/with-details")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
   @Operation(
-    summary = "Returns the incident report (with all related details) for this incident number",
+    summary = "Returns the incident report (with all related details) for this reference",
     description = "Requires role VIEW_INCIDENT_REPORTS",
     responses = [
       ApiResponse(
@@ -322,13 +322,13 @@ class ReportResource(
       ),
     ],
   )
-  fun getReportWithDetailsByIncidentNumber(
-    @Schema(description = "The incident report number", example = "2342341242", required = true)
+  fun getReportWithDetailsByReference(
+    @Schema(description = "The incident report reference", example = "2342341242", required = true)
     @PathVariable
-    incidentNumber: String,
+    reportReference: String,
   ): ReportWithDetails {
-    return reportService.getReportWithDetailsByIncidentNumber(incidentNumber)
-      ?: throw ReportNotFoundException(incidentNumber)
+    return reportService.getReportWithDetailsByReference(reportReference)
+      ?: throw ReportNotFoundException(reportReference)
   }
 
   @PostMapping("")
