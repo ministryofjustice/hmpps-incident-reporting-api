@@ -1,6 +1,6 @@
 create table event
 (
-    id                  serial
+    id                  uuid                                not null
         constraint event_pk primary key,
     event_reference     varchar(25)                         not null
         constraint event_reference unique,
@@ -26,7 +26,7 @@ create table report
 (
     id                     uuid                                 not null
         constraint report_pk primary key,
-    event_id               integer                              not null
+    event_id               uuid                                 not null
         constraint report_event_fk references event (id) on delete restrict,
     report_reference       varchar(25)                          not null
         constraint report_reference unique,
