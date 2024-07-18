@@ -6,6 +6,9 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -67,6 +70,37 @@ class EventResourceTest : SqsIntegrationTestBase() {
           .expectBody().jsonPath("developerMessage").value<String> {
             assertThat(it).contains("Page size must be")
           }
+      }
+
+      @Test
+      fun `cannot sort by invalid property`() {
+        webTestClient.get().uri("$url?sort=missing,DESC")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("No property 'missing' found for type 'Event'")
+          }
+      }
+
+      @ParameterizedTest(name = "cannot filter by invalid `{0}`")
+      @ValueSource(
+        strings = [
+          "prisonId=",
+          "prisonId=M",
+          "prisonId=Moorland+(HMP)",
+          "eventDateFrom=2024",
+          "eventDateFrom=yesterday",
+          "eventDateUntil=1%2F1%2F2020",
+        ],
+      )
+      fun `cannot filter by invalid property`(param: String) {
+        webTestClient.get().uri("$url?$param")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isBadRequest
       }
     }
 
@@ -145,6 +179,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
                   eventReference = eventReference,
                   eventDateAndTime = reportDateAndTime.minusHours(1),
                   reportDateAndTime = reportDateAndTime,
+                  prisonId = if (index < 2) "LEI" else "MDI",
                 )
               },
           )
@@ -253,6 +288,72 @@ class EventResourceTest : SqsIntegrationTestBase() {
               }""",
               false,
             )
+        }
+
+        @ParameterizedTest(name = "can sort events by {0}")
+        @ValueSource(
+          strings = [
+            "eventDateAndTime,ASC",
+            "eventDateAndTime,DESC",
+            "eventReference,ASC",
+            "eventReference,DESC",
+            "id,ASC",
+            "id,DESC",
+          ],
+        )
+        fun `can sort events`(sortParam: String) {
+          val expectedEventReferences = mapOf(
+            "eventDateAndTime,ASC" to listOf("31934", "94728", "IE-0000000001006603", "IE-0000000001017203", "IE-0000000001124143"),
+            "eventDateAndTime,DESC" to listOf("IE-0000000001124143", "IE-0000000001017203", "IE-0000000001006603", "94728", "31934"),
+            "eventReference,ASC" to listOf("31934", "94728", "IE-0000000001006603", "IE-0000000001017203", "IE-0000000001124143"),
+            "eventReference,DESC" to listOf("IE-0000000001124143", "IE-0000000001017203", "IE-0000000001006603", "94728", "31934"),
+            // id, being a UUIDv7, should follow table insertion order (i.e. what setUp methods do above)
+            "id,ASC" to listOf("IE-0000000001124143", "IE-0000000001017203", "IE-0000000001006603", "94728", "31934"),
+            "id,DESC" to listOf("31934", "94728", "IE-0000000001006603", "IE-0000000001017203", "IE-0000000001124143"),
+          )[sortParam]!!
+
+          webTestClient.get().uri("$url?sort=$sortParam")
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(
+              // language=json
+              """{
+                "number": 0,
+                "size": 20,
+                "numberOfElements": 5,
+                "totalElements": 5,
+                "totalPages": 1,
+                "sort": ["$sortParam"]
+              }""",
+              false,
+            ).jsonPath("content[*].eventReference").value<List<String>> {
+              assertThat(it).isEqualTo(expectedEventReferences)
+            }
+        }
+
+        @ParameterizedTest(name = "can filter events by `{0}`")
+        @CsvSource(
+          value = [
+            "''                                                 | 5",
+            "prisonId=MDI                                       | 3",
+            "prisonId=LEI                                       | 2",
+            "eventDateFrom=2023-12-05                           | 1",
+            "eventDateFrom=2023-12-04                           | 2",
+            "eventDateUntil=2023-12-03                          | 3",
+            "eventDateUntil=2023-12-03                          | 3",
+            "eventDateFrom=2023-12-02&eventDateUntil=2023-12-02 | 1",
+          ],
+          delimiter = '|',
+        )
+        fun `can filter events`(params: String, count: Int) {
+          webTestClient.get().uri("$url?$params")
+            .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().jsonPath("totalElements").isEqualTo(count)
         }
       }
     }

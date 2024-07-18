@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.ValidationException
+import jakarta.validation.constraints.Size
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -17,12 +18,14 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.EventService
+import java.time.LocalDate
 import java.util.UUID
 
 @RestController
@@ -64,6 +67,35 @@ class EventResource(
     ],
   )
   fun getEvents(
+    @Schema(
+      description = "Filter by given prison ID",
+      required = false,
+      defaultValue = "null",
+      example = "MDI",
+      minLength = 2,
+      maxLength = 6,
+    )
+    @RequestParam(required = false)
+    @Size(min = 2, max = 6)
+    prisonId: String? = null,
+    @Schema(
+      description = "Filter for events that happened since this date (inclusive)",
+      required = false,
+      defaultValue = "null",
+      example = "2024-01-01",
+      format = "date",
+    )
+    @RequestParam(required = false)
+    eventDateFrom: LocalDate? = null,
+    @Schema(
+      description = "Filter for events that happened until this date (inclusive)",
+      required = false,
+      defaultValue = "null",
+      example = "2024-05-31",
+      format = "date",
+    )
+    @RequestParam(required = false)
+    eventDateUntil: LocalDate? = null,
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["eventDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
@@ -71,7 +103,12 @@ class EventResource(
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
-    return eventService.getEvents(pageable)
+    return eventService.getEvents(
+      prisonId = prisonId,
+      eventDateFrom = eventDateFrom,
+      eventDateUntil = eventDateUntil,
+      pageable = pageable,
+    )
       .toSimplePage()
   }
 
