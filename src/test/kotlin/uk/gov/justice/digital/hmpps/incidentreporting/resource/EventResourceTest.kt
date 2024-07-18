@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildEvent
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import java.time.Clock
@@ -150,7 +152,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
             // language=json
             """{
               "content": [{
-                "id": ${existingEvent.id},
+                "id": "${existingEvent.id}",
                 "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56"
               }],
@@ -362,19 +364,18 @@ class EventResourceTest : SqsIntegrationTestBase() {
   @DisplayName("GET /incident-events/{id}")
   @Nested
   inner class GetEventById {
-    private lateinit var existingEvent: Event
+    private lateinit var existingReport: Report
     private lateinit var url: String
 
     @BeforeEach
     fun setUp() {
-      existingEvent = eventRepository.save(
-        buildEvent(
-          eventReference = "IE-0000000001124143",
-          eventDateAndTime = now.minusHours(1),
-          reportDateAndTime = now,
+      existingReport = reportRepository.save(
+        buildReport(
+          reportReference = "IR-0000000001124143",
+          reportTime = now,
         ),
       )
-      url = "/incident-events/${existingEvent.id}"
+      url = "/incident-events/${existingReport.event.id}"
     }
 
     @DisplayName("is secured")
@@ -392,7 +393,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class Validation {
       @Test
-      fun `cannot get a event by ID if it is not found`() {
+      fun `cannot get an event by ID if it is not found`() {
         webTestClient.get().uri("/incident-events/11111111-2222-3333-4444-555555555555")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
@@ -405,7 +406,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can get a event by ID`() {
+      fun `can get an event by ID`() {
         webTestClient.get().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
@@ -415,12 +416,101 @@ class EventResourceTest : SqsIntegrationTestBase() {
             // language=json
             """ 
             {
-              "id": ${existingEvent.id},
+              "id": "${existingReport.event.id}",
               "eventReference": "IE-0000000001124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An event occurred",
               "description": "Details of the event",
+              "reports": [{
+                "id": "${existingReport.id}",
+                "reportReference": "IR-0000000001124143",
+                "type": "FINDS",
+                "incidentDateAndTime": "2023-12-05T11:34:56",
+                "prisonId": "MDI",
+                "title": "Incident Report IR-0000000001124143",
+                "description": "A new incident created in the new service of type Finds",
+                "reportedBy": "USER1",
+                "reportedAt": "2023-12-05T12:34:56",
+                "status": "DRAFT",
+                "assignedTo": "USER1",
+                "createdAt": "2023-12-05T12:34:56",
+                "modifiedAt": "2023-12-05T12:34:56",
+                "modifiedBy": "USER1",
+                "createdInNomis": false
+              }],
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1"
+            }
+            """,
+            true,
+          )
+      }
+
+      @Test
+      fun `can get an event by ID with multiple reports`() {
+        val anotherReport = reportRepository.save(
+          buildReport(
+            reportReference = "IR-0000000001017203",
+            reportTime = now.plusMinutes(10),
+            type = Type.MISCELLANEOUS,
+          ),
+        )
+        anotherReport.event = existingReport.event
+        reportRepository.save(anotherReport)
+
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.event.id}",
+              "eventReference": "IE-0000000001124143",
+              "eventDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "An event occurred",
+              "description": "Details of the event",
+              "reports": [
+                {
+                  "id": "${existingReport.id}",
+                  "reportReference": "IR-0000000001124143",
+                  "type": "FINDS",
+                  "incidentDateAndTime": "2023-12-05T11:34:56",
+                  "prisonId": "MDI",
+                  "title": "Incident Report IR-0000000001124143",
+                  "description": "A new incident created in the new service of type Finds",
+                  "reportedBy": "USER1",
+                  "reportedAt": "2023-12-05T12:34:56",
+                  "status": "DRAFT",
+                  "assignedTo": "USER1",
+                  "createdAt": "2023-12-05T12:34:56",
+                  "modifiedAt": "2023-12-05T12:34:56",
+                  "modifiedBy": "USER1",
+                  "createdInNomis": false
+                },
+                {
+                  "id": "${anotherReport.id}",
+                  "reportReference": "IR-0000000001017203",
+                  "type": "MISCELLANEOUS",
+                  "incidentDateAndTime": "2023-12-05T11:44:56",
+                  "prisonId": "MDI",
+                  "title": "Incident Report IR-0000000001017203",
+                  "description": "A new incident created in the new service of type Miscellaneous",
+                  "reportedBy": "USER1",
+                  "reportedAt": "2023-12-05T12:44:56",
+                  "status": "DRAFT",
+                  "assignedTo": "USER1",
+                  "createdAt": "2023-12-05T12:44:56",
+                  "modifiedAt": "2023-12-05T12:44:56",
+                  "modifiedBy": "USER1",
+                  "createdInNomis": false
+                }
+              ],
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1"
@@ -435,19 +525,18 @@ class EventResourceTest : SqsIntegrationTestBase() {
   @DisplayName("GET /incident-events/reference/{reference}")
   @Nested
   inner class GetEventByReference {
-    private lateinit var existingEvent: Event
+    private lateinit var existingReport: Report
     private lateinit var url: String
 
     @BeforeEach
     fun setUp() {
-      existingEvent = eventRepository.save(
-        buildEvent(
-          eventReference = "IE-0000000001124143",
-          eventDateAndTime = now.minusHours(1),
-          reportDateAndTime = now,
+      existingReport = reportRepository.save(
+        buildReport(
+          reportReference = "IR-0000000001124143",
+          reportTime = now,
         ),
       )
-      url = "/incident-events/reference/${existingEvent.eventReference}"
+      url = "/incident-events/reference/${existingReport.event.eventReference}"
     }
 
     @DisplayName("is secured")
@@ -465,7 +554,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class Validation {
       @Test
-      fun `cannot get a event by reference if it is not found`() {
+      fun `cannot get an event by reference if it is not found`() {
         webTestClient.get().uri("/incident-events/reference/IE-11111111")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
@@ -478,7 +567,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
     @Nested
     inner class HappyPath {
       @Test
-      fun `can get a event by reference`() {
+      fun `can get an event by reference`() {
         webTestClient.get().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
@@ -488,12 +577,101 @@ class EventResourceTest : SqsIntegrationTestBase() {
             // language=json
             """ 
             {
-              "id": ${existingEvent.id},
+              "id": "${existingReport.event.id}",
               "eventReference": "IE-0000000001124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An event occurred",
               "description": "Details of the event",
+              "reports": [{
+                "id": "${existingReport.id}",
+                "reportReference": "IR-0000000001124143",
+                "type": "FINDS",
+                "incidentDateAndTime": "2023-12-05T11:34:56",
+                "prisonId": "MDI",
+                "title": "Incident Report IR-0000000001124143",
+                "description": "A new incident created in the new service of type Finds",
+                "reportedBy": "USER1",
+                "reportedAt": "2023-12-05T12:34:56",
+                "status": "DRAFT",
+                "assignedTo": "USER1",
+                "createdAt": "2023-12-05T12:34:56",
+                "modifiedAt": "2023-12-05T12:34:56",
+                "modifiedBy": "USER1",
+                "createdInNomis": false
+              }],
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "USER1"
+            }
+            """,
+            true,
+          )
+      }
+
+      @Test
+      fun `can get an event by reference with multiple reports`() {
+        val anotherReport = reportRepository.save(
+          buildReport(
+            reportReference = "IR-0000000001017203",
+            reportTime = now.plusMinutes(10),
+            type = Type.MISCELLANEOUS,
+          ),
+        )
+        anotherReport.event = existingReport.event
+        reportRepository.save(anotherReport)
+
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${existingReport.event.id}",
+              "eventReference": "IE-0000000001124143",
+              "eventDateAndTime": "2023-12-05T11:34:56",
+              "prisonId": "MDI",
+              "title": "An event occurred",
+              "description": "Details of the event",
+              "reports": [
+                {
+                  "id": "${existingReport.id}",
+                  "reportReference": "IR-0000000001124143",
+                  "type": "FINDS",
+                  "incidentDateAndTime": "2023-12-05T11:34:56",
+                  "prisonId": "MDI",
+                  "title": "Incident Report IR-0000000001124143",
+                  "description": "A new incident created in the new service of type Finds",
+                  "reportedBy": "USER1",
+                  "reportedAt": "2023-12-05T12:34:56",
+                  "status": "DRAFT",
+                  "assignedTo": "USER1",
+                  "createdAt": "2023-12-05T12:34:56",
+                  "modifiedAt": "2023-12-05T12:34:56",
+                  "modifiedBy": "USER1",
+                  "createdInNomis": false
+                },
+                {
+                  "id": "${anotherReport.id}",
+                  "reportReference": "IR-0000000001017203",
+                  "type": "MISCELLANEOUS",
+                  "incidentDateAndTime": "2023-12-05T11:44:56",
+                  "prisonId": "MDI",
+                  "title": "Incident Report IR-0000000001017203",
+                  "description": "A new incident created in the new service of type Miscellaneous",
+                  "reportedBy": "USER1",
+                  "reportedAt": "2023-12-05T12:44:56",
+                  "status": "DRAFT",
+                  "assignedTo": "USER1",
+                  "createdAt": "2023-12-05T12:44:56",
+                  "modifiedAt": "2023-12-05T12:44:56",
+                  "modifiedBy": "USER1",
+                  "createdInNomis": false
+                }
+              ],
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1"

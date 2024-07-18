@@ -7,7 +7,7 @@ import java.util.UUID
 
 @Schema(description = "Event linking multiple incident reports")
 @JsonInclude(JsonInclude.Include.ALWAYS)
-data class Event(
+open class Event(
   @Schema(description = "The internal ID of this event", required = true)
   val id: UUID,
   @Schema(description = "The human-readable identifier of this event", required = true)

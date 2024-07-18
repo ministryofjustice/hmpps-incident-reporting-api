@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.EventWithBasicReports
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.EventService
@@ -99,7 +99,7 @@ class EventResource(
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["eventDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
-  ): SimplePage<Event> {
+  ): SimplePage<EventWithBasicReports> {
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
@@ -144,7 +144,7 @@ class EventResource(
     @Schema(description = "The event id", example = "11111111-2222-3333-4444-555555555555", required = true)
     @PathVariable
     id: UUID,
-  ): Event {
+  ): EventWithBasicReports {
     return eventService.getEventById(id)
       ?: throw EventNotFoundException(id)
   }
@@ -181,7 +181,7 @@ class EventResource(
     @Schema(description = "The event reference", example = "2342341242", required = true)
     @PathVariable
     eventReference: String,
-  ): Event {
+  ): EventWithBasicReports {
     return eventService.getEventByReference(eventReference)
       ?: throw EventNotFoundException(eventReference)
   }
