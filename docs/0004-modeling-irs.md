@@ -25,7 +25,7 @@ classDiagram
         CorrectionReason  reason
     }
     class Event {
-        Long  id
+        UUID  id
         LocalDateTime  createdAt
         String  description
         LocalDateTime  eventDateAndTime
@@ -152,7 +152,7 @@ classDiagram
         timestamp created_at
         varchar(120) modified_by
         timestamp modified_at
-        integer id
+        uuid id
     }
     class evidence {
         uuid report_id
@@ -208,7 +208,7 @@ classDiagram
         integer id
     }
     class report {
-        integer event_id
+        uuid event_id
         varchar(25) report_reference
         varchar(255) title
         text description
