@@ -93,7 +93,7 @@ class ReportService(
   }
 
   fun getBasicReportByReference(reportReference: String): ReportBasic? {
-    return reportRepository.findByReportReference(reportReference)
+    return reportRepository.findOneByReportReference(reportReference)
       ?.toDtoBasic()
   }
 

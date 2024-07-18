@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterE
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByPrisonId
 import java.time.LocalDate
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 @Transactional(readOnly = true)
@@ -39,12 +38,12 @@ class EventService(
   }
 
   fun getEventById(id: UUID): EventWithBasicReports? {
-    return eventRepository.findById(id).getOrNull()
+    return eventRepository.findOneEagerlyById(id)
       ?.toDtoWithBasicReports()
   }
 
   fun getEventByReference(eventReference: String): EventWithBasicReports? {
-    return eventRepository.findOneByEventReference(eventReference)
+    return eventRepository.findOneEagerlyByEventReference(eventReference)
       ?.toDtoWithBasicReports()
   }
 }

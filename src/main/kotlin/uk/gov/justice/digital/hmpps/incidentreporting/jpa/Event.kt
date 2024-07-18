@@ -5,6 +5,9 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.NamedEntityGraphs
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
@@ -14,6 +17,16 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.EventWithBasicReports as EventWithReportsDto
 
 @Entity
+@NamedEntityGraphs(
+  value = [
+    NamedEntityGraph(
+      name = "Event.eager",
+      attributeNodes = [
+        NamedAttributeNode("reports"),
+      ],
+    ),
+  ],
+)
 class Event(
   /**
    * Internal ID which should not be seen by users
