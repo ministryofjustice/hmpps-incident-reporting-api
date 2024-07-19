@@ -23,7 +23,7 @@ dependencies {
 
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.0.1")
   implementation("io.opentelemetry:opentelemetry-api:1.40.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.5.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.6.0")
 
   implementation("com.zaxxer:HikariCP:5.1.0")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
@@ -39,14 +39,14 @@ dependencies {
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.0.2")
-  testImplementation("org.wiremock:wiremock-standalone:3.8.0")
+  testImplementation("org.wiremock:wiremock-standalone:3.9.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.swagger.parser.v3:swagger-parser:2.1.22")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
-  testImplementation("org.testcontainers:localstack:1.19.8")
-  testImplementation("org.testcontainers:postgresql:1.19.8")
+  testImplementation("org.testcontainers:localstack:1.20.0")
+  testImplementation("org.testcontainers:postgresql:1.20.0")
 }
 
 kotlin {
