@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.util.JsonExpectationsHelper
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
-import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildEvent
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
@@ -36,7 +37,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
 
   @Test
   fun `report must have a non-null id to map to the dto`() {
-    val unsavedReport = buildIncidentReport(
+    val unsavedReport = buildReport(
       reportReference = "1234",
       reportTime = now,
     )
@@ -53,9 +54,25 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
   }
 
   @Test
+  fun `event must have a non-null id to map to the dto`() {
+    val unsavedEvent = buildEvent(
+      eventReference = "1234",
+      eventDateAndTime = now.minusHours(2),
+      reportDateAndTime = now,
+    )
+    assertThat(unsavedEvent.id).isNull()
+    assertThatThrownBy { unsavedEvent.toDto() }
+      .isInstanceOf(NullPointerException::class.java)
+
+    val savedEvent = eventRepository.save(unsavedEvent)
+    assertThat(savedEvent.id).isNotNull()
+    assertThat(savedEvent.toDto().id).isEqualTo(savedEvent.id)
+  }
+
+  @Test
   fun `report dto reflects whether the entity's source was NOMIS`() {
     val reportFromNomis = reportRepository.save(
-      buildIncidentReport(
+      buildReport(
         reportReference = "1234",
         reportTime = now,
         source = InformationSource.NOMIS,
@@ -65,7 +82,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
     assertThat(reportFromNomis.toDtoWithDetails().createdInNomis).isTrue()
 
     val reportFromDps = reportRepository.save(
-      buildIncidentReport(
+      buildReport(
         reportReference = "1235",
         reportTime = now,
         source = InformationSource.DPS,
@@ -83,7 +100,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
     @BeforeEach
     fun setUp() {
       report = reportRepository.save(
-        buildIncidentReport(
+        buildReport(
           reportReference = "IR-0000000001124143",
           reportTime = now,
           source = InformationSource.DPS,

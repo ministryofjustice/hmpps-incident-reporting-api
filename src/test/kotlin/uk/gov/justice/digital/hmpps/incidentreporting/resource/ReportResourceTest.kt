@@ -20,7 +20,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
-import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
@@ -70,7 +70,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     eventRepository.deleteAll()
 
     existingReport = reportRepository.save(
-      buildIncidentReport(
+      buildReport(
         reportReference = "IR-0000000001124143",
         reportTime = now,
       ),
@@ -211,7 +211,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               .mapIndexed { index, reportReference ->
                 val fromDps = reportReference.startsWith("IR-")
                 val daysBefore = index.toLong() + 1
-                buildIncidentReport(
+                buildReport(
                   reportReference = reportReference,
                   reportTime = now.minusDays(daysBefore),
                   prisonId = if (index < 2) "LEI" else "MDI",
@@ -538,6 +538,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "Incident Report IR-0000000001124143",
               "description": "A new incident created in the new service of type Finds",
               "event": {
+                "id": "${existingReport.event.id}",
                 "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
@@ -704,6 +705,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "Incident Report IR-0000000001124143",
               "description": "A new incident created in the new service of type Finds",
               "event": {
+                "id": "${existingReport.event.id}",
                 "eventReference": "IE-0000000001124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
@@ -1571,7 +1573,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `can change type of a report but keeping it the same`() {
         val reportWithQuestions = reportRepository.save(
-          buildIncidentReport(
+          buildReport(
             reportReference = "IR-0000000001124146",
             reportTime = now.minusMinutes(3),
             status = Status.AWAITING_ANALYSIS,
@@ -1662,7 +1664,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `can change type of a report creating history when there was none`() {
         val reportWithQuestions = reportRepository.save(
-          buildIncidentReport(
+          buildReport(
             reportReference = "IR-0000000001124146",
             reportTime = now.minusMinutes(3),
             status = Status.AWAITING_ANALYSIS,
@@ -1760,7 +1762,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `can change type of a report preserving history when it already existed`() {
         val reportWithQuestionsAndHistory = reportRepository.save(
-          buildIncidentReport(
+          buildReport(
             reportReference = "IR-0000000001124146",
             reportTime = now.minusMinutes(3),
             status = Status.AWAITING_ANALYSIS,
@@ -1930,7 +1932,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         val eventId = existingReport.event.id!!
 
         existingReport.event.addReport(
-          buildIncidentReport(
+          buildReport(
             reportReference = "IR-0000000001124142",
             reportTime = now.minusMinutes(5),
           ),
@@ -1974,7 +1976,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       urlWithoutRelatedObjects = "/incident-reports/${existingReport.id}/$urlSuffix"
 
       existingReportWithRelatedObjects = reportRepository.save(
-        buildIncidentReport(
+        buildReport(
           reportReference = "IR-0000000001124146",
           reportTime = now,
           generateStaffInvolvement = 2,
@@ -2605,7 +2607,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       urlWithoutQuestions = "/incident-reports/${existingReport.id}/questions"
 
       existingReportWithQuestionsAndResponses = reportRepository.save(
-        buildIncidentReport(
+        buildReport(
           reportReference = "IR-0000000001124146",
           reportTime = now,
           generateQuestions = 2,
@@ -2679,7 +2681,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @Test
         fun `can list 50 questions and responses`() {
           val report = reportRepository.save(
-            buildIncidentReport(
+            buildReport(
               reportReference = "IR-0000000001124147",
               reportTime = now,
               generateQuestions = 50,

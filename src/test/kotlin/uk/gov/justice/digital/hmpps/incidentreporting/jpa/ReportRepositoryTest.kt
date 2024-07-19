@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
-import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
@@ -55,6 +55,10 @@ class ReportRepositoryTest : IntegrationTestBase() {
   fun setUp() {
     reportRepository.deleteAll()
     eventRepository.deleteAll()
+
+    TestTransaction.flagForCommit()
+    TestTransaction.end()
+    TestTransaction.start()
   }
 
   @DisplayName("filtering reports")
@@ -66,7 +70,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     @Test
     fun `can filter reports by simple property specification`() {
       val report = reportRepository.save(
-        buildIncidentReport(
+        buildReport(
           reportReference = "12345",
           reportTime = now.minusDays(1),
         ),
@@ -113,36 +117,35 @@ class ReportRepositoryTest : IntegrationTestBase() {
 
     @Test
     fun `can filter reports by a combination of specifications`() {
-      val report1Id = reportRepository.save(
-        buildIncidentReport(
-          reportReference = "12345",
-          reportTime = now.minusDays(3),
-          prisonId = "MDI",
-          source = InformationSource.DPS,
-          status = Status.AWAITING_ANALYSIS,
-          type = Type.ASSAULT,
+      val reportIds = reportRepository.saveAll(
+        listOf(
+          buildReport(
+            reportReference = "12345",
+            reportTime = now.minusDays(3),
+            prisonId = "MDI",
+            source = InformationSource.DPS,
+            status = Status.AWAITING_ANALYSIS,
+            type = Type.ASSAULT,
+          ),
+          buildReport(
+            reportReference = "12346",
+            reportTime = now.minusDays(2),
+            prisonId = "LEI",
+            source = InformationSource.DPS,
+            status = Status.AWAITING_ANALYSIS,
+            type = Type.FINDS,
+          ),
+          buildReport(
+            reportReference = "IR-0000000001124143",
+            reportTime = now.minusDays(1),
+            prisonId = "MDI",
+            source = InformationSource.NOMIS,
+            status = Status.DRAFT,
+            type = Type.FINDS,
+          ),
         ),
-      ).id!!
-      val report2Id = reportRepository.save(
-        buildIncidentReport(
-          reportReference = "12346",
-          reportTime = now.minusDays(2),
-          prisonId = "LEI",
-          source = InformationSource.DPS,
-          status = Status.AWAITING_ANALYSIS,
-          type = Type.FINDS,
-        ),
-      ).id!!
-      val report3Id = reportRepository.save(
-        buildIncidentReport(
-          reportReference = "IR-0000000001124143",
-          reportTime = now.minusDays(1),
-          prisonId = "MDI",
-          source = InformationSource.NOMIS,
-          status = Status.DRAFT,
-          type = Type.FINDS,
-        ),
-      ).id!!
+      ).map { it.id!! }
+      val (report1Id, report2Id, report3Id) = reportIds
 
       fun assertSpecificationReturnsReports(specification: Specification<Report>, reportIds: List<UUID>) {
         val reportsFound = reportRepository.findAll(
