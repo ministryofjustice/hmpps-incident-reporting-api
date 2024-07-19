@@ -3,10 +3,13 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Schema(description = "Event linking multiple incident reports")
 @JsonInclude(JsonInclude.Include.ALWAYS)
-data class Event(
+open class Event(
+  @Schema(description = "The internal ID of this event", required = true)
+  val id: UUID,
   @Schema(description = "The human-readable identifier of this event", required = true)
   val eventReference: String,
   @Schema(description = "When the incident took place", required = true, example = "2024-04-29T12:34:56.789012")

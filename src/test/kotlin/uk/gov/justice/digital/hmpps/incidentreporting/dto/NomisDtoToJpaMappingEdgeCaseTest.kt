@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.toNewEntity
-import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildIncidentReport
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
 
@@ -110,7 +110,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     private val yesterday = now.minusDays(1)
 
     /** existing report created in NOMIS yesterday by a different user */
-    private fun buildExistingReport() = buildIncidentReport(
+    private fun buildExistingReport() = buildReport(
       reportReference = "112414323",
       reportingUsername = "old-user",
       reportTime = yesterday,

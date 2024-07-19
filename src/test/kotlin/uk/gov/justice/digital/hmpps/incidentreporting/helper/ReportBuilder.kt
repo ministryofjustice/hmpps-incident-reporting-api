@@ -7,12 +7,12 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 
-fun buildIncidentReport(
+fun buildReport(
   reportReference: String,
+  /** When report was created */
   reportTime: LocalDateTime,
   prisonId: String = "MDI",
   source: InformationSource = InformationSource.DPS,
@@ -45,18 +45,15 @@ fun buildIncidentReport(
     reportedBy = reportingUsername,
     assignedTo = reportingUsername,
     modifiedBy = reportingUsername,
-    event = Event(
+    event = buildEvent(
       eventReference = when (source) {
         InformationSource.DPS -> "IE-${reportReference.removePrefix("IR-")}"
         InformationSource.NOMIS -> reportReference
       },
       eventDateAndTime = eventDateAndTime,
+      reportDateAndTime = reportTime,
       prisonId = prisonId,
-      title = "An event occurred",
-      description = "Details of the event",
-      createdAt = reportTime,
-      modifiedAt = reportTime,
-      modifiedBy = reportingUsername,
+      reportingUsername = reportingUsername,
     ),
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)

@@ -5,13 +5,28 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.NamedEntityGraphs
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderBy
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import java.time.LocalDateTime
 import java.util.UUID
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.EventWithBasicReports as EventWithReportsDto
 
 @Entity
+@NamedEntityGraphs(
+  value = [
+    NamedEntityGraph(
+      name = "Event.eager",
+      attributeNodes = [
+        NamedAttributeNode("reports"),
+      ],
+    ),
+  ],
+)
 class Event(
   /**
    * Internal ID which should not be seen by users
@@ -36,6 +51,7 @@ class Event(
   var description: String,
 
   @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @OrderBy("id ASC")
   val reports: MutableList<Report> = mutableListOf(),
 
   var createdAt: LocalDateTime,
@@ -54,6 +70,7 @@ class Event(
   }
 
   fun toDto() = EventDto(
+    id = id!!,
     eventReference = eventReference,
     prisonId = prisonId,
     eventDateAndTime = eventDateAndTime,
@@ -62,5 +79,18 @@ class Event(
     createdAt = createdAt,
     modifiedAt = modifiedAt,
     modifiedBy = modifiedBy,
+  )
+
+  fun toDtoWithBasicReports() = EventWithReportsDto(
+    id = id!!,
+    eventReference = eventReference,
+    prisonId = prisonId,
+    eventDateAndTime = eventDateAndTime,
+    title = title,
+    description = description,
+    createdAt = createdAt,
+    modifiedAt = modifiedAt,
+    modifiedBy = modifiedBy,
+    reports = reports.map { it.toDtoBasic() },
   )
 }
