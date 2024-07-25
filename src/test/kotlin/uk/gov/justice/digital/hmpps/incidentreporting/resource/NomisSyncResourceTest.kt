@@ -594,7 +594,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   }
                 ],
                 "locations": [],
-                "evidence": [],
                 "correctionRequests": [
                   {
                     "reason": "NOT_SPECIFIED",
@@ -852,7 +851,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   }
                 ],
                 "locations": [],
-                "evidence": [],
                 "correctionRequests": [
                   {
                     "reason": "NOT_SPECIFIED",
@@ -1316,7 +1314,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   }
                 ],
                 "locations": [],
-                "evidence": [],
                 "correctionRequests": [
                   {
                     "reason": "NOT_SPECIFIED",

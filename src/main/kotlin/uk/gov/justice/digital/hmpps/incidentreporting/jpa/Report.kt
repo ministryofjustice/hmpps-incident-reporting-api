@@ -119,12 +119,6 @@ class Report(
   @BatchSize(size = 10)
   val locations: MutableList<Location> = mutableListOf(),
 
-  // TODO: what's this for?
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-  @OrderBy("id ASC")
-  @BatchSize(size = 10)
-  val evidence: MutableList<Evidence> = mutableListOf(),
-
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderBy("id ASC")
   @BatchSize(size = 10)
@@ -174,14 +168,6 @@ class Report(
       changedAt = changedAt,
       changedBy = changedBy,
     ).also { historyOfStatuses.add(it) }
-  }
-
-  fun addEvidence(type: String, description: String): Evidence {
-    return Evidence(
-      report = this,
-      type = type,
-      description = description,
-    ).also { evidence.add(it) }
   }
 
   fun addStaffInvolved(staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
@@ -378,7 +364,6 @@ class Report(
     staffInvolved = staffInvolved.map { it.toDto() },
     prisonersInvolved = prisonersInvolved.map { it.toDto() },
     locations = locations.map { it.toDto() },
-    evidence = evidence.map { it.toDto() },
     correctionRequests = correctionRequests.map { it.toDto() },
   )
 }

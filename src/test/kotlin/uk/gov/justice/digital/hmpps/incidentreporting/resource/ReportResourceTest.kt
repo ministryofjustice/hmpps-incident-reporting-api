@@ -560,7 +560,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],
-              "evidence": [],
               "correctionRequests": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
@@ -727,7 +726,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],
-              "evidence": [],
               "correctionRequests": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
@@ -900,7 +898,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],
-              "evidence": [],
               "correctionRequests": [],
               "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
@@ -962,7 +959,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "locations": [],
-              "evidence": [],
               "correctionRequests": [],
               "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
@@ -1983,7 +1979,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           generatePrisonerInvolvement = 2,
           generateLocations = 2,
           generateCorrections = 2,
-          generateEvidence = 2,
         ),
       )
       urlWithRelatedObjects = "/incident-reports/${existingReportWithRelatedObjects.id}/$urlSuffix"
@@ -2537,26 +2532,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class UpdateObject : RelatedObjects.UpdateObject()
 
     @DisplayName("DELETE /incident-reports/{reportId}/locations/{index}")
-    @Nested
-    inner class RemoveObject : RelatedObjects.RemoveObject()
-  }
-
-  @DisplayName("Evidence")
-  @Nested
-  inner class Evidence : RelatedObjects("evidence", WhatChanged.EVIDENCE) {
-    @DisplayName("GET /incident-reports/{reportId}/evidence")
-    @Nested
-    inner class ListObjects : RelatedObjects.ListObjects()
-
-    @DisplayName("POST /incident-reports/{reportId}/evidence")
-    @Nested
-    inner class AddObject : RelatedObjects.AddObject()
-
-    @DisplayName("PATCH /incident-reports/{reportId}/evidence/{index}")
-    @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject()
-
-    @DisplayName("DELETE /incident-reports/{reportId}/evidence/{index}")
     @Nested
     inner class RemoveObject : RelatedObjects.RemoveObject()
   }

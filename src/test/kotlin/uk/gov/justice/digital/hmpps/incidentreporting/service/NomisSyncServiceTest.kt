@@ -190,7 +190,6 @@ class NomisSyncServiceTest {
       PrisonerOutcome.SEEN_HEALTHCARE,
       "First time self-harming",
     )
-    sampleReport.addEvidence("CAM", "Body worn camera")
     sampleReport.addCorrectionRequest(
       "checking-user",
       now,
@@ -291,11 +290,6 @@ class NomisSyncServiceTest {
     assertThat(staffInvolved.staffUsername).isEqualTo("user3")
     assertThat(staffInvolved.staffRole).isEqualTo(StaffRole.PRESENT_AT_SCENE)
     assertThat(staffInvolved.comment).isEqualTo("Found offender in cell")
-
-    assertThat(report.evidence).hasSize(1)
-    val evidence = report.evidence[0]
-    assertThat(evidence.type).isEqualTo("CAM")
-    assertThat(evidence.description).isEqualTo("Body worn camera")
 
     assertThat(report.correctionRequests).hasSize(1)
     val correctionRequest = report.correctionRequests[0]

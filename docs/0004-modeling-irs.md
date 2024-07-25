@@ -35,11 +35,6 @@ classDiagram
         String  prisonId
         String  title
     }
-    class Evidence {
-        Long  id
-        String  description
-        String  type
-    }
     class HistoricalQuestion {
         Long  id
         String  additionalInformation
@@ -154,12 +149,6 @@ classDiagram
         timestamp modified_at
         uuid id
     }
-    class evidence {
-        uuid report_id
-        varchar(60) type
-        text description
-        integer id
-    }
     class historical_question {
         integer history_id
         integer sequence
@@ -251,7 +240,6 @@ classDiagram
     }
 
 correction_request  -->  report : report_id
-evidence  -->  report : report_id
 historical_question  -->  history : history_id
 historical_response  -->  historical_question : historical_question_id
 history  -->  report : report_id
