@@ -24,7 +24,6 @@ fun buildReport(
   generatePrisonerInvolvement: Int = 0,
   generateLocations: Int = 0,
   generateCorrections: Int = 0,
-  generateEvidence: Int = 0,
   generateQuestions: Int = 0,
   generateResponses: Int = 0,
   generateHistory: Int = 0,
@@ -86,12 +85,6 @@ fun buildReport(
       correctionRequestedBy = "qa",
       reason = CorrectionReason.NOT_SPECIFIED,
       descriptionOfChange = "Fix request #$correctionIndex",
-    )
-  }
-  (1..generateEvidence).forEach { evidenceIndex ->
-    report.addEvidence(
-      type = "PHOTO",
-      description = "Evidence #$evidenceIndex",
     )
   }
 
