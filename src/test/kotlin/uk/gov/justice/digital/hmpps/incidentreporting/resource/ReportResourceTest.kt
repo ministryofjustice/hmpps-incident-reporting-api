@@ -2541,26 +2541,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     inner class RemoveObject : RelatedObjects.RemoveObject()
   }
 
-  @DisplayName("Evidence")
-  @Nested
-  inner class Evidence : RelatedObjects("evidence", WhatChanged.EVIDENCE) {
-    @DisplayName("GET /incident-reports/{reportId}/evidence")
-    @Nested
-    inner class ListObjects : RelatedObjects.ListObjects()
-
-    @DisplayName("POST /incident-reports/{reportId}/evidence")
-    @Nested
-    inner class AddObject : RelatedObjects.AddObject()
-
-    @DisplayName("PATCH /incident-reports/{reportId}/evidence/{index}")
-    @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject()
-
-    @DisplayName("DELETE /incident-reports/{reportId}/evidence/{index}")
-    @Nested
-    inner class RemoveObject : RelatedObjects.RemoveObject()
-  }
-
   @DisplayName("Correction requests")
   @Nested
   inner class CorrectionRequests : RelatedObjects("correction-requests", WhatChanged.CORRECTION_REQUESTS) {
