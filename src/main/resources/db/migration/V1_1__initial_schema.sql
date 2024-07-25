@@ -113,16 +113,6 @@ create table staff_involvement
     comment        text
 );
 
-create table evidence
-(
-    id          serial
-        constraint evidence_pk primary key,
-    report_id   uuid        not null
-        constraint evidence_report_fk references report (id) on delete cascade,
-    type        varchar(60) not null,
-    description text        not null
-);
-
 create table location
 (
     id          serial
