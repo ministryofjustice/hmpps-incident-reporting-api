@@ -54,12 +54,6 @@ classDiagram
         String  changedBy
         Type  type
     }
-    class Location {
-        Long  id
-        String  description
-        String  locationId
-        String  type
-    }
     class PrisonerInvolvement {
         Long  id
         String  comment
@@ -118,7 +112,6 @@ Question "1" <--> "0..*" Response
 Report "1..*" <--> "1" Event
 Report "1" <--> "0..*" Evidence
 Report "1" <--> "0..*" History
-Report "1" <--> "0..*" Location
 Report "1" <--> "0..*" PrisonerInvolvement
 Report "1" <--> "0..*" Question
 StaffInvolvement "0..*" <--> "1" Report
@@ -171,13 +164,6 @@ classDiagram
         varchar(60) type
         timestamp changed_at
         varchar(120) changed_by
-        integer id
-    }
-    class location {
-        uuid report_id
-        varchar(60) location_id
-        varchar(60) type
-        text description
         integer id
     }
     class prisoner_involvement {
@@ -243,7 +229,6 @@ correction_request  -->  report : report_id
 historical_question  -->  history : history_id
 historical_response  -->  historical_question : historical_question_id
 history  -->  report : report_id
-location  -->  report : report_id
 prisoner_involvement  -->  report : report_id
 question  -->  report : report_id
 report  -->  event : event_id
