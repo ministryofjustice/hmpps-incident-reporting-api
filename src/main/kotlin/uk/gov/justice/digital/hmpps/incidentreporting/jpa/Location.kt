@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateLocation
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Location as LocationDto
 
 @Entity
@@ -29,12 +28,6 @@ class Location(
   }
 
   fun getReport() = report
-
-  fun updateWith(request: UpdateLocation) {
-    request.locationId?.let { locationId = it }
-    request.type?.let { type = it }
-    request.description?.let { description = it }
-  }
 
   fun toDto() = LocationDto(
     locationId = locationId,
