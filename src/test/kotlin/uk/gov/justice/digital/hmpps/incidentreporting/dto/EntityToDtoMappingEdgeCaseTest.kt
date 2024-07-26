@@ -106,7 +106,6 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
           source = InformationSource.DPS,
           generateStaffInvolvement = 2,
           generatePrisonerInvolvement = 2,
-          generateLocations = 1,
           generateCorrections = 1,
           generateQuestions = 3,
           generateResponses = 2,

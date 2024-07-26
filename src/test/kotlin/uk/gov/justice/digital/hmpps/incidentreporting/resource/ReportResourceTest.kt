@@ -559,7 +559,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               ],
               "staffInvolved": [],
               "prisonersInvolved": [],
-              "locations": [],
               "correctionRequests": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
@@ -725,7 +724,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               ],
               "staffInvolved": [],
               "prisonersInvolved": [],
-              "locations": [],
               "correctionRequests": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
@@ -897,7 +895,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               ],
               "staffInvolved": [],
               "prisonersInvolved": [],
-              "locations": [],
               "correctionRequests": [],
               "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
@@ -958,7 +955,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               ],
               "staffInvolved": [],
               "prisonersInvolved": [],
-              "locations": [],
               "correctionRequests": [],
               "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
@@ -1977,7 +1973,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           reportTime = now,
           generateStaffInvolvement = 2,
           generatePrisonerInvolvement = 2,
-          generateLocations = 2,
           generateCorrections = 2,
         ),
       )
@@ -2512,26 +2507,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     )
 
     @DisplayName("DELETE /incident-reports/{reportId}/prisoners-involved/{index}")
-    @Nested
-    inner class RemoveObject : RelatedObjects.RemoveObject()
-  }
-
-  @DisplayName("Locations")
-  @Nested
-  inner class Locations : RelatedObjects("locations", WhatChanged.LOCATIONS) {
-    @DisplayName("GET /incident-reports/{reportId}/locations")
-    @Nested
-    inner class ListObjects : RelatedObjects.ListObjects()
-
-    @DisplayName("POST /incident-reports/{reportId}/locations")
-    @Nested
-    inner class AddObject : RelatedObjects.AddObject()
-
-    @DisplayName("PATCH /incident-reports/{reportId}/locations/{index}")
-    @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject()
-
-    @DisplayName("DELETE /incident-reports/{reportId}/locations/{index}")
     @Nested
     inner class RemoveObject : RelatedObjects.RemoveObject()
   }

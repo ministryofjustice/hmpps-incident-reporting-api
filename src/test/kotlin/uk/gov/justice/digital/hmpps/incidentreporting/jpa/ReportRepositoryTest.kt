@@ -250,7 +250,6 @@ class ReportRepositoryTest : IntegrationTestBase() {
     report.addStatusHistory(Status.DRAFT, now, "user5")
     report.addStaffInvolved(StaffRole.FIRST_ON_SCENE, "user1")
     report.addPrisonerInvolved("A1234AA", PrisonerRole.VICTIM)
-    report.addLocation("MDI-1-1-1", "CELL", "Other stuff")
 
     TestTransaction.flagForCommit()
     TestTransaction.end()

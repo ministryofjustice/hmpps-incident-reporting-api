@@ -113,17 +113,6 @@ create table staff_involvement
     comment        text
 );
 
-create table location
-(
-    id          serial
-        constraint location_pk primary key,
-    report_id   uuid        not null
-        constraint location_report_fk references report (id) on delete cascade,
-    location_id varchar(60) not null,
-    type        varchar(60) not null,
-    description text        not null
-);
-
 create table question
 (
     id                     serial

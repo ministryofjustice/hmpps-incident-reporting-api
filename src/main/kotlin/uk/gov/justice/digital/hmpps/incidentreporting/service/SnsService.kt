@@ -80,8 +80,6 @@ enum class WhatChanged {
   PRISONERS_INVOLVED,
   /** Added, updated or deleted an involved member of staff */
   STAFF_INVOLVED,
-  /** Added, updated or deleted a location */
-  LOCATIONS,
   /** Added, updated or deleted a correction request */
   CORRECTION_REQUESTS,
 

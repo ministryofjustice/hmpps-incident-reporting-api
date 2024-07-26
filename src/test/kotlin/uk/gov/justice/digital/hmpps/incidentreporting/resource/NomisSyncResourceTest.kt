@@ -593,7 +593,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "comment": "Comment"
                   }
                 ],
-                "locations": [],
                 "correctionRequests": [
                   {
                     "reason": "NOT_SPECIFIED",
@@ -850,7 +849,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "comment": "Comment"
                   }
                 ],
-                "locations": [],
                 "correctionRequests": [
                   {
                     "reason": "NOT_SPECIFIED",
@@ -1313,7 +1311,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "comment": "Trevor took another prisoner hostage"
                   }
                 ],
-                "locations": [],
                 "correctionRequests": [
                   {
                     "reason": "NOT_SPECIFIED",
