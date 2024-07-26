@@ -22,7 +22,6 @@ fun buildReport(
   // all related entities apart from event are optionally generated:
   generateStaffInvolvement: Int = 0,
   generatePrisonerInvolvement: Int = 0,
-  generateLocations: Int = 0,
   generateCorrections: Int = 0,
   generateQuestions: Int = 0,
   generateResponses: Int = 0,
@@ -70,13 +69,6 @@ fun buildReport(
       prisonerRole = PrisonerRole.entries.elementAtWrapped(prisonerIndex),
       outcome = PrisonerOutcome.entries.elementAtWrapped(prisonerIndex),
       comment = "Comment #$prisonerIndex",
-    )
-  }
-  (1..generateLocations).forEach { locationIndex ->
-    report.addLocation(
-      locationId = "$locationIndex",
-      type = "CELL",
-      description = "Location #$locationIndex",
     )
   }
   (1..generateCorrections).forEach { correctionIndex ->

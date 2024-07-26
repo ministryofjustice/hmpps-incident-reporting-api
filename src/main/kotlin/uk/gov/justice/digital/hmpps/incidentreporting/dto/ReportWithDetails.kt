@@ -40,8 +40,6 @@ class ReportWithDetails(
   val staffInvolved: List<StaffInvolvement>,
   @Schema(description = "Which prisoners were involved?", required = true)
   val prisonersInvolved: List<PrisonerInvolvement>,
-  @Schema(description = "Where the incident happened", required = true)
-  val locations: List<Location>,
   @Schema(description = "The corrections that were requested of this report", required = true)
   val correctionRequests: List<CorrectionRequest>,
 ) : ReportBasic(

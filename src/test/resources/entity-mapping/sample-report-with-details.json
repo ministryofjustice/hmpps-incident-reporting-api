@@ -245,13 +245,6 @@
       "comment": "Comment #2"
     }
   ],
-  "locations": [
-    {
-      "locationId": "1",
-      "type": "CELL",
-      "description": "Location #1"
-    }
-  ],
   "correctionRequests": [
     {
       "reason": "NOT_SPECIFIED",
