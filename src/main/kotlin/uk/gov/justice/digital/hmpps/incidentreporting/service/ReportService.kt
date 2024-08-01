@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRe
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
@@ -50,6 +51,7 @@ import kotlin.jvm.optionals.getOrNull
 class ReportService(
   private val reportRepository: ReportRepository,
   private val eventRepository: EventRepository,
+  private val prisonerInvolvementRepository: PrisonerInvolvementRepository,
   private val telemetryClient: TelemetryClient,
   private val authenticationHolder: HmppsAuthenticationHolder,
   private val clock: Clock,
@@ -322,5 +324,36 @@ class ReportService(
 
       reportBasic to getQuestions().map { it.toDto() }
     }
+  }
+
+  /**
+   * Replaces one prisoner number in all report-related entities with another.
+   * NB: free text fields are _not_ changed
+   */
+  @Transactional
+  fun replacePrisonerNumber(removedPrisonerNumber: String, prisonerNumber: String): List<ReportBasic> {
+    // TODO: maybe free text fields should be replaced too? especially if we end up generating report titles automatically
+    val now = LocalDateTime.now(clock)
+    return buildMap {
+      prisonerInvolvementRepository.findAllByPrisonerNumber(removedPrisonerNumber)
+        .forEach { prisonerInvolvement ->
+          prisonerInvolvement.prisonerNumber = prisonerNumber
+          val report = prisonerInvolvement.getReport()
+          if (!containsKey(report.id)) {
+            report.modifiedAt = now // NB: there is no actor user to set modifiedBy
+            put(report.id, report)
+          }
+        }
+    }
+      .values
+      .map { it.toDtoBasic() }
+      .sortedBy { it.id }
+      .also {
+        if (it.isNotEmpty()) {
+          log.info("Prisoner $removedPrisonerNumber merged into $prisonerNumber")
+          // TODO: track with telemetryClient for every report?
+          // TODO: should a domain event be raised? probably not
+        }
+      }
   }
 }
