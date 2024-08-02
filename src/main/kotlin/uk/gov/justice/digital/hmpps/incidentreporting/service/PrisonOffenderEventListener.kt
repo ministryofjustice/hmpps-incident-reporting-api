@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class PrisonOffenderEventListener(
+  private val reportService: ReportService,
   private val mapper: ObjectMapper,
 ) {
   companion object {
@@ -28,8 +29,8 @@ class PrisonOffenderEventListener(
     when (eventType) {
       PRISONER_MERGE_EVENT_TYPE -> {
         val mergeEvent = mapper.readValue(message, HMPPSMergeDomainEvent::class.java)
-        // TODO: This is a no-op for now
-        log.debug("Ignoring '$PRISONER_MERGE_EVENT_TYPE' message")
+        val (removedPrisonerNumber, prisonerNumber) = mergeEvent.additionalInformation
+        reportService.replacePrisonerNumber(removedPrisonerNumber, prisonerNumber)
       }
       else -> {
         log.debug("Ignoring message with type $eventType")

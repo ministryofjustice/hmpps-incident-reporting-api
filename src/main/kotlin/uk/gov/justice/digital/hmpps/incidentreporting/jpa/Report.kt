@@ -64,7 +64,7 @@ class Report(
   @Id
   @GeneratedUuidV7
   @Column(name = "id", updatable = false, nullable = false)
-  val id: UUID? = null,
+  var id: UUID? = null,
 
   /**
    * Human-readable reference. Previously known as ”incident number” in NOMIS.
