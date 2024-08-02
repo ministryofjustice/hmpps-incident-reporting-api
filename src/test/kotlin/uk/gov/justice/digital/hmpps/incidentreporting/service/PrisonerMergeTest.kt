@@ -2,8 +2,16 @@ package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
@@ -14,6 +22,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.util.UUID
 
+@DisplayName("Prisoner merging")
 class PrisonerMergeTest {
   private val reportRepository: ReportRepository = mock()
   private val eventRepository: EventRepository = mock()
@@ -37,6 +46,9 @@ class PrisonerMergeTest {
 
     val reports = reportService.replacePrisonerNumber("A0002AA", "A0002BB")
     assertThat(reports).isEmpty()
+
+    verify(telemetryClient, never())
+      .trackEvent(any(), any(), anyOrNull())
   }
 
   @Test
@@ -81,6 +93,9 @@ class PrisonerMergeTest {
     assertThat(mockReport1.modifiedAt).isBefore(now)
     assertThat(mockReport2.modifiedAt).isEqualTo(now)
     assertThat(mockReport3.modifiedAt).isEqualTo(now)
+
+    verify(telemetryClient, times(2))
+      .trackEvent(eq("Prisoner A0002AA merged into A0002BB"), any(), isNull())
   }
 
   @Test

@@ -328,7 +328,9 @@ class ReportService(
 
   /**
    * Replaces one prisoner number in all report-related entities with another.
-   * NB: free text fields are _not_ changed
+   * NB:
+   * - free text fields are _not_ changed
+   * - report-amended domain event is _not_ raised since this method is reacting to an event
    */
   @Transactional
   fun replacePrisonerNumber(removedPrisonerNumber: String, prisonerNumber: String): List<ReportBasic> {
@@ -348,11 +350,15 @@ class ReportService(
       .values
       .map { it.toDtoBasic() }
       .sortedBy { it.id }
-      .also {
-        if (it.isNotEmpty()) {
+      .also { reports ->
+        if (reports.isNotEmpty()) {
           log.info("Prisoner $removedPrisonerNumber merged into $prisonerNumber")
-          // TODO: track with telemetryClient for every report?
-          // TODO: should a domain event be raised? probably not
+          reports.forEach { report ->
+            telemetryClient.trackEvent(
+              "Prisoner $removedPrisonerNumber merged into $prisonerNumber",
+              report,
+            )
+          }
         }
       }
   }
