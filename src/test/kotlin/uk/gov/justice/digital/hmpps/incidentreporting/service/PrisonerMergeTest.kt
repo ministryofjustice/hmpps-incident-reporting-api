@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.microsoft.applicationinsights.TelemetryClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
@@ -13,6 +14,9 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
@@ -23,6 +27,8 @@ import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.util.UUID
 
 @DisplayName("Prisoner merging")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@ActiveProfiles("test")
 class PrisonerMergeTest {
   private val reportRepository: ReportRepository = mock()
   private val eventRepository: EventRepository = mock()
@@ -38,6 +44,9 @@ class PrisonerMergeTest {
     authenticationHolder = authenticationHolder,
     clock = clock,
   )
+
+  @Autowired
+  protected lateinit var objectMapper: ObjectMapper
 
   @Test
   fun `returns empty list when no rename takes place`() {
@@ -99,7 +108,7 @@ class PrisonerMergeTest {
   }
 
   @Test
-  fun `does not deduplicate situations where a prisoner number is involved more than once`() {
+  fun `does not de-duplicate situations where a prisoner number is involved more than once`() {
     // report with A0001AA and A0002AA
     val mockReport = buildReport(
       reportReference = "94728",
@@ -119,5 +128,34 @@ class PrisonerMergeTest {
 
     assertThat(mockReport.prisonersInvolved.map { it.prisonerNumber })
       .isEqualTo(listOf("A0001AA", "A0001AA"))
+  }
+
+  @Test
+  fun `parses domain event`() {
+    val mockReportService: ReportService = mock()
+    val listener = PrisonOffenderEventListener(
+      reportService = mockReportService,
+      mapper = objectMapper,
+    )
+    listener.onPrisonOffenderEvent(
+      // language=json
+      """
+      {
+        "Type": "Notification",
+        "MessageId": "5b90ee7d-67bc-5959-a4d8-b7d420180853",
+        "Message": "{\"eventType\": \"prison-offender-events.prisoner.merged\", \"version\": \"1.0\", \"occurredAt\": \"2020-02-12T15:14:24.125533+00:00\", \"publishedAt\": \"2020-02-12T15:15:09.902048716+00:00\", \"description\": \"A prisoner has been merged from A0002AA to A0002BB\", \"additionalInformation\": {\"nomsNumber\": \"A0002BB\", \"removedNomsNumber\": \"A0002AA\", \"reason\": \"MERGE\"}}",
+        "Timestamp": "2021-09-01T09:18:28.725Z",
+        "MessageAttributes": {
+          "eventType": {
+            "Type": "String",
+            "Value": "prison-offender-events.prisoner.merged"
+          }
+        }
+      }
+      """,
+    )
+
+    verify(mockReportService, times(1))
+      .replacePrisonerNumber(eq("A0002AA"), eq("A0002BB"))
   }
 }
