@@ -29,8 +29,10 @@ class PrisonOffenderEventListener(
     when (eventType) {
       PRISONER_MERGE_EVENT_TYPE -> {
         val mergeEvent = mapper.readValue(message, HMPPSMergeDomainEvent::class.java)
-        val (removedPrisonerNumber, prisonerNumber) = mergeEvent.additionalInformation
-        reportService.replacePrisonerNumber(removedPrisonerNumber, prisonerNumber)
+        reportService.replacePrisonerNumber(
+          removedPrisonerNumber = mergeEvent.additionalInformation.removedNomsNumber,
+          prisonerNumber = mergeEvent.additionalInformation.nomsNumber,
+        )
       }
       else -> {
         log.debug("Ignoring message with type $eventType")
