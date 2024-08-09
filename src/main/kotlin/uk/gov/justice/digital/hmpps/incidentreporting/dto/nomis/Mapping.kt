@@ -95,6 +95,7 @@ fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
       .forEach { answer ->
         dataItem.addResponse(
           response = answer.answer!!,
+          responseDate = answer.responseDate,
           additionalInformation = answer.comment,
           recordedBy = answer.recordingStaff.username,
           recordedAt = this.reportedAt,
@@ -122,6 +123,7 @@ fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
         .forEach { answer ->
           dataItem.addResponse(
             response = answer.answer!!,
+            responseDate = answer.responseDate,
             additionalInformation = answer.comment,
             recordedBy = answer.recordingStaff.username,
             recordedAt = this.reportedAt,

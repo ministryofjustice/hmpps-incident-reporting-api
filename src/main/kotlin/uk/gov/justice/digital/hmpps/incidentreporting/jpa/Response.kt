@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import java.time.LocalDate
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Response as ResponseDto
 
@@ -20,7 +21,7 @@ class Response(
 
   // TODO: should we add a `val code: String` like in Question?
   val response: String,
-
+  val responseDate: LocalDate? = null,
   val additionalInformation: String? = null,
 
   val recordedBy: String,
@@ -32,6 +33,7 @@ class Response(
 
   fun toDto() = ResponseDto(
     response = response,
+    responseDate = responseDate,
     recordedBy = recordedBy,
     recordedAt = recordedAt,
     additionalInformation = additionalInformation,

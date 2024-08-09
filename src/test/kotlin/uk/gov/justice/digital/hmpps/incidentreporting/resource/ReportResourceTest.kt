@@ -1613,12 +1613,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "responses": [
                     {
                       "response": "Response #1",
+                      "responseDate": "2023-12-04",
                       "additionalInformation": "Prose #1",
                       "recordedBy": "some-user",
                       "recordedAt": "2023-12-05T12:31:56"
                     },
                     {
                       "response": "Response #2",
+                      "responseDate": "2023-12-03",
                       "additionalInformation": "Prose #2",
                       "recordedBy": "some-user",
                       "recordedAt": "2023-12-05T12:31:56"
@@ -1632,12 +1634,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "responses": [
                     {
                       "response": "Response #1",
+                      "responseDate": "2023-12-04",
                       "additionalInformation": "Prose #1",
                       "recordedBy": "some-user",
                       "recordedAt": "2023-12-05T12:31:56"
                     },
                     {
                       "response": "Response #2",
+                      "responseDate": "2023-12-03",
                       "additionalInformation": "Prose #2",
                       "recordedBy": "some-user",
                       "recordedAt": "2023-12-05T12:31:56"
@@ -1703,12 +1707,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "responses": [
                         {
                           "response": "Response #1",
+                          "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
                           "recordedAt": "2023-12-05T12:31:56"
                         },
                         {
                           "response": "Response #2",
+                          "responseDate": "2023-12-03",
                           "additionalInformation": "Prose #2",
                           "recordedBy": "some-user",
                           "recordedAt": "2023-12-05T12:31:56"
@@ -1722,12 +1728,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "responses": [
                         {
                           "response": "Response #1",
+                          "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
                           "recordedAt": "2023-12-05T12:31:56"
                         },
                         {
                           "response": "Response #2",
+                          "responseDate": "2023-12-03",
                           "additionalInformation": "Prose #2",
                           "recordedBy": "some-user",
                           "recordedAt": "2023-12-05T12:31:56"
@@ -1801,6 +1809,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "responses": [
                         {
                           "response": "Historical response #1-1",
+                          "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1 in history #1",
                           "recordedBy": "some-user",
                           "recordedAt": "2023-12-05T12:31:56"
@@ -1821,6 +1830,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "responses": [
                         {
                           "response": "Response #1",
+                          "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
                           "recordedAt": "2023-12-05T12:31:56"

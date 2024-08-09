@@ -153,6 +153,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 10,
                 1,
                 "Answer 1",
+                now.toLocalDate().minusDays(2),
                 "comment 1",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -162,6 +163,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 11,
                 2,
                 "Answer 2",
+                null,
                 "comment 2",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -171,7 +173,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 12,
                 3,
                 "Answer 3",
-                "comment 3",
+                now.toLocalDate().minusDays(3),
+                null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
@@ -189,6 +192,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 13,
                 1,
                 "Answer 1",
+                now.toLocalDate().minusDays(1),
                 "comment 1",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -198,6 +202,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 14,
                 2,
                 "Answer 2",
+                null,
                 "comment 2",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -207,7 +212,18 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 15,
                 3,
                 "Answer 3",
-                "comment 3",
+                now.toLocalDate().minusDays(10),
+                null,
+                createDateTime = now,
+                createdBy = reportingStaff.username,
+                recordingStaff = reportingStaff,
+              ),
+              NomisResponse(
+                16,
+                4,
+                "Answer 4",
+                null,
+                null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
@@ -225,6 +241,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 16,
                 1,
                 "Answer 1",
+                now.toLocalDate(),
                 "comment 1",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -234,6 +251,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 17,
                 2,
                 "Answer 2",
+                null,
                 "comment 2",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -243,7 +261,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 18,
                 3,
                 "Answer 3",
-                "comment 3",
+                now.toLocalDate().minusDays(7),
+                null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
@@ -266,9 +285,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 1,
                 "Old question 1",
                 listOf(
-                  NomisHistoryResponse(1, 1, "Old answer 1", "comment 1", reportingStaff),
-                  NomisHistoryResponse(2, 2, "Old answer 2", "comment 2", reportingStaff),
-                  NomisHistoryResponse(3, 3, "Old answer 3", "comment 3", reportingStaff),
+                  NomisHistoryResponse(1, 1, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
+                  NomisHistoryResponse(2, 2, "Old answer 2", null, "comment 2", reportingStaff),
+                  NomisHistoryResponse(3, 3, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
                 ),
               ),
               NomisHistoryQuestion(
@@ -276,9 +295,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 2,
                 "Old question 2",
                 listOf(
-                  NomisHistoryResponse(4, 1, "Old answer 1", "comment 1", reportingStaff),
-                  NomisHistoryResponse(5, 2, "Old answer 2", "comment 2", reportingStaff),
-                  NomisHistoryResponse(6, 3, "Old answer 3", "comment 3", reportingStaff),
+                  NomisHistoryResponse(4, 1, "Old answer 1", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
+                  NomisHistoryResponse(5, 2, "Old answer 2", null, "comment 2", reportingStaff),
+                  NomisHistoryResponse(6, 3, "Old answer 3", now.toLocalDate().minusDays(8), null, reportingStaff),
                 ),
               ),
               NomisHistoryQuestion(
@@ -286,9 +305,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 3,
                 "Old question 3",
                 listOf(
-                  NomisHistoryResponse(7, 1, "Old answer 1", "comment 1", reportingStaff),
-                  NomisHistoryResponse(8, 2, "Old answer 2", "comment 2", reportingStaff),
-                  NomisHistoryResponse(9, 3, "Old answer 3", "comment 3", reportingStaff),
+                  NomisHistoryResponse(7, 1, "Old answer 1", null, null, reportingStaff),
+                  NomisHistoryResponse(8, 2, "Old answer 2", null, null, reportingStaff),
+                  NomisHistoryResponse(9, 3, "Old answer 3", null, null, reportingStaff),
                 ),
               ),
             ),
@@ -418,21 +437,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "responses": [
                       {
                         "response": "Answer 1",
+                        "responseDate": "2023-12-03",
+                        "additionalInformation": "comment 1",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 1"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 2"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 3",
+                        "responseDate": "2023-12-02",
+                        "additionalInformation": null,
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 3"
+                        "recordedAt": "2023-12-05T12:34:56"
                       }
                     ]
                   },
@@ -443,21 +465,31 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "responses": [
                       {
                         "response": "Answer 1",
+                        "responseDate": "2023-12-04",
+                        "additionalInformation": "comment 1",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 1"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 2"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 3",
+                        "responseDate": "2023-11-25",
+                        "additionalInformation": null,
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 3"
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 4",
+                        "responseDate": null,
+                        "additionalInformation": null,
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
                       }
                     ]
                   },
@@ -468,21 +500,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "responses": [
                       {
                         "response": "Answer 1",
+                        "responseDate": "2023-12-05",
+                        "additionalInformation": "comment 1",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 1"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 2"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 3",
+                        "responseDate": "2023-11-28",
+                        "additionalInformation": null,
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 3"
+                        "recordedAt": "2023-12-05T12:34:56"
                       }
                     ]
                   }
@@ -500,21 +535,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old answer 1",
+                            "responseDate": "2023-12-05",
+                            "additionalInformation": "comment 1",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": "comment 2",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 3",
+                            "responseDate": "2023-11-28",
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 3"
+                            "recordedAt": "2023-12-05T12:34:56"
                           }
                         ]
                       },
@@ -525,21 +563,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old answer 1",
+                            "responseDate": "2023-12-04",
+                            "additionalInformation": "comment 1",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": "comment 2",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 3",
+                            "responseDate": "2023-11-27",
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 3"
+                            "recordedAt": "2023-12-05T12:34:56"
                           }
                         ]
                       },
@@ -550,21 +591,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old answer 1",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 3",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 3"
+                            "recordedAt": "2023-12-05T12:34:56"
                           }
                         ]
                       }
@@ -674,21 +718,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "responses": [
                       {
                         "response": "Answer 1",
+                        "responseDate": "2023-12-03",
+                        "additionalInformation": "comment 1",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 1"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 2"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 3",
+                        "responseDate": "2023-12-02",
+                        "additionalInformation": null,
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 3"
+                        "recordedAt": "2023-12-05T12:34:56"
                       }
                     ]
                   },
@@ -699,21 +746,31 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "responses": [
                       {
                         "response": "Answer 1",
+                        "responseDate": "2023-12-04",
+                        "additionalInformation": "comment 1",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 1"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 2"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 3",
+                        "responseDate": "2023-11-25",
+                        "additionalInformation": null,
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 3"
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 4",
+                        "responseDate": null,
+                        "additionalInformation": null,
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
                       }
                     ]
                   },
@@ -724,21 +781,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "responses": [
                       {
                         "response": "Answer 1",
+                        "responseDate": "2023-12-05",
+                        "additionalInformation": "comment 1",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 1"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 2"
+                        "recordedAt": "2023-12-05T12:34:56"
                       },
                       {
                         "response": "Answer 3",
+                        "responseDate": "2023-11-28",
+                        "additionalInformation": null,
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-05T12:34:56",
-                        "additionalInformation": "comment 3"
+                        "recordedAt": "2023-12-05T12:34:56"
                       }
                     ]
                   }
@@ -756,21 +816,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old answer 1",
+                            "responseDate": "2023-12-05",
+                            "additionalInformation": "comment 1",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": "comment 2",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 3",
+                            "responseDate": "2023-11-28",
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 3"
+                            "recordedAt": "2023-12-05T12:34:56"
                           }
                         ]
                       },
@@ -781,21 +844,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old answer 1",
+                            "responseDate": "2023-12-04",
+                            "additionalInformation": "comment 1",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": "comment 2",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 3",
+                            "responseDate": "2023-11-27",
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 3"
+                            "recordedAt": "2023-12-05T12:34:56"
                           }
                         ]
                       },
@@ -806,21 +872,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old answer 1",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-05T12:34:56"
                           },
                           {
                             "response": "Old answer 3",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-05T12:34:56",
-                            "additionalInformation": "comment 3"
+                            "recordedAt": "2023-12-05T12:34:56"
                           }
                         ]
                       }
@@ -973,6 +1042,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     10,
                     1,
                     "John",
+                    now.toLocalDate().minusDays(2),
                     "comment 1",
                     createDateTime = now,
                     createdBy = reportingStaff.username,
@@ -982,6 +1052,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     11,
                     2,
                     "Trevor",
+                    null,
                     "comment 2",
                     createDateTime = now,
                     createdBy = reportingStaff.username,
@@ -991,7 +1062,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     12,
                     3,
                     "Maybe someone else?",
-                    "comment 3",
+                    now.toLocalDate().minusDays(3),
+                    null,
                     createDateTime = now,
                     createdBy = reportingStaff.username,
                     recordingStaff = reportingStaff,
@@ -1009,6 +1081,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     13,
                     1,
                     "Cell",
+                    now.toLocalDate().minusDays(1),
                     "comment 1",
                     createDateTime = now,
                     createdBy = reportingStaff.username,
@@ -1018,6 +1091,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     14,
                     2,
                     "Landing",
+                    null,
                     "comment 2",
                     createDateTime = now,
                     createdBy = reportingStaff.username,
@@ -1027,7 +1101,18 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     15,
                     3,
                     "Kitchen",
-                    "comment 3",
+                    now.toLocalDate().minusDays(10),
+                    null,
+                    createDateTime = now,
+                    createdBy = reportingStaff.username,
+                    recordingStaff = reportingStaff,
+                  ),
+                  NomisResponse(
+                    16,
+                    4,
+                    "Exercise area",
+                    null,
+                    null,
                     createDateTime = now,
                     createdBy = reportingStaff.username,
                     recordingStaff = reportingStaff,
@@ -1050,8 +1135,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     1,
                     "Old question 1",
                     listOf(
-                      NomisHistoryResponse(1, 1, "Old answer 1", "comment 1", reportingStaff),
-                      NomisHistoryResponse(2, 2, "Old answer 2", "comment 2", reportingStaff),
+                      NomisHistoryResponse(1, 1, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
+                      NomisHistoryResponse(2, 2, "Old answer 2", null, "comment 2", reportingStaff),
+                      NomisHistoryResponse(3, 3, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
                     ),
                   ),
                   NomisHistoryQuestion(
@@ -1059,8 +1145,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     2,
                     "Old question 2",
                     listOf(
-                      NomisHistoryResponse(4, 1, "Old answer 1", "comment 1", reportingStaff),
-                      NomisHistoryResponse(5, 2, "Old answer 2", "comment 2", reportingStaff),
+                      NomisHistoryResponse(4, 1, "Old answer 4", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
+                      NomisHistoryResponse(5, 2, "Old answer 5", null, "comment 2", reportingStaff),
+                      NomisHistoryResponse(6, 3, "Old answer 6", now.toLocalDate().minusDays(8), null, reportingStaff),
                     ),
                   ),
                 ),
@@ -1079,8 +1166,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     1,
                     "Old old question 1",
                     listOf(
-                      NomisHistoryResponse(12, 1, "Old old answer 1", "comment 1", reportingStaff),
-                      NomisHistoryResponse(22, 2, "Old old answer 2", "comment 2", reportingStaff),
+                      NomisHistoryResponse(12, 1, "Old old answer 1", null, null, reportingStaff),
+                      NomisHistoryResponse(22, 2, "Old old answer 2", null, null, reportingStaff),
                     ),
                   ),
                   NomisHistoryQuestion(
@@ -1088,8 +1175,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     2,
                     "Old old question 2",
                     listOf(
-                      NomisHistoryResponse(44, 1, "Old old answer 1", "comment 1", reportingStaff),
-                      NomisHistoryResponse(55, 2, "Old old answer 2", "comment 2", reportingStaff),
+                      NomisHistoryResponse(44, 1, "Old old answer 1", null, null, reportingStaff),
+                      NomisHistoryResponse(55, 2, "Old old answer 2", null, null, reportingStaff),
                     ),
                   ),
                 ),
@@ -1136,21 +1223,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "responses": [
                       {
                         "response": "John",
+                        "responseDate": "2023-12-03",
+                        "additionalInformation": "comment 1",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-04T12:34:56",
-                        "additionalInformation": "comment 1"
+                        "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
                         "response": "Trevor",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-04T12:34:56",
-                        "additionalInformation": "comment 2"
+                        "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
                         "response": "Maybe someone else?",
+                        "responseDate": "2023-12-02",
+                        "additionalInformation": null,
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-04T12:34:56",
-                        "additionalInformation": "comment 3"
+                        "recordedAt": "2023-12-04T12:34:56"
                       }
                     ],
                     "additionalInformation": null
@@ -1161,21 +1251,31 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "responses": [
                       {
                         "response": "Cell",
+                        "responseDate": "2023-12-04",
+                        "additionalInformation": "comment 1",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-04T12:34:56",
-                        "additionalInformation": "comment 1"
+                        "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
                         "response": "Landing",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-04T12:34:56",
-                        "additionalInformation": "comment 2"
+                        "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
                         "response": "Kitchen",
+                        "responseDate": "2023-11-25",
+                        "additionalInformation": null,
                         "recordedBy": "user2",
-                        "recordedAt": "2023-12-04T12:34:56",
-                        "additionalInformation": "comment 3"
+                        "recordedAt": "2023-12-04T12:34:56"
+                      },
+                      {
+                        "response": "Exercise area",
+                        "responseDate": null,
+                        "additionalInformation": null,
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-04T12:34:56"
                       }
                     ],
                     "additionalInformation": null
@@ -1193,15 +1293,24 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old answer 1",
+                            "responseDate": "2023-12-05",
+                            "additionalInformation": "comment 1",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-04T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
                             "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": "comment 2",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-04T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-04T12:34:56"
+                          },
+                          {
+                            "response": "Old answer 3",
+                            "responseDate": "2023-11-28",
+                            "additionalInformation": null,
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-04T12:34:56"
                           }
                         ],
                         "additionalInformation": null
@@ -1211,16 +1320,25 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "question": "Old question 2",
                         "responses": [
                           {
-                            "response": "Old answer 1",
+                            "response": "Old answer 4",
+                            "responseDate": "2023-12-04",
+                            "additionalInformation": "comment 1",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-04T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
-                            "response": "Old answer 2",
+                            "response": "Old answer 5",
+                            "responseDate": null,
+                            "additionalInformation": "comment 2",
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-04T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-04T12:34:56"
+                          },
+                          {
+                            "response": "Old answer 6",
+                            "responseDate": "2023-11-27",
+                            "additionalInformation": null,
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-04T12:34:56"
                           }
                         ],
                         "additionalInformation": null
@@ -1238,15 +1356,17 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old old answer 1",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-04T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
                             "response": "Old old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-04T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-04T12:34:56"
                           }
                         ],
                         "additionalInformation": null
@@ -1257,15 +1377,17 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "responses": [
                           {
                             "response": "Old old answer 1",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-04T12:34:56",
-                            "additionalInformation": "comment 1"
+                            "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
                             "response": "Old old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": null,
                             "recordedBy": "user2",
-                            "recordedAt": "2023-12-04T12:34:56",
-                            "additionalInformation": "comment 2"
+                            "recordedAt": "2023-12-04T12:34:56"
                           }
                         ],
                         "additionalInformation": null

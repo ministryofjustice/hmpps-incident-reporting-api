@@ -135,6 +135,7 @@ create table response
         constraint response_question_fk references question (id) on delete cascade,
     sequence               integer   default 0                 not null,
     response               text                                not null,
+    response_date          date,
     additional_information text,
     recorded_at            timestamp default CURRENT_TIMESTAMP not null,
     recorded_by            varchar(120)                        not null
@@ -177,6 +178,7 @@ create table historical_response
         constraint historical_response_historical_question_fk references historical_question (id) on delete cascade,
     sequence               integer   default 0                 not null,
     response               text                                not null,
+    response_date          date,
     additional_information text,
     recorded_at            timestamp default CURRENT_TIMESTAMP not null,
     recorded_by            varchar(120)                        not null
