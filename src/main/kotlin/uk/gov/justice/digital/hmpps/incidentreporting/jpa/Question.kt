@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderColumn
 import org.hibernate.annotations.BatchSize
+import java.time.LocalDate
 import java.time.LocalDateTime
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
 
@@ -24,9 +25,7 @@ class Question(
 
   // TODO: decide how this works and if it is ever unique (eg within 1 report)
   val code: String,
-
   val question: String,
-
   val additionalInformation: String? = null,
 
   @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -44,6 +43,7 @@ class Question(
 
   fun addResponse(
     response: String,
+    responseDate: LocalDate? = null,
     additionalInformation: String? = null,
     recordedBy: String,
     recordedAt: LocalDateTime,
@@ -52,9 +52,10 @@ class Question(
       Response(
         question = this,
         response = response,
+        responseDate = responseDate,
+        additionalInformation = additionalInformation,
         recordedBy = recordedBy,
         recordedAt = recordedAt,
-        additionalInformation = additionalInformation,
       ),
     )
     return this

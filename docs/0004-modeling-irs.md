@@ -47,6 +47,7 @@ classDiagram
         LocalDateTime  recordedAt
         String  recordedBy
         String  response
+        LocalDate  responseDate
     }
     class History {
         Long  id
@@ -91,6 +92,7 @@ classDiagram
         LocalDateTime  recordedAt
         String  recordedBy
         String  response
+        LocalDate  responseDate
     }
     class StaffInvolvement {
         Long  id
@@ -110,7 +112,6 @@ HistoricalQuestion "0..*" <--> "1" History
 HistoricalResponse "0..*" <--> "1" HistoricalQuestion
 Question "1" <--> "0..*" Response
 Report "1..*" <--> "1" Event
-Report "1" <--> "0..*" Evidence
 Report "1" <--> "0..*" History
 Report "1" <--> "0..*" PrisonerInvolvement
 Report "1" <--> "0..*" Question
@@ -154,6 +155,7 @@ classDiagram
         integer historical_question_id
         integer sequence
         text response
+        date response_date
         text additional_information
         timestamp recorded_at
         varchar(120) recorded_by
@@ -205,6 +207,7 @@ classDiagram
         integer question_id
         integer sequence
         text response
+        date response_date
         text additional_information
         timestamp recorded_at
         varchar(120) recorded_by

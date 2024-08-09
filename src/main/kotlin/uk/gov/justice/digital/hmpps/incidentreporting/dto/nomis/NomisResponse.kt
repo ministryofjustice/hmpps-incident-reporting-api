@@ -13,11 +13,13 @@ data class NomisResponse(
   val sequence: Int,
   @Schema(description = "The answer text")
   val answer: String?,
-  @Schema(description = "Comment added to the response by recording staff")
-  val comment: String?,
-
   @Schema(description = "Response date added to the response by recording staff")
   val responseDate: LocalDate? = null,
+  @Schema(description = "Comment added to the response by recording staff")
+  val comment: String?,
+  @Schema(description = "Recording staff")
+  val recordingStaff: NomisStaff,
+
   @Schema(description = "The date and time the response was created")
   val createDateTime: LocalDateTime,
   @Schema(description = "The username of the person who created the response")
@@ -26,7 +28,4 @@ data class NomisResponse(
   val lastModifiedDateTime: LocalDateTime? = createDateTime,
   @Schema(description = "The username of the person who last updated the response")
   val lastModifiedBy: String? = createdBy,
-
-  @Schema(description = "Recording staff")
-  val recordingStaff: NomisStaff,
 )

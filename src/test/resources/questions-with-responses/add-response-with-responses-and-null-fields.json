@@ -5,15 +5,17 @@
     "responses": [
       {
         "response": "Response #1",
+        "responseDate": "2023-12-04",
+        "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56",
-        "additionalInformation": "Prose #1"
+        "recordedAt": "2023-12-05T12:34:56"
       },
       {
         "response": "Response #2",
+        "responseDate": "2023-12-03",
+        "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56",
-        "additionalInformation": "Prose #2"
+        "recordedAt": "2023-12-05T12:34:56"
       }
     ],
     "additionalInformation": "Explanation #1"
@@ -24,15 +26,17 @@
     "responses": [
       {
         "response": "Response #1",
+        "responseDate": "2023-12-04",
+        "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56",
-        "additionalInformation": "Prose #1"
+        "recordedAt": "2023-12-05T12:34:56"
       },
       {
         "response": "Response #2",
+        "responseDate": "2023-12-03",
+        "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56",
-        "additionalInformation": "Prose #2"
+        "recordedAt": "2023-12-05T12:34:56"
       }
     ],
     "additionalInformation": "Explanation #2"
@@ -44,15 +48,24 @@
     "responses": [
       {
         "response": "Note with phone number",
+        "responseDate": null,
+        "additionalInformation": null,
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56",
-        "additionalInformation": null
+        "recordedAt": "2023-12-05T12:34:56"
       },
       {
         "response": "Mobile phone",
+        "responseDate": null,
+        "additionalInformation": null,
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56",
-        "additionalInformation": null
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "Chewing gum",
+        "responseDate": null,
+        "additionalInformation": null,
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
       }
     ]
   }

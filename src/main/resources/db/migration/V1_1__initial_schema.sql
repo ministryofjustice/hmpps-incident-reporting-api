@@ -131,13 +131,14 @@ create table response
 (
     id                     serial
         constraint response_pk primary key,
-    question_id            integer                                not null
+    question_id            integer                             not null
         constraint response_question_fk references question (id) on delete cascade,
-    sequence               integer      default 0                 not null,
-    response               text                                   not null,
+    sequence               integer   default 0                 not null,
+    response               text                                not null,
+    response_date          date,
     additional_information text,
-    recorded_at            timestamp    default CURRENT_TIMESTAMP not null,
-    recorded_by            varchar(120) default 'system'          not null
+    recorded_at            timestamp default CURRENT_TIMESTAMP not null,
+    recorded_by            varchar(120)                        not null
 );
 
 create index response_sequence_at_idx on response (sequence);
@@ -173,13 +174,14 @@ create table historical_response
 (
     id                     serial
         constraint historical_response_pk primary key,
-    historical_question_id integer                                not null
+    historical_question_id integer                             not null
         constraint historical_response_historical_question_fk references historical_question (id) on delete cascade,
-    sequence               integer      default 0                 not null,
-    response               text                                   not null,
+    sequence               integer   default 0                 not null,
+    response               text                                not null,
+    response_date          date,
     additional_information text,
-    recorded_at            timestamp    default CURRENT_TIMESTAMP not null,
-    recorded_by            varchar(120) default 'system'          not null
+    recorded_at            timestamp default CURRENT_TIMESTAMP not null,
+    recorded_by            varchar(120)                        not null
 );
 
 create index historical_response_sequence_at_idx on historical_response (sequence);

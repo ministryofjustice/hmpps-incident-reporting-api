@@ -30,15 +30,17 @@
       "responses": [
         {
           "response": "Response #1",
+          "responseDate": "2023-12-04",
+          "additionalInformation": "Prose #1",
           "recordedBy": "some-user",
-          "recordedAt": "2023-12-05T12:34:56",
-          "additionalInformation": "Prose #1"
+          "recordedAt": "2023-12-05T12:34:56"
         },
         {
           "response": "Response #2",
+          "responseDate": "2023-12-03",
+          "additionalInformation": "Prose #2",
           "recordedBy": "some-user",
-          "recordedAt": "2023-12-05T12:34:56",
-          "additionalInformation": "Prose #2"
+          "recordedAt": "2023-12-05T12:34:56"
         }
       ],
       "additionalInformation": "Explanation #1"
@@ -49,15 +51,17 @@
       "responses": [
         {
           "response": "Response #1",
+          "responseDate": "2023-12-04",
+          "additionalInformation": "Prose #1",
           "recordedBy": "some-user",
-          "recordedAt": "2023-12-05T12:34:56",
-          "additionalInformation": "Prose #1"
+          "recordedAt": "2023-12-05T12:34:56"
         },
         {
           "response": "Response #2",
+          "responseDate": "2023-12-03",
+          "additionalInformation": "Prose #2",
           "recordedBy": "some-user",
-          "recordedAt": "2023-12-05T12:34:56",
-          "additionalInformation": "Prose #2"
+          "recordedAt": "2023-12-05T12:34:56"
         }
       ],
       "additionalInformation": "Explanation #2"
@@ -68,15 +72,17 @@
       "responses": [
         {
           "response": "Response #1",
+          "responseDate": "2023-12-04",
+          "additionalInformation": "Prose #1",
           "recordedBy": "some-user",
-          "recordedAt": "2023-12-05T12:34:56",
-          "additionalInformation": "Prose #1"
+          "recordedAt": "2023-12-05T12:34:56"
         },
         {
           "response": "Response #2",
+          "responseDate": "2023-12-03",
+          "additionalInformation": "Prose #2",
           "recordedBy": "some-user",
-          "recordedAt": "2023-12-05T12:34:56",
-          "additionalInformation": "Prose #2"
+          "recordedAt": "2023-12-05T12:34:56"
         }
       ],
       "additionalInformation": "Explanation #3"
@@ -94,15 +100,17 @@
           "responses": [
             {
               "response": "Historical response #1-1",
+              "responseDate": "2023-12-04",
+              "additionalInformation": "Prose #1 in history #1",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #1 in history #1"
+              "recordedAt": "2023-12-05T12:34:56"
             },
             {
               "response": "Historical response #1-2",
+              "responseDate": "2023-12-03",
+              "additionalInformation": "Prose #2 in history #1",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #2 in history #1"
+              "recordedAt": "2023-12-05T12:34:56"
             }
           ],
           "additionalInformation": "Explanation #1 in history #1"
@@ -113,15 +121,17 @@
           "responses": [
             {
               "response": "Historical response #1-1",
+              "responseDate": "2023-12-04",
+              "additionalInformation": "Prose #1 in history #1",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #1 in history #1"
+              "recordedAt": "2023-12-05T12:34:56"
             },
             {
               "response": "Historical response #1-2",
+              "responseDate": "2023-12-03",
+              "additionalInformation": "Prose #2 in history #1",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #2 in history #1"
+              "recordedAt": "2023-12-05T12:34:56"
             }
           ],
           "additionalInformation": "Explanation #2 in history #1"
@@ -132,15 +142,17 @@
           "responses": [
             {
               "response": "Historical response #1-1",
+              "responseDate": "2023-12-04",
+              "additionalInformation": "Prose #1 in history #1",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #1 in history #1"
+              "recordedAt": "2023-12-05T12:34:56"
             },
             {
               "response": "Historical response #1-2",
+              "responseDate": "2023-12-03",
+              "additionalInformation": "Prose #2 in history #1",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #2 in history #1"
+              "recordedAt": "2023-12-05T12:34:56"
             }
           ],
           "additionalInformation": "Explanation #3 in history #1"
@@ -158,15 +170,17 @@
           "responses": [
             {
               "response": "Historical response #2-1",
+              "responseDate": "2023-12-04",
+              "additionalInformation": "Prose #1 in history #2",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #1 in history #2"
+              "recordedAt": "2023-12-05T12:34:56"
             },
             {
               "response": "Historical response #2-2",
+              "responseDate": "2023-12-03",
+              "additionalInformation": "Prose #2 in history #2",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #2 in history #2"
+              "recordedAt": "2023-12-05T12:34:56"
             }
           ],
           "additionalInformation": "Explanation #1 in history #2"
@@ -177,15 +191,17 @@
           "responses": [
             {
               "response": "Historical response #2-1",
+              "responseDate": "2023-12-04",
+              "additionalInformation": "Prose #1 in history #2",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #1 in history #2"
+              "recordedAt": "2023-12-05T12:34:56"
             },
             {
               "response": "Historical response #2-2",
+              "responseDate": "2023-12-03",
+              "additionalInformation": "Prose #2 in history #2",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #2 in history #2"
+              "recordedAt": "2023-12-05T12:34:56"
             }
           ],
           "additionalInformation": "Explanation #2 in history #2"
@@ -196,15 +212,17 @@
           "responses": [
             {
               "response": "Historical response #2-1",
+              "responseDate": "2023-12-04",
+              "additionalInformation": "Prose #1 in history #2",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #1 in history #2"
+              "recordedAt": "2023-12-05T12:34:56"
             },
             {
               "response": "Historical response #2-2",
+              "responseDate": "2023-12-03",
+              "additionalInformation": "Prose #2 in history #2",
               "recordedBy": "some-user",
-              "recordedAt": "2023-12-05T12:34:56",
-              "additionalInformation": "Prose #2 in history #2"
+              "recordedAt": "2023-12-05T12:34:56"
             }
           ],
           "additionalInformation": "Explanation #3 in history #2"

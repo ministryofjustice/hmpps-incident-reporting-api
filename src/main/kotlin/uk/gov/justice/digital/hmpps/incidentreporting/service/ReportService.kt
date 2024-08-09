@@ -283,6 +283,7 @@ class ReportService(
         addRequest.responses.forEach {
           addResponse(
             response = it.response,
+            responseDate = it.responseDate,
             recordedBy = requestUsername,
             recordedAt = now,
             additionalInformation = it.additionalInformation,

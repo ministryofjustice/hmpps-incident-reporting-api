@@ -237,6 +237,7 @@ class Report(
       question.getResponses().forEach { response ->
         historicalQuestion.addResponse(
           response.response,
+          response.responseDate,
           response.additionalInformation,
           response.recordedBy,
           response.recordedAt,

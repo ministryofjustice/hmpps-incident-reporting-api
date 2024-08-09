@@ -10,6 +10,10 @@
     {
       "response": "Mobile phone",
       "additionalInformation": "Not a smartphone"
+    },
+    {
+      "response": "Note with date",
+      "responseDate": "2023-11-30"
     }
   ]
 }
