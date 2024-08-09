@@ -2100,10 +2100,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "invalid shape",
               // language=json
               "[]",
+              "Cannot deserialize value",
             ),
           )
           requests.addAll(invalidRequests)
-          return requests.map { (name, request) ->
+          return requests.map { (name, request, expectedErrorText) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.post().uri(urlWithoutRelatedObjects)
                 .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -2111,6 +2112,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isBadRequest
+                .expectBody().jsonPath("developerMessage").value<String> {
+                  if (expectedErrorText != null) {
+                    assertThat(it).contains(expectedErrorText)
+                  }
+                }
 
               assertThatNoDomainEventsWereSent()
             }
@@ -2235,10 +2241,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "invalid shape",
               // language=json
               "[]",
+              "Cannot deserialize value",
             ),
           )
           requests.addAll(invalidRequests)
-          return requests.map { (name, request) ->
+          return requests.map { (name, request, expectedErrorText) ->
             DynamicTest.dynamicTest(name) {
               webTestClient.patch().uri(urlForFirstRelatedObject)
                 .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -2246,6 +2253,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isBadRequest
+                .expectBody().jsonPath("developerMessage").value<String> {
+                  if (expectedErrorText != null) {
+                    assertThat(it).contains(expectedErrorText)
+                  }
+                }
 
               assertThatNoDomainEventsWereSent()
             }
@@ -2461,6 +2473,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         InvalidRequestTestCase(
           "short staff username",
           getResource("/related-objects/staff-involved/add-request-short-username.json"),
+          "addStaffInvolvement.staffUsername: size must be between 3 and 120",
         ),
       ),
     )
@@ -2472,6 +2485,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         InvalidRequestTestCase(
           "short staff username",
           getResource("/related-objects/staff-involved/update-request-short-username.json"),
+          "updateStaffInvolvement.staffUsername: size must be between 3 and 120",
         ),
       ),
       nullablePropertyRequests = listOf(
@@ -2535,6 +2549,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         InvalidRequestTestCase(
           "empty description of change",
           getResource("/related-objects/correction-requests/add-request-empty-description.json"),
+          "addCorrectionRequest.descriptionOfChange: size must be between 1 and",
         ),
       ),
     )
@@ -2546,6 +2561,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         InvalidRequestTestCase(
           "empty description of change",
           getResource("/related-objects/correction-requests/update-request-empty-description.json"),
+          "updateCorrectionRequest.descriptionOfChange: size must be between 1 and",
         ),
       ),
     )
@@ -2707,21 +2723,25 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "invalid payload",
               // language=json
               "[]",
+              "Cannot deserialize value",
             ),
             InvalidRequestTestCase(
               "long code",
               getResource("/questions-with-responses/add-request-long-code.json"),
+              "addQuestionWithResponses.code: size must be between 1 and 60",
             ),
             InvalidRequestTestCase(
               "empty question",
               getResource("/questions-with-responses/add-request-empty-question.json"),
+              "addQuestionWithResponses.question: size must be between 1 and",
             ),
             InvalidRequestTestCase(
               "empty response",
               getResource("/questions-with-responses/add-request-empty-response.json"),
+              "addQuestionWithResponses.responses[1].response: size must be between 1 and",
             ),
           )
-            .map { (name, request) ->
+            .map { (name, request, expectedErrorText) ->
               DynamicTest.dynamicTest(name) {
                 webTestClient.post().uri(urlWithoutQuestions)
                   .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -2729,7 +2749,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   .bodyValue(request)
                   .exchange()
                   .expectStatus().isBadRequest
-                  .expectBody().jsonPath("developerMessage").hasJsonPath()
+                  .expectBody().jsonPath("developerMessage").value<String> {
+                    if (expectedErrorText != null) {
+                      assertThat(it).contains(expectedErrorText)
+                    }
+                  }
 
                 assertThatNoDomainEventsWereSent()
               }
@@ -2938,6 +2962,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 data class InvalidRequestTestCase(
   val name: String,
   val request: String,
+  val expectedErrorText: String? = null,
 )
 
 data class NullablePropertyTestCase(
