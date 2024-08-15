@@ -2,6 +2,13 @@ package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
 import jakarta.validation.ValidationException
 
+/*
+TODO: DRONE2 has just been added to start in Sept 2024,
+  but notably, DRONE1 is still active as well!
+  1) need to check in Sept what remains active
+  2) need to check start/end dates for all types in NOMIS db to ensure descriptions make sense. eg. DRONE vs DRONE1 vs DRONE2
+*/
+
 enum class Type(
   val description: String,
   val active: Boolean = true,
@@ -18,6 +25,7 @@ enum class Type(
   DEATH_OTHER("Death (other)"),
   DISORDER("Disorder"),
   DRONE_SIGHTING("Drone sighting"),
+  OLD_DRONE_SIGHTING1("Drone sighting"),
   ESCAPE_FROM_CUSTODY("Escape from custody"),
   ESCAPE_FROM_ESCORT("Escape from escort"),
   FINDS("Finds"),
@@ -71,7 +79,8 @@ enum class Type(
       "DEATH_NI" -> DEATH_OTHER
       "DEATH" -> DEATH_IN_CUSTODY
       "DISORDER1" -> DISORDER
-      "DRONE1" -> DRONE_SIGHTING
+      "DRONE1" -> OLD_DRONE_SIGHTING1
+      "DRONE2" -> DRONE_SIGHTING
       "ESCAPE_ESC" -> ESCAPE_FROM_ESCORT
       "ESCAPE_EST" -> ESCAPE_FROM_CUSTODY
       "FIND0422" -> FINDS
