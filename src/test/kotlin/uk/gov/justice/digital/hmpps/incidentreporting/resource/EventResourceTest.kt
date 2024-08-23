@@ -138,7 +138,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
       fun `can get first page of events`() {
         val existingEvent = eventRepository.save(
           buildEvent(
-            eventReference = "IE-0000000001124143",
+            eventReference = "11124143",
             eventDateAndTime = now.minusHours(1),
             reportDateAndTime = now,
           ),
@@ -153,7 +153,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
             """{
               "content": [{
                 "id": "${existingEvent.id}",
-                "eventReference": "IE-0000000001124143",
+                "eventReference": "11124143",
                 "eventDateAndTime": "2023-12-05T11:34:56"
               }],
               "number": 0,
@@ -173,7 +173,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
         @BeforeEach
         fun setUp() {
           eventRepository.saveAll(
-            listOf("IE-0000000001124143", "IE-0000000001017203", "IE-0000000001006603", "94728", "31934")
+            listOf("11124143", "11017203", "11006603", "94728", "31934")
               .mapIndexed { index, eventReference ->
                 val daysBefore = index.toLong()
                 val reportDateAndTime = now.minusDays(daysBefore)
@@ -199,15 +199,15 @@ class EventResourceTest : SqsIntegrationTestBase() {
               """{
               "content": [
                 {
-                  "eventReference": "IE-0000000001124143",
+                  "eventReference": "11124143",
                   "eventDateAndTime": "2023-12-05T11:34:56"
                 },
                 {
-                  "eventReference": "IE-0000000001017203",
+                  "eventReference": "11017203",
                   "eventDateAndTime": "2023-12-04T11:34:56"
                 },
                 {
-                  "eventReference": "IE-0000000001006603",
+                  "eventReference": "11006603",
                   "eventDateAndTime": "2023-12-03T11:34:56"
                 },
                 {
@@ -242,11 +242,11 @@ class EventResourceTest : SqsIntegrationTestBase() {
               """{
                 "content": [
                   {
-                    "eventReference": "IE-0000000001124143",
+                    "eventReference": "11124143",
                     "eventDateAndTime": "2023-12-05T11:34:56"
                   },
                   {
-                    "eventReference": "IE-0000000001017203",
+                    "eventReference": "11017203",
                     "eventDateAndTime": "2023-12-04T11:34:56"
                   }
                 ],
@@ -273,7 +273,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               """{
                 "content": [
                   {
-                    "eventReference": "IE-0000000001006603",
+                    "eventReference": "11006603",
                     "eventDateAndTime": "2023-12-03T11:34:56"
                   },
                   {
@@ -305,13 +305,13 @@ class EventResourceTest : SqsIntegrationTestBase() {
         )
         fun `can sort events`(sortParam: String) {
           val expectedEventReferences = mapOf(
-            "eventDateAndTime,ASC" to listOf("31934", "94728", "IE-0000000001006603", "IE-0000000001017203", "IE-0000000001124143"),
-            "eventDateAndTime,DESC" to listOf("IE-0000000001124143", "IE-0000000001017203", "IE-0000000001006603", "94728", "31934"),
-            "eventReference,ASC" to listOf("31934", "94728", "IE-0000000001006603", "IE-0000000001017203", "IE-0000000001124143"),
-            "eventReference,DESC" to listOf("IE-0000000001124143", "IE-0000000001017203", "IE-0000000001006603", "94728", "31934"),
+            "eventDateAndTime,ASC" to listOf("31934", "94728", "11006603", "11017203", "11124143"),
+            "eventDateAndTime,DESC" to listOf("11124143", "11017203", "11006603", "94728", "31934"),
+            "eventReference,ASC" to listOf("11006603", "11017203", "11124143", "31934", "94728"),
+            "eventReference,DESC" to listOf("94728", "31934", "11124143", "11017203", "11006603"),
             // id, being a UUIDv7, should follow table insertion order (i.e. what setUp methods do above)
-            "id,ASC" to listOf("IE-0000000001124143", "IE-0000000001017203", "IE-0000000001006603", "94728", "31934"),
-            "id,DESC" to listOf("31934", "94728", "IE-0000000001006603", "IE-0000000001017203", "IE-0000000001124143"),
+            "id,ASC" to listOf("11124143", "11017203", "11006603", "94728", "31934"),
+            "id,DESC" to listOf("31934", "94728", "11006603", "11017203", "11124143"),
           )[sortParam]!!
 
           webTestClient.get().uri("$url?sort=$sortParam")
@@ -371,7 +371,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
     fun setUp() {
       existingReport = reportRepository.save(
         buildReport(
-          reportReference = "IR-0000000001124143",
+          reportReference = "11124143",
           reportTime = now,
         ),
       )
@@ -417,18 +417,18 @@ class EventResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.event.id}",
-              "eventReference": "IE-0000000001124143",
+              "eventReference": "11124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An event occurred",
               "description": "Details of the event",
               "reports": [{
                 "id": "${existingReport.id}",
-                "reportReference": "IR-0000000001124143",
+                "reportReference": "11124143",
                 "type": "FINDS",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "title": "Incident Report IR-0000000001124143",
+                "title": "Incident Report 11124143",
                 "description": "A new incident created in the new service of type Finds",
                 "reportedBy": "USER1",
                 "reportedAt": "2023-12-05T12:34:56",
@@ -452,7 +452,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
       fun `can get an event by ID with multiple reports`() {
         val anotherReport = reportRepository.save(
           buildReport(
-            reportReference = "IR-0000000001017203",
+            reportReference = "11017203",
             reportTime = now.plusMinutes(10),
             type = Type.MISCELLANEOUS,
           ),
@@ -470,7 +470,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.event.id}",
-              "eventReference": "IE-0000000001124143",
+              "eventReference": "11124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An event occurred",
@@ -478,11 +478,11 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "reports": [
                 {
                   "id": "${existingReport.id}",
-                  "reportReference": "IR-0000000001124143",
+                  "reportReference": "11124143",
                   "type": "FINDS",
                   "incidentDateAndTime": "2023-12-05T11:34:56",
                   "prisonId": "MDI",
-                  "title": "Incident Report IR-0000000001124143",
+                  "title": "Incident Report 11124143",
                   "description": "A new incident created in the new service of type Finds",
                   "reportedBy": "USER1",
                   "reportedAt": "2023-12-05T12:34:56",
@@ -495,11 +495,11 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 },
                 {
                   "id": "${anotherReport.id}",
-                  "reportReference": "IR-0000000001017203",
+                  "reportReference": "11017203",
                   "type": "MISCELLANEOUS",
                   "incidentDateAndTime": "2023-12-05T11:44:56",
                   "prisonId": "MDI",
-                  "title": "Incident Report IR-0000000001017203",
+                  "title": "Incident Report 11017203",
                   "description": "A new incident created in the new service of type Miscellaneous",
                   "reportedBy": "USER1",
                   "reportedAt": "2023-12-05T12:44:56",
@@ -532,7 +532,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
     fun setUp() {
       existingReport = reportRepository.save(
         buildReport(
-          reportReference = "IR-0000000001124143",
+          reportReference = "11124143",
           reportTime = now,
         ),
       )
@@ -555,7 +555,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
     inner class Validation {
       @Test
       fun `cannot get an event by reference if it is not found`() {
-        webTestClient.get().uri("/incident-events/reference/IE-11111111")
+        webTestClient.get().uri("/incident-events/reference/11111111")
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -578,18 +578,18 @@ class EventResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.event.id}",
-              "eventReference": "IE-0000000001124143",
+              "eventReference": "11124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An event occurred",
               "description": "Details of the event",
               "reports": [{
                 "id": "${existingReport.id}",
-                "reportReference": "IR-0000000001124143",
+                "reportReference": "11124143",
                 "type": "FINDS",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "prisonId": "MDI",
-                "title": "Incident Report IR-0000000001124143",
+                "title": "Incident Report 11124143",
                 "description": "A new incident created in the new service of type Finds",
                 "reportedBy": "USER1",
                 "reportedAt": "2023-12-05T12:34:56",
@@ -613,7 +613,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
       fun `can get an event by reference with multiple reports`() {
         val anotherReport = reportRepository.save(
           buildReport(
-            reportReference = "IR-0000000001017203",
+            reportReference = "11017203",
             reportTime = now.plusMinutes(10),
             type = Type.MISCELLANEOUS,
           ),
@@ -631,7 +631,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "id": "${existingReport.event.id}",
-              "eventReference": "IE-0000000001124143",
+              "eventReference": "11124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An event occurred",
@@ -639,11 +639,11 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "reports": [
                 {
                   "id": "${existingReport.id}",
-                  "reportReference": "IR-0000000001124143",
+                  "reportReference": "11124143",
                   "type": "FINDS",
                   "incidentDateAndTime": "2023-12-05T11:34:56",
                   "prisonId": "MDI",
-                  "title": "Incident Report IR-0000000001124143",
+                  "title": "Incident Report 11124143",
                   "description": "A new incident created in the new service of type Finds",
                   "reportedBy": "USER1",
                   "reportedAt": "2023-12-05T12:34:56",
@@ -656,11 +656,11 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 },
                 {
                   "id": "${anotherReport.id}",
-                  "reportReference": "IR-0000000001017203",
+                  "reportReference": "11017203",
                   "type": "MISCELLANEOUS",
                   "incidentDateAndTime": "2023-12-05T11:44:56",
                   "prisonId": "MDI",
-                  "title": "Incident Report IR-0000000001017203",
+                  "title": "Incident Report 11017203",
                   "description": "A new incident created in the new service of type Miscellaneous",
                   "reportedBy": "USER1",
                   "reportedAt": "2023-12-05T12:44:56",
