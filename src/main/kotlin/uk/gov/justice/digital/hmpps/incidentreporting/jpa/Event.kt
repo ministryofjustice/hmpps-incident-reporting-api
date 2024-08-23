@@ -39,7 +39,6 @@ class Event(
   /**
    * Human-readable reference.
    * Matches incident number when sourced from NOMIS.
-   * Prefixed with “IE-” when sourced from DPS.
    */
   @Column(nullable = false, unique = true, length = 25)
   val eventReference: String,
