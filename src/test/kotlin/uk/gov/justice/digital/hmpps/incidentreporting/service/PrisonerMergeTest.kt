@@ -70,13 +70,13 @@ class PrisonerMergeTest {
     ).also { it.id = UUID.fromString("066ab92f-efc5-7015-8000-42c0bc6b704b") }
     // report with A0001AA and A0002AA
     val mockReport2 = buildReport(
-      reportReference = "IR-0000000001124143",
+      reportReference = "11124143",
       reportTime = now.minusDays(2),
       generatePrisonerInvolvement = 2,
     ).also { it.id = UUID.fromString("066ab930-b9ef-7b6d-8000-23258e439e22") }
     // report with A0001AA, A0002AA and A0003AA
     val mockReport3 = buildReport(
-      reportReference = "IR-0000000001124146",
+      reportReference = "11124146",
       reportTime = now.minusDays(1),
       generatePrisonerInvolvement = 3,
     ).also { it.id = UUID.fromString("066ab931-77d5-70fc-8000-67fbea4733e5") }
@@ -91,7 +91,7 @@ class PrisonerMergeTest {
     val reports = reportService.replacePrisonerNumber("A0002AA", "A0002BB")
     val reportIds = reports.map { it.reportReference }
     assertThat(reportIds)
-      .isEqualTo(listOf("IR-0000000001124143", "IR-0000000001124146"))
+      .isEqualTo(listOf("11124143", "11124146"))
 
     assertThat(mockReport1.prisonersInvolved.map { it.prisonerNumber })
       .isEqualTo(listOf("A0001AA"))
