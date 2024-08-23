@@ -44,10 +44,7 @@ fun buildReport(
     assignedTo = reportingUsername,
     modifiedBy = reportingUsername,
     event = buildEvent(
-      eventReference = when (source) {
-        InformationSource.DPS -> "IE-${reportReference.removePrefix("IR-")}"
-        InformationSource.NOMIS -> reportReference
-      },
+      eventReference = reportReference,
       eventDateAndTime = eventDateAndTime,
       reportDateAndTime = reportTime,
       prisonId = prisonId,
