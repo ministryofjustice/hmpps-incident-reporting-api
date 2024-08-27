@@ -68,7 +68,6 @@ class Report(
 
   /**
    * Human-readable reference. Previously known as ”incident number” in NOMIS.
-   * A number when sourced from NOMIS.
    */
   @Column(nullable = false, unique = true, length = 25)
   val reportReference: String,
