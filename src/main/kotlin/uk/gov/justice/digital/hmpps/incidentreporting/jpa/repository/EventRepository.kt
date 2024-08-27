@@ -22,4 +22,4 @@ interface EventRepository : JpaRepository<Event, UUID>, JpaSpecificationExecutor
   fun getNextEventReference(): Long
 }
 
-fun EventRepository.generateEventReference() = "IE-%016d".format(getNextEventReference())
+fun EventRepository.generateEventReference() = getNextEventReference().toString()

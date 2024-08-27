@@ -136,7 +136,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
             type = Type.FINDS,
           ),
           buildReport(
-            reportReference = "IR-0000000001124143",
+            reportReference = "11124143",
             reportTime = now.minusDays(1),
             prisonId = "MDI",
             source = InformationSource.NOMIS,

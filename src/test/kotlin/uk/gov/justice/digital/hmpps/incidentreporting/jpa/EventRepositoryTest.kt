@@ -55,7 +55,7 @@ class EventRepositoryTest : IntegrationTestBase() {
       val whenEventReported = whenEventHappened.plusHours(2)
       val event = eventRepository.save(
         buildEvent(
-          eventReference = "IE-0000000001124143",
+          eventReference = "11124143",
           eventDateAndTime = whenEventHappened,
           reportDateAndTime = whenEventReported,
         ),
@@ -109,7 +109,7 @@ class EventRepositoryTest : IntegrationTestBase() {
             prisonId = "LEI",
           ),
           buildEvent(
-            eventReference = "IE-0000000001124143",
+            eventReference = "11124143",
             eventDateAndTime = now.minusDays(1).minusHours(2),
             reportDateAndTime = now.minusDays(1),
             prisonId = "MDI",

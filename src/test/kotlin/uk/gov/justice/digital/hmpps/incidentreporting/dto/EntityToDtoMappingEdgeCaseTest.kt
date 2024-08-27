@@ -101,7 +101,7 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
     fun setUp() {
       report = reportRepository.save(
         buildReport(
-          reportReference = "IR-0000000001124143",
+          reportReference = "11124143",
           reportTime = now,
           source = InformationSource.DPS,
           generateStaffInvolvement = 2,

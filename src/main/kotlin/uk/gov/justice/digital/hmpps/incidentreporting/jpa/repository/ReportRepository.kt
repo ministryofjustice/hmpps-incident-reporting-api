@@ -22,4 +22,4 @@ interface ReportRepository : JpaRepository<Report, UUID>, JpaSpecificationExecut
   fun getNextReportReference(): Long
 }
 
-fun ReportRepository.generateReportReference() = "IR-%016d".format(getNextReportReference())
+fun ReportRepository.generateReportReference() = getNextReportReference().toString()

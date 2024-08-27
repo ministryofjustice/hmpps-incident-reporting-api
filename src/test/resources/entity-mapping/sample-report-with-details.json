@@ -1,9 +1,9 @@
 {
-  "reportReference": "IR-0000000001124143",
+  "reportReference": "11124143",
   "type": "FINDS",
   "incidentDateAndTime": "2023-12-05T11:34:56",
   "prisonId": "MDI",
-  "title": "Incident Report IR-0000000001124143",
+  "title": "Incident Report 11124143",
   "description": "A new incident created in the new service of type Finds",
   "reportedBy": "USER1",
   "reportedAt": "2023-12-05T12:34:56",
@@ -14,7 +14,7 @@
   "modifiedBy": "USER1",
   "createdInNomis": false,
   "event": {
-    "eventReference": "IE-0000000001124143",
+    "eventReference": "11124143",
     "eventDateAndTime": "2023-12-05T11:34:56",
     "prisonId": "MDI",
     "title": "An event occurred",
