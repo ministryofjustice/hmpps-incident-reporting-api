@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import java.time.LocalDateTime
@@ -16,4 +17,10 @@ data class History(
   val changedBy: String,
   @Schema(description = "Previous set of question-response pairs", required = true)
   val questions: List<HistoricalQuestion> = emptyList(),
-)
+) {
+  // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
+  @get:Schema(description = "Previous NOMIS incident report type code, which may be null for newer incident types", required = false)
+  @get:JsonProperty
+  val nomisType: String?
+    get() = type.nomisType
+}

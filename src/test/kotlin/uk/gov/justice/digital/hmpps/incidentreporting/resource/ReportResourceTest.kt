@@ -533,6 +533,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
               "type": "FINDS",
+              "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
@@ -698,6 +699,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
               "type": "FINDS",
+              "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
@@ -871,6 +873,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "type": "SELF_HARM",
+              "nomisType": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An incident occurred",
@@ -930,6 +933,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """ 
             {
               "type": "SELF_HARM",
+              "nomisType": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "An incident occurred",
@@ -1381,6 +1385,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
               "type": "FINDS",
+              "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
@@ -1423,6 +1428,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
               "type": "FINDS",
+              "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
@@ -1592,6 +1598,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${reportWithQuestions.id}",
               "reportReference": "11124146",
               "type": "FINDS",
+              "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
@@ -1682,6 +1689,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${reportWithQuestions.id}",
               "reportReference": "11124146",
               "type": "DAMAGE",
+              "nomisType": "DAMAGE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
@@ -1697,6 +1705,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "history": [
                 {
                   "type": "FINDS",
+                  "nomisType": "FIND0422",
                   "changedAt": "2023-12-05T12:34:56",
                   "changedBy": "request-user",
                   "questions": [
@@ -1784,6 +1793,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${reportWithQuestionsAndHistory.id}",
               "reportReference": "11124146",
               "type": "DAMAGE",
+              "nomisType": "DAMAGE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
@@ -1799,6 +1809,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "history": [
                 {
                   "type": "ASSAULT",
+                  "nomisType": "ASSAULTS3",
                   "changedAt": "2023-12-05T12:31:56",
                   "changedBy": "some-past-user",
                   "questions": [
@@ -1820,6 +1831,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 },
                 {
                   "type": "FINDS",
+                  "nomisType": "FIND0422",
                   "changedAt": "2023-12-05T12:34:56",
                   "changedBy": "request-user",
                   "questions": [
