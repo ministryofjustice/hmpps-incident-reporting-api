@@ -16,7 +16,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.DeactivatableConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeConstantDescription
 
 @RestController
 @Validated
@@ -102,9 +102,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun types(): List<DeactivatableConstantDescription> {
+  fun types(): List<TypeConstantDescription> {
     return Type.entries.map {
-      DeactivatableConstantDescription(it.name, it.description, it.active)
+      TypeConstantDescription(it.name, it.description, it.active, it.nomisType)
     }
   }
 }
