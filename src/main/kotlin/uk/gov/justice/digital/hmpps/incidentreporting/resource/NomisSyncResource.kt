@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncCreateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncUpdateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncReportId
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
@@ -70,6 +72,11 @@ class NomisSyncResource(
     ],
   )
   fun upsertIncidentReport(
+    @Schema(
+      description = "Incident report created/updated in NOMIS",
+      accessMode = Schema.AccessMode.WRITE_ONLY,
+      oneOf = [NomisSyncCreateRequest::class, NomisSyncUpdateRequest::class],
+    )
     @RequestBody
     @Valid
     syncRequest: NomisSyncRequest,
