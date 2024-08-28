@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications
 
-import jakarta.persistence.criteria.Join
-import org.springframework.data.jpa.domain.Specification
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -31,16 +29,8 @@ fun filterByReportedDateFrom(date: LocalDate) =
 fun filterByReportedDateUntil(date: LocalDate) =
   Report::reportedAt.buildSpecForLessThan(date.plusDays(1).atStartOfDay())
 
-fun filterByInvolvedStaff(staffUsername: String): Specification<Report> {
-  return Specification { root, _, criteriaBuilder ->
-    val staffInvolved: Join<StaffInvolvement, Report> = root.join("staffInvolved")
-    criteriaBuilder.equal(staffInvolved.get<String>("staffUsername"), staffUsername)
-  }
-}
+fun filterByInvolvedStaff(staffUsername: String) =
+  Report::staffInvolved.buildSpecForRelatedEntityPropertyEqualTo(StaffInvolvement::staffUsername, staffUsername)
 
-fun filterByInvolvedPrisoner(prisonerNumber: String): Specification<Report> {
-  return Specification { root, _, criteriaBuilder ->
-    val prisonersInvolved: Join<PrisonerInvolvement, Report> = root.join("prisonersInvolved")
-    criteriaBuilder.equal(prisonersInvolved.get<String>("prisonerNumber"), prisonerNumber)
-  }
-}
+fun filterByInvolvedPrisoner(prisonerNumber: String) =
+  Report::prisonersInvolved.buildSpecForRelatedEntityPropertyEqualTo(PrisonerInvolvement::prisonerNumber, prisonerNumber)
