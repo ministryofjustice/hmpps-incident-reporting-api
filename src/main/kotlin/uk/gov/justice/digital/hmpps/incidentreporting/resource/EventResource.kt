@@ -69,7 +69,8 @@ class EventResource(
   fun getEvents(
     @Schema(
       description = "Filter by given prison ID",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "MDI",
       minLength = 2,
@@ -80,7 +81,8 @@ class EventResource(
     prisonId: String? = null,
     @Schema(
       description = "Filter for events that happened since this date (inclusive)",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "2024-01-01",
       format = "date",
@@ -89,7 +91,8 @@ class EventResource(
     eventDateFrom: LocalDate? = null,
     @Schema(
       description = "Filter for events that happened until this date (inclusive)",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "2024-05-31",
       format = "date",
@@ -141,7 +144,7 @@ class EventResource(
     ],
   )
   fun getEventById(
-    @Schema(description = "The event id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The event id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     id: UUID,
   ): EventWithBasicReports {
@@ -178,7 +181,7 @@ class EventResource(
     ],
   )
   fun getEventByReference(
-    @Schema(description = "The event reference", example = "2342341242", required = true)
+    @Schema(description = "The event reference", example = "2342341242", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     eventReference: String,
   ): EventWithBasicReports {

@@ -65,7 +65,7 @@ class ReportQuestionResponseResource(
     ],
   )
   fun getQuestionsAndResponses(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
   ): List<Question> {
@@ -107,7 +107,7 @@ class ReportQuestionResponseResource(
     ],
   )
   fun addQuestionWithResponses(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
     @RequestBody
@@ -160,7 +160,7 @@ class ReportQuestionResponseResource(
     ],
   )
   fun deleteLastQuestionAndResponses(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
   ): List<Question> {
