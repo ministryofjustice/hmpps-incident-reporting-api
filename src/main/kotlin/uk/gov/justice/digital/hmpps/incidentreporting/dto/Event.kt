@@ -5,27 +5,27 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Schema(description = "Event linking multiple incident reports")
+@Schema(description = "Event linking multiple incident reports", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 open class Event(
-  @Schema(description = "The internal ID of this event", required = true)
+  @Schema(description = "The internal ID of this event")
   val id: UUID,
-  @Schema(description = "The human-readable identifier of this event", required = true)
+  @Schema(description = "The human-readable identifier of this event")
   val eventReference: String,
-  @Schema(description = "When the incident took place", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the incident took place", example = "2024-04-29T12:34:56.789012")
   val eventDateAndTime: LocalDateTime,
-  @Schema(description = "The NOMIS id of the prison where incident took place", required = true, example = "MDI")
+  @Schema(description = "The NOMIS id of the prison where incident took place", example = "MDI")
   val prisonId: String,
 
-  @Schema(description = "Brief title describing the event", required = true)
+  @Schema(description = "Brief title describing the event")
   val title: String,
-  @Schema(description = "Longer summary of the event", required = true)
+  @Schema(description = "Longer summary of the event")
   val description: String,
 
-  @Schema(description = "When the event was first created", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the event was first created", example = "2024-04-29T12:34:56.789012")
   val createdAt: LocalDateTime,
-  @Schema(description = "When the event was last changed", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the event was last changed", example = "2024-04-29T12:34:56.789012")
   val modifiedAt: LocalDateTime,
-  @Schema(description = "Username of the person who last changed this event", required = true)
+  @Schema(description = "Username of the person who last changed this event")
   val modifiedBy: String,
 )

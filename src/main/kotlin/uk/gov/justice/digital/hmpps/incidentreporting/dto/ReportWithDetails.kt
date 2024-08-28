@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Schema(description = "Incident report with all related information")
+@Schema(description = "Incident report with all related information", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class ReportWithDetails(
   id: UUID,
@@ -27,21 +27,21 @@ class ReportWithDetails(
   modifiedBy: String,
   createdInNomis: Boolean,
 
-  @Schema(description = "Event linking multiple incident reports together", required = true)
+  @Schema(description = "Event linking multiple incident reports together")
   val event: Event,
 
-  @Schema(description = "The question-response pairs that make up this report", required = true)
+  @Schema(description = "The question-response pairs that make up this report")
   val questions: List<Question>,
-  @Schema(description = "Prior versions of this report, created when the report type changes", required = true)
+  @Schema(description = "Prior versions of this report, created when the report type changes")
   val history: List<History>,
-  @Schema(description = "Previous statuses the incident report transitioned to", required = true)
+  @Schema(description = "Previous statuses the incident report transitioned to")
   val historyOfStatuses: List<StatusHistory>,
 
-  @Schema(description = "Which members of staff were involved?", required = true)
+  @Schema(description = "Which members of staff were involved?")
   val staffInvolved: List<StaffInvolvement>,
-  @Schema(description = "Which prisoners were involved?", required = true)
+  @Schema(description = "Which prisoners were involved?")
   val prisonersInvolved: List<PrisonerInvolvement>,
-  @Schema(description = "The corrections that were requested of this report", required = true)
+  @Schema(description = "The corrections that were requested of this report")
   val correctionRequests: List<CorrectionRequest>,
 ) : ReportBasic(
   id = id,
@@ -61,7 +61,7 @@ class ReportWithDetails(
   createdInNomis = createdInNomis,
 ) {
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
-  @get:Schema(description = "NOMIS incident report type code, which may be null for newer incident types", required = false, deprecated = true)
+  @get:Schema(description = "NOMIS incident report type code, which may be null for newer incident types", nullable = true, deprecated = true)
   @get:JsonProperty
   val nomisType: String?
     get() = type.nomisType

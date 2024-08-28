@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.response
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.domain.Page
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Sort
  * `org.springframework.data.domain.PageImpl` serialises with excessive and redundant properties.
  * This class creates simpler JSON.
  */
+@Schema(description = "Page of results", accessMode = Schema.AccessMode.READ_ONLY)
+@JsonInclude(JsonInclude.Include.ALWAYS)
 data class SimplePage<T>(
   @Schema(description = "Elements in this pages", example = "[…]")
   val content: List<T>,

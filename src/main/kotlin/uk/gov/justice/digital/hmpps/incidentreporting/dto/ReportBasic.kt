@@ -8,41 +8,41 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Schema(description = "Incident report with only key information")
+@Schema(description = "Incident report with only key information", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 open class ReportBasic(
-  @Schema(description = "The internal ID of this report", required = true)
+  @Schema(description = "The internal ID of this report")
   val id: UUID,
-  @Schema(description = "The human-readable identifier of this report", required = true)
+  @Schema(description = "The human-readable identifier of this report")
   val reportReference: String,
-  @Schema(description = "Incident report type", required = true)
+  @Schema(description = "Incident report type")
   val type: Type,
-  @Schema(description = "When the incident took place", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the incident took place", example = "2024-04-29T12:34:56.789012")
   val incidentDateAndTime: LocalDateTime,
-  @Schema(description = "The NOMIS id of the prison where incident took place", required = true, example = "MDI")
+  @Schema(description = "The NOMIS id of the prison where incident took place", example = "MDI")
   val prisonId: String,
-  @Schema(description = "Brief title describing the incident", required = true)
+  @Schema(description = "Brief title describing the incident")
   val title: String,
-  @Schema(description = "Longer summary of the incident", required = true)
+  @Schema(description = "Longer summary of the incident")
   val description: String,
 
-  @Schema(description = "Username of person who created the incident report", required = true)
+  @Schema(description = "Username of person who created the incident report")
   val reportedBy: String,
-  @Schema(description = "When the incident report was created", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the incident report was created", example = "2024-04-29T12:34:56.789012")
   val reportedAt: LocalDateTime,
-  @Schema(description = "The current status of this report", required = true, example = "DRAFT")
+  @Schema(description = "The current status of this report", example = "DRAFT")
   val status: Status,
-  @Schema(description = "Optional user who this report is currently assigned to", required = true, example = "null")
+  @Schema(description = "Optional user who this report is currently assigned to", example = "null")
   val assignedTo: String?,
 
-  @Schema(description = "When the report was first created", required = true)
+  @Schema(description = "When the report was first created", example = "2024-04-29T12:34:56.789012")
   val createdAt: LocalDateTime,
-  @Schema(description = "When the report was last changed", required = true)
+  @Schema(description = "When the report was last changed", example = "2024-04-29T12:34:56.789012")
   val modifiedAt: LocalDateTime,
-  @Schema(description = "Username of the person who last changed this report", required = true)
+  @Schema(description = "Username of the person who last changed this report")
   val modifiedBy: String,
 
-  @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", required = true, example = "false")
+  @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", example = "false")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   val createdInNomis: Boolean,
 )

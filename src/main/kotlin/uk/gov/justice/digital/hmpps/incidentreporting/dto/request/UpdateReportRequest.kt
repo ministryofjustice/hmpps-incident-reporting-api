@@ -1,28 +1,30 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.ValidationException
 import jakarta.validation.constraints.Size
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 
-@Schema(description = "Payload to update key properties of an incident report")
+@Schema(description = "Payload to update key properties of an incident report", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class UpdateReportRequest(
-  @Schema(description = "When the incident took place", required = false, defaultValue = "null", example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the incident took place", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", example = "2024-04-29T12:34:56.789012")
   val incidentDateAndTime: LocalDateTime? = null,
-  @Schema(description = "The NOMIS id of the prison where incident took place", required = false, defaultValue = "null", example = "MDI", minLength = 2, maxLength = 6)
+  @Schema(description = "The NOMIS id of the prison where incident took place", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", example = "MDI", minLength = 2, maxLength = 6)
   @field:Size(min = 2, max = 6)
   val prisonId: String? = null,
-  @Schema(description = "Brief title describing the incident", required = false, defaultValue = "null", minLength = 5, maxLength = 255)
+  @Schema(description = "Brief title describing the incident", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 5, maxLength = 255)
   @field:Size(min = 5, max = 255)
   val title: String? = null,
-  @Schema(description = "Longer summary of the incident", required = false, defaultValue = "null", minLength = 1)
+  @Schema(description = "Longer summary of the incident", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 1)
   @field:Size(min = 1)
   val description: String? = null,
 
-  @Schema(description = "Whether the parent event should also be updated", required = false, defaultValue = "false", example = "true")
+  @Schema(description = "Whether the parent event should also be updated", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "false", example = "true")
   val updateEvent: Boolean = false,
 ) {
+  @JsonIgnore
   val isEmpty: Boolean =
     incidentDateAndTime == null && prisonId == null && title == null && description == null
 

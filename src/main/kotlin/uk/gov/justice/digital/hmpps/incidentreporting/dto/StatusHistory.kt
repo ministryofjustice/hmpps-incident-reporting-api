@@ -5,13 +5,13 @@ import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import java.time.LocalDateTime
 
-@Schema(description = "Previous statuses an incident report transitioned to")
+@Schema(description = "Previous statuses an incident report transitioned to", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class StatusHistory(
-  @Schema(description = "Previous current status of an incident report", required = true)
+  @Schema(description = "Previous current status of an incident report")
   val status: Status,
-  @Schema(description = "When the report status was changed", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the report status was changed", example = "2024-04-29T12:34:56.789012")
   val changedAt: LocalDateTime,
-  @Schema(description = "The member of staff who changed the report status", required = true)
+  @Schema(description = "The member of staff who changed the report status")
   val changedBy: String,
 )
