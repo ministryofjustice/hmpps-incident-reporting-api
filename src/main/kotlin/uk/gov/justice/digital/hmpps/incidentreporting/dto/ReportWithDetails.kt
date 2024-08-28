@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -58,4 +59,10 @@ class ReportWithDetails(
   modifiedAt = modifiedAt,
   modifiedBy = modifiedBy,
   createdInNomis = createdInNomis,
-)
+) {
+  // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
+  @get:Schema(description = "NOMIS incident report type code, which may be null for newer incident types", required = false, deprecated = true)
+  @get:JsonProperty
+  val nomisType: String?
+    get() = type.nomisType
+}
