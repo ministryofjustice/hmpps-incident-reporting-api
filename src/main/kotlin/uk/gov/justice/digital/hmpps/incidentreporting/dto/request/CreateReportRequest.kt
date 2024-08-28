@@ -10,24 +10,24 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 
-@Schema(description = "Payload to create a new draft incident report")
+@Schema(description = "Payload to create a new draft incident report", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class CreateReportRequest(
-  @Schema(description = "Incident report type", required = true)
+  @Schema(description = "Incident report type", requiredMode = Schema.RequiredMode.REQUIRED)
   val type: Type,
-  @Schema(description = "When the incident took place", required = true, example = "2024-04-29T12:34:56.789012")
+  @Schema(description = "When the incident took place", requiredMode = Schema.RequiredMode.REQUIRED, example = "2024-04-29T12:34:56.789012")
   val incidentDateAndTime: LocalDateTime,
-  @Schema(description = "The NOMIS id of the prison where incident took place", required = true, example = "MDI", minLength = 2, maxLength = 6)
+  @Schema(description = "The NOMIS id of the prison where incident took place", requiredMode = Schema.RequiredMode.REQUIRED, example = "MDI", minLength = 2, maxLength = 6)
   @field:Size(min = 2, max = 6)
   val prisonId: String,
-  @Schema(description = "Brief title describing the incident", required = true, minLength = 5, maxLength = 255)
+  @Schema(description = "Brief title describing the incident", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 5, maxLength = 255)
   @field:Size(min = 5, max = 255)
   val title: String,
-  @Schema(description = "Longer summary of the incident", required = true, minLength = 1)
+  @Schema(description = "Longer summary of the incident", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
   @field:Size(min = 1)
   val description: String,
-  @Schema(description = "Whether to link to a new event", required = false, defaultValue = "false")
+  @Schema(description = "Whether to link to a new event", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "false")
   val createNewEvent: Boolean = false,
-  @Schema(description = "Which existing event to link to", required = false, defaultValue = "null")
+  @Schema(description = "Which existing event to link to", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null")
   val linkedEventReference: String? = null,
 ) {
   fun validate(now: LocalDateTime) {

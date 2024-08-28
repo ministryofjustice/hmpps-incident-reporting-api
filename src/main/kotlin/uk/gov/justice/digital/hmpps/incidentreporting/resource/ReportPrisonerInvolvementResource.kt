@@ -56,7 +56,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
   )
   @Transactional(readOnly = true)
   override fun listObjects(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
   ): List<PrisonerInvolvement> {
@@ -99,7 +99,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
   )
   @Transactional
   override fun addObject(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
     @RequestBody
@@ -157,10 +157,10 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
   )
   @Transactional
   override fun updateObject(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
-    @Schema(description = "The index of the object to update (starts from 1)", example = "1", required = true)
+    @Schema(description = "The index of the object to update (starts from 1)", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     index: Int,
     @RequestBody
@@ -211,10 +211,10 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
   )
   @Transactional
   override fun removeObject(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
-    @Schema(description = "The index of the object to delete (starts from 1)", example = "1", required = true)
+    @Schema(description = "The index of the object to delete (starts from 1)", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     index: Int,
   ): List<PrisonerInvolvement> {

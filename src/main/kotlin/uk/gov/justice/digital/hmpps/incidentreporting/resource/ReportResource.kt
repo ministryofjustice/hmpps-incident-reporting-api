@@ -86,7 +86,8 @@ class ReportResource(
   fun getBasicReports(
     @Schema(
       description = "Filter by given prison ID",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "MDI",
       minLength = 2,
@@ -97,7 +98,8 @@ class ReportResource(
     prisonId: String? = null,
     @Schema(
       description = "Filter by given information source",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "DPS",
       implementation = InformationSource::class,
@@ -110,7 +112,8 @@ class ReportResource(
       array = ArraySchema(
         schema = Schema(implementation = Status::class),
         arraySchema = Schema(
-          required = false,
+          requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+          nullable = true,
           defaultValue = "null",
         ),
       ),
@@ -119,7 +122,8 @@ class ReportResource(
     status: List<Status>? = null,
     @Schema(
       description = "Filter by given incident type",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "DAMAGE",
       implementation = Type::class,
@@ -128,7 +132,8 @@ class ReportResource(
     type: Type? = null,
     @Schema(
       description = "Filter for incidents occurring since this date (inclusive)",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "2024-01-01",
       format = "date",
@@ -137,7 +142,8 @@ class ReportResource(
     incidentDateFrom: LocalDate? = null,
     @Schema(
       description = "Filter for incidents occurring until this date (inclusive)",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "2024-05-31",
       format = "date",
@@ -146,7 +152,8 @@ class ReportResource(
     incidentDateUntil: LocalDate? = null,
     @Schema(
       description = "Filter for incidents reported since this date (inclusive)",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "2024-01-01",
       format = "date",
@@ -155,7 +162,8 @@ class ReportResource(
     reportedDateFrom: LocalDate? = null,
     @Schema(
       description = "Filter for incidents reported until this date (inclusive)",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "2024-05-31",
       format = "date",
@@ -164,7 +172,8 @@ class ReportResource(
     reportedDateUntil: LocalDate? = null,
     @Schema(
       description = "Filter for incidents involving staff identified by username",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "abc12a",
     )
@@ -173,7 +182,8 @@ class ReportResource(
     involvingStaffUsername: String? = null,
     @Schema(
       description = "Filter for incidents involving prisoners identified by prisoner number",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
       defaultValue = "null",
       example = "A1234AA",
     )
@@ -232,7 +242,7 @@ class ReportResource(
     ],
   )
   fun getBasicReportById(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     id: UUID,
   ): ReportBasic {
@@ -269,7 +279,7 @@ class ReportResource(
     ],
   )
   fun getReportWithDetailsById(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     id: UUID,
   ): ReportWithDetails {
@@ -306,7 +316,7 @@ class ReportResource(
     ],
   )
   fun getBasicReportByReference(
-    @Schema(description = "The incident report reference", example = "2342341242", required = true)
+    @Schema(description = "The incident report reference", example = "2342341242", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportReference: String,
   ): ReportBasic {
@@ -343,7 +353,7 @@ class ReportResource(
     ],
   )
   fun getReportWithDetailsByReference(
-    @Schema(description = "The incident report reference", example = "2342341242", required = true)
+    @Schema(description = "The incident report reference", example = "2342341242", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportReference: String,
   ): ReportWithDetails {
@@ -431,7 +441,7 @@ class ReportResource(
     ],
   )
   fun updateReport(
-    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     id: UUID,
     @RequestBody
@@ -487,7 +497,7 @@ class ReportResource(
     ],
   )
   fun changeReportStatus(
-    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     id: UUID,
     @RequestBody
@@ -542,7 +552,7 @@ class ReportResource(
     ],
   )
   fun changeReportType(
-    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     id: UUID,
     @RequestBody
@@ -598,12 +608,12 @@ class ReportResource(
     ],
   )
   fun deleteReport(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", required = true)
+    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     id: UUID,
     @Schema(
       description = "Whether orphaned events should also be deleted",
-      required = false,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       defaultValue = "true",
       example = "false",
     )

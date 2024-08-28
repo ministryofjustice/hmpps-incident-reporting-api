@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Schema(description = "Event linking multiple incident reports (including key report information)")
+@Schema(description = "Event linking multiple incident reports (including key report information)", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class EventWithBasicReports(
   id: UUID,
@@ -18,7 +18,7 @@ class EventWithBasicReports(
   modifiedAt: LocalDateTime,
   modifiedBy: String,
 
-  @Schema(description = "The contained reports with key information only", required = true)
+  @Schema(description = "The contained reports with key information only")
   val reports: List<ReportBasic>,
 ) : Event(
   id = id,
