@@ -89,6 +89,20 @@ class ReportService(
       .map { it.toDtoBasic() }
   }
 
+  fun getBasicReportsInvolvingPrisoner(prisonerNumber: String): List<ReportBasic> {
+    return buildMap {
+      prisonerInvolvementRepository.findAllByPrisonerNumber(prisonerNumber)
+        .forEach { prisonerInvolvement ->
+          val report = prisonerInvolvement.getReport()
+          if (!contains(report.id)) {
+            put(report.id, report.toDtoBasic())
+          }
+        }
+    }
+      .values
+      .sortedBy { it.id }
+  }
+
   fun getBasicReportById(id: UUID): ReportBasic? {
     return reportRepository.findById(id).getOrNull()
       ?.toDtoBasic()
@@ -344,12 +358,11 @@ class ReportService(
           val report = prisonerInvolvement.getReport()
           if (!containsKey(report.id)) {
             report.modifiedAt = now // NB: there is no actor user to set modifiedBy
-            put(report.id, report)
+            put(report.id, report.toDtoBasic())
           }
         }
     }
       .values
-      .map { it.toDtoBasic() }
       .sortedBy { it.id }
       .also { reports ->
         if (reports.isNotEmpty()) {
