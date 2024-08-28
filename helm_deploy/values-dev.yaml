@@ -16,7 +16,7 @@ generic-service:
     API_BASE_URL_OAUTH: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service-dev
+  alertSeverity: hmpps-incident-reporting-dev
   businessHoursOnly: true
   rdsAlertsDatabases:
     cloud-platform-357b6fd216e4b0ae: incident-reporting-api
