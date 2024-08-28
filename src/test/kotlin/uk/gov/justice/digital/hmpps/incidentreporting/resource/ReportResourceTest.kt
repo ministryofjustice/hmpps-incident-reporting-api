@@ -411,6 +411,143 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
+  @DisplayName("GET /incident-reports/involving-staff/{staffUsername}")
+  @Nested
+  inner class GetReportsInvolvingStaff {
+    private lateinit var reportWithStaffInvolvement: Report
+    private val url = "/incident-reports/involving-staff/staff-1"
+
+    @BeforeEach
+    fun setUp() {
+      reportWithStaffInvolvement = reportRepository.save(
+        buildReport(
+          reportReference = "11124146",
+          reportTime = now,
+          generateStaffInvolvement = 2,
+        ),
+      )
+    }
+
+    @DisplayName("is secured")
+    @Nested
+    inner class Security {
+      @DisplayName("by role and scope")
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.get().uri(url),
+        "VIEW_INCIDENT_REPORTS",
+      )
+    }
+
+    @DisplayName("validates requests")
+    @Nested
+    inner class Validation {
+      @Test
+      fun `cannot search for too short a username`() {
+        webTestClient.get().uri("/incident-reports/involving-staff/a")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isBadRequest
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("getBasicReportsInvolvingStaff.staffUsername: size must be between 3 and")
+          }
+      }
+    }
+
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
+      @Test
+      fun `returns empty list when searching for a staff username that has no report involvements`() {
+        webTestClient.get().uri("/incident-reports/involving-staff/staff-999")
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            "[]",
+            true,
+          )
+      }
+
+      @Test
+      fun `returns a report when searching for a staff username that has an involvement`() {
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """[
+              {
+                "id": "${reportWithStaffInvolvement.id}",
+                "reportReference": "11124146",
+                "type": "FINDS",
+                "incidentDateAndTime": "2023-12-05T11:34:56",
+                "prisonId": "MDI",
+                "title": "Incident Report 11124146",
+                "description": "A new incident created in the new service of type Finds",
+                "reportedBy": "USER1",
+                "reportedAt": "2023-12-05T12:34:56",
+                "status": "DRAFT",
+                "assignedTo": "USER1",
+                "createdAt": "2023-12-05T12:34:56",
+                "modifiedAt": "2023-12-05T12:34:56",
+                "modifiedBy": "USER1",
+                "createdInNomis": false
+              }
+            ]""",
+            true,
+          )
+      }
+
+      @Test
+      fun `returns all reports when searching for a staff username that has involvements`() {
+        val (reportWithStaffInvolvement2, reportWithStaffInvolvement3) = reportRepository.saveAll(
+          listOf(
+            buildReport(
+              reportReference = "11124147",
+              reportTime = now,
+              generateStaffInvolvement = 1,
+            ),
+            buildReport(
+              reportReference = "11124148",
+              reportTime = now,
+              generateStaffInvolvement = 3,
+            ),
+          ),
+        )
+
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """[
+              {
+                "id": "${reportWithStaffInvolvement.id}",
+                "reportReference": "11124146"
+              },
+              {
+                "id": "${reportWithStaffInvolvement2.id}",
+                "reportReference": "11124147"
+              },
+              {
+                "id": "${reportWithStaffInvolvement3.id}",
+                "reportReference": "11124148"
+              }
+            ]""",
+            false,
+          )
+      }
+    }
+  }
+
   @DisplayName("GET /incident-reports/involving-prisoner/{prisonerNumber}")
   @Nested
   inner class GetReportsInvolvingPrisoner {

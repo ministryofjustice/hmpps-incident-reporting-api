@@ -183,6 +183,43 @@ class ReportResource(
       .toSimplePage()
   }
 
+  @GetMapping("/involving-staff/{staffUsername}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
+  @Operation(
+    summary = "Returns list of incident reports (with only basic information) involving given staff member identified by username",
+    description = "Requires role VIEW_INCIDENT_REPORTS",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns a list of incident reports",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "When input parameters are not valid",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Missing required role. Requires the VIEW_INCIDENT_REPORTS role",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
+  )
+  fun getBasicReportsInvolvingStaff(
+    @Schema(description = "Staff username to filter by", example = "abc12a", required = true, minLength = 3)
+    @Size(min = 3)
+    @PathVariable
+    staffUsername: String,
+  ): List<ReportBasic> {
+    return reportService.getBasicReportsInvolvingStaff(staffUsername)
+  }
+
   @GetMapping("/involving-prisoner/{prisonerNumber}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")

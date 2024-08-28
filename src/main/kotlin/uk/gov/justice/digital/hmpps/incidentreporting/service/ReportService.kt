@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.StaffInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
@@ -51,6 +52,7 @@ import kotlin.jvm.optionals.getOrNull
 class ReportService(
   private val reportRepository: ReportRepository,
   private val eventRepository: EventRepository,
+  private val staffInvolvementRepository: StaffInvolvementRepository,
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository,
   private val telemetryClient: TelemetryClient,
   private val authenticationHolder: HmppsAuthenticationHolder,
@@ -87,6 +89,20 @@ class ReportService(
     )
     return reportRepository.findAll(specification, pageable)
       .map { it.toDtoBasic() }
+  }
+
+  fun getBasicReportsInvolvingStaff(staffUsername: String): List<ReportBasic> {
+    return buildMap {
+      staffInvolvementRepository.findAllByStaffUsername(staffUsername)
+        .forEach { staffInvolvement ->
+          val report = staffInvolvement.getReport()
+          if (!contains(report.id)) {
+            put(report.id, report.toDtoBasic())
+          }
+        }
+    }
+      .values
+      .sortedBy { it.id }
   }
 
   fun getBasicReportsInvolvingPrisoner(prisonerNumber: String): List<ReportBasic> {
