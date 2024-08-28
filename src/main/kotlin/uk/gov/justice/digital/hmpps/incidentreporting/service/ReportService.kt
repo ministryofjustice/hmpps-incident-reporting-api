@@ -32,6 +32,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEve
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedPrisoner
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
@@ -69,6 +71,8 @@ class ReportService(
     incidentDateUntil: LocalDate? = null,
     reportedDateFrom: LocalDate? = null,
     reportedDateUntil: LocalDate? = null,
+    involvingStaffUsername: String? = null,
+    involvingPrisonerNumber: String? = null,
     pageable: Pageable = PageRequest.of(0, 20, Sort.by("incidentDateAndTime").descending()),
   ): Page<ReportBasic> {
     val specification = Specification.allOf(
@@ -83,6 +87,8 @@ class ReportService(
         incidentDateUntil?.let { add(filterByIncidentDateUntil(incidentDateUntil)) }
         reportedDateFrom?.let { add(filterByReportedDateFrom(reportedDateFrom)) }
         reportedDateUntil?.let { add(filterByReportedDateUntil(reportedDateUntil)) }
+        involvingStaffUsername?.let { add(filterByInvolvedStaff(involvingStaffUsername)) }
+        involvingPrisonerNumber?.let { add(filterByInvolvedPrisoner(involvingPrisonerNumber)) }
       },
     )
     return reportRepository.findAll(specification, pageable)

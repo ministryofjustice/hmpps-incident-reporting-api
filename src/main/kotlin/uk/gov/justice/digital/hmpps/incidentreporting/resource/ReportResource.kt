@@ -162,6 +162,24 @@ class ReportResource(
     )
     @RequestParam(required = false)
     reportedDateUntil: LocalDate? = null,
+    @Schema(
+      description = "Filter for incidents involving staff identified by username",
+      required = false,
+      defaultValue = "null",
+      example = "abc12a",
+    )
+    @RequestParam(required = false)
+    @Size(min = 3)
+    involvingStaffUsername: String? = null,
+    @Schema(
+      description = "Filter for incidents involving prisoners identified by prisoner number",
+      required = false,
+      defaultValue = "null",
+      example = "A1234AA",
+    )
+    @RequestParam(required = false)
+    @Size(min = 7, max = 10)
+    involvingPrisonerNumber: String? = null,
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
@@ -178,6 +196,8 @@ class ReportResource(
       incidentDateUntil = incidentDateUntil,
       reportedDateFrom = reportedDateFrom,
       reportedDateUntil = reportedDateUntil,
+      involvingStaffUsername = involvingStaffUsername,
+      involvingPrisonerNumber = involvingPrisonerNumber,
       pageable = pageable,
     )
       .toSimplePage()

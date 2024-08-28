@@ -3,7 +3,9 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.PrisonerInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.StaffInvolvement
 import java.time.LocalDate
 
 fun filterByPrisonId(prisonId: String) = Report::prisonId.buildSpecForEqualTo(prisonId)
@@ -26,3 +28,9 @@ fun filterByReportedDateFrom(date: LocalDate) =
 
 fun filterByReportedDateUntil(date: LocalDate) =
   Report::reportedAt.buildSpecForLessThan(date.plusDays(1).atStartOfDay())
+
+fun filterByInvolvedStaff(staffUsername: String) =
+  Report::staffInvolved.buildSpecForRelatedEntityPropertyEqualTo(StaffInvolvement::staffUsername, staffUsername)
+
+fun filterByInvolvedPrisoner(prisonerNumber: String) =
+  Report::prisonersInvolved.buildSpecForRelatedEntityPropertyEqualTo(PrisonerInvolvement::prisonerNumber, prisonerNumber)
