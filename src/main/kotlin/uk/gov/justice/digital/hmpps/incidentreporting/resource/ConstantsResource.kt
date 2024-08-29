@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
@@ -23,6 +25,40 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeConstantD
 @RequestMapping("/constants", produces = [MediaType.APPLICATION_JSON_VALUE])
 @Tag(name = "Constants", description = "Constants and enumerations used in incident reports")
 class ConstantsResource {
+  @GetMapping("/correction-reasons")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "List codes and descriptions of reasons for correction requests made about a report",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns codes and descriptions",
+      ),
+    ],
+  )
+  fun correctionReasons(): List<ConstantDescription> {
+    return CorrectionReason.entries.map {
+      ConstantDescription(it.name, it.description)
+    }
+  }
+
+  @GetMapping("/information-sources")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "List codes and descriptions of information sources for incident reports",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns codes and descriptions",
+      ),
+    ],
+  )
+  fun informationSource(): List<ConstantDescription> {
+    return InformationSource.entries.map {
+      ConstantDescription(it.name, it.name)
+    }
+  }
+
   @GetMapping("/prisoner-outcomes")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
