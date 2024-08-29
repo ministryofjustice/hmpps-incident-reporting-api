@@ -25,6 +25,23 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeConstantD
 @RequestMapping("/constants", produces = [MediaType.APPLICATION_JSON_VALUE])
 @Tag(name = "Constants", description = "Constants and enumerations used in incident reports")
 class ConstantsResource {
+  @GetMapping("/error-codes")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "List codes used to discriminate between error types",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns codes",
+      ),
+    ],
+  )
+  fun errorCodes(): List<ConstantDescription> {
+    return ErrorCode.entries.map {
+      ConstantDescription(it.errorCode.toString(), it.name)
+    }
+  }
+
   @GetMapping("/correction-reasons")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
