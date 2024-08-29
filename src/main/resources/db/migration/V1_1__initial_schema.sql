@@ -16,11 +16,12 @@ create table event
 );
 
 create sequence event_sequence
-    start with 1000000
+    start with 10000000
     owned by event.event_reference;
 
 create index event_event_date_and_time_idx on event (event_date_and_time);
 create index event_created_at_idx on event (created_at);
+create index event_prison_idx on event (prison_id);
 
 create table report
 (
@@ -51,17 +52,19 @@ create table report
 );
 
 create sequence report_sequence
-    start with 1000000
+    start with 10000000
     owned by report.report_reference;
 
+create index report_event_id_fk_idx on report (event_id);
 create index report_incident_date_and_time_idx on report (incident_date_and_time);
 create index report_reported_at_idx on report (reported_at);
 create index report_created_at_idx on report (created_at);
-
 create index report_prison_id_idx on report (prison_id);
 create index report_source_idx on report (source);
 create index report_status_idx on report (status);
 create index report_type_idx on report (type);
+create index report_reported_by_idx on report (reported_by);
+create index report_assigned_to_idx on report (assigned_to);
 
 create table status_history
 (
@@ -74,6 +77,7 @@ create table status_history
     changed_by varchar(120)                        not null
 );
 
+create index status_history_report_id_fk_idx on status_history (report_id);
 create index status_history_changed_at_idx on status_history (changed_at);
 
 create table correction_request
@@ -88,6 +92,7 @@ create table correction_request
     correction_requested_by varchar(120) not null
 );
 
+create index correction_request_report_id_fk_idx on correction_request (report_id);
 create index correction_request_correction_requested_at_idx on correction_request (correction_requested_at);
 
 create table prisoner_involvement
@@ -102,6 +107,9 @@ create table prisoner_involvement
     comment         text
 );
 
+create index prisoner_involvement_report_id_fk_idx on prisoner_involvement (report_id);
+create index prisoner_involvement_prisoner_number_idx on prisoner_involvement (prisoner_number);
+
 create table staff_involvement
 (
     id             serial
@@ -112,6 +120,9 @@ create table staff_involvement
     staff_role     varchar(60)  not null,
     comment        text
 );
+
+create index staff_involvement_report_id_fk_idx on staff_involvement (report_id);
+create index staff_involvement_staff_username_idx on staff_involvement (staff_username);
 
 create table question
 (
@@ -125,6 +136,7 @@ create table question
     additional_information text
 );
 
+create index question_report_id_fk_idx on question (report_id);
 create index question_sequence_at_idx on question (sequence);
 
 create table response
@@ -141,6 +153,7 @@ create table response
     recorded_by            varchar(120)                        not null
 );
 
+create index response_question_id_fk_idx on response (question_id);
 create index response_sequence_at_idx on response (sequence);
 
 create table history
@@ -154,6 +167,7 @@ create table history
     changed_by varchar(120) not null
 );
 
+create index history_report_id_fk_idx on history (report_id);
 create index history_changed_at_idx on history (changed_at);
 
 create table historical_question
@@ -168,6 +182,7 @@ create table historical_question
     additional_information text
 );
 
+create index historical_question_history_id_fk_idx on historical_question (history_id);
 create index historical_question_sequence_at_idx on historical_question (sequence);
 
 create table historical_response
@@ -184,4 +199,5 @@ create table historical_response
     recorded_by            varchar(120)                        not null
 );
 
+create index historical_response_historical_question_id_fk_idx on historical_response (historical_question_id);
 create index historical_response_sequence_at_idx on historical_response (sequence);
