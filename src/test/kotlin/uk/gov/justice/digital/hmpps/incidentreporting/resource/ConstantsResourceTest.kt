@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 
@@ -55,6 +56,30 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
             "description" to "Assault (from April 2017)",
             "active" to false,
             "nomisCode" to "ASSAULTS1",
+          ),
+        )
+      }
+  }
+
+  @Test
+  fun `exposes NOMIS prisoner roles codes`() {
+    webTestClient.get().uri("/constants/prisoner-roles")
+      .headers(setAuthorisation(roles = emptyList(), scopes = listOf("read")))
+      .header("Content-Type", "application/json")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody().jsonPath("$").value<List<Map<String, Any?>>> { list ->
+        assertThat(list).hasSize(PrisonerRole.entries.size)
+        assertThat(list).containsOnlyOnce(
+          mapOf(
+            "code" to "ABSCONDER",
+            "description" to "Absconder",
+            "nomisCode" to "ABS",
+          ),
+          mapOf(
+            "code" to "IMPEDED_STAFF",
+            "description" to "Impeded staff",
+            "nomisCode" to "IMPED",
           ),
         )
       }

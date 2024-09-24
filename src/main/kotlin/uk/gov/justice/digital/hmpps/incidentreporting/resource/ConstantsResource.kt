@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerRoleConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeConstantDescription
 
 @RestController
@@ -104,9 +105,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun prisonerRoles(): List<ConstantDescription> {
+  fun prisonerRoles(): List<PrisonerRoleConstantDescription> {
     return PrisonerRole.entries.map {
-      ConstantDescription(it.name, it.description)
+      PrisonerRoleConstantDescription(it.name, it.description, it.nomisCode)
     }
   }
 
