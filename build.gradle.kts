@@ -31,7 +31,7 @@ dependencies {
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.0")
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
@@ -45,8 +45,8 @@ dependencies {
   testImplementation("io.swagger.parser.v3:swagger-parser:2.1.22")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
-  testImplementation("org.testcontainers:localstack:1.20.1")
-  testImplementation("org.testcontainers:postgresql:1.20.1")
+  testImplementation("org.testcontainers:localstack:1.20.2")
+  testImplementation("org.testcontainers:postgresql:1.20.2")
 }
 
 kotlin {
