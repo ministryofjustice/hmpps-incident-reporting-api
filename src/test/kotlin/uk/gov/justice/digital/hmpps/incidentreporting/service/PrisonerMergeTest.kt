@@ -26,7 +26,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.util.UUID
 
-@DisplayName("Prisoner merging")
+@DisplayName("Prisoner moving and merging")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles("test")
 class PrisonerMergeTest {
@@ -131,7 +131,7 @@ class PrisonerMergeTest {
   }
 
   @Test
-  fun `parses domain event`() {
+  fun `parses prisoner merge domain event`() {
     val mockReportService: ReportService = mock()
     val listener = PrisonOffenderEventListener(
       reportService = mockReportService,
@@ -149,6 +149,35 @@ class PrisonerMergeTest {
           "eventType": {
             "Type": "String",
             "Value": "prison-offender-events.prisoner.merged"
+          }
+        }
+      }
+      """,
+    )
+
+    verify(mockReportService, times(1))
+      .replacePrisonerNumber(eq("A0002AA"), eq("A0002BB"))
+  }
+
+  @Test
+  fun `parses prisoner booking moved domain event`() {
+    val mockReportService: ReportService = mock()
+    val listener = PrisonOffenderEventListener(
+      reportService = mockReportService,
+      mapper = objectMapper,
+    )
+    listener.onPrisonOffenderEvent(
+      // language=json
+      """
+      {
+        "Type": "Notification",
+        "MessageId": "5b90ee7d-67bc-5959-a4d8-b7d420180853",
+        "Message": "{\"version\":\"1.0\",\"eventType\":\"prison-offender-events.prisoner.booking.moved\",\"occurredAt\":\"2020-02-12T15:14:24.125533+00:00\",\"publishedAt\":\"2020-02-12T15:15:09.902048716+00:00\",\"description\":\"a NOMIS booking has moved between prisoners\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A0002BB\"}]},\"additionalInformation\":{\"bookingId\":\"123000\",\"movedToNomsNumber\":\"A0002BB\",\"movedFromNomsNumber\":\"A0002AA\"}}",
+        "Timestamp": "2021-09-01T09:18:28.725Z",
+        "MessageAttributes": {
+          "eventType": {
+            "Type": "String",
+            "Value": "prison-offender-events.prisoner.booking.moved"
           }
         }
       }

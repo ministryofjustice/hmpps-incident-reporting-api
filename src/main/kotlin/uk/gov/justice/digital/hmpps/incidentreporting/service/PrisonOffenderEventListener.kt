@@ -17,6 +17,7 @@ class PrisonOffenderEventListener(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     const val PRISONER_MERGE_EVENT_TYPE = "prison-offender-events.prisoner.merged"
+    const val PRISONER_BOOKING_MOVED_EVENT_TYPE = "prison-offender-events.prisoner.booking.moved"
   }
 
   @SqsListener("incidentreporting", factory = "hmppsQueueContainerFactoryProxy")
@@ -32,6 +33,13 @@ class PrisonOffenderEventListener(
         reportService.replacePrisonerNumber(
           removedPrisonerNumber = mergeEvent.additionalInformation.removedNomsNumber,
           prisonerNumber = mergeEvent.additionalInformation.nomsNumber,
+        )
+      }
+      PRISONER_BOOKING_MOVED_EVENT_TYPE -> {
+        val mergeEvent = mapper.readValue(message, HMPPSMergeBookingMovedEvent::class.java)
+        reportService.replacePrisonerNumber(
+          removedPrisonerNumber = mergeEvent.additionalInformation.movedFromNomsNumber,
+          prisonerNumber = mergeEvent.additionalInformation.movedToNomsNumber,
         )
       }
       else -> {
@@ -52,6 +60,20 @@ data class HMPPSMergeDomainEvent(
 data class AdditionalInformationMerge(
   val nomsNumber: String,
   val removedNomsNumber: String,
+)
+
+data class HMPPSMergeBookingMovedEvent(
+  val eventType: String? = null,
+  val additionalInformation: AdditionalInformationBookingMoved,
+  val version: String,
+  val occurredAt: String,
+  val description: String,
+)
+
+data class AdditionalInformationBookingMoved(
+  val bookingId: Long,
+  val movedFromNomsNumber: String,
+  val movedToNomsNumber: String,
 )
 
 data class HMPPSEventType(val Value: String, val Type: String)
