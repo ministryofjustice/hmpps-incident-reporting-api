@@ -620,6 +620,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "historyOfStatuses": [
                   {
                     "status": "AWAITING_ANALYSIS",
+                    "nomisStatus": "AWAN",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2"
                   }
@@ -656,6 +657,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "reportedBy": "user2",
                 "reportedAt": "2023-12-05T12:34:56",
                 "status": "AWAITING_ANALYSIS",
+                "nomisStatus": "AWAN",
                 "assignedTo": "user2",
                 "createdAt": "2023-12-05T14:34:56",
                 "modifiedAt": "2023-12-05T17:34:56",
@@ -903,6 +905,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "historyOfStatuses": [
                   {
                     "status": "AWAITING_ANALYSIS",
+                    "nomisStatus": "AWAN",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2"
                   }
@@ -939,6 +942,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "reportedBy": "user2",
                 "reportedAt": "2023-12-05T12:34:56",
                 "status": "AWAITING_ANALYSIS",
+                "nomisStatus": "AWAN",
                 "assignedTo": "user2",
                 "createdAt": "2023-12-05T14:34:56",
                 "modifiedAt": "2023-12-05T17:34:56",
@@ -1405,11 +1409,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "historyOfStatuses": [
                   {
                     "status": "DRAFT",
+                    "nomisStatus": null,
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "USER1"
                   },
                   {
                     "status": "IN_ANALYSIS",
+                    "nomisStatus": "INAN",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "updater"
                   }
@@ -1457,6 +1463,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "reportedBy": "OF42",
                 "reportedAt": "2023-12-04T12:34:56",
                 "status": "IN_ANALYSIS",
+                "nomisStatus": "INAN",
                 "assignedTo": "USER1",
                 "createdAt": "2023-12-04T12:34:56",
                 "modifiedAt": "2023-12-05T12:29:56",

@@ -9,6 +9,7 @@
   "reportedBy": "USER1",
   "reportedAt": "2023-12-05T12:34:56",
   "status": "DRAFT",
+  "nomisStatus": null,
   "assignedTo": "USER1",
   "createdAt": "2023-12-05T12:34:56",
   "modifiedAt": "2023-12-05T12:34:56",
@@ -236,6 +237,7 @@
   "historyOfStatuses": [
     {
       "status": "DRAFT",
+      "nomisStatus": null,
       "changedAt": "2023-12-05T12:34:56",
       "changedBy": "USER1"
     }

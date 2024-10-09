@@ -65,4 +65,10 @@ class ReportWithDetails(
   @get:JsonProperty
   val nomisType: String?
     get() = type.nomisType
+
+  // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
+  @get:Schema(description = "Previous NOMIS incident report status code, which may be null for statuses that cannot be mapped", nullable = true, deprecated = true)
+  @get:JsonProperty
+  val nomisStatus: String?
+    get() = status.nomisStatus
 }

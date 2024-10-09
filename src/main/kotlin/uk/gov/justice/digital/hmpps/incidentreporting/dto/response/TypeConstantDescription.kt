@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.response
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 
-@Schema(description = "Incident type constant", accessMode = Schema.AccessMode.READ_ONLY)
+@Schema(description = "Report type constant", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class TypeConstantDescription(
   @Schema(description = "Machine-readable identifier of this value", example = "DISORDER")

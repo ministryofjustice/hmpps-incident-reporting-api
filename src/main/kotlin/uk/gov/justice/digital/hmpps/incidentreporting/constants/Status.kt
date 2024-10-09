@@ -4,29 +4,21 @@ import jakarta.validation.ValidationException
 
 enum class Status(
   val description: String,
+  val nomisStatus: String?,
 ) {
-  DRAFT("Draft"),
-  AWAITING_ANALYSIS("Awaiting analysis"),
-  IN_ANALYSIS("In analysis"),
-  INFORMATION_REQUIRED("Information required"),
-  INFORMATION_AMENDED("Information amened"),
-  CLOSED("Closed"),
-  POST_INCIDENT_UPDATE("Post-incident update"),
-  INCIDENT_UPDATED("Incident updated"),
-  DUPLICATE("Duplicate"),
+  DRAFT("Draft", null),
+  AWAITING_ANALYSIS("Awaiting analysis", "AWAN"),
+  IN_ANALYSIS("In analysis", "INAN"),
+  INFORMATION_REQUIRED("Information required", "INREQ"),
+  INFORMATION_AMENDED("Information amened", "INAME"),
+  CLOSED("Closed", "CLOSE"),
+  POST_INCIDENT_UPDATE("Post-incident update", "PIU"),
+  INCIDENT_UPDATED("Incident updated", "IUP"),
+  DUPLICATE("Duplicate", "DUP"),
   ;
 
   companion object {
-    fun fromNomisCode(status: String): Status = when (status) {
-      "AWAN" -> AWAITING_ANALYSIS
-      "INAN" -> IN_ANALYSIS
-      "INREQ" -> INFORMATION_REQUIRED
-      "INAME" -> INFORMATION_AMENDED
-      "CLOSE" -> CLOSED
-      "PIU" -> POST_INCIDENT_UPDATE
-      "IUP" -> INCIDENT_UPDATED
-      "DUP" -> DUPLICATE
-      else -> throw ValidationException("Unknown NOMIS incident status: $status")
-    }
+    fun fromNomisCode(status: String): Status = Status.entries.find { it.nomisStatus == status }
+      ?: throw ValidationException("Unknown NOMIS incident status: $status")
   }
 }

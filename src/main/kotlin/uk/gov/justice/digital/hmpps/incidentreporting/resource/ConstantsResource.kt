@@ -19,6 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerRoleConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.StatusConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeConstantDescription
 
 @RestController
@@ -139,9 +140,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun statuses(): List<ConstantDescription> {
+  fun statuses(): List<StatusConstantDescription> {
     return Status.entries.map {
-      ConstantDescription(it.name, it.description)
+      StatusConstantDescription(it.name, it.description, it.nomisStatus)
     }
   }
 
