@@ -6,8 +6,8 @@ import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.6"
-  kotlin("plugin.jpa") version "2.0.20"
-  kotlin("plugin.spring") version "2.0.20"
+  kotlin("plugin.jpa") version "2.0.21"
+  kotlin("plugin.spring") version "2.0.21"
   idea
 }
 
@@ -31,7 +31,7 @@ dependencies {
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.0")
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
