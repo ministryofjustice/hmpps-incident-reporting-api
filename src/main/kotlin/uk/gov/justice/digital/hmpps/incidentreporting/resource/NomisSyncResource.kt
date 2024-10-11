@@ -75,7 +75,7 @@ class NomisSyncResource(
     @Schema(
       description = "Incident report created/updated in NOMIS",
       accessMode = Schema.AccessMode.WRITE_ONLY,
-      oneOf = [NomisSyncCreateRequest::class, NomisSyncUpdateRequest::class],
+      oneOf = [NomisSyncRequest::class, NomisSyncCreateRequest::class, NomisSyncUpdateRequest::class],
     )
     @RequestBody
     @Valid
