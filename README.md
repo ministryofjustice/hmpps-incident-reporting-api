@@ -4,7 +4,7 @@
 [![Docker Repository on Quay](https://quay.io/repository/hmpps/hmpps-incident-reporting-api/status "Docker Repository on Quay")](https://quay.io/repository/hmpps/hmpps-incident-reporting-api)
 [![Runbook](https://img.shields.io/badge/runbook-view-172B4D.svg?logo=confluence)](https://dsdmoj.atlassian.net/wiki/spaces/NOM/pages/1739325587/DPS+Runbook)
 [![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://incident-reporting-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
-[![Event docs](https://img.shields.io/badge/Event_docs-view-85EA2D.svg)](https://studio.asyncapi.com/?url=https://raw.githubusercontent.com/ministryofjustice/hmpps-incident-reporting-api/main/async-api.yml)
+[![Event docs](https://img.shields.io/badge/Event_docs-view-85EA2D.svg)](https://studio.asyncapi.com/?url=https://raw.githubusercontent.com/ministryofjustice/hmpps-incident-reporting-api/main/async-api.yml&readOnly)
 
 This application is api and database that owns incident report data for prisons.
 
