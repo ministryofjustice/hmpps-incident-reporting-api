@@ -1871,6 +1871,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             status = Status.AWAITING_ANALYSIS,
             generateQuestions = 2,
             generateResponses = 2,
+            generateStaffInvolvement = 1,
+            generatePrisonerInvolvement = 1,
             generateHistory = 0,
           ),
         )
@@ -1955,7 +1957,26 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   ]
                 }
               ],
-              "questions": []
+              "questions": [],
+              "historyOfStatuses": [
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "nomisStatus": "AWAN",
+                  "changedAt": "2023-12-05T12:31:56",
+                  "changedBy": "USER1"
+                }
+              ],
+              "staffInvolved": [
+                {
+                  "staffUsername": "staff-1",
+                  "firstName": "First 1",
+                  "lastName": "Last 1",
+                  "staffRole": "AUTHORISING_OFFICER",
+                  "comment": "Comment #1",
+                  "sequence": 0
+                }
+              ],
+              "prisonersInvolved": []
             }
             """,
             JsonCompareMode.LENIENT,
@@ -1978,6 +1999,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             status = Status.AWAITING_ANALYSIS,
             generateQuestions = 1,
             generateResponses = 1,
+            generateStaffInvolvement = 1,
+            generatePrisonerInvolvement = 1,
             generateHistory = 1,
           ),
         )
@@ -2056,7 +2079,26 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   ]
                 }
               ],
-              "questions": []
+              "questions": [],
+              "historyOfStatuses": [
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "nomisStatus": "AWAN",
+                  "changedAt": "2023-12-05T12:31:56",
+                  "changedBy": "USER1"
+                }
+              ],
+              "staffInvolved": [
+                {
+                  "staffUsername": "staff-1",
+                  "firstName": "First 1",
+                  "lastName": "Last 1",
+                  "staffRole": "AUTHORISING_OFFICER",
+                  "comment": "Comment #1",
+                  "sequence": 0
+                }
+              ],
+              "prisonersInvolved": []
             }
             """,
             JsonCompareMode.LENIENT,
