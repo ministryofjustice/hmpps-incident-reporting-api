@@ -1697,6 +1697,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             status = Status.AWAITING_ANALYSIS,
             generateQuestions = 2,
             generateResponses = 2,
+            generateStaffInvolvement = 1,
+            generatePrisonerInvolvement = 1,
             generateHistory = 0,
           ),
         )
@@ -1720,8 +1722,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "description": "A new incident created in the new service of type Finds",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:31:56",
-              "status": "AWAITING_ANALYSIS",
-              "nomisStatus": "AWAN",
+              "status": "DRAFT",
+              "nomisStatus": null,
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
               "modifiedAt": "2023-12-05T12:34:56",
@@ -1779,7 +1781,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   ]
                 }
               ],
-              "questions": []
+              "questions": [],
+              "historyOfStatuses": [
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "nomisStatus": "AWAN",
+                  "changedAt": "2023-12-05T12:31:56",
+                  "changedBy": "USER1"
+                },
+                {
+                  "status": "DRAFT",
+                  "nomisStatus": null,
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "request-user"
+                }
+              ],
+              "staffInvolved": [],
+              "prisonersInvolved": []
             }
             """,
             false,
@@ -1802,6 +1820,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             status = Status.AWAITING_ANALYSIS,
             generateQuestions = 1,
             generateResponses = 1,
+            generateStaffInvolvement = 1,
+            generatePrisonerInvolvement = 1,
             generateHistory = 1,
           ),
         )
@@ -1825,8 +1845,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "description": "A new incident created in the new service of type Finds",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:31:56",
-              "status": "AWAITING_ANALYSIS",
-              "nomisStatus": "AWAN",
+              "status": "DRAFT",
+              "nomisStatus": null,
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
               "modifiedAt": "2023-12-05T12:34:56",
@@ -1878,7 +1898,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   ]
                 }
               ],
-              "questions": []
+              "questions": [],
+              "historyOfStatuses": [
+                {
+                  "status": "AWAITING_ANALYSIS",
+                  "nomisStatus": "AWAN",
+                  "changedAt": "2023-12-05T12:31:56",
+                  "changedBy": "USER1"
+                },
+                {
+                  "status": "DRAFT",
+                  "nomisStatus": null,
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "request-user"
+                }
+              ],
+              "staffInvolved": [],
+              "prisonersInvolved": []
             }
             """,
             false,
