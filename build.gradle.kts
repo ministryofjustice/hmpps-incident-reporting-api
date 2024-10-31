@@ -25,13 +25,12 @@ dependencies {
   implementation("io.opentelemetry:opentelemetry-api:1.43.0")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.9.0")
 
-  implementation("com.zaxxer:HikariCP:6.0.0")
+  runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.4")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.1")
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
