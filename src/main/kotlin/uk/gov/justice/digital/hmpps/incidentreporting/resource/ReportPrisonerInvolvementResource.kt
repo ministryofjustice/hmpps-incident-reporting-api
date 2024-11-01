@@ -68,7 +68,7 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
-    summary = "Adds an invovled prisoner to this incident report",
+    summary = "Adds an involved prisoner to this incident report",
     description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
