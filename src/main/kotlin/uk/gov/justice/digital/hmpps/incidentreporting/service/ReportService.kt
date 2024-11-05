@@ -35,6 +35,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedPrisoner
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedBy
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
@@ -71,6 +72,7 @@ class ReportService(
     incidentDateUntil: LocalDate? = null,
     reportedDateFrom: LocalDate? = null,
     reportedDateUntil: LocalDate? = null,
+    reportedByUsername: String? = null,
     involvingStaffUsername: String? = null,
     involvingPrisonerNumber: String? = null,
     pageable: Pageable = PageRequest.of(0, 20, Sort.by("incidentDateAndTime").descending()),
@@ -87,6 +89,7 @@ class ReportService(
         incidentDateUntil?.let { add(filterByIncidentDateUntil(incidentDateUntil)) }
         reportedDateFrom?.let { add(filterByReportedDateFrom(reportedDateFrom)) }
         reportedDateUntil?.let { add(filterByReportedDateUntil(reportedDateUntil)) }
+        reportedByUsername?.let { add(filterByReportedBy(reportedByUsername)) }
         involvingStaffUsername?.let { add(filterByInvolvedStaff(involvingStaffUsername)) }
         involvingPrisonerNumber?.let { add(filterByInvolvedPrisoner(involvingPrisonerNumber)) }
       },

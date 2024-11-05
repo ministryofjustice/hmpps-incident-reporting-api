@@ -29,6 +29,8 @@ fun filterByReportedDateFrom(date: LocalDate) =
 fun filterByReportedDateUntil(date: LocalDate) =
   Report::reportedAt.buildSpecForLessThan(date.plusDays(1).atStartOfDay())
 
+fun filterByReportedBy(reportedByUsername: String) = Report::reportedBy.buildSpecForEqualTo(reportedByUsername)
+
 fun filterByInvolvedStaff(staffUsername: String) =
   Report::staffInvolved.buildSpecForRelatedEntityPropertyEqualTo(StaffInvolvement::staffUsername, staffUsername)
 
