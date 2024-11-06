@@ -4,48 +4,30 @@ import jakarta.validation.ValidationException
 
 enum class StaffRole(
   val description: String,
+  vararg val nomisCodes: String,
 ) {
-  ACTIVELY_INVOLVED("Actively involved"),
-  AUTHORISING_OFFICER("Authorising officer"),
-  CR_HEAD("Control and restraint - head"),
-  CR_LEFT_ARM("Control and restraint - left arm"),
-  CR_LEGS("Control and restraint - legs"),
-  CR_RIGHT_ARM("Control and restraint - right arm"),
-  CR_SUPERVISOR("Control and restraint - supervisor"),
-  DECEASED("Deceased"),
-  FIRST_ON_SCENE("First on scene"),
-  HEALTHCARE("Healthcare"),
-  HOSTAGE("Hostage"),
-  IN_POSSESSION("In possession"),
-  NEGOTIATOR("Negotiator"),
-  PRESENT_AT_SCENE("Present at scene"),
-  SUSPECTED_INVOLVEMENT("Suspected involvement"),
-  VICTIM("Victim"),
-  WITNESS("Witness"),
+  // NB: AI & INV both map to ACTIVELY_INVOLVED (their descriptions match in NOMIS)
+  ACTIVELY_INVOLVED("Actively involved", "AI", "INV"),
+  AUTHORISING_OFFICER("Authorising officer", "AO"),
+  CR_HEAD("Control and restraint - head", "CRH"),
+  CR_LEFT_ARM("Control and restraint - left arm", "CRL"),
+  CR_LEGS("Control and restraint - legs", "CRLG"),
+  CR_RIGHT_ARM("Control and restraint - right arm", "CRR"),
+  CR_SUPERVISOR("Control and restraint - supervisor", "CRS"),
+  DECEASED("Deceased", "DEC"),
+  FIRST_ON_SCENE("First on scene", "FOS"),
+  HEALTHCARE("Healthcare", "HEALTH"),
+  HOSTAGE("Hostage", "HOST"),
+  IN_POSSESSION("In possession", "INPOS"),
+  NEGOTIATOR("Negotiator", "NEG"),
+  PRESENT_AT_SCENE("Present at scene", "PAS"),
+  SUSPECTED_INVOLVEMENT("Suspected involvement", "SUSIN"),
+  VICTIM("Victim", "VICT"),
+  WITNESS("Witness", "WIT"),
   ;
 
   companion object {
-    fun fromNomisCode(role: String): StaffRole = when (role) {
-      "AI" -> ACTIVELY_INVOLVED
-      "AO" -> AUTHORISING_OFFICER
-      "CRH" -> CR_HEAD
-      "CRL" -> CR_LEFT_ARM
-      "CRLG" -> CR_LEGS
-      "CRR" -> CR_RIGHT_ARM
-      "CRS" -> CR_SUPERVISOR
-      "DEC" -> DECEASED
-      "FOS" -> FIRST_ON_SCENE
-      "HEALTH" -> HEALTHCARE
-      "HOST" -> HOSTAGE
-      "INPOS" -> IN_POSSESSION
-      "INV" -> ACTIVELY_INVOLVED
-      "NEG" -> NEGOTIATOR
-      "PAS" -> PRESENT_AT_SCENE
-      "SUSIN" -> SUSPECTED_INVOLVEMENT
-      "VICT" -> VICTIM
-      "WIT" -> WITNESS
-      // NB: AI & INV both map to ACTIVELY_INVOLVED (their descriptions match in NOMIS)
-      else -> throw ValidationException("Unknown NOMIS staff role: $role")
-    }
+    fun fromNomisCode(code: String): StaffRole = entries.find { it.nomisCodes.contains(code) }
+      ?: throw ValidationException("Unknown NOMIS staff role code: $code")
   }
 }

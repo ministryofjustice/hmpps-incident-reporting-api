@@ -171,6 +171,16 @@ class ReportResource(
     @RequestParam(required = false)
     reportedDateUntil: LocalDate? = null,
     @Schema(
+      description = "Filter for incidents reported by username",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
+      defaultValue = "null",
+      example = "abc12a",
+    )
+    @RequestParam(required = false)
+    @Size(min = 3)
+    reportedByUsername: String? = null,
+    @Schema(
       description = "Filter for incidents involving staff identified by username",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
@@ -206,6 +216,7 @@ class ReportResource(
       incidentDateUntil = incidentDateUntil,
       reportedDateFrom = reportedDateFrom,
       reportedDateUntil = reportedDateUntil,
+      reportedByUsername = reportedByUsername,
       involvingStaffUsername = involvingStaffUsername,
       involvingPrisonerNumber = involvingPrisonerNumber,
       pageable = pageable,

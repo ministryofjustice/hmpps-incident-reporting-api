@@ -18,7 +18,9 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerOutcomeConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerRoleConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.StaffRoleConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.StatusConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeConstantDescription
 
@@ -89,9 +91,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun prisonerOutcomes(): List<ConstantDescription> {
+  fun prisonerOutcomes(): List<PrisonerOutcomeConstantDescription> {
     return PrisonerOutcome.entries.map {
-      ConstantDescription(it.name, it.description)
+      PrisonerOutcomeConstantDescription(it.name, it.description, it.nomisCode)
     }
   }
 
@@ -123,9 +125,9 @@ class ConstantsResource {
       ),
     ],
   )
-  fun staffRoles(): List<ConstantDescription> {
+  fun staffRoles(): List<StaffRoleConstantDescription> {
     return StaffRole.entries.map {
-      ConstantDescription(it.name, it.description)
+      StaffRoleConstantDescription(it.name, it.description, it.nomisCodes.asList())
     }
   }
 

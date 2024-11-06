@@ -132,6 +132,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "incidentDateFrom=2024",
           "incidentDateUntil=yesterday",
           "reportedDateFrom=1%2F1%2F2020",
+          "reportedByUsername=ab",
           "involvingStaffUsername=ab",
           "involvingPrisonerNumber=A1111",
         ],
@@ -216,6 +217,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 buildReport(
                   reportReference = reportReference,
                   reportTime = now.minusDays(daysBefore),
+                  reportingUsername = if (index < 2) "USER1" else "USER2",
                   prisonId = if (index < 2) "LEI" else "MDI",
                   status = if (fromDps) Status.DRAFT else Status.AWAITING_ANALYSIS,
                   source = if (fromDps) InformationSource.DPS else InformationSource.NOMIS,
@@ -400,6 +402,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "incidentDateUntil=2023-12-03                                | 3",
             "incidentDateUntil=2023-12-02                                | 2",
             "incidentDateFrom=2023-12-02&incidentDateUntil=2023-12-02    | 1",
+            "reportedByUsername=USER2                                    | 2",
             "involvingStaffUsername=staff-1                              | 3",
             "involvingStaffUsername=staff-3                              | 1",
             "involvingStaffUsername=staff-1&incidentDateFrom=2023-12-03  | 1",
