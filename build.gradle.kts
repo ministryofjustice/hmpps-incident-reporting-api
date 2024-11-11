@@ -22,7 +22,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-validation")
 
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.1.0")
-  implementation("io.opentelemetry:opentelemetry-api:1.43.0")
+  implementation("io.opentelemetry:opentelemetry-api:1.44.1")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.9.0")
 
   runtimeOnly("com.zaxxer:HikariCP")
