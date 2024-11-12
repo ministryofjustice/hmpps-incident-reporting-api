@@ -71,6 +71,7 @@ class EventResource(
   fun getEvents(
     @Parameter(
       description = "Filter by given prison IDs",
+      example = "LEI,MDI",
       array = ArraySchema(
         schema = Schema(example = "MDI", minLength = 2, maxLength = 6),
         arraySchema = Schema(

@@ -342,6 +342,8 @@ class EventResourceTest : SqsIntegrationTestBase() {
             "prisonId=MDI                                       | 3",
             "prisonId=LEI                                       | 2",
             "prisonId=LEI,MDI                                   | 5",
+            "prisonId=LEI&prisonId=MDI                          | 5",
+            "prisonId=BXI                                       | 0",
             "eventDateFrom=2023-12-05                           | 1",
             "eventDateFrom=2023-12-04                           | 2",
             "eventDateUntil=2023-12-03                          | 3",
