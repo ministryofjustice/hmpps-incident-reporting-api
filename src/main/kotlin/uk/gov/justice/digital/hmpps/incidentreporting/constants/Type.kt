@@ -21,7 +21,6 @@ enum class Type(
   ATTEMPTED_ESCAPE_FROM_ESCORT("Attempted escape from escort", "ATT_ESC_E"),
   BOMB_THREAT("Bomb threat", "BOMB"),
   BREACH_OF_SECURITY("Breach of security", "BREACH"),
-  DAMAGE("Damage", "DAMAGE"),
   DEATH_IN_CUSTODY("Death in custody", "DEATH"),
   DEATH_OTHER("Death (other)", "DEATH_NI"),
   DISORDER("Disorder", "DISORDER1"),
@@ -42,6 +41,7 @@ enum class Type(
   TOOL_LOSS("Tool loss", "TOOL_LOSS"),
 
   // inactive
+  DAMAGE("Damage", "DAMAGE", active = false),
   OLD_ASSAULT("Assault", "ASSAULT", active = false),
   OLD_ASSAULT1("Assault (from April 2017)", "ASSAULTS", active = false),
   OLD_ASSAULT2("Assault (from April 2017)", "ASSAULTS1", active = false),

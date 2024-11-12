@@ -1501,7 +1501,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     // language=json
     private val validPayload = """
-      {"newType": "DAMAGE"}
+      {"newType": "FIRE"}
     """
 
     @BeforeEach
@@ -1544,7 +1544,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue(
             // language=json
             """
-              {"type": "DAMAGE"}
+              {"type": "FIRE"}
             """,
           )
           .exchange()
@@ -1715,8 +1715,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${reportWithQuestions.id}",
               "reportReference": "11124146",
-              "type": "DAMAGE",
-              "nomisType": "DAMAGE",
+              "type": "FIRE",
+              "nomisType": "FIRE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
@@ -1820,8 +1820,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${reportWithQuestionsAndHistory.id}",
               "reportReference": "11124146",
-              "type": "DAMAGE",
-              "nomisType": "DAMAGE",
+              "type": "FIRE",
+              "nomisType": "FIRE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
