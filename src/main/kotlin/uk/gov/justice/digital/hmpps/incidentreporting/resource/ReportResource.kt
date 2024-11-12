@@ -84,18 +84,22 @@ class ReportResource(
     ],
   )
   fun getBasicReports(
-    @Schema(
-      description = "Filter by given prison ID",
-      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-      nullable = true,
-      defaultValue = "null",
-      example = "MDI",
-      minLength = 2,
-      maxLength = 6,
+    @Parameter(
+      description = "Filter by given prison IDs",
+      array = ArraySchema(
+        schema = Schema(example = "MDI", minLength = 2, maxLength = 6),
+        arraySchema = Schema(
+          requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+          nullable = true,
+          defaultValue = "null",
+        ),
+      ),
     )
     @RequestParam(required = false)
-    @Size(min = 2, max = 6)
-    prisonId: String? = null,
+    prisonId: List<
+      @Size(min = 2, max = 6)
+      String,
+      >? = null,
     @Schema(
       description = "Filter by given information source",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -208,7 +212,7 @@ class ReportResource(
       throw ValidationException("Page size must be 50 or less")
     }
     return reportService.getBasicReports(
-      prisonId = prisonId,
+      prisonIds = prisonId ?: emptyList(),
       source = source,
       statuses = status ?: emptyList(),
       type = type,

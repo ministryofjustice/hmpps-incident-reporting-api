@@ -123,7 +123,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @ParameterizedTest(name = "cannot filter by invalid `{0}`")
       @ValueSource(
         strings = [
-          "prisonId=",
           "prisonId=M",
           "prisonId=Moorland+(HMP)",
           "source=nomis",
@@ -381,7 +380,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @CsvSource(
           value = [
             "''                                                          | 5",
+            "prisonId=                                                   | 5",
             "prisonId=MDI                                                | 3",
+            "prisonId=MDI&prisonId=LEI                                   | 5",
+            "status=                                                     | 5",
             "status=DRAFT                                                | 3",
             "status=AWAITING_ANALYSIS                                    | 2",
             "status=AWAITING_ANALYSIS,DRAFT                              | 5",

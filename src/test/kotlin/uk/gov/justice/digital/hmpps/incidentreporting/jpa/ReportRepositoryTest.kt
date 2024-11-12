@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEve
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonIds
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
@@ -77,7 +77,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       )
 
       val matchingSpecifications = listOf(
-        filterByPrisonId("MDI"),
+        filterByPrisonIds("MDI"),
         filterBySource(InformationSource.DPS),
         filterByStatuses(Status.DRAFT),
         filterByType(Type.FINDS),
@@ -96,7 +96,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       }
 
       val nonMatchingSpecifications = listOf(
-        filterByPrisonId("LEI"),
+        filterByPrisonIds("LEI"),
         filterBySource(InformationSource.NOMIS),
         filterByStatuses(Status.AWAITING_ANALYSIS),
         filterByType(Type.FOOD_REFUSAL),
@@ -156,16 +156,16 @@ class ReportRepositoryTest : IntegrationTestBase() {
       }
 
       assertSpecificationReturnsReports(
-        filterByPrisonId("MDI"),
+        filterByPrisonIds("MDI"),
         listOf(report1Id, report3Id),
       )
       assertSpecificationReturnsReports(
-        filterByPrisonId("MDI")
+        filterByPrisonIds("MDI")
           .and(filterBySource(InformationSource.NOMIS)),
         listOf(report3Id),
       )
       assertSpecificationReturnsReports(
-        filterByPrisonId("LEI")
+        filterByPrisonIds("LEI")
           .and(filterBySource(InformationSource.NOMIS)),
         emptyList(),
       )
@@ -184,6 +184,10 @@ class ReportRepositoryTest : IntegrationTestBase() {
         listOf(report1Id, report2Id, report3Id),
       )
       assertSpecificationReturnsReports(
+        filterByPrisonIds(listOf("LEI", "MDI")),
+        listOf(report1Id, report2Id, report3Id),
+      )
+      assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
           .and(filterByType(Type.FINDS)),
@@ -191,7 +195,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       )
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
-          .and(filterByPrisonId("LEI"))
+          .and(filterByPrisonIds("LEI"))
           .and(filterBySource(InformationSource.DPS))
           .and(filterByType(Type.FINDS)),
         listOf(report2Id),
@@ -199,7 +203,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
-          .and(filterByPrisonId("MDI"))
+          .and(filterByPrisonIds("MDI"))
           .and(filterByType(Type.FINDS)),
         emptyList(),
       )
