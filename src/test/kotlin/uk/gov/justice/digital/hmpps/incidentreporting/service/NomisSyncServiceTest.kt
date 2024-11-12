@@ -157,12 +157,12 @@ class NomisSyncServiceTest {
     type = Type.SELF_HARM,
     title = "Cutting",
     description = "Offender was found in own cell with a razor",
-    prisonId = "MDI",
+    location = "MDI",
     event = Event(
       id = sampleEventId,
       eventReference = "112414323",
       eventDateAndTime = whenIncidentHappened,
-      prisonId = "MDI",
+      location = "MDI",
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
       createdAt = now.plusHours(2),
@@ -206,7 +206,7 @@ class NomisSyncServiceTest {
       report.type == sampleReport.type &&
       report.title == sampleReport.title &&
       report.description == sampleReport.description &&
-      report.prisonId == sampleReport.prisonId &&
+      report.location == sampleReport.location &&
       report.reportedBy == sampleReport.reportedBy &&
       report.reportedAt == sampleReport.reportedAt &&
       report.status == sampleReport.status &&
@@ -224,7 +224,7 @@ class NomisSyncServiceTest {
     val sampleEvent = sampleReport.event
     return event.eventReference == sampleEvent.eventReference &&
       event.eventDateAndTime == sampleEvent.eventDateAndTime &&
-      event.prisonId == sampleEvent.prisonId &&
+      event.location == sampleEvent.location &&
       event.description == sampleEvent.description &&
       event.createdAt == sampleEvent.createdAt &&
       event.modifiedAt == sampleEvent.modifiedAt &&
@@ -236,14 +236,14 @@ class NomisSyncServiceTest {
     assertThat(report.reportReference).isEqualTo("112414323")
     assertThat(report.type).isEqualTo(Type.SELF_HARM)
     assertThat(report.incidentDateAndTime).isEqualTo(whenIncidentHappened)
-    assertThat(report.prisonId).isEqualTo("MDI")
+    assertThat(report.location).isEqualTo("MDI")
     assertThat(report.title).isEqualTo("Cutting")
     assertThat(report.description).isEqualTo("Offender was found in own cell with a razor")
     assertThat(report.event.id).isEqualTo(sampleEventId)
     assertThat(report.event.eventReference).isEqualTo("112414323")
     assertThat(report.event.eventDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.event.description).isEqualTo("Offender was found in own cell with a razor")
-    assertThat(report.event.prisonId).isEqualTo("MDI")
+    assertThat(report.event.location).isEqualTo("MDI")
     assertThat(report.event.createdAt.toString()).isEqualTo("2023-12-05T14:34:56")
     assertThat(report.event.modifiedBy).isEqualTo("another-user")
     assertThat(report.event.modifiedAt.toString()).isEqualTo("2023-12-05T17:34:56")
@@ -321,7 +321,7 @@ class NomisSyncServiceTest {
         "updated" to "false",
         "id" to "11111111-2222-3333-4444-555555555555",
         "reportReference" to "112414323",
-        "prisonId" to "MDI",
+        "location" to "MDI",
       ),
       null,
     )
@@ -352,7 +352,7 @@ class NomisSyncServiceTest {
         "updated" to "true",
         "id" to "11111111-2222-3333-4444-555555555555",
         "reportReference" to "112414323",
-        "prisonId" to "MDI",
+        "location" to "MDI",
       ),
       null,
     )

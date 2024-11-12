@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEve
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonIds
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLocations
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
@@ -77,7 +77,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       )
 
       val matchingSpecifications = listOf(
-        filterByPrisonIds("MDI"),
+        filterByLocations("MDI"),
         filterBySource(InformationSource.DPS),
         filterByStatuses(Status.DRAFT),
         filterByType(Type.FINDS),
@@ -96,7 +96,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       }
 
       val nonMatchingSpecifications = listOf(
-        filterByPrisonIds("LEI"),
+        filterByLocations("LEI"),
         filterBySource(InformationSource.NOMIS),
         filterByStatuses(Status.AWAITING_ANALYSIS),
         filterByType(Type.FOOD_REFUSAL),
@@ -122,7 +122,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
           buildReport(
             reportReference = "12345",
             reportTime = now.minusDays(3),
-            prisonId = "MDI",
+            location = "MDI",
             source = InformationSource.DPS,
             status = Status.AWAITING_ANALYSIS,
             type = Type.ASSAULT,
@@ -130,7 +130,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
           buildReport(
             reportReference = "12346",
             reportTime = now.minusDays(2),
-            prisonId = "LEI",
+            location = "LEI",
             source = InformationSource.DPS,
             status = Status.AWAITING_ANALYSIS,
             type = Type.FINDS,
@@ -138,7 +138,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
           buildReport(
             reportReference = "11124143",
             reportTime = now.minusDays(1),
-            prisonId = "MDI",
+            location = "MDI",
             source = InformationSource.NOMIS,
             status = Status.DRAFT,
             type = Type.FINDS,
@@ -156,16 +156,16 @@ class ReportRepositoryTest : IntegrationTestBase() {
       }
 
       assertSpecificationReturnsReports(
-        filterByPrisonIds("MDI"),
+        filterByLocations("MDI"),
         listOf(report1Id, report3Id),
       )
       assertSpecificationReturnsReports(
-        filterByPrisonIds("MDI")
+        filterByLocations("MDI")
           .and(filterBySource(InformationSource.NOMIS)),
         listOf(report3Id),
       )
       assertSpecificationReturnsReports(
-        filterByPrisonIds("LEI")
+        filterByLocations("LEI")
           .and(filterBySource(InformationSource.NOMIS)),
         emptyList(),
       )
@@ -184,7 +184,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         listOf(report1Id, report2Id, report3Id),
       )
       assertSpecificationReturnsReports(
-        filterByPrisonIds(listOf("LEI", "MDI")),
+        filterByLocations(listOf("LEI", "MDI")),
         listOf(report1Id, report2Id, report3Id),
       )
       assertSpecificationReturnsReports(
@@ -195,7 +195,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       )
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
-          .and(filterByPrisonIds("LEI"))
+          .and(filterByLocations("LEI"))
           .and(filterBySource(InformationSource.DPS))
           .and(filterByType(Type.FINDS)),
         listOf(report2Id),
@@ -203,7 +203,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
-          .and(filterByPrisonIds("MDI"))
+          .and(filterByLocations("MDI"))
           .and(filterByType(Type.FINDS)),
         emptyList(),
       )
@@ -233,11 +233,11 @@ class ReportRepositoryTest : IntegrationTestBase() {
           title = "A summary",
           description = "An incident occurred",
           reportedBy = "user1",
-          prisonId = "MDI",
+          location = "MDI",
           event = Event(
             eventReference = eventRepository.generateEventReference(),
             eventDateAndTime = hourAgo,
-            prisonId = "MDI",
+            location = "MDI",
             title = "Event summary",
             description = "An event occurred",
             createdAt = now,

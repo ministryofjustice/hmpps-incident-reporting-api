@@ -14,7 +14,7 @@ fun buildReport(
   reportReference: String,
   /** When report was created */
   reportTime: LocalDateTime,
-  prisonId: String = "MDI",
+  location: String = "MDI",
   source: InformationSource = InformationSource.DPS,
   status: Status = Status.DRAFT,
   type: Type = Type.FINDS,
@@ -31,7 +31,7 @@ fun buildReport(
   val report = Report(
     reportReference = reportReference,
     incidentDateAndTime = eventDateAndTime,
-    prisonId = prisonId,
+    location = location,
     source = source,
     status = status,
     type = type,
@@ -47,7 +47,7 @@ fun buildReport(
       eventReference = reportReference,
       eventDateAndTime = eventDateAndTime,
       reportDateAndTime = reportTime,
-      prisonId = prisonId,
+      location = location,
       reportingUsername = reportingUsername,
     ),
   )

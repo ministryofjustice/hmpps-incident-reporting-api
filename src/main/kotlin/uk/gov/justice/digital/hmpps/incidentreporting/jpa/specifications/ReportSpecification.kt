@@ -8,8 +8,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.StaffInvolvement
 import java.time.LocalDate
 
-fun filterByPrisonIds(prisonIds: Collection<String>) = Report::prisonId.buildSpecForIn(prisonIds)
-fun filterByPrisonIds(vararg prisonIds: String) = filterByPrisonIds(prisonIds.toList())
+fun filterByLocations(locations: Collection<String>) = Report::location.buildSpecForIn(locations)
+fun filterByLocations(vararg locations: String) = filterByLocations(locations.toList())
 
 fun filterBySource(informationSource: InformationSource) = Report::source.buildSpecForEqualTo(informationSource)
 

@@ -54,7 +54,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(reportEntity.title).isEqualTo("TITLE")
       assertThat(reportEntity.description).isEqualTo("DESCRIPTION")
       assertThat(reportEntity.reportReference).isEqualTo("112414323")
-      assertThat(reportEntity.prisonId).isEqualTo("MDI")
+      assertThat(reportEntity.location).isEqualTo("MDI")
       assertThat(reportEntity.questionSetId).isEqualTo("2124")
       assertThat(reportEntity.assignedTo).isEqualTo("user1")
       assertThat(reportEntity.modifiedBy).isEqualTo("user1")
@@ -73,7 +73,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(eventEntity.title).isEqualTo("TITLE")
       assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
       assertThat(eventEntity.eventReference).isEqualTo("112414323")
-      assertThat(eventEntity.prisonId).isEqualTo("MDI")
+      assertThat(eventEntity.location).isEqualTo("MDI")
       assertThat(eventEntity.modifiedBy).isEqualTo("user1")
     }
 

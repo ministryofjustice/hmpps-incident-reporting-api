@@ -74,7 +74,7 @@ class Report(
 
   var incidentDateAndTime: LocalDateTime,
 
-  var prisonId: String,
+  var location: String,
 
   @Enumerated(EnumType.STRING)
   var type: Type,
@@ -253,14 +253,14 @@ class Report(
 
     // NOTE: Currently we update the event information as well on update.
     //       For some of these fields makes more sense because that's explicitly
-    //       the intent (e.g. `incidentDateTime`, `prisonId`, etc... are also in the event)
+    //       the intent (e.g. `incidentDateTime`, `location`, etc... are also in the event)
     //       For Event's title/description may make less sense but we're keeping this in
     //       as well for now.
     incidentDateAndTime = upsert.incidentDateTime
     event.eventDateAndTime = incidentDateAndTime
 
-    prisonId = upsert.prison.code
-    event.prisonId = prisonId
+    location = upsert.prison.code
+    event.location = location
 
     title = upsert.title ?: NO_DETAILS_GIVEN
     event.title = title
@@ -308,7 +308,7 @@ class Report(
     id = id!!,
     reportReference = reportReference,
     incidentDateAndTime = incidentDateAndTime,
-    prisonId = prisonId,
+    location = location,
     type = type,
     title = title,
     description = description,
@@ -326,7 +326,7 @@ class Report(
     id = id!!,
     reportReference = reportReference,
     incidentDateAndTime = incidentDateAndTime,
-    prisonId = prisonId,
+    location = location,
     type = type,
     title = title,
     description = description,

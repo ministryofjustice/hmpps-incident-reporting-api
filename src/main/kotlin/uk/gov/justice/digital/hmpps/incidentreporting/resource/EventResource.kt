@@ -70,10 +70,10 @@ class EventResource(
   )
   fun getEvents(
     @Parameter(
-      description = "Filter by given prison IDs",
+      description = "Filter by given locations, typically prison IDs",
       example = "LEI,MDI",
       array = ArraySchema(
-        schema = Schema(example = "MDI", minLength = 2, maxLength = 6),
+        schema = Schema(example = "MDI", minLength = 2, maxLength = 20),
         arraySchema = Schema(
           requiredMode = Schema.RequiredMode.NOT_REQUIRED,
           nullable = true,
@@ -82,8 +82,8 @@ class EventResource(
       ),
     )
     @RequestParam(required = false)
-    prisonId: List<
-      @Size(min = 2, max = 6)
+    location: List<
+      @Size(min = 2, max = 20)
       String,
       >? = null,
     @Schema(
@@ -114,7 +114,7 @@ class EventResource(
       throw ValidationException("Page size must be 50 or less")
     }
     return eventService.getEvents(
-      prisonIds = prisonId ?: emptyList(),
+      locations = location ?: emptyList(),
       eventDateFrom = eventDateFrom,
       eventDateUntil = eventDateUntil,
       pageable = pageable,

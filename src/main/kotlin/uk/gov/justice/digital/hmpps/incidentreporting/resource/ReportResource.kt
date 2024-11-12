@@ -85,10 +85,10 @@ class ReportResource(
   )
   fun getBasicReports(
     @Parameter(
-      description = "Filter by given prison IDs",
+      description = "Filter by given locations, typically prison IDs",
       example = "LEI,MDI",
       array = ArraySchema(
-        schema = Schema(example = "MDI", minLength = 2, maxLength = 6),
+        schema = Schema(example = "MDI", minLength = 2, maxLength = 20),
         arraySchema = Schema(
           requiredMode = Schema.RequiredMode.NOT_REQUIRED,
           nullable = true,
@@ -97,10 +97,24 @@ class ReportResource(
       ),
     )
     @RequestParam(required = false)
-    prisonId: List<
-      @Size(min = 2, max = 6)
+    location: List<
+      @Size(min = 2, max = 20)
       String,
       >? = null,
+    // TODO: `prisonId` can be removed once NOMIS reconciliation checks are updated to use `location`
+    @Schema(
+      description = "Filter by given location, typically a prison ID. Ignored if `location` is also used.",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
+      deprecated = true,
+      defaultValue = "null",
+      example = "MDI",
+      minLength = 2,
+      maxLength = 6,
+    )
+    @RequestParam(required = false)
+    @Size(min = 2, max = 6)
+    prisonId: String? = null,
     @Schema(
       description = "Filter by given information source",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -212,8 +226,9 @@ class ReportResource(
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
+    val locations = location ?: if (prisonId != null) listOf(prisonId) else emptyList()
     return reportService.getBasicReports(
-      prisonIds = prisonId ?: emptyList(),
+      locations = locations,
       source = source,
       statuses = status ?: emptyList(),
       type = type,
