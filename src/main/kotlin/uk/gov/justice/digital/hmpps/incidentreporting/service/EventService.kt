@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.EventWithBasicReports
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateUntil
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByPrisonIds
 import java.time.LocalDate
 import java.util.UUID
 
@@ -21,14 +21,16 @@ class EventService(
   private val eventRepository: EventRepository,
 ) {
   fun getEvents(
-    prisonId: String? = null,
+    prisonIds: List<String> = emptyList(),
     eventDateFrom: LocalDate? = null,
     eventDateUntil: LocalDate? = null,
     pageable: Pageable = PageRequest.of(0, 20, Sort.by("eventDateAndTime").descending()),
   ): Page<EventWithBasicReports> {
     val specification = Specification.allOf(
       buildList {
-        prisonId?.let { add(filterEventsByPrisonId(prisonId)) }
+        if (prisonIds.isNotEmpty()) {
+          add(filterEventsByPrisonIds(prisonIds))
+        }
         eventDateFrom?.let { add(filterEventsByEventDateFrom(eventDateFrom)) }
         eventDateUntil?.let { add(filterEventsByEventDateUntil(eventDateUntil)) }
       },

@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventReposi
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateUntil
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByPrisonIds
 import java.util.UUID
 
 @DisplayName("Event repository")
@@ -62,7 +62,7 @@ class EventRepositoryTest : IntegrationTestBase() {
       )
 
       val matchingSpecifications = listOf(
-        filterEventsByPrisonId("MDI"),
+        filterEventsByPrisonIds("MDI"),
         filterEventsByEventDateFrom(now.toLocalDate().minusDays(2)),
         filterEventsByEventDateFrom(now.toLocalDate().minusDays(1)),
         filterEventsByEventDateUntil(now.toLocalDate().minusDays(1)),
@@ -78,7 +78,7 @@ class EventRepositoryTest : IntegrationTestBase() {
       }
 
       val nonMatchingSpecifications = listOf(
-        filterEventsByPrisonId("LEI"),
+        filterEventsByPrisonIds("LEI"),
         filterEventsByEventDateFrom(now.toLocalDate()),
         filterEventsByEventDateUntil(now.toLocalDate().minusDays(2)),
       )
@@ -127,16 +127,20 @@ class EventRepositoryTest : IntegrationTestBase() {
       }
 
       assertSpecificationReturnsEvents(
-        filterEventsByPrisonId("MDI"),
+        filterEventsByPrisonIds("MDI"),
         listOf(event1Id, event3Id),
       )
       assertSpecificationReturnsEvents(
-        filterEventsByPrisonId("MDI")
-          .or(filterEventsByPrisonId("LEI")),
+        filterEventsByPrisonIds("MDI")
+          .or(filterEventsByPrisonIds("LEI")),
         listOf(event1Id, event2Id, event3Id),
       )
       assertSpecificationReturnsEvents(
-        filterEventsByPrisonId("MDI")
+        filterEventsByPrisonIds("MDI", "LEI"),
+        listOf(event1Id, event2Id, event3Id),
+      )
+      assertSpecificationReturnsEvents(
+        filterEventsByPrisonIds("MDI")
           .and(filterEventsByEventDateUntil(now.toLocalDate().minusDays(2))),
         listOf(event1Id),
       )

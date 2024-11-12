@@ -89,7 +89,6 @@ class EventResourceTest : SqsIntegrationTestBase() {
       @ParameterizedTest(name = "cannot filter by invalid `{0}`")
       @ValueSource(
         strings = [
-          "prisonId=",
           "prisonId=M",
           "prisonId=Moorland+(HMP)",
           "eventDateFrom=2024",
@@ -339,8 +338,10 @@ class EventResourceTest : SqsIntegrationTestBase() {
         @CsvSource(
           value = [
             "''                                                 | 5",
+            "prisonId=                                          | 5",
             "prisonId=MDI                                       | 3",
             "prisonId=LEI                                       | 2",
+            "prisonId=LEI,MDI                                   | 5",
             "eventDateFrom=2023-12-05                           | 1",
             "eventDateFrom=2023-12-04                           | 2",
             "eventDateUntil=2023-12-03                          | 3",
