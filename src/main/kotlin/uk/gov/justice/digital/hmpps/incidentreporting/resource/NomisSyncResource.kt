@@ -86,9 +86,9 @@ class NomisSyncResource(
 
     if (!syncRequest.initialMigration) {
       val (eventType, whatChanged) = if (isUpdate) {
-        Pair(ReportDomainEventType.INCIDENT_REPORT_AMENDED, WhatChanged.ANYTHING)
+        ReportDomainEventType.INCIDENT_REPORT_AMENDED to WhatChanged.ANYTHING
       } else {
-        Pair(ReportDomainEventType.INCIDENT_REPORT_CREATED, null)
+        ReportDomainEventType.INCIDENT_REPORT_CREATED to null
       }
 
       eventPublishAndAudit(

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.ValidationException
 import jakarta.validation.constraints.Size
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 
@@ -39,6 +40,7 @@ data class UpdateReportRequest(
     location?.let { report.location = it }
     title?.let { report.title = it }
     description?.let { report.description = it }
+    report.modifiedIn = InformationSource.DPS
     report.modifiedBy = requestUsername
     report.modifiedAt = now
 

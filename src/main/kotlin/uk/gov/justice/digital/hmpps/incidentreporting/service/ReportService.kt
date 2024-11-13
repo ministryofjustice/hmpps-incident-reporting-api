@@ -223,6 +223,7 @@ class ReportService(
           changedAt = now,
           changedBy = user,
         )
+        reportEntity.modifiedIn = InformationSource.DPS
         reportEntity.modifiedAt = now
         reportEntity.modifiedBy = user
 
@@ -254,6 +255,7 @@ class ReportService(
           changedAt = now,
           changedBy = user,
         )
+        reportEntity.modifiedIn = InformationSource.DPS
         reportEntity.modifiedAt = now
         reportEntity.modifiedBy = user
 
@@ -302,6 +304,7 @@ class ReportService(
         }
       }
 
+      modifiedIn = InformationSource.DPS
       modifiedAt = now
       modifiedBy = requestUsername
 
@@ -323,6 +326,7 @@ class ReportService(
       popLastQuestion()
         ?: throw ValidationException("Question list is empty")
 
+      modifiedIn = InformationSource.DPS
       modifiedAt = LocalDateTime.now(clock)
       modifiedBy = authenticationHolder.username ?: SYSTEM_USERNAME
 
@@ -354,6 +358,7 @@ class ReportService(
           prisonerInvolvement.prisonerNumber = prisonerNumber
           val report = prisonerInvolvement.getReport()
           if (!containsKey(report.id)) {
+            // TODO: does this count as modifying a report in DPS?
             report.modifiedAt = now // NB: there is no actor user to set modifiedBy
             put(report.id, report)
           }

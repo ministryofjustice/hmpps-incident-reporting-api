@@ -46,6 +46,7 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
   protected fun <T> (UUID).updateReportOrThrowNotFound(changeMessage: String, whatChanged: WhatChanged? = null, block: (Report) -> T): T {
     val report = findReportOrThrowNotFound()
     return block(report).also {
+      report.modifiedIn = InformationSource.DPS
       report.modifiedAt = LocalDateTime.now(clock)
       report.modifiedBy = authenticationHolder.username ?: SYSTEM_USERNAME
 

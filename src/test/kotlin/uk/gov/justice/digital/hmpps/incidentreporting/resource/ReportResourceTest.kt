@@ -56,6 +56,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         // language=json
         """
           {
+            "lastModifiedInNomis": false,
             "modifiedAt": "2023-12-05T12:34:56",
             "modifiedBy": "request-user"
           }
@@ -1336,6 +1337,38 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           WhatChanged.BASIC_REPORT,
         )
       }
+
+      @Test
+      fun `can update a report first created in NOMIS`() {
+        val nomisReport = reportRepository.save(
+          buildReport(
+            reportReference = "11124146",
+            reportTime = now,
+            source = InformationSource.NOMIS,
+          ),
+        )
+        val updateReportRequest = UpdateReportRequest(
+          description = "Updated description",
+        )
+        webTestClient.patch().uri("/incident-reports/${nomisReport.id}")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updateReportRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${nomisReport.id}",
+              "description": "Updated description",
+              "createdInNomis": true,
+              "lastModifiedInNomis": false
+            }
+            """,
+            false,
+          )
+      }
     }
   }
 
@@ -1527,6 +1560,35 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           InformationSource.DPS,
           WhatChanged.STATUS,
         )
+      }
+
+      @Test
+      fun `can change status of a report first created in NOMIS`() {
+        val nomisReport = reportRepository.save(
+          buildReport(
+            reportReference = "11124146",
+            reportTime = now,
+            source = InformationSource.NOMIS,
+          ),
+        )
+        webTestClient.patch().uri("/incident-reports/${nomisReport.id}/status")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${nomisReport.id}",
+              "status": "AWAITING_ANALYSIS",
+              "createdInNomis": true,
+              "lastModifiedInNomis": false
+            }
+            """,
+            false,
+          )
       }
     }
   }
@@ -1937,12 +1999,41 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           WhatChanged.TYPE,
         )
       }
+
+      @Test
+      fun `can change type of a report first created in NOMIS`() {
+        val nomisReport = reportRepository.save(
+          buildReport(
+            reportReference = "11124146",
+            reportTime = now,
+            source = InformationSource.NOMIS,
+          ),
+        )
+        webTestClient.patch().uri("/incident-reports/${nomisReport.id}/type")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload)
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """ 
+            {
+              "id": "${nomisReport.id}",
+              "type": "FIRE",
+              "createdInNomis": true,
+              "lastModifiedInNomis": false
+            }
+            """,
+            false,
+          )
+      }
     }
   }
 
   @DisplayName("DELETE /incident-reports/{id}")
   @Nested
-  inner class DeleteReportById {
+  inner class DeleteReport {
     private lateinit var url: String
 
     @BeforeEach
@@ -2233,7 +2324,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         }
 
         @Test
-        fun `can another object to a report`() {
+        fun `can add another object to a report`() {
           val expectedResponse = getResource("/related-objects/$urlSuffix/add-response-many.json")
           webTestClient.post().uri(urlWithRelatedObjects)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -2246,6 +2337,31 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
           assertThatDomainEventWasSent("incident.report.amended", "11124146", InformationSource.DPS, whatChanged)
+        }
+
+        @Test
+        fun `can add object to a report first created in NOMIS`() {
+          val nomisReportWithRelatedObjects = reportRepository.save(
+            buildReport(
+              reportReference = "11124147",
+              reportTime = now,
+              source = InformationSource.NOMIS,
+              generateStaffInvolvement = 2,
+              generatePrisonerInvolvement = 2,
+              generateCorrections = 2,
+            ),
+          )
+
+          webTestClient.post().uri("/incident-reports/${nomisReportWithRelatedObjects.id}/$urlSuffix")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+
+          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
+          assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
         }
       }
     }
@@ -2428,9 +2544,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent("incident.report.amended", "11124146", InformationSource.DPS, whatChanged)
         }
 
-        @DisplayName("can update nullable properties")
+        @DisplayName("can update nullable properties of a related object")
         @TestFactory
-        fun `can update nullable properties`(): List<DynamicTest> {
+        fun `can update nullable properties of a related object`(): List<DynamicTest> {
           return nullablePropertyRequests.flatMap { testCase ->
             testCase.makeValidRequestTests().map { (name, request, expectedFieldValue) ->
               DynamicTest.dynamicTest(name) {
@@ -2445,6 +2561,31 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             }
           }
         }
+      }
+
+      @Test
+      fun `can update related object for a report first created in NOMIS`() {
+        val nomisReportWithRelatedObjects = reportRepository.save(
+          buildReport(
+            reportReference = "11124147",
+            reportTime = now,
+            source = InformationSource.NOMIS,
+            generateStaffInvolvement = 2,
+            generatePrisonerInvolvement = 2,
+            generateCorrections = 2,
+          ),
+        )
+
+        webTestClient.patch().uri("/incident-reports/${nomisReportWithRelatedObjects.id}/$urlSuffix/1")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validRequest)
+          .exchange()
+          .expectStatus().isOk
+
+        val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+        assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
+        assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
       }
     }
 
@@ -2538,6 +2679,30 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
           assertThatDomainEventWasSent("incident.report.amended", "11124146", InformationSource.DPS, whatChanged)
+        }
+
+        @Test
+        fun `can delete related object from a report first created in NOMIS`() {
+          val nomisReportWithRelatedObjects = reportRepository.save(
+            buildReport(
+              reportReference = "11124147",
+              reportTime = now,
+              source = InformationSource.NOMIS,
+              generateStaffInvolvement = 2,
+              generatePrisonerInvolvement = 2,
+              generateCorrections = 2,
+            ),
+          )
+
+          webTestClient.delete().uri("/incident-reports/${nomisReportWithRelatedObjects.id}/$urlSuffix/1")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+
+          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
+          assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
         }
       }
     }
@@ -2933,6 +3098,30 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             whatChanged = WhatChanged.QUESTIONS,
           )
         }
+
+        @Test
+        fun `can add question with responses to a report first created in NOMIS`() {
+          val nomisReportWithRelatedObjects = reportRepository.save(
+            buildReport(
+              reportReference = "11124147",
+              reportTime = now,
+              source = InformationSource.NOMIS,
+              generateQuestions = 2,
+              generateResponses = 2,
+            ),
+          )
+
+          webTestClient.post().uri("/incident-reports/${nomisReportWithRelatedObjects.id}/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequest)
+            .exchange()
+            .expectStatus().isCreated
+
+          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
+          assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
+        }
       }
     }
 
@@ -3037,6 +3226,29 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "11124146",
             whatChanged = WhatChanged.QUESTIONS,
           )
+        }
+
+        @Test
+        fun `can delete a question from a report first created in NOMIS`() {
+          val nomisReportWithRelatedObjects = reportRepository.save(
+            buildReport(
+              reportReference = "11124147",
+              reportTime = now,
+              source = InformationSource.NOMIS,
+              generateQuestions = 2,
+              generateResponses = 2,
+            ),
+          )
+
+          webTestClient.delete().uri("/incident-reports/${nomisReportWithRelatedObjects.id}/questions")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+
+          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
+          assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
         }
       }
     }
