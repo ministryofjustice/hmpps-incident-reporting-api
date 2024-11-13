@@ -2,9 +2,9 @@ package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments.arguments
-import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -41,116 +41,119 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
       }
   }
 
-  companion object {
-    @JvmStatic
-    fun testCases() = listOf(
-      arguments(
-        "error-codes",
-        ErrorCode.entries.size,
-        arrayOf(
-          mapOf("code" to "100", "description" to "ValidationFailure"),
-        ),
-      ),
-      arguments(
-        "correction-reasons",
-        CorrectionReason.entries.size,
-        arrayOf(
-          mapOf("code" to "MISTAKE", "description" to "Mistake"),
-        ),
-      ),
-      arguments(
-        "information-sources",
-        InformationSource.entries.size,
-        arrayOf(
-          mapOf("code" to "DPS", "description" to "DPS"),
-        ),
-      ),
-      arguments(
-        "prisoner-outcomes",
-        PrisonerOutcome.entries.size,
-        arrayOf(
-          mapOf(
-            "code" to "LOCAL_INVESTIGATION",
-            "description" to "Investigation (local)",
-            "nomisCode" to "ILOC",
-          ),
-        ),
-      ),
-      arguments(
-        "prisoner-roles",
-        PrisonerRole.entries.size,
-        arrayOf(
-          mapOf(
-            "code" to "ABSCONDER",
-            "description" to "Absconder",
-            "nomisCode" to "ABS",
-          ),
-          mapOf(
-            "code" to "IMPEDED_STAFF",
-            "description" to "Impeded staff",
-            "nomisCode" to "IMPED",
-          ),
-        ),
-      ),
-      arguments(
-        "staff-roles",
-        StaffRole.entries.size,
-        arrayOf(
-          mapOf(
-            "code" to "ACTIVELY_INVOLVED",
-            "description" to "Actively involved",
-            "nomisCodes" to listOf("AI", "INV"),
-          ),
-        ),
-      ),
-      arguments(
-        "statuses",
-        Status.entries.size,
-        arrayOf(
-          mapOf(
-            "code" to "DRAFT",
-            "description" to "Draft",
-            "nomisCode" to null,
-          ),
-          mapOf(
-            "code" to "IN_ANALYSIS",
-            "description" to "In analysis",
-            "nomisCode" to "INAN",
-          ),
-        ),
-      ),
-      arguments(
-        "types",
-        Type.entries.size,
-        arrayOf(
-          mapOf(
-            "code" to "DISORDER",
-            "description" to "Disorder",
-            "active" to true,
-            "nomisCode" to "DISORDER1",
-          ),
-          mapOf(
-            "code" to "OLD_ASSAULT2",
-            "description" to "Assault (from April 2017)",
-            "active" to false,
-            "nomisCode" to "ASSAULTS1",
-          ),
-        ),
-      ),
-    )
-  }
+  private data class ConstantsTestCase(
+    val endpoint: String,
+    val expectedCount: Int,
+    val expectedSamples: Array<Map<String, Any?>>,
+  )
 
-  @ParameterizedTest(name = "exposes {0} constants")
-  @MethodSource("testCases")
-  fun `exposes constants`(endpoint: String, expectedCount: Int, expectedSamples: Array<Map<String, Any?>>) {
-    webTestClient.get().uri("/constants/$endpoint")
-      .headers(setAuthorisation(roles = emptyList(), scopes = listOf("read")))
-      .header("Content-Type", "application/json")
-      .exchange()
-      .expectStatus().isOk
-      .expectBody().jsonPath("$").value<List<Map<String, Any?>>> { list ->
-        assertThat(list).hasSize(expectedCount)
-        assertThat(list).containsOnlyOnce(*expectedSamples)
-      }
+  @DisplayName("exposes constants")
+  @TestFactory
+  fun `exposes constants`(): List<DynamicTest> = listOf(
+    ConstantsTestCase(
+      "error-codes",
+      ErrorCode.entries.size,
+      arrayOf(
+        mapOf("code" to "100", "description" to "ValidationFailure"),
+      ),
+    ),
+    ConstantsTestCase(
+      "correction-reasons",
+      CorrectionReason.entries.size,
+      arrayOf(
+        mapOf("code" to "MISTAKE", "description" to "Mistake"),
+      ),
+    ),
+    ConstantsTestCase(
+      "information-sources",
+      InformationSource.entries.size,
+      arrayOf(
+        mapOf("code" to "DPS", "description" to "DPS"),
+      ),
+    ),
+    ConstantsTestCase(
+      "prisoner-outcomes",
+      PrisonerOutcome.entries.size,
+      arrayOf(
+        mapOf(
+          "code" to "LOCAL_INVESTIGATION",
+          "description" to "Investigation (local)",
+          "nomisCode" to "ILOC",
+        ),
+      ),
+    ),
+    ConstantsTestCase(
+      "prisoner-roles",
+      PrisonerRole.entries.size,
+      arrayOf(
+        mapOf(
+          "code" to "ABSCONDER",
+          "description" to "Absconder",
+          "nomisCode" to "ABS",
+        ),
+        mapOf(
+          "code" to "IMPEDED_STAFF",
+          "description" to "Impeded staff",
+          "nomisCode" to "IMPED",
+        ),
+      ),
+    ),
+    ConstantsTestCase(
+      "staff-roles",
+      StaffRole.entries.size,
+      arrayOf(
+        mapOf(
+          "code" to "ACTIVELY_INVOLVED",
+          "description" to "Actively involved",
+          "nomisCodes" to listOf("AI", "INV"),
+        ),
+      ),
+    ),
+    ConstantsTestCase(
+      "statuses",
+      Status.entries.size,
+      arrayOf(
+        mapOf(
+          "code" to "DRAFT",
+          "description" to "Draft",
+          "nomisCode" to null,
+        ),
+        mapOf(
+          "code" to "IN_ANALYSIS",
+          "description" to "In analysis",
+          "nomisCode" to "INAN",
+        ),
+      ),
+    ),
+    ConstantsTestCase(
+      "types",
+      Type.entries.size,
+      arrayOf(
+        mapOf(
+          "code" to "DISORDER",
+          "description" to "Disorder",
+          "active" to true,
+          "nomisCode" to "DISORDER1",
+        ),
+        mapOf(
+          "code" to "OLD_ASSAULT2",
+          "description" to "Assault (from April 2017)",
+          "active" to false,
+          "nomisCode" to "ASSAULTS1",
+        ),
+      ),
+    ),
+  ).map { (endpoint, expectedCount, expectedSamples) ->
+    DynamicTest.dynamicTest("exposes $endpoint constants") {
+      webTestClient.get().uri("/constants/$endpoint")
+        .headers(setAuthorisation(roles = emptyList(), scopes = listOf("read")))
+        .header("Content-Type", "application/json")
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().jsonPath("$").value<List<Map<String, Any?>>> { list ->
+          assertThat(list).hasSize(expectedCount)
+          assertThat(list).containsOnlyOnce(*expectedSamples)
+        }
+    }
   }
 }
