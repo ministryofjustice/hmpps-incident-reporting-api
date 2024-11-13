@@ -2,6 +2,7 @@
   "reportReference": "11124143",
   "type": "FINDS",
   "incidentDateAndTime": "2023-12-05T11:34:56",
+  "location": "MDI",
   "prisonId": "MDI",
   "title": "Incident Report 11124143",
   "description": "A new incident created in the new service of type Finds",

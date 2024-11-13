@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -67,18 +69,23 @@ class EventResource(
     ],
   )
   fun getEvents(
-    @Schema(
-      description = "Filter by given prison ID",
-      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-      nullable = true,
-      defaultValue = "null",
-      example = "MDI",
-      minLength = 2,
-      maxLength = 6,
+    @Parameter(
+      description = "Filter by given locations, typically prison IDs",
+      example = "LEI,MDI",
+      array = ArraySchema(
+        schema = Schema(example = "MDI", minLength = 2, maxLength = 20),
+        arraySchema = Schema(
+          requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+          nullable = true,
+          defaultValue = "null",
+        ),
+      ),
     )
     @RequestParam(required = false)
-    @Size(min = 2, max = 6)
-    prisonId: String? = null,
+    location: List<
+      @Size(min = 2, max = 20)
+      String,
+      >? = null,
     @Schema(
       description = "Filter for events that happened since this date (inclusive)",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -107,7 +114,7 @@ class EventResource(
       throw ValidationException("Page size must be 50 or less")
     }
     return eventService.getEvents(
-      prisonId = prisonId,
+      locations = location ?: emptyList(),
       eventDateFrom = eventDateFrom,
       eventDateUntil = eventDateUntil,
       pageable = pageable,

@@ -16,9 +16,9 @@ data class CreateReportRequest(
   val type: Type,
   @Schema(description = "When the incident took place", requiredMode = Schema.RequiredMode.REQUIRED, example = "2024-04-29T12:34:56.789012")
   val incidentDateAndTime: LocalDateTime,
-  @Schema(description = "The NOMIS id of the prison where incident took place", requiredMode = Schema.RequiredMode.REQUIRED, example = "MDI", minLength = 2, maxLength = 6)
-  @field:Size(min = 2, max = 6)
-  val prisonId: String,
+  @Schema(description = "The location where incident took place, typically a NOMIS prison ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "MDI", minLength = 2, maxLength = 20)
+  @field:Size(min = 2, max = 20)
+  val location: String,
   @Schema(description = "Brief title describing the incident", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 5, maxLength = 255)
   @field:Size(min = 5, max = 255)
   val title: String,
@@ -49,7 +49,7 @@ data class CreateReportRequest(
       type = type,
       title = title,
       incidentDateAndTime = incidentDateAndTime,
-      prisonId = prisonId,
+      location = location,
       description = description,
       reportedBy = requestUsername,
       reportedAt = now,
@@ -69,7 +69,7 @@ data class CreateReportRequest(
     return Event(
       eventReference = generatedEventReference,
       eventDateAndTime = incidentDateAndTime,
-      prisonId = prisonId,
+      location = location,
       title = title,
       description = description,
       createdAt = now,

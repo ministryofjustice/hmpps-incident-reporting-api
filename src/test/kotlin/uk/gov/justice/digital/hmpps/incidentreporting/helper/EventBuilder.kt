@@ -9,13 +9,13 @@ fun buildEvent(
   eventDateAndTime: LocalDateTime,
   /** When report & event was created */
   reportDateAndTime: LocalDateTime,
-  prisonId: String = "MDI",
+  location: String = "MDI",
   reportingUsername: String = "USER1",
 ): Event {
   return Event(
     eventReference = eventReference,
     eventDateAndTime = eventDateAndTime,
-    prisonId = prisonId,
+    location = location,
     title = "An event occurred",
     description = "Details of the event",
     createdAt = reportDateAndTime,

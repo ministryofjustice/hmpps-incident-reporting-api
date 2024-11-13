@@ -44,7 +44,7 @@ class Event(
   val eventReference: String,
 
   var eventDateAndTime: LocalDateTime,
-  var prisonId: String,
+  var location: String,
 
   var title: String,
   var description: String,
@@ -71,7 +71,7 @@ class Event(
   fun toDto() = EventDto(
     id = id!!,
     eventReference = eventReference,
-    prisonId = prisonId,
+    location = location,
     eventDateAndTime = eventDateAndTime,
     title = title,
     description = description,
@@ -83,7 +83,7 @@ class Event(
   fun toDtoWithBasicReports() = EventWithReportsDto(
     id = id!!,
     eventReference = eventReference,
-    prisonId = prisonId,
+    location = location,
     eventDateAndTime = eventDateAndTime,
     title = title,
     description = description,

@@ -34,7 +34,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedPrisoner
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedStaff
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLocations
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedBy
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
@@ -64,7 +64,7 @@ class ReportService(
   }
 
   fun getBasicReports(
-    prisonId: String? = null,
+    locations: List<String> = emptyList(),
     source: InformationSource? = null,
     statuses: List<Status> = emptyList(),
     type: Type? = null,
@@ -79,7 +79,9 @@ class ReportService(
   ): Page<ReportBasic> {
     val specification = Specification.allOf(
       buildList {
-        prisonId?.let { add(filterByPrisonId(prisonId)) }
+        if (locations.isNotEmpty()) {
+          add(filterByLocations(locations))
+        }
         source?.let { add(filterBySource(source)) }
         if (statuses.isNotEmpty()) {
           add(filterByStatuses(statuses))

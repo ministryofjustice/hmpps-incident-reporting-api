@@ -32,7 +32,7 @@ classDiagram
         String  eventReference
         LocalDateTime  modifiedAt
         String  modifiedBy
-        String  prisonId
+        String  location
         String  title
     }
     class HistoricalQuestion {
@@ -76,7 +76,7 @@ classDiagram
         LocalDateTime  incidentDateAndTime
         LocalDateTime  modifiedAt
         String  modifiedBy
-        String  prisonId
+        String  location
         String  questionSetId
         String  reportReference
         LocalDateTime  reportedAt
@@ -137,7 +137,7 @@ classDiagram
         timestamp event_date_and_time
         varchar(255) title
         text description
-        varchar(6) prison_id
+        varchar(20) location
         timestamp created_at
         varchar(120) modified_by
         timestamp modified_at
@@ -189,7 +189,7 @@ classDiagram
         varchar(25) report_reference
         varchar(255) title
         text description
-        varchar(6) prison_id
+        varchar(20) location
         varchar(60) type
         varchar(5) source
         varchar(60) status

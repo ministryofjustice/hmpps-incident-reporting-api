@@ -123,9 +123,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @ParameterizedTest(name = "cannot filter by invalid `{0}`")
       @ValueSource(
         strings = [
-          "prisonId=",
-          "prisonId=M",
-          "prisonId=Moorland+(HMP)",
+          "location=M",
+          "location=Moorland+(HMP and YOI)",
           "source=nomis",
           "status=new",
           "type=ABSCOND",
@@ -135,6 +134,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "reportedByUsername=ab",
           "involvingStaffUsername=ab",
           "involvingPrisonerNumber=A1111",
+          // TODO: `prisonId` tests can be removed once NOMIS reconciliation checks are updated to use `location`
+          "prisonId=",
         ],
       )
       fun `cannot filter by invalid property`(param: String) {
@@ -218,7 +219,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   reportReference = reportReference,
                   reportTime = now.minusDays(daysBefore),
                   reportingUsername = if (index < 2) "USER1" else "USER2",
-                  prisonId = if (index < 2) "LEI" else "MDI",
+                  location = if (index < 2) "LEI" else "MDI",
                   status = if (fromDps) Status.DRAFT else Status.AWAITING_ANALYSIS,
                   source = if (fromDps) InformationSource.DPS else InformationSource.NOMIS,
                   type = if (index < 3) Type.FINDS else Type.FIRE,
@@ -381,7 +382,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @CsvSource(
           value = [
             "''                                                          | 5",
-            "prisonId=MDI                                                | 3",
+            "location=                                                   | 5",
+            "location=MDI                                                | 3",
+            "location=LEI,MDI                                            | 5",
+            "location=MDI&location=LEI                                   | 5",
+            "location=BXI                                                | 0",
+            "status=                                                     | 5",
             "status=DRAFT                                                | 3",
             "status=AWAITING_ANALYSIS                                    | 2",
             "status=AWAITING_ANALYSIS,DRAFT                              | 5",
@@ -390,12 +396,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "status=CLOSED                                               | 0",
             "source=DPS                                                  | 3",
             "source=NOMIS                                                | 2",
-            "source=NOMIS&prisonId=MDI                                   | 2",
-            "source=DPS&prisonId=MDI                                     | 1",
+            "source=NOMIS&location=MDI                                   | 2",
+            "source=DPS&location=MDI                                     | 1",
             "type=ASSAULT                                                | 0",
             "type=FIRE                                                   | 1",
-            "type=FIRE&prisonId=LEI                                      | 0",
-            "type=FIRE&prisonId=MDI                                      | 1",
+            "type=FIRE&location=LEI                                      | 0",
+            "type=FIRE&location=MDI                                      | 1",
             "incidentDateFrom=2023-12-05                                 | 1",
             "incidentDateFrom=2023-12-04                                 | 2",
             "incidentDateFrom=2023-12-03                                 | 3",
@@ -409,6 +415,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "involvingPrisonerNumber=A0001AA                             | 3",
             "involvingPrisonerNumber=A0002AA                             | 2",
             "involvingPrisonerNumber=A0001AA&incidentDateFrom=2023-12-03 | 1",
+            // TODO: `prisonId` tests can be removed once NOMIS reconciliation checks are updated to use `location`
+            "prisonId=MDI                                                | 3",
+            "location=LEI,MDI&prisonId=MDI                               | 5",
           ],
           delimiter = '|',
         )
@@ -476,6 +485,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type Finds",
@@ -548,6 +558,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "FINDS",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type Finds",
@@ -555,6 +566,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "id": "${existingReport.event.id}",
                 "eventReference": "11124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
+                "location": "MDI",
                 "prisonId": "MDI",
                 "title": "An event occurred",
                 "description": "Details of the event",
@@ -644,6 +656,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type Finds",
@@ -716,6 +729,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "FINDS",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type Finds",
@@ -723,6 +737,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "id": "${existingReport.event.id}",
                 "eventReference": "11124143",
                 "eventDateAndTime": "2023-12-05T11:34:56",
+                "location": "MDI",
                 "prisonId": "MDI",
                 "title": "An event occurred",
                 "description": "Details of the event",
@@ -770,7 +785,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       title = "An incident occurred",
       description = "Longer explanation of incident",
       type = Type.SELF_HARM,
-      prisonId = "MDI",
+      location = "MDI",
       createNewEvent = true,
     )
 
@@ -805,10 +820,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "cannot create a report with invalid `{0}` field")
-      @ValueSource(strings = ["prisonId", "title", "description"])
+      @ValueSource(strings = ["location", "title", "description"])
       fun `cannot create a report with invalid fields`(fieldName: String) {
         val invalidPayload = createReportRequest.copy(
-          prisonId = if (fieldName == "prisonId") "" else createReportRequest.prisonId,
+          location = if (fieldName == "location") "" else createReportRequest.location,
           title = if (fieldName == "title") "" else createReportRequest.title,
           description = if (fieldName == "description") "" else createReportRequest.description,
         ).toJson()
@@ -892,11 +907,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "SELF_HARM",
               "nomisType": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "An incident occurred",
               "description": "Longer explanation of incident",
               "event": {
                 "eventDateAndTime": "2023-12-05T11:34:56",
+                "location": "MDI",
                 "prisonId": "MDI",
                 "title": "An incident occurred",
                 "description": "Longer explanation of incident",
@@ -954,12 +971,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "SELF_HARM",
               "nomisType": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "An incident occurred",
               "description": "Longer explanation of incident",
               "event": {
                 "eventReference": "${existingReport.event.eventReference}",
                 "eventDateAndTime": "2023-12-05T11:34:56",
+                "location": "MDI",
                 "prisonId": "MDI",
                 "title": "An event occurred",
                 "description": "Details of the event",
@@ -1040,10 +1059,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "cannot update a report with invalid `{0}` field")
-      @ValueSource(strings = ["prisonId", "title", "description"])
+      @ValueSource(strings = ["location", "title", "description"])
       fun `cannot update a report with invalid fields`(fieldName: String) {
         val invalidPayload = UpdateReportRequest(
-          prisonId = if (fieldName == "prisonId") "" else null,
+          location = if (fieldName == "location") "" else null,
           title = if (fieldName == "title") "" else null,
           description = if (fieldName == "description") "" else null,
         ).toJson()
@@ -1110,6 +1129,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type Finds",
@@ -1133,7 +1153,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       fun `can update all incident report fields`() {
         val updateReportRequest = UpdateReportRequest(
           incidentDateAndTime = now.minusHours(2),
-          prisonId = "LEI",
+          location = "LEI",
           title = "Updated report 11124143",
           description = "Updated incident report of type Finds",
         )
@@ -1151,6 +1171,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FINDS",
               "incidentDateAndTime": "2023-12-05T10:34:56",
+              "location": "LEI",
               "prisonId": "LEI",
               "title": "Updated report 11124143",
               "description": "Updated incident report of type Finds",
@@ -1176,11 +1197,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "can update `{0}` of an incident report")
-      @ValueSource(strings = ["incidentDateAndTime", "prisonId", "title", "description"])
+      @ValueSource(strings = ["incidentDateAndTime", "location", "title", "description"])
       fun `can update an incident report field`(fieldName: String) {
         val updateReportRequest = UpdateReportRequest(
           incidentDateAndTime = if (fieldName == "incidentDateAndTime") now.minusHours(2) else null,
-          prisonId = if (fieldName == "prisonId") "LEI" else null,
+          location = if (fieldName == "location") "LEI" else null,
           title = if (fieldName == "title") "Updated report 11124143" else null,
           description = if (fieldName == "description") "Updated incident report of type Finds" else null,
         )
@@ -1189,7 +1210,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         } else {
           "2023-12-05T11:34:56"
         }
-        val expectedPrisonId = if (fieldName == "prisonId") {
+        val expectedLocation = if (fieldName == "location") {
           "LEI"
         } else {
           "MDI"
@@ -1218,7 +1239,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FINDS",
               "incidentDateAndTime": "$expectedIncidentDateAndTime",
-              "prisonId": "$expectedPrisonId",
+              "location": "$expectedLocation",
+              "prisonId": "$expectedLocation",
               "title": "$expectedTitle",
               "description": "$expectedDescription",
               "reportedBy": "USER1",
@@ -1247,7 +1269,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       fun `can propagate updates to parent event when requested`(updateEvent: Boolean) {
         val updateReportRequest = UpdateReportRequest(
           incidentDateAndTime = now.minusHours(2),
-          prisonId = "LEI",
+          location = "LEI",
           title = "Updated report 11124143",
           description = "Updated incident report of type Finds",
 
@@ -1269,6 +1291,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "eventReference": "11124143",
               "eventDateAndTime": "2023-12-05T10:34:56",
+              "location": "LEI",
               "prisonId": "LEI",
               "title": "Updated report 11124143",
               "description": "Updated incident report of type Finds",
@@ -1283,6 +1306,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "eventReference": "11124143",
               "eventDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "An event occurred",
               "description": "Details of the event",
@@ -1408,6 +1432,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "FINDS",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type Finds",
@@ -1453,6 +1478,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "FINDS",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type Finds",
@@ -1626,6 +1652,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "FINDS",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:31:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
               "description": "A new incident created in the new service of type Finds",
@@ -1718,6 +1745,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "FIRE",
               "nomisType": "FIRE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
               "description": "A new incident created in the new service of type Finds",
@@ -1823,6 +1851,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "type": "FIRE",
               "nomisType": "FIRE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
+              "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
               "description": "A new incident created in the new service of type Finds",

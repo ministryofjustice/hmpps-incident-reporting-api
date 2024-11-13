@@ -22,7 +22,7 @@ fun TelemetryClient.trackEvent(name: String, report: ReportBasic, extraPropertie
   val properties = mutableMapOf(
     "id" to report.id.toString(),
     "reportReference" to report.reportReference,
-    "prisonId" to report.prisonId,
+    "location" to report.location,
   )
   extraProperties?.let { properties.putAll(it) }
   trackEvent(name, properties, null)

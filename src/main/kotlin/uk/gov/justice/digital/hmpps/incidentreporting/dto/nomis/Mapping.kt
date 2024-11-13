@@ -17,7 +17,7 @@ fun NomisReport.toNewEntity(): Report {
     reportReference = "$incidentId",
     type = Type.fromNomisCode(type),
     incidentDateAndTime = incidentDateTime,
-    prisonId = prison.code,
+    location = prison.code,
     title = title ?: NO_DETAILS_GIVEN,
     description = description ?: NO_DETAILS_GIVEN,
     reportedBy = reportingStaff.username,
@@ -32,7 +32,7 @@ fun NomisReport.toNewEntity(): Report {
     event = Event(
       eventReference = "$incidentId",
       eventDateAndTime = incidentDateTime,
-      prisonId = prison.code,
+      location = prison.code,
       title = title ?: NO_DETAILS_GIVEN,
       description = description ?: NO_DETAILS_GIVEN,
       createdAt = createDateTime,

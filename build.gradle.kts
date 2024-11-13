@@ -50,6 +50,13 @@ dependencies {
 
 kotlin {
   jvmToolchain(21)
+  compilerOptions {
+    freeCompilerArgs = listOf(
+      // cannot validate items within lists without this
+      // cf. https://youtrack.jetbrains.com/issue/KT-67909/Resolve-inconsistencies-with-Java-in-emitting-JVM-type-annotations
+      "-Xemit-jvm-type-annotations",
+    )
+  }
 }
 
 tasks {

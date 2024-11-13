@@ -10,7 +10,7 @@ $$
         insert into event (
             id, event_reference,
             title, description,
-            event_date_and_time, prison_id,
+            event_date_and_time, location,
             created_at, modified_by
         )
         values (
@@ -24,7 +24,7 @@ $$
             id, event_id, report_reference,
             title, description,
             type, status, source,
-            incident_date_and_time, prison_id,
+            incident_date_and_time, location,
             reported_at, reported_by, assigned_to,
             created_at,
             modified_by

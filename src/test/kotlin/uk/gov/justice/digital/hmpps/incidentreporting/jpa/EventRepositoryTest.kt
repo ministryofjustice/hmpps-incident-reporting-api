@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventReposi
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateUntil
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByPrisonId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByLocations
 import java.util.UUID
 
 @DisplayName("Event repository")
@@ -62,7 +62,7 @@ class EventRepositoryTest : IntegrationTestBase() {
       )
 
       val matchingSpecifications = listOf(
-        filterEventsByPrisonId("MDI"),
+        filterEventsByLocations("MDI"),
         filterEventsByEventDateFrom(now.toLocalDate().minusDays(2)),
         filterEventsByEventDateFrom(now.toLocalDate().minusDays(1)),
         filterEventsByEventDateUntil(now.toLocalDate().minusDays(1)),
@@ -78,7 +78,7 @@ class EventRepositoryTest : IntegrationTestBase() {
       }
 
       val nonMatchingSpecifications = listOf(
-        filterEventsByPrisonId("LEI"),
+        filterEventsByLocations("LEI"),
         filterEventsByEventDateFrom(now.toLocalDate()),
         filterEventsByEventDateUntil(now.toLocalDate().minusDays(2)),
       )
@@ -100,19 +100,19 @@ class EventRepositoryTest : IntegrationTestBase() {
             eventReference = "12345",
             eventDateAndTime = now.minusDays(3).minusHours(2),
             reportDateAndTime = now.minusDays(3),
-            prisonId = "MDI",
+            location = "MDI",
           ),
           buildEvent(
             eventReference = "12346",
             eventDateAndTime = now.minusDays(2).minusHours(2),
             reportDateAndTime = now.minusDays(2),
-            prisonId = "LEI",
+            location = "LEI",
           ),
           buildEvent(
             eventReference = "11124143",
             eventDateAndTime = now.minusDays(1).minusHours(2),
             reportDateAndTime = now.minusDays(1),
-            prisonId = "MDI",
+            location = "MDI",
           ),
         ),
       ).map { it.id!! }
@@ -127,16 +127,20 @@ class EventRepositoryTest : IntegrationTestBase() {
       }
 
       assertSpecificationReturnsEvents(
-        filterEventsByPrisonId("MDI"),
+        filterEventsByLocations("MDI"),
         listOf(event1Id, event3Id),
       )
       assertSpecificationReturnsEvents(
-        filterEventsByPrisonId("MDI")
-          .or(filterEventsByPrisonId("LEI")),
+        filterEventsByLocations("MDI")
+          .or(filterEventsByLocations("LEI")),
         listOf(event1Id, event2Id, event3Id),
       )
       assertSpecificationReturnsEvents(
-        filterEventsByPrisonId("MDI")
+        filterEventsByLocations("MDI", "LEI"),
+        listOf(event1Id, event2Id, event3Id),
+      )
+      assertSpecificationReturnsEvents(
+        filterEventsByLocations("MDI")
           .and(filterEventsByEventDateUntil(now.toLocalDate().minusDays(2))),
         listOf(event1Id),
       )
