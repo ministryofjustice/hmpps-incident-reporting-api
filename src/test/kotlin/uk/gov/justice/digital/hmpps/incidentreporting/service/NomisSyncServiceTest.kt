@@ -174,6 +174,7 @@ class NomisSyncServiceTest {
     status = Status.AWAITING_ANALYSIS,
     assignedTo = reportedBy,
     source = InformationSource.NOMIS,
+    modifiedIn = InformationSource.NOMIS,
     createdAt = now.plusHours(2),
     modifiedAt = now.plusHours(5),
     modifiedBy = "another-user",
@@ -255,6 +256,7 @@ class NomisSyncServiceTest {
     assertThat(report.modifiedAt).isEqualTo(now.plusHours(5))
     assertThat(report.modifiedBy).isEqualTo("another-user")
     assertThat(report.createdInNomis).isTrue()
+    assertThat(report.lastModifiedInNomis).isTrue()
 
     assertThat(report.history).isEmpty()
     assertThat(report.historyOfStatuses).isEmpty()

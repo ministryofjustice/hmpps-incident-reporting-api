@@ -664,7 +664,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "createdAt": "2023-12-05T14:34:56",
                 "modifiedAt": "2023-12-05T17:34:56",
                 "modifiedBy": "another-user",
-                "createdInNomis": true
+                "createdInNomis": true,
+                "lastModifiedInNomis": true
               }
               """,
               reportJson,
@@ -951,7 +952,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "createdAt": "2023-12-05T14:34:56",
                 "modifiedAt": "2023-12-05T17:34:56",
                 "modifiedBy": "another-user",
-                "createdInNomis": true
+                "createdInNomis": true,
+                "lastModifiedInNomis": true
               }
               """,
               reportJson,
@@ -1474,7 +1476,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "createdAt": "2023-12-04T12:34:56",
                 "modifiedAt": "2023-12-05T12:29:56",
                 "modifiedBy": "updater",
-                "createdInNomis": true
+                "createdInNomis": true,
+                "lastModifiedInNomis": true
               }
               """,
               reportJson,

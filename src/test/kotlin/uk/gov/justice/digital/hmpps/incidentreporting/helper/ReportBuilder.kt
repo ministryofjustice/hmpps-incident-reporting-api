@@ -33,6 +33,7 @@ fun buildReport(
     incidentDateAndTime = eventDateAndTime,
     location = location,
     source = source,
+    modifiedIn = source,
     status = status,
     type = type,
     title = "Incident Report $reportReference",

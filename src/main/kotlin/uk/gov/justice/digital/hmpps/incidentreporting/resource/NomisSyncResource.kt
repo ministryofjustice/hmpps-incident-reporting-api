@@ -93,7 +93,7 @@ class NomisSyncResource(
 
       eventPublishAndAudit(
         eventType,
-        informationSource = InformationSource.NOMIS,
+        InformationSource.NOMIS,
         whatChanged,
       ) { report }
     }

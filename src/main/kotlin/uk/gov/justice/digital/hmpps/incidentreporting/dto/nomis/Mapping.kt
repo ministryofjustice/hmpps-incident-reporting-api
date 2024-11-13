@@ -28,6 +28,7 @@ fun NomisReport.toNewEntity(): Report {
     modifiedAt = lastModifiedDateTime ?: createDateTime,
     modifiedBy = lastModifiedBy ?: createdBy,
     source = InformationSource.NOMIS,
+    modifiedIn = InformationSource.NOMIS,
     assignedTo = reportingStaff.username,
     event = Event(
       eventReference = "$incidentId",

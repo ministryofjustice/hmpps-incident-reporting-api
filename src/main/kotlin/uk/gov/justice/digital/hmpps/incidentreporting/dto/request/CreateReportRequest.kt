@@ -58,6 +58,7 @@ data class CreateReportRequest(
       modifiedAt = now,
       modifiedBy = requestUsername,
       source = InformationSource.DPS,
+      modifiedIn = InformationSource.DPS,
       assignedTo = requestUsername,
       event = event,
     )

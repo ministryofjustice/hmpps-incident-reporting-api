@@ -496,7 +496,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             true,
@@ -595,7 +596,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             true,
@@ -667,7 +669,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             true,
@@ -766,7 +769,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             true,
@@ -942,7 +946,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             false,
@@ -1007,7 +1012,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             false,
@@ -1140,7 +1146,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             true,
@@ -1182,7 +1189,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             true,
@@ -1250,7 +1258,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
-              "createdInNomis": false
+              "createdInNomis": false,
+              "lastModifiedInNomis": false
             }
             """,
             true,
@@ -1445,6 +1454,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
+              "lastModifiedInNomis": false,
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
@@ -1491,6 +1501,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
+              "lastModifiedInNomis": false,
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
@@ -1665,6 +1676,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:31:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
+              "lastModifiedInNomis": false,
               "history": [],
               "questions": [
                 {
@@ -1758,6 +1770,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
+              "lastModifiedInNomis": false,
               "history": [
                 {
                   "type": "FINDS",
@@ -1864,6 +1877,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
+              "lastModifiedInNomis": false,
               "history": [
                 {
                   "type": "ASSAULT",

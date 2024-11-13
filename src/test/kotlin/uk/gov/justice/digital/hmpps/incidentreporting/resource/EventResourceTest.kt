@@ -442,7 +442,8 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 "createdAt": "2023-12-05T12:34:56",
                 "modifiedAt": "2023-12-05T12:34:56",
                 "modifiedBy": "USER1",
-                "createdInNomis": false
+                "createdInNomis": false,
+                "lastModifiedInNomis": false
               }],
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
@@ -498,7 +499,8 @@ class EventResourceTest : SqsIntegrationTestBase() {
                   "createdAt": "2023-12-05T12:34:56",
                   "modifiedAt": "2023-12-05T12:34:56",
                   "modifiedBy": "USER1",
-                  "createdInNomis": false
+                  "createdInNomis": false,
+                  "lastModifiedInNomis": false
                 },
                 {
                   "id": "${anotherReport.id}",
@@ -516,7 +518,8 @@ class EventResourceTest : SqsIntegrationTestBase() {
                   "createdAt": "2023-12-05T12:44:56",
                   "modifiedAt": "2023-12-05T12:44:56",
                   "modifiedBy": "USER1",
-                  "createdInNomis": false
+                  "createdInNomis": false,
+                  "lastModifiedInNomis": false
                 }
               ],
               "createdAt": "2023-12-05T12:34:56",
@@ -608,7 +611,8 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 "createdAt": "2023-12-05T12:34:56",
                 "modifiedAt": "2023-12-05T12:34:56",
                 "modifiedBy": "USER1",
-                "createdInNomis": false
+                "createdInNomis": false,
+                "lastModifiedInNomis": false
               }],
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
@@ -664,7 +668,8 @@ class EventResourceTest : SqsIntegrationTestBase() {
                   "createdAt": "2023-12-05T12:34:56",
                   "modifiedAt": "2023-12-05T12:34:56",
                   "modifiedBy": "USER1",
-                  "createdInNomis": false
+                  "createdInNomis": false,
+                  "lastModifiedInNomis": false
                 },
                 {
                   "id": "${anotherReport.id}",
@@ -682,7 +687,8 @@ class EventResourceTest : SqsIntegrationTestBase() {
                   "createdAt": "2023-12-05T12:44:56",
                   "modifiedAt": "2023-12-05T12:44:56",
                   "modifiedBy": "USER1",
-                  "createdInNomis": false
+                  "createdInNomis": false,
+                  "lastModifiedInNomis": false
                 }
               ],
               "createdAt": "2023-12-05T12:34:56",
