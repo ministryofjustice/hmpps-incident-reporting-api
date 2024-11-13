@@ -3101,7 +3101,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         @Test
         fun `can add question with responses to a report first created in NOMIS`() {
-          val nomisReportWithRelatedObjects = reportRepository.save(
+          val nomisReportWithQuestionsAndResponses = reportRepository.save(
             buildReport(
               reportReference = "11124147",
               reportTime = now,
@@ -3111,16 +3111,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             ),
           )
 
-          webTestClient.post().uri("/incident-reports/${nomisReportWithRelatedObjects.id}/questions")
+          webTestClient.post().uri("/incident-reports/${nomisReportWithQuestionsAndResponses.id}/questions")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequest)
             .exchange()
             .expectStatus().isCreated
 
-          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
-          assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
-          assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
+          val updatedNomisReportWithQuestionsAndResponses = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          assertThat(updatedNomisReportWithQuestionsAndResponses.createdInNomis).isTrue()
+          assertThat(updatedNomisReportWithQuestionsAndResponses.lastModifiedInNomis).isFalse()
         }
       }
     }
@@ -3230,7 +3230,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         @Test
         fun `can delete a question from a report first created in NOMIS`() {
-          val nomisReportWithRelatedObjects = reportRepository.save(
+          val nomisReportWithQuestionsAndResponses = reportRepository.save(
             buildReport(
               reportReference = "11124147",
               reportTime = now,
@@ -3240,15 +3240,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             ),
           )
 
-          webTestClient.delete().uri("/incident-reports/${nomisReportWithRelatedObjects.id}/questions")
+          webTestClient.delete().uri("/incident-reports/${nomisReportWithQuestionsAndResponses.id}/questions")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
 
-          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
-          assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
-          assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
+          val updatedNomisReportWithQuestionsAndResponses = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          assertThat(updatedNomisReportWithQuestionsAndResponses.createdInNomis).isTrue()
+          assertThat(updatedNomisReportWithQuestionsAndResponses.lastModifiedInNomis).isFalse()
         }
       }
     }
