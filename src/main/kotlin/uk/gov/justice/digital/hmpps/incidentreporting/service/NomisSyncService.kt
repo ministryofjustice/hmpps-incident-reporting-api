@@ -7,12 +7,14 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.toNewEntity
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
+import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportModifiedInDpsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.time.Clock
 import java.util.UUID
@@ -52,6 +54,9 @@ class NomisSyncService(
   private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportWithDetails {
     val reportToUpdate = reportRepository.findOneEagerlyById(reportId)
       ?: throw ReportNotFoundException(reportId)
+    if (reportToUpdate.modifiedIn != InformationSource.NOMIS) {
+      throw ReportModifiedInDpsException(reportId)
+    }
     reportToUpdate.updateWith(incidentReport, clock)
     return reportToUpdate.toDtoWithDetails()
   }

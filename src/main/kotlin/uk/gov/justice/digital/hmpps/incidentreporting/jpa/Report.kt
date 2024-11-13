@@ -253,7 +253,6 @@ class Report(
     val updatedBy = upsert.lastModifiedBy ?: upsert.createdBy
     val now = LocalDateTime.now(clock)
 
-    // TODO: update should be prevented if last modified in DPS
     modifiedIn = InformationSource.NOMIS
 
     type = Type.fromNomisCode(upsert.type)

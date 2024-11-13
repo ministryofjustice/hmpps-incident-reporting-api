@@ -42,6 +42,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
+import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportModifiedInDpsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.sql.SQLException
 import java.util.UUID
@@ -373,6 +374,58 @@ class NomisSyncServiceTest {
     assertThatThrownBy {
       syncService.upsert(syncRequest)
     }.isInstanceOf(ReportNotFoundException::class.java)
+
+    // TODO: CANNOT verify that no entity was saved,
+    //   `reportRepository.save` not explicitly called
+
+    // verify entity not saved
+    verify(reportRepository, never()).save(any())
+
+    // verify telemetry not sent
+    verify(telemetryClient, never()).trackEvent(anyOrNull(), anyOrNull(), anyOrNull())
+  }
+
+  @Test
+  fun `cannot update report that was modified in DPS`() {
+    val sampleModifiedReport = Report(
+      id = sampleReportId,
+      reportReference = "112414323",
+      incidentDateAndTime = whenIncidentHappened,
+      type = Type.SELF_HARM,
+      title = "Cutting",
+      description = "Offender was found in own cell with a razor",
+      location = "MDI",
+      event = Event(
+        id = sampleEventId,
+        eventReference = "112414323",
+        eventDateAndTime = whenIncidentHappened,
+        location = "MDI",
+        title = "Cutting",
+        description = "Offender was found in own cell with a razor",
+        createdAt = now.plusHours(2),
+        modifiedAt = now.plusHours(5),
+        modifiedBy = "another-user",
+      ),
+      reportedBy = reportedBy,
+      reportedAt = now,
+      status = Status.AWAITING_ANALYSIS,
+      assignedTo = reportedBy,
+      source = InformationSource.NOMIS,
+      modifiedIn = InformationSource.DPS,
+      createdAt = now.plusHours(2),
+      modifiedAt = now.plusHours(5),
+      modifiedBy = "another-user",
+    )
+
+    whenever(reportRepository.findOneEagerlyById(sampleReportId)).thenReturn(sampleModifiedReport)
+
+    val syncRequest = sampleSyncRequest.copy(
+      id = sampleReportId,
+      initialMigration = false,
+    )
+    assertThatThrownBy {
+      syncService.upsert(syncRequest)
+    }.isInstanceOf(ReportModifiedInDpsException::class.java)
 
     // TODO: CANNOT verify that no entity was saved,
     //   `reportRepository.save` not explicitly called
