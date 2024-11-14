@@ -82,6 +82,7 @@ classDiagram
         LocalDateTime  reportedAt
         String  reportedBy
         InformationSource  source
+        InformationSource  modifiedIn
         Status  status
         String  title
         Type  type
@@ -192,6 +193,7 @@ classDiagram
         varchar(20) location
         varchar(60) type
         varchar(5) source
+        varchar(5) modified_in
         varchar(60) status
         timestamp incident_date_and_time
         timestamp reported_at

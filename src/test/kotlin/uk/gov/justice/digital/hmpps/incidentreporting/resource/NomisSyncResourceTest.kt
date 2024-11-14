@@ -385,6 +385,59 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             assertThat(it).contains("Report already exists: 112414666")
           }
       }
+
+      @Test
+      fun `returns 409 CONFLICT when a report was modified in DPS since being created in NOMIS`() {
+        // initial migration
+        val initialMigrationRequest = syncRequest.copy(
+          initialMigration = true,
+          incidentReport = syncRequest.incidentReport.copy(
+            incidentId = 112414666,
+            description = "A new incident from NOMIS",
+          ),
+        )
+        webTestClient.post().uri("/sync/upsert")
+          .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(initialMigrationRequest.toJson())
+          .exchange()
+          .expectStatus().isCreated
+
+        // update report using DPS apis
+        val reportId = reportRepository.findOneByReportReference("112414666")!!.id
+        webTestClient.patch().uri("/incident-reports/$reportId")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+            {
+              "description": "Updated in DPS"
+            }
+            """,
+          )
+          .exchange()
+          .expectStatus().isOk
+
+        // subsequent sync from a change in NOMIS
+        val subsequentSyncRequest = syncRequest.copy(
+          id = reportId,
+          initialMigration = false,
+          incidentReport = syncRequest.incidentReport.copy(
+            incidentId = 112414666,
+            description = "A new incident from NOMIS sent again",
+          ),
+        )
+        webTestClient.post().uri("/sync/upsert")
+          .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(subsequentSyncRequest.toJson())
+          .exchange()
+          .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+          .expectBody().jsonPath("developerMessage").value<String> {
+            assertThat(it).contains("Report last modified in DPS: $reportId")
+          }
+      }
     }
 
     @DisplayName("works")
@@ -664,7 +717,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "createdAt": "2023-12-05T14:34:56",
                 "modifiedAt": "2023-12-05T17:34:56",
                 "modifiedBy": "another-user",
-                "createdInNomis": true
+                "createdInNomis": true,
+                "lastModifiedInNomis": true
               }
               """,
               reportJson,
@@ -951,7 +1005,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "createdAt": "2023-12-05T14:34:56",
                 "modifiedAt": "2023-12-05T17:34:56",
                 "modifiedBy": "another-user",
-                "createdInNomis": true
+                "createdInNomis": true,
+                "lastModifiedInNomis": true
               }
               """,
               reportJson,
@@ -1474,7 +1529,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "createdAt": "2023-12-04T12:34:56",
                 "modifiedAt": "2023-12-05T12:29:56",
                 "modifiedBy": "updater",
-                "createdInNomis": true
+                "createdInNomis": true,
+                "lastModifiedInNomis": true
               }
               """,
               reportJson,

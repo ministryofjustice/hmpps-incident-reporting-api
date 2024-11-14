@@ -82,8 +82,12 @@ class Report(
   @Enumerated(EnumType.STRING)
   var status: Status = Status.DRAFT,
 
+  /** Which system the report was first created */
   @Enumerated(EnumType.STRING)
   val source: InformationSource = InformationSource.DPS,
+  /** Which system the report was last modified in */
+  @Enumerated(EnumType.STRING)
+  var modifiedIn: InformationSource = InformationSource.DPS,
 
   var title: String,
   var description: String,
@@ -249,6 +253,8 @@ class Report(
     val updatedBy = upsert.lastModifiedBy ?: upsert.createdBy
     val now = LocalDateTime.now(clock)
 
+    modifiedIn = InformationSource.NOMIS
+
     type = Type.fromNomisCode(upsert.type)
 
     // NOTE: Currently we update the event information as well on update.
@@ -320,6 +326,7 @@ class Report(
     modifiedAt = modifiedAt,
     modifiedBy = modifiedBy,
     createdInNomis = source == InformationSource.NOMIS,
+    lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
   )
 
   fun toDtoWithDetails() = ReportWithDetails(
@@ -338,6 +345,7 @@ class Report(
     modifiedAt = modifiedAt,
     modifiedBy = modifiedBy,
     createdInNomis = source == InformationSource.NOMIS,
+    lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
     event = event.toDto(),
     questions = questions.map { it.toDto() },
     history = history.map { it.toDto() },

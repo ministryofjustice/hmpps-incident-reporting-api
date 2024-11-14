@@ -78,8 +78,12 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
         source = InformationSource.NOMIS,
       ),
     )
-    assertThat(reportFromNomis.toDtoBasic().createdInNomis).isTrue()
-    assertThat(reportFromNomis.toDtoWithDetails().createdInNomis).isTrue()
+    val reportBasicFromNomis = reportFromNomis.toDtoBasic()
+    assertThat(reportBasicFromNomis.createdInNomis).isTrue()
+    assertThat(reportBasicFromNomis.lastModifiedInNomis).isTrue()
+    val reportWithDetailsFromNomis = reportFromNomis.toDtoWithDetails()
+    assertThat(reportWithDetailsFromNomis.createdInNomis).isTrue()
+    assertThat(reportWithDetailsFromNomis.lastModifiedInNomis).isTrue()
 
     val reportFromDps = reportRepository.save(
       buildReport(
@@ -88,8 +92,12 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
         source = InformationSource.DPS,
       ),
     )
-    assertThat(reportFromDps.toDtoBasic().createdInNomis).isFalse()
-    assertThat(reportFromDps.toDtoWithDetails().createdInNomis).isFalse()
+    val reportBasicFromDps = reportFromDps.toDtoBasic()
+    assertThat(reportBasicFromDps.createdInNomis).isFalse()
+    assertThat(reportBasicFromDps.lastModifiedInNomis).isFalse()
+    val reportWithDetailsFromDps = reportFromDps.toDtoWithDetails()
+    assertThat(reportWithDetailsFromDps.createdInNomis).isFalse()
+    assertThat(reportWithDetailsFromDps.lastModifiedInNomis).isFalse()
   }
 
   @DisplayName("serialisation to JSON")

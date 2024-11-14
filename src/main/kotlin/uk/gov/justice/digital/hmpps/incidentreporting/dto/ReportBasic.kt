@@ -46,6 +46,9 @@ open class ReportBasic(
   @Schema(description = "Whether the report was initially created in NOMIS as opposed to DPS", example = "false")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   val createdInNomis: Boolean,
+  @Schema(description = "Last modified in NOMIS as opposed to DPS", example = "false")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  val lastModifiedInNomis: Boolean,
 ) {
   // TODO: `prisonId` can be removed once NOMIS reconciliation checks are updated to use `location`
   @get:Schema(description = "The location where incident took place, typically a NOMIS prison ID", deprecated = true, example = "MDI")

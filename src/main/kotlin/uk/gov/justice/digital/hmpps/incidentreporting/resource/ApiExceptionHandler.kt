@@ -260,6 +260,21 @@ class ApiExceptionHandler {
       )
   }
 
+  @ExceptionHandler(ReportModifiedInDpsException::class)
+  fun handleReportModifedInDps(e: ReportModifiedInDpsException): ResponseEntity<ErrorResponse> {
+    log.debug("Report edit conflict: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.CONFLICT)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.CONFLICT,
+          errorCode = ErrorCode.ReportModifedInDps,
+          userMessage = "${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
   @ExceptionHandler(ObjectAtIndexNotFoundException::class)
   fun handleObjectAtIndexNotFound(e: ObjectAtIndexNotFoundException): ResponseEntity<ErrorResponse> {
     log.debug(e.message)
@@ -288,6 +303,10 @@ class ReportNotFoundException(description: String) : Exception("There is no repo
 }
 
 class ReportAlreadyExistsException(description: String) : Exception("Report already exists: $description") {
+  constructor(id: UUID) : this(id.toString())
+}
+
+class ReportModifiedInDpsException(description: String) : Exception("Report last modified in DPS: $description") {
   constructor(id: UUID) : this(id.toString())
 }
 

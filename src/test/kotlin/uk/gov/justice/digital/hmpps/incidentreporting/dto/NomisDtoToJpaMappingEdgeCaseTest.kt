@@ -59,6 +59,8 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(reportEntity.assignedTo).isEqualTo("user1")
       assertThat(reportEntity.modifiedBy).isEqualTo("user1")
       assertThat(reportEntity.reportedBy).isEqualTo("user1")
+      assertThat(reportEntity.source).isEqualTo(InformationSource.NOMIS)
+      assertThat(reportEntity.modifiedIn).isEqualTo(InformationSource.NOMIS)
       assertThat(reportEntity.getQuestions()).isEmpty()
       assertThat(reportEntity.history).isEmpty()
       assertThat(reportEntity.staffInvolved).isEmpty()
@@ -131,6 +133,8 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.createdAt).isEqualTo(now.minusMinutes(4))
       assertThat(existingReportEntity.modifiedAt).isEqualTo(now.minusMinutes(4))
       assertThat(existingReportEntity.modifiedBy).isEqualTo("user1")
+      assertThat(existingReportEntity.source).isEqualTo(InformationSource.NOMIS)
+      assertThat(existingReportEntity.modifiedIn).isEqualTo(InformationSource.NOMIS)
 
       val eventEntity = existingReportEntity.event
       assertThat(eventEntity.title).isEqualTo("TITLE")

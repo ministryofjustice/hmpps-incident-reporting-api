@@ -26,6 +26,7 @@ class ReportWithDetails(
   modifiedAt: LocalDateTime,
   modifiedBy: String,
   createdInNomis: Boolean,
+  lastModifiedInNomis: Boolean,
 
   @Schema(description = "Event linking multiple incident reports together")
   val event: Event,
@@ -59,6 +60,7 @@ class ReportWithDetails(
   modifiedAt = modifiedAt,
   modifiedBy = modifiedBy,
   createdInNomis = createdInNomis,
+  lastModifiedInNomis = lastModifiedInNomis,
 ) {
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
   @get:Schema(description = "NOMIS incident report type code, which may be null for newer incident types", nullable = true, deprecated = true)
