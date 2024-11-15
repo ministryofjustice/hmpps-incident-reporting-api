@@ -487,7 +487,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 },
                 "questions": [
                   {
-                    "code": "QID-000000000004",
+                    "code": "4",
                     "question": "Question 1",
                     "additionalInformation": null,
                     "responses": [
@@ -515,7 +515,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     ]
                   },
                   {
-                    "code": "QID-000000000005",
+                    "code": "5",
                     "question": "Question 2",
                     "additionalInformation": null,
                     "responses": [
@@ -550,7 +550,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     ]
                   },
                   {
-                    "code": "QID-000000000006",
+                    "code": "6",
                     "question": "Question 3",
                     "additionalInformation": null,
                     "responses": [
@@ -586,7 +586,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "changedBy": "user2",
                     "questions": [
                       {
-                        "code": "QID-000000000001",
+                        "code": "1",
                         "question": "Old question 1",
                         "additionalInformation": null,
                         "responses": [
@@ -614,7 +614,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         ]
                       },
                       {
-                        "code": "QID-000000000002",
+                        "code": "2",
                         "question": "Old question 2",
                         "additionalInformation": null,
                         "responses": [
@@ -642,7 +642,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         ]
                       },
                       {
-                        "code": "QID-000000000003",
+                        "code": "3",
                         "question": "Old question 3",
                         "additionalInformation": null,
                         "responses": [
@@ -775,7 +775,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 },
                 "questions": [
                   {
-                    "code": "QID-000000000004",
+                    "code": "4",
                     "question": "Question 1",
                     "additionalInformation": null,
                     "responses": [
@@ -803,7 +803,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     ]
                   },
                   {
-                    "code": "QID-000000000005",
+                    "code": "5",
                     "question": "Question 2",
                     "additionalInformation": null,
                     "responses": [
@@ -838,7 +838,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     ]
                   },
                   {
-                    "code": "QID-000000000006",
+                    "code": "6",
                     "question": "Question 3",
                     "additionalInformation": null,
                     "responses": [
@@ -874,7 +874,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "changedBy": "user2",
                     "questions": [
                       {
-                        "code": "QID-000000000001",
+                        "code": "1",
                         "question": "Old question 1",
                         "additionalInformation": null,
                         "responses": [
@@ -902,7 +902,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         ]
                       },
                       {
-                        "code": "QID-000000000002",
+                        "code": "2",
                         "question": "Old question 2",
                         "additionalInformation": null,
                         "responses": [
@@ -930,7 +930,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         ]
                       },
                       {
-                        "code": "QID-000000000003",
+                        "code": "3",
                         "question": "Old question 3",
                         "additionalInformation": null,
                         "responses": [
@@ -1288,7 +1288,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 },
                 "questions": [
                   {
-                    "code": "QID-000000000004",
+                    "code": "4",
                     "question": "Who was involved?",
                     "responses": [
                       {
@@ -1316,7 +1316,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "additionalInformation": null
                   },
                   {
-                    "code": "QID-000000000005",
+                    "code": "5",
                     "question": "Where did this happen?",
                     "responses": [
                       {
@@ -1359,7 +1359,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "changedBy": "user2",
                     "questions": [
                       {
-                        "code": "QID-000000000001",
+                        "code": "1",
                         "question": "Old question 1",
                         "responses": [
                           {
@@ -1387,7 +1387,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "additionalInformation": null
                       },
                       {
-                        "code": "QID-000000000002",
+                        "code": "2",
                         "question": "Old question 2",
                         "responses": [
                           {
@@ -1423,7 +1423,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "changedBy": "user2",
                     "questions": [
                       {
-                        "code": "QID-000000000011",
+                        "code": "11",
                         "question": "Old old question 1",
                         "responses": [
                           {
@@ -1444,7 +1444,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "additionalInformation": null
                       },
                       {
-                        "code": "QID-000000000022",
+                        "code": "22",
                         "question": "Old old question 2",
                         "responses": [
                           {

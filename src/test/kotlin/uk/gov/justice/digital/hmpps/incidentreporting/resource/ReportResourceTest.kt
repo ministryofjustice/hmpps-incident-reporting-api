@@ -1742,7 +1742,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "history": [],
               "questions": [
                 {
-                  "code": "QID-000000000001",
+                  "code": "1",
                   "question": "Question #1",
                   "additionalInformation": "Explanation #1",
                   "responses": [
@@ -1763,7 +1763,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   ]
                 },
                 {
-                  "code": "QID-000000000002",
+                  "code": "2",
                   "question": "Question #2",
                   "additionalInformation": "Explanation #2",
                   "responses": [
@@ -1841,7 +1841,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "changedBy": "request-user",
                   "questions": [
                     {
-                      "code": "QID-000000000001",
+                      "code": "1",
                       "question": "Question #1",
                       "additionalInformation": "Explanation #1",
                       "responses": [
@@ -1862,7 +1862,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       ]
                     },
                     {
-                      "code": "QID-000000000002",
+                      "code": "2",
                       "question": "Question #2",
                       "additionalInformation": "Explanation #2",
                       "responses": [
@@ -1948,7 +1948,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "changedBy": "some-past-user",
                   "questions": [
                     {
-                      "code": "QID-1-000000000001",
+                      "code": "1-1",
                       "question": "Historical question #1-1",
                       "additionalInformation": "Explanation #1 in history #1",
                       "responses": [
@@ -1970,7 +1970,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "changedBy": "request-user",
                   "questions": [
                     {
-                      "code": "QID-000000000001",
+                      "code": "1",
                       "question": "Question #1",
                       "additionalInformation": "Explanation #1",
                       "responses": [

@@ -1,6 +1,6 @@
 [
   {
-    "code": "QID-000000000001",
+    "code": "1",
     "question": "Question #1",
     "responses": [
       {
@@ -21,7 +21,7 @@
     "additionalInformation": "Explanation #1"
   },
   {
-    "code": "QID-000000000002",
+    "code": "2",
     "question": "Question #2",
     "responses": [
       {
@@ -42,7 +42,7 @@
     "additionalInformation": "Explanation #2"
   },
   {
-    "code": "QID-000000002001",
+    "code": "2001",
     "question": "List every “find”",
     "additionalInformation": "Amounts do not matter",
     "responses": [

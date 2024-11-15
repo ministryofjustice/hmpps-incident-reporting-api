@@ -80,7 +80,7 @@ fun buildReport(
 
   (1..generateQuestions).forEach { questionIndex ->
     val question = report.addQuestion(
-      code = "QID-%012d".format(questionIndex),
+      code = questionIndex.toString(),
       question = "Question #$questionIndex",
       additionalInformation = "Explanation #$questionIndex",
     )
@@ -103,7 +103,7 @@ fun buildReport(
     )
     (1..generateQuestions).forEach { questionIndex ->
       val historicalQuestion = history.addQuestion(
-        code = "QID-$historyIndex-%012d".format(questionIndex),
+        code = "$historyIndex-$questionIndex",
         question = "Historical question #$historyIndex-$questionIndex",
         additionalInformation = "Explanation #$questionIndex in history #$historyIndex",
       )
