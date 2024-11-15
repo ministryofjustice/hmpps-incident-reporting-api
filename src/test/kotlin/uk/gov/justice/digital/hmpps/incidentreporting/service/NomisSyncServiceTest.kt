@@ -182,7 +182,7 @@ class NomisSyncServiceTest {
   )
 
   init {
-    sampleReport.addQuestion("QID-000000000042", "What implement was used?")
+    sampleReport.addQuestion("42", "What implement was used?")
       .addResponse("Razor", null, null, reportedBy, now)
     sampleReport.addStaffInvolved(StaffRole.PRESENT_AT_SCENE, "user3", "Found offender in cell")
     sampleReport.addPrisonerInvolved(
@@ -264,7 +264,7 @@ class NomisSyncServiceTest {
 
     assertThat(report.questions).hasSize(1)
     val question = report.questions[0]
-    assertThat(question.code).isEqualTo("QID-000000000042")
+    assertThat(question.code).isEqualTo("42")
     assertThat(question.question).isEqualTo("What implement was used?")
     assertThat(question.additionalInformation).isNull()
     assertThat(question.responses).hasSize(1)

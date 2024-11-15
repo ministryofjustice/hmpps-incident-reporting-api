@@ -87,7 +87,7 @@ fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequir
 fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
   questions.sortedBy { it.sequence }.forEach { question ->
     val dataItem = this.addQuestion(
-      code = "QID-%012d".format(question.questionId),
+      code = question.questionId.toString(),
       question = question.question,
     )
     question.answers
@@ -115,7 +115,7 @@ fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
 
     history.questions.sortedBy { it.sequence }.forEach { question ->
       val dataItem = historyRecord.addQuestion(
-        code = "QID-%012d".format(question.questionId),
+        code = question.questionId.toString(),
         question = question.question,
       )
       question.answers
