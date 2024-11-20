@@ -5,6 +5,7 @@ import jakarta.validation.ValidationException
 enum class Status(
   val description: String,
   val nomisStatus: String?,
+  val deprecated: Boolean = false,
 ) {
   DRAFT("Draft", null),
   AWAITING_ANALYSIS("Awaiting analysis", "AWAN"),
@@ -12,8 +13,8 @@ enum class Status(
   INFORMATION_REQUIRED("Information required", "INREQ"),
   INFORMATION_AMENDED("Information amened", "INAME"),
   CLOSED("Closed", "CLOSE"),
-  POST_INCIDENT_UPDATE("Post-incident update", "PIU"),
-  INCIDENT_UPDATED("Incident updated", "IUP"),
+  POST_INCIDENT_UPDATE("Post-incident update", "PIU", true),
+  INCIDENT_UPDATED("Incident updated", "IUP", true),
   DUPLICATE("Duplicate", "DUP"),
   ;
 

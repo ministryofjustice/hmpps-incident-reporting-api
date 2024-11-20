@@ -144,7 +144,7 @@ class ConstantsResource {
   )
   fun statuses(): List<StatusConstantDescription> {
     return Status.entries.map {
-      StatusConstantDescription(it.name, it.description, it.nomisStatus)
+      StatusConstantDescription(it.name, it.description, it.deprecated, it.nomisStatus)
     }
   }
 
