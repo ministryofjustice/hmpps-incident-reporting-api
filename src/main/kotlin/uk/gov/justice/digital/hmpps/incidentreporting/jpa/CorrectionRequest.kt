@@ -22,6 +22,7 @@ class CorrectionRequest(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
+  // TODO: likely to be removed
   @Enumerated(EnumType.STRING)
   var reason: CorrectionReason,
   var descriptionOfChange: String,
