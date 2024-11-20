@@ -16,6 +16,7 @@ enum class Status(
   POST_INCIDENT_UPDATE("Post-incident update", "PIU", true),
   INCIDENT_UPDATED("Incident updated", "IUP", true),
   DUPLICATE("Duplicate", "DUP"),
+  REPORTED_IN_ERROR("Reported in error", null),
   ;
 
   companion object {
