@@ -13,9 +13,10 @@ import java.time.ZoneId
 abstract class IntegrationTestBase {
 
   companion object {
+    val zoneId: ZoneId = ZoneId.of("Europe/London")
     val clock: Clock = Clock.fixed(
       Instant.parse("2023-12-05T12:34:56+00:00"),
-      ZoneId.of("Europe/London"),
+      zoneId,
     )
     val now: LocalDateTime = LocalDateTime.now(clock)
 

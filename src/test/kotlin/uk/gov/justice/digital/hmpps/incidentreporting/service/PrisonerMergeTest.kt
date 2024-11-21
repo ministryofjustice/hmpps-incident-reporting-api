@@ -3,10 +3,13 @@ package uk.gov.justice.digital.hmpps.incidentreporting.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.microsoft.applicationinsights.TelemetryClient
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.argThat
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.isNull
 import org.mockito.kotlin.mock
@@ -20,13 +23,16 @@ import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.zoneId
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
+import java.time.LocalDateTime
 import java.util.UUID
 
-@DisplayName("Prisoner moving and merging")
+@DisplayName("Prisoner merging and booking moving")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles("test")
 class PrisonerMergeTest {
@@ -48,63 +54,175 @@ class PrisonerMergeTest {
   @Autowired
   protected lateinit var objectMapper: ObjectMapper
 
-  @Test
-  fun `returns empty list when no rename takes place`() {
-    whenever(prisonerInvolvementRepository.findAllByPrisonerNumber("A0002AA"))
-      .thenReturn(emptyList())
+  @DisplayName("Replacing prisoner numbers")
+  @Nested
+  inner class ReplacePrisonerNumbers {
+    // report involving A0001AA from 3 days ago
+    private lateinit var mockReport1: Report
 
-    val reports = reportService.replacePrisonerNumber("A0002AA", "A0002BB")
-    assertThat(reports).isEmpty()
+    // report involving A0001AA and A0002AA from 2 days ago
+    private lateinit var mockReport2: Report
 
-    verify(telemetryClient, never())
-      .trackEvent(any(), any(), anyOrNull())
-  }
+    // report involving A0001AA, A0002AA and A0003AA from yesterday
+    private lateinit var mockReport3: Report
 
-  @Test
-  fun `can replace all instances of a prisoner number in prisoner involvement entities`() {
-    // report with A0001AA
-    val mockReport1 = buildReport(
-      reportReference = "94728",
-      reportTime = now.minusDays(3),
-      generatePrisonerInvolvement = 1,
-    ).also { it.id = UUID.fromString("066ab92f-efc5-7015-8000-42c0bc6b704b") }
-    // report with A0001AA and A0002AA
-    val mockReport2 = buildReport(
-      reportReference = "11124143",
-      reportTime = now.minusDays(2),
-      generatePrisonerInvolvement = 2,
-    ).also { it.id = UUID.fromString("066ab930-b9ef-7b6d-8000-23258e439e22") }
-    // report with A0001AA, A0002AA and A0003AA
-    val mockReport3 = buildReport(
-      reportReference = "11124146",
-      reportTime = now.minusDays(1),
-      generatePrisonerInvolvement = 3,
-    ).also { it.id = UUID.fromString("066ab931-77d5-70fc-8000-67fbea4733e5") }
-    val mockReports = listOf(mockReport1, mockReport2, mockReport3)
-    val mockPrisonerInvolvements = mockReports
-      .flatMap { it.prisonersInvolved }
-      .filter { it.prisonerNumber == "A0002AA" }
+    @BeforeEach
+    fun setUp() {
+      // setup 3 reports as described above
+      mockReport1 = buildReport(
+        reportReference = "94728",
+        reportTime = now.minusDays(3),
+        generatePrisonerInvolvement = 1,
+      ).also { it.id = UUID.fromString("066ab92f-efc5-7015-8000-42c0bc6b704b") }
+      mockReport2 = buildReport(
+        reportReference = "11124143",
+        reportTime = now.minusDays(2),
+        generatePrisonerInvolvement = 2,
+      ).also { it.id = UUID.fromString("066ab930-b9ef-7b6d-8000-23258e439e22") }
+      mockReport3 = buildReport(
+        reportReference = "11124146",
+        reportTime = now.minusDays(1),
+        generatePrisonerInvolvement = 3,
+      ).also { it.id = UUID.fromString("066ab931-77d5-70fc-8000-67fbea4733e5") }
+      val allMockReports = listOf(mockReport1, mockReport2, mockReport3)
 
-    whenever(prisonerInvolvementRepository.findAllByPrisonerNumber("A0002AA"))
-      .thenReturn(mockPrisonerInvolvements)
+      // mock repository method to return filtered prisoner involvements built above
+      whenever(prisonerInvolvementRepository.findAllByPrisonerNumber(any()))
+        .then { mock ->
+          val prisonerNumber = mock.arguments[0] as String
+          allMockReports
+            .flatMap { it.prisonersInvolved }
+            .filter { it.prisonerNumber == prisonerNumber }
+        }
+    }
 
-    val reports = reportService.replacePrisonerNumber("A0002AA", "A0002BB")
-    val reportIds = reports.map { it.reportReference }
-    assertThat(reportIds)
-      .isEqualTo(listOf("11124143", "11124146"))
+    @Test
+    fun `returns empty list when no rename takes place`() {
+      whenever(prisonerInvolvementRepository.findAllByPrisonerNumber("A0002AA"))
+        .thenReturn(emptyList())
 
-    assertThat(mockReport1.prisonersInvolved.map { it.prisonerNumber })
-      .isEqualTo(listOf("A0001AA"))
-    assertThat(mockReport2.prisonersInvolved.map { it.prisonerNumber })
-      .isEqualTo(listOf("A0001AA", "A0002BB"))
-    assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
-      .isEqualTo(listOf("A0001AA", "A0002BB", "A0003AA"))
-    assertThat(mockReport1.modifiedAt).isBefore(now)
-    assertThat(mockReport2.modifiedAt).isEqualTo(now)
-    assertThat(mockReport3.modifiedAt).isEqualTo(now)
+      val reports = reportService.replacePrisonerNumber("A0002AA", "A0002BB")
+      assertThat(reports).isEmpty()
 
-    verify(telemetryClient, times(2))
-      .trackEvent(eq("Prisoner A0002AA merged into A0002BB"), any(), isNull())
+      val reportsInDateRange = reportService.replacePrisonerNumberInDateRange(
+        "A0002AA",
+        "A0002BB",
+        LocalDateTime.parse("2023-11-17T12:34:56"),
+        now,
+      )
+      assertThat(reportsInDateRange).isEmpty()
+
+      verify(telemetryClient, never())
+        .trackEvent(any(), any(), anyOrNull())
+    }
+
+    @Test
+    fun `can replace all instances of a prisoner number in prisoner involvement entities`() {
+      val reports = reportService.replacePrisonerNumber("A0002AA", "A0002BB")
+      val reportIds = reports.map { it.reportReference }
+      assertThat(reportIds)
+        .isEqualTo(listOf("11124143", "11124146"))
+
+      assertThat(mockReport1.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001AA"))
+      assertThat(mockReport2.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001AA", "A0002BB"))
+      assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001AA", "A0002BB", "A0003AA"))
+      assertThat(mockReport1.modifiedAt).isBefore(now)
+      assertThat(mockReport2.modifiedAt).isEqualTo(now)
+      assertThat(mockReport3.modifiedAt).isEqualTo(now)
+
+      verify(telemetryClient, times(2))
+        .trackEvent(
+          eq("Prisoner A0002AA replaced with A0002BB (reported between whenever and now)"),
+          argThat {
+            listOf("11124143", "11124146").contains(get("reportReference"))
+          },
+          isNull(),
+        )
+    }
+
+    @Test
+    fun `can replace instances of a prisoner number in prisoner involvement entities for a date range`() {
+      val reports = reportService.replacePrisonerNumberInDateRange("A0001AA", "A0001BB", now.minusDays(2), now.minusDays(2))
+      val reportIds = reports.map { it.reportReference }
+      assertThat(reportIds)
+        .isEqualTo(listOf("11124143"))
+
+      assertThat(mockReport1.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001AA"))
+      assertThat(mockReport2.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001BB", "A0002AA"))
+      assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001AA", "A0002AA", "A0003AA"))
+      assertThat(mockReport1.modifiedAt).isBefore(now)
+      assertThat(mockReport2.modifiedAt).isEqualTo(now)
+      assertThat(mockReport3.modifiedAt).isBefore(now)
+
+      verify(telemetryClient, times(1))
+        .trackEvent(
+          eq("Prisoner A0001AA replaced with A0001BB (reported between ${now.minusDays(2)} and ${now.minusDays(2)})"),
+          argThat {
+            listOf("11124143").contains(get("reportReference"))
+          },
+          isNull(),
+        )
+    }
+
+    @Test
+    fun `can replace instances of a prisoner number in prisoner involvement entities since a date`() {
+      val reports = reportService.replacePrisonerNumberInDateRange("A0001AA", "A0001BB", now.minusDays(2), null)
+      val reportIds = reports.map { it.reportReference }
+      assertThat(reportIds)
+        .isEqualTo(listOf("11124143", "11124146"))
+
+      assertThat(mockReport1.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001AA"))
+      assertThat(mockReport2.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001BB", "A0002AA"))
+      assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001BB", "A0002AA", "A0003AA"))
+      assertThat(mockReport1.modifiedAt).isBefore(now)
+      assertThat(mockReport2.modifiedAt).isEqualTo(now)
+      assertThat(mockReport3.modifiedAt).isEqualTo(now)
+
+      verify(telemetryClient, times(2))
+        .trackEvent(
+          eq("Prisoner A0001AA replaced with A0001BB (reported between ${now.minusDays(2)} and now)"),
+          argThat {
+            listOf("11124143", "11124146").contains(get("reportReference"))
+          },
+          isNull(),
+        )
+    }
+
+    @Test
+    fun `can replace instances of a prisoner number in prisoner involvement entities until a date`() {
+      val reports = reportService.replacePrisonerNumberInDateRange("A0001AA", "A0001BB", null, now.minusDays(2))
+      val reportIds = reports.map { it.reportReference }
+      assertThat(reportIds)
+        .isEqualTo(listOf("94728", "11124143"))
+
+      assertThat(mockReport1.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001BB"))
+      assertThat(mockReport2.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001BB", "A0002AA"))
+      assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
+        .isEqualTo(listOf("A0001AA", "A0002AA", "A0003AA"))
+      assertThat(mockReport1.modifiedAt).isEqualTo(now)
+      assertThat(mockReport2.modifiedAt).isEqualTo(now)
+      assertThat(mockReport3.modifiedAt).isBefore(now)
+
+      verify(telemetryClient, times(2))
+        .trackEvent(
+          eq("Prisoner A0001AA replaced with A0001BB (reported between whenever and ${now.minusDays(2)})"),
+          argThat {
+            listOf("94728", "11124143").contains(get("reportReference"))
+          },
+          isNull(),
+        )
+    }
   }
 
   @Test
@@ -136,6 +254,7 @@ class PrisonerMergeTest {
     val listener = PrisonOffenderEventListener(
       reportService = mockReportService,
       mapper = objectMapper,
+      zoneId = zoneId,
     )
     listener.onPrisonOffenderEvent(
       // language=json
@@ -160,11 +279,12 @@ class PrisonerMergeTest {
   }
 
   @Test
-  fun `parses prisoner booking moved domain event`() {
+  fun `parses (old) prisoner booking moved domain event that does not specify booking start date`() {
     val mockReportService: ReportService = mock()
     val listener = PrisonOffenderEventListener(
       reportService = mockReportService,
       mapper = objectMapper,
+      zoneId = zoneId,
     )
     listener.onPrisonOffenderEvent(
       // language=json
@@ -184,7 +304,51 @@ class PrisonerMergeTest {
       """,
     )
 
-    verify(mockReportService, times(1))
+    verify(mockReportService, never())
       .replacePrisonerNumber(eq("A0002AA"), eq("A0002BB"))
+    verify(mockReportService, times(1))
+      .replacePrisonerNumberInDateRange(
+        eq("A0002AA"),
+        eq("A0002BB"),
+        isNull(),
+        isNull(),
+      )
+  }
+
+  @Test
+  fun `parses (new) prisoner booking moved domain event that specifies booking start date`() {
+    val mockReportService: ReportService = mock()
+    val listener = PrisonOffenderEventListener(
+      reportService = mockReportService,
+      mapper = objectMapper,
+      zoneId = zoneId,
+    )
+    listener.onPrisonOffenderEvent(
+      // language=json
+      """
+      {
+        "Type": "Notification",
+        "MessageId": "5b90ee7d-67bc-5959-a4d8-b7d420180853",
+        "Message": "{\"version\":\"1.0\",\"eventType\":\"prison-offender-events.prisoner.booking.moved\",\"occurredAt\":\"2020-02-12T15:14:24.125533+00:00\",\"publishedAt\":\"2020-02-12T15:15:09.902048716+00:00\",\"description\":\"a NOMIS booking has moved between prisoners\",\"personReference\":{\"identifiers\":[{\"type\":\"NOMS\",\"value\":\"A0002BB\"}]},\"additionalInformation\":{\"bookingId\":\"123000\",\"movedToNomsNumber\":\"A0002BB\",\"movedFromNomsNumber\":\"A0002AA\",\"bookingStartDateTime\":\"2019-12-13T06:07:08\"}}",
+        "Timestamp": "2021-09-01T09:18:28.725Z",
+        "MessageAttributes": {
+          "eventType": {
+            "Type": "String",
+            "Value": "prison-offender-events.prisoner.booking.moved"
+          }
+        }
+      }
+      """,
+    )
+
+    verify(mockReportService, never())
+      .replacePrisonerNumber(eq("A0002AA"), eq("A0002BB"))
+    verify(mockReportService, times(1))
+      .replacePrisonerNumberInDateRange(
+        eq("A0002AA"),
+        eq("A0002BB"),
+        eq(LocalDateTime.parse("2019-12-13T06:07:08")),
+        eq(LocalDateTime.parse("2020-02-12T15:14:24.125533")),
+      )
   }
 }
