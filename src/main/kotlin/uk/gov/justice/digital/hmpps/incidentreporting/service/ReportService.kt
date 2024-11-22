@@ -48,6 +48,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report as ReportEntity
 
 @Service
 @Transactional(readOnly = true)
@@ -344,37 +345,87 @@ class ReportService(
 
   /**
    * Replaces one prisoner number in all report-related entities with another.
+   *
+   * Relevant reports are found from prisoner involvements.
+   *
+   * This is used to handle a two prisoner numbers being merged into one.
+   *
    * NB:
    * - free text fields are _not_ changed
    * - report-amended domain event is _not_ raised since this method is reacting to an event
    */
   @Transactional
   fun replacePrisonerNumber(removedPrisonerNumber: String, prisonerNumber: String): List<ReportBasic> {
+    return replacePrisonerNumberInDateRange(removedPrisonerNumber, prisonerNumber, null, null)
+  }
+
+  /**
+   * Replaces one prisoner number in all report-related entities with another within given inclusive date-time range
+   * according to when an incident was reported (`Report.reportedAt`). The date-time range can be open or absent.
+   *
+   * Relevant reports are found from prisoner involvements.
+   *
+   * This is used to handle a single booking being moved between two prisoner numbers.
+   *
+   * NB:
+   * - free text fields are _not_ changed
+   * - report-amended domain event is _not_ raised since this method is reacting to an event
+   */
+  @Transactional
+  fun replacePrisonerNumberInDateRange(
+    removedPrisonerNumber: String,
+    prisonerNumber: String,
+    since: LocalDateTime?,
+    until: LocalDateTime?,
+  ): List<ReportBasic> {
     // TODO: maybe free text fields should be replaced too? especially if we end up generating report titles automatically
+
+    val reportedAtFilter: (ReportEntity) -> Boolean = when {
+      // reported between `since` and `until`
+      since != null && until != null -> { report -> report.reportedAt >= since && report.reportedAt <= until }
+      // reported after `since`
+      since != null -> { report -> report.reportedAt >= since }
+      // reported before `until`
+      until != null -> { report -> report.reportedAt <= until }
+      // reported at any time
+      else -> { _ -> true }
+    }
+
     val now = LocalDateTime.now(clock)
     return buildMap {
       prisonerInvolvementRepository.findAllByPrisonerNumber(removedPrisonerNumber)
         .forEach { prisonerInvolvement ->
-          prisonerInvolvement.prisonerNumber = prisonerNumber
           val report = prisonerInvolvement.getReport()
           if (!containsKey(report.id)) {
-            // TODO: does this count as modifying a report in DPS?
-            report.modifiedAt = now // NB: there is no actor user to set modifiedBy
             put(report.id, report)
           }
         }
     }
       .values
-      .map { it.toDtoBasic() }
+      .filter(reportedAtFilter)
+      .map { report ->
+        // mark report as kinda modified
+        report.modifiedAt = now
+        // NB: report.modifiedIn is not changed since currently only a NOMIS-sourced domain event triggers this
+        // NB: there is no actor user to set report.modifiedBy
+
+        // replace prisoner number in matching prisoner involvements
+        report.prisonersInvolved.filter { prisonerInvolvement ->
+          prisonerInvolvement.prisonerNumber == removedPrisonerNumber
+        }.forEach { prisonerInvolvement ->
+          prisonerInvolvement.prisonerNumber = prisonerNumber
+        }
+
+        report.toDtoBasic()
+      }
       .sortedBy { it.id }
       .also { reports ->
         if (reports.isNotEmpty()) {
-          log.info("Prisoner $removedPrisonerNumber merged into $prisonerNumber")
+          val logMessage = "Prisoner $removedPrisonerNumber replaced with $prisonerNumber " +
+            "(reported between ${since ?: "whenever"} and ${until ?: "now"})"
+          log.info(logMessage)
           reports.forEach { report ->
-            telemetryClient.trackEvent(
-              "Prisoner $removedPrisonerNumber merged into $prisonerNumber",
-              report,
-            )
+            telemetryClient.trackEvent(logMessage, report)
           }
         }
       }

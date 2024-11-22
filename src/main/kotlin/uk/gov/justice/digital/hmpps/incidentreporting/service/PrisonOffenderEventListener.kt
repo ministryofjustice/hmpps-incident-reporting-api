@@ -7,11 +7,15 @@ import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @Service
 class PrisonOffenderEventListener(
   private val reportService: ReportService,
   private val mapper: ObjectMapper,
+  private val zoneId: ZoneId,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -36,10 +40,18 @@ class PrisonOffenderEventListener(
         )
       }
       PRISONER_BOOKING_MOVED_EVENT_TYPE -> {
-        val mergeEvent = mapper.readValue(message, HMPPSMergeBookingMovedEvent::class.java)
-        reportService.replacePrisonerNumber(
-          removedPrisonerNumber = mergeEvent.additionalInformation.movedFromNomsNumber,
-          prisonerNumber = mergeEvent.additionalInformation.movedToNomsNumber,
+        val moveEvent = mapper.readValue(message, HMPPSMergeBookingMovedEvent::class.java)
+        val additionalInformation = moveEvent.additionalInformation
+        reportService.replacePrisonerNumberInDateRange(
+          removedPrisonerNumber = additionalInformation.movedFromNomsNumber,
+          prisonerNumber = additionalInformation.movedToNomsNumber,
+          // use booking date range if and only if `bookingStartDateTime` is specified
+          since = additionalInformation.bookingStartDateTime,
+          until = if (additionalInformation.bookingStartDateTime != null) {
+            moveEvent.occurredAt.withZoneSameInstant(zoneId).toLocalDateTime()
+          } else {
+            null
+          },
         )
       }
       else -> {
@@ -53,7 +65,7 @@ data class HMPPSMergeDomainEvent(
   val eventType: String? = null,
   val additionalInformation: AdditionalInformationMerge,
   val version: String,
-  val occurredAt: String,
+  val occurredAt: ZonedDateTime,
   val description: String,
 )
 
@@ -66,7 +78,7 @@ data class HMPPSMergeBookingMovedEvent(
   val eventType: String? = null,
   val additionalInformation: AdditionalInformationBookingMoved,
   val version: String,
-  val occurredAt: String,
+  val occurredAt: ZonedDateTime,
   val description: String,
 )
 
@@ -74,6 +86,7 @@ data class AdditionalInformationBookingMoved(
   val bookingId: Long,
   val movedFromNomsNumber: String,
   val movedToNomsNumber: String,
+  val bookingStartDateTime: LocalDateTime?,
 )
 
 data class HMPPSEventType(val Value: String, val Type: String)
