@@ -1,0 +1,100 @@
+[
+  {
+    "code": "1",
+    "question": "Question #1",
+    "responses": [
+      {
+        "response": "Response #1",
+        "responseDate": "2023-12-04",
+        "additionalInformation": "Prose #1",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "Response #2",
+        "responseDate": "2023-12-03",
+        "additionalInformation": "Prose #2",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ],
+    "additionalInformation": "Explanation #1"
+  },
+  {
+    "code": "2",
+    "question": "Question #2",
+    "responses": [
+      {
+        "response": "Response #1",
+        "responseDate": "2023-12-04",
+        "additionalInformation": "Prose #1",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "Response #2",
+        "responseDate": "2023-12-03",
+        "additionalInformation": "Prose #2",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ],
+    "additionalInformation": "Explanation #2"
+  },
+  {
+    "code": "2001",
+    "question": "List every “find”",
+    "additionalInformation": "Amounts do not matter",
+    "responses": [
+      {
+        "response": "Note with phone number",
+        "responseDate": null,
+        "additionalInformation": "020 1111 2222",
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "Mobile phone",
+        "responseDate": null,
+        "additionalInformation": "Not a smartphone",
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "Note with date",
+        "responseDate": "2023-11-30",
+        "additionalInformation": null,
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ]
+  },
+  {
+    "code": "2002",
+    "question": "Was anybody hurt?",
+    "additionalInformation": null,
+    "responses": [
+      {
+        "response": "No",
+        "responseDate": null,
+        "additionalInformation": null,
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ]
+  },
+  {
+    "code": "2003",
+    "question": "Was the governor informed?",
+    "additionalInformation": null,
+    "responses": [
+      {
+        "response": "Yes",
+        "responseDate": "2023-12-01",
+        "additionalInformation": null,
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ]
+  }
+]

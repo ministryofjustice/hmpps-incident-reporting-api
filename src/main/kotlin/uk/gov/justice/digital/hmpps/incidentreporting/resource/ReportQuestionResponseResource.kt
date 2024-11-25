@@ -1,11 +1,14 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import jakarta.validation.constraints.Size
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -77,7 +80,7 @@ class ReportQuestionResponseResource(
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
-    summary = "Adds a new question with responses to the end of the list",
+    summary = "Add new questions with responses to the end of the list",
     description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
@@ -110,11 +113,23 @@ class ReportQuestionResponseResource(
     @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
+    @Parameter(
+      description = "List of question and responses to add",
+      array = ArraySchema(
+        schema = Schema(implementation = AddQuestionWithResponses::class),
+        arraySchema = Schema(
+          requiredMode = Schema.RequiredMode.REQUIRED,
+          nullable = false,
+        ),
+        minItems = 1,
+      ),
+    )
     @RequestBody
+    @Size(min = 1)
     @Valid
-    addQuestionWithResponses: AddQuestionWithResponses,
+    addRequests: List<AddQuestionWithResponses>,
   ): List<Question> {
-    val (report, questions) = reportService.addQuestionWithResponses(reportId, addQuestionWithResponses)
+    val (report, questions) = reportService.addQuestionsWithResponses(reportId, addRequests)
       ?: throw ReportNotFoundException(reportId)
     eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_AMENDED,

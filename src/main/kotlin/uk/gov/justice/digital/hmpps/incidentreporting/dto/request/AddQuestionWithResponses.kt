@@ -10,7 +10,7 @@ data class AddQuestionWithResponses(
   @Schema(description = "The question code", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1, maxLength = 60)
   @field:Size(min = 1, max = 60)
   val code: String,
-  @Schema(description = "The question", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
+  @Schema(description = "The question text as seen by downstream data consumers", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
   @field:Size(min = 1)
   val question: String,
   @Schema(description = "The responses to this question", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)

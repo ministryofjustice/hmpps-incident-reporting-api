@@ -1,16 +1,18 @@
-{
-  "code": "2001",
-  "question": "List every “find”",
-  "additionalInformation": "Amounts do not matter",
-  "responses": [
-    {
-      "response": "Note with phone number",
-      "responseDate": "2023-12-04",
-      "additionalInformation": "020 1111 2222"
-    },
-    {
-      "response": "",
-      "additionalInformation": "Mobile phone"
-    }
-  ]
-}
+[
+  {
+    "code": "2001",
+    "question": "List every “find”",
+    "additionalInformation": "Amounts do not matter",
+    "responses": [
+      {
+        "response": "Note with phone number",
+        "responseDate": "2023-12-04",
+        "additionalInformation": "020 1111 2222"
+      },
+      {
+        "response": "",
+        "additionalInformation": "Mobile phone"
+      }
+    ]
+  }
+]

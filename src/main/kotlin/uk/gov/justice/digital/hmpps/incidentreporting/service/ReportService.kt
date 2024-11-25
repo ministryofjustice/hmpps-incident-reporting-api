@@ -282,26 +282,28 @@ class ReportService(
   }
 
   @Transactional
-  fun addQuestionWithResponses(reportId: UUID, addRequest: AddQuestionWithResponses): Pair<ReportBasic, List<Question>>? {
+  fun addQuestionsWithResponses(reportId: UUID, addRequests: List<AddQuestionWithResponses>): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
       val now = LocalDateTime.now(clock)
       val requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME
 
-      with(
-        addQuestion(
-          code = addRequest.code,
-          question = addRequest.question,
-          additionalInformation = addRequest.additionalInformation,
-        ),
-      ) {
-        addRequest.responses.forEach {
-          addResponse(
-            response = it.response,
-            responseDate = it.responseDate,
-            recordedBy = requestUsername,
-            recordedAt = now,
-            additionalInformation = it.additionalInformation,
-          )
+      addRequests.forEach { addRequest ->
+        with(
+          addQuestion(
+            code = addRequest.code,
+            question = addRequest.question,
+            additionalInformation = addRequest.additionalInformation,
+          ),
+        ) {
+          addRequest.responses.forEach {
+            addResponse(
+              response = it.response,
+              responseDate = it.responseDate,
+              recordedBy = requestUsername,
+              recordedAt = now,
+              additionalInformation = it.additionalInformation,
+            )
+          }
         }
       }
 
@@ -311,9 +313,9 @@ class ReportService(
 
       val reportBasic = toDtoBasic()
 
-      log.info("Added question with ${addRequest.responses.size} responses to report reference=$reportReference ID=$id")
+      log.info("Added ${addRequests.size} questions with responses to report reference=$reportReference ID=$id")
       telemetryClient.trackEvent(
-        "Added question with ${addRequest.responses.size} responses",
+        "Added ${addRequests.size} questions with responses",
         reportBasic,
       )
 

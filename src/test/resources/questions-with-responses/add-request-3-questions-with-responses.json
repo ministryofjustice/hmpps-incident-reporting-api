@@ -17,5 +17,24 @@
         "responseDate": "2023-11-30"
       }
     ]
+  },
+  {
+    "code": "2002",
+    "question": "Was anybody hurt?",
+    "responses": [
+      {
+        "response": "No"
+      }
+    ]
+  },
+  {
+    "code": "2003",
+    "question": "Was the governor informed?",
+    "responses": [
+      {
+        "response": "Yes",
+        "responseDate": "2023-12-01"
+      }
+    ]
   }
 ]
