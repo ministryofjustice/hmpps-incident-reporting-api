@@ -2931,7 +2931,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("POST /incident-reports/{reportId}/questions")
     @Nested
-    inner class AddQuestion {
+    inner class AddQuestions {
       private val validRequest = getResource("/questions-with-responses/add-request-with-responses.json")
 
       @DisplayName("is secured")
@@ -2971,23 +2971,29 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             InvalidRequestTestCase(
               "invalid payload",
               // language=json
-              "[]",
+              "{}",
               "Cannot deserialize value",
+            ),
+            InvalidRequestTestCase(
+              "empty list",
+              // language=json
+              "[]",
+              "addQuestionWithResponses.addRequests: size must be between 1 and",
             ),
             InvalidRequestTestCase(
               "long code",
               getResource("/questions-with-responses/add-request-long-code.json"),
-              "addQuestionWithResponses.code: size must be between 1 and 60",
+              "addQuestionWithResponses.addRequests[0].code: size must be between 1 and 60",
             ),
             InvalidRequestTestCase(
               "empty question",
               getResource("/questions-with-responses/add-request-empty-question.json"),
-              "addQuestionWithResponses.question: size must be between 1 and",
+              "addQuestionWithResponses.addRequests[0].question: size must be between 1 and",
             ),
             InvalidRequestTestCase(
               "empty response",
               getResource("/questions-with-responses/add-request-empty-response.json"),
-              "addQuestionWithResponses.responses[1].response: size must be between 1 and",
+              "addQuestionWithResponses.addRequests[0].responses[1].response: size must be between 1 and",
             ),
           )
             .map { (name, request, expectedErrorText) ->
@@ -3019,7 +3025,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isBadRequest
             .expectBody().jsonPath("developerMessage").value<String> {
-              assertThat(it).contains("addQuestionWithResponses.responses: size must be between 1 and 2147483647")
+              assertThat(it).contains("addQuestionWithResponses.addRequests[0].responses: size must be between 1 and")
             }
 
           assertThatNoDomainEventsWereSent()
@@ -3083,6 +3089,30 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequestWithNulls)
+            .exchange()
+            .expectStatus().isCreated
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+
+        @Test
+        fun `can add multiple questions with responses in one go`() {
+          val validRequestWith3Questions = getResource("/questions-with-responses/add-request-3-questions-with-responses.json")
+          val expectedResponse = getResource("/questions-with-responses/add-response-3-questions-with-responses.json")
+          webTestClient.post().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validRequestWith3Questions)
             .exchange()
             .expectStatus().isCreated
             .expectBody().json(

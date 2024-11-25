@@ -1,6 +1,8 @@
-{
-  "code": "2001",
-  "question": "List every “find”",
-  "additionalInformation": "Amounts do not matter",
-  "responses": []
-}
+[
+  {
+    "code": "2001",
+    "question": "List every “find”",
+    "additionalInformation": "Amounts do not matter",
+    "responses": []
+  }
+]

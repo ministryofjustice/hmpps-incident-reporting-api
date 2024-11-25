@@ -1,18 +1,20 @@
-{
-  "code": "2001",
-  "question": "List every “find”",
-  "additionalInformation": null,
-  "responses": [
-    {
-      "response": "Note with phone number"
-    },
-    {
-      "response": "Mobile phone",
-      "additionalInformation": null
-    },
-    {
-      "response": "Chewing gum",
-      "responseDate": null
-    }
-  ]
-}
+[
+  {
+    "code": "2001",
+    "question": "List every “find”",
+    "additionalInformation": null,
+    "responses": [
+      {
+        "response": "Note with phone number"
+      },
+      {
+        "response": "Mobile phone",
+        "additionalInformation": null
+      },
+      {
+        "response": "Chewing gum",
+        "responseDate": null
+      }
+    ]
+  }
+]

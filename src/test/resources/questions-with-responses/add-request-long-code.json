@@ -1,15 +1,17 @@
-{
-  "code": "1234567890123456789012345678901234567890123456789012345678901",
-  "question": "List every “find”",
-  "additionalInformation": "Amounts do not matter",
-  "responses": [
-    {
-      "response": "Note with phone number",
-      "additionalInformation": "020 1111 2222"
-    },
-    {
-      "response": "Mobile phone",
-      "additionalInformation": "Not a smartphone"
-    }
-  ]
-}
+[
+  {
+    "code": "1234567890123456789012345678901234567890123456789012345678901",
+    "question": "List every “find”",
+    "additionalInformation": "Amounts do not matter",
+    "responses": [
+      {
+        "response": "Note with phone number",
+        "additionalInformation": "020 1111 2222"
+      },
+      {
+        "response": "Mobile phone",
+        "additionalInformation": "Not a smartphone"
+      }
+    ]
+  }
+]

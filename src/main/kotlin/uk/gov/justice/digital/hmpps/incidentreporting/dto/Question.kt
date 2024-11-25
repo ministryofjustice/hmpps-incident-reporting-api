@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class Question(
   @Schema(description = "The question code")
   val code: String,
-  @Schema(description = "The question")
+  @Schema(description = "The question text as seen by downstream data consumers")
   val question: String,
   @Schema(description = "The responses to this question")
   val responses: List<Response> = emptyList(),
