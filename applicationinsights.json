@@ -6,8 +6,11 @@
     "service.version": "${BUILD_NUMBER}"
   },
   "instrumentation": {
+    "springScheduling": {
+      "enabled": false
+    },
     "logging": {
-      "level": "DEBUG"
+      "level": "INFO"
     }
   },
   "selfDiagnostics": {
@@ -16,6 +19,50 @@
   "sampling": {
     "percentage": 100,
     "overrides": [
+      {
+        "telemetryType": "dependency",
+        "attributes": [
+          {
+            "key": "db.system",
+            "value": "postgresql",
+            "matchType": "strict"
+          }
+        ],
+        "percentage": 5
+      },
+      {
+        "telemetryType": "dependency",
+        "attributes": [
+          {
+            "key": "server.address",
+            "value": "(sign-in|sts.eu).*",
+            "matchType": "regexp"
+          }
+        ],
+        "percentage": 5
+      },
+      {
+        "telemetryType": "request",
+        "attributes": [
+          {
+            "key": "url.path",
+            "value": "/health.*",
+            "matchType": "regexp"
+          }
+        ],
+        "percentage": 5
+      },
+      {
+        "telemetryType": "request",
+        "attributes": [
+          {
+            "key": "url.path",
+            "value": "/info",
+            "matchType": "strict"
+          }
+        ],
+        "percentage": 5
+      },
       {
         "telemetryType": "exception",
         "attributes": [
@@ -26,17 +73,19 @@
           }
         ],
         "percentage": 10
-      },
+      }
+    ]
+  },
+  "preview": {
+    "processors": [
       {
-        "telemetryType": "request",
-        "attributes": [
-          {
-            "key": "http.url",
-            "value": "https?://[^/]+/health.*",
-            "matchType": "regexp"
-          }
-        ],
-        "percentage": 10
+        "type": "metric-filter",
+        "exclude": {
+          "matchType": "regexp",
+          "metricNames": [
+            "(cache|executor|disk|http|logback|spring_).*"
+          ]
+        }
       }
     ]
   }
