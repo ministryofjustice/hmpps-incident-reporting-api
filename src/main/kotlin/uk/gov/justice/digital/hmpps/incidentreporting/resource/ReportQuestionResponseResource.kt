@@ -16,14 +16,14 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddQuestionWithResponses
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddOrUpdateQuestionWithResponses
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
@@ -76,15 +76,15 @@ class ReportQuestionResponseResource(
       ?: throw ReportNotFoundException(reportId)
   }
 
-  @PostMapping("")
+  @PutMapping("")
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(HttpStatus.OK)
   @Operation(
-    summary = "Add new questions with responses to the end of the list",
+    summary = "Add new questions with responses to the end of the current list or update them in place if question codes match",
     description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
-        responseCode = "201",
+        responseCode = "200",
         description = "Returns all questions and responses in report",
       ),
       ApiResponse(
@@ -109,14 +109,14 @@ class ReportQuestionResponseResource(
       ),
     ],
   )
-  fun addQuestionWithResponses(
+  fun addOrUpdateQuestionsWithResponses(
     @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
     @Parameter(
-      description = "List of question and responses to add",
+      description = "List of question and responses to add or update in place",
       array = ArraySchema(
-        schema = Schema(implementation = AddQuestionWithResponses::class),
+        schema = Schema(implementation = AddOrUpdateQuestionWithResponses::class),
         arraySchema = Schema(
           requiredMode = Schema.RequiredMode.REQUIRED,
           nullable = false,
@@ -127,9 +127,9 @@ class ReportQuestionResponseResource(
     @RequestBody
     @Size(min = 1)
     @Valid
-    addRequests: List<AddQuestionWithResponses>,
+    requests: List<AddOrUpdateQuestionWithResponses>,
   ): List<Question> {
-    val (report, questions) = reportService.addQuestionsWithResponses(reportId, addRequests)
+    val (report, questions) = reportService.addOrUpdateQuestionsWithResponses(reportId, requests)
       ?: throw ReportNotFoundException(reportId)
     eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_AMENDED,

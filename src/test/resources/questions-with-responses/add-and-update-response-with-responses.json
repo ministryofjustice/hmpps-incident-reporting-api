@@ -1,0 +1,65 @@
+[
+  {
+    "code": "1",
+    "question": "Updated question #1",
+    "responses": [
+      {
+        "response": "New response #1",
+        "responseDate": "2023-11-30",
+        "additionalInformation": null,
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "New response #2",
+        "responseDate": null,
+        "additionalInformation": "Comment #1",
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "New response #3",
+        "responseDate": null,
+        "additionalInformation": null,
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ],
+    "additionalInformation": "Updated explanation #1"
+  },
+  {
+    "code": "2",
+    "question": "Question #2",
+    "responses": [
+      {
+        "response": "Response #1",
+        "responseDate": "2023-12-04",
+        "additionalInformation": "Prose #1",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "Response #2",
+        "responseDate": "2023-12-03",
+        "additionalInformation": "Prose #2",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ],
+    "additionalInformation": "Explanation #2"
+  },
+  {
+    "code": "2002",
+    "question": "Was anybody hurt?",
+    "additionalInformation": null,
+    "responses": [
+      {
+        "response": "No",
+        "responseDate": null,
+        "additionalInformation": null,
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ]
+  }
+]

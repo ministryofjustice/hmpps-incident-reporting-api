@@ -20,8 +20,20 @@ class Response(
   val question: Question,
 
   // TODO: should we add a `val code: String` like in Question?
+
+  /**
+   * The response text as seen by downstream data consumers
+   */
   val response: String,
+
+  /**
+   * Optional date attached to response
+   */
   val responseDate: LocalDate? = null,
+
+  /**
+   * Optional comment attached to response
+   */
   val additionalInformation: String? = null,
 
   val recordedBy: String,

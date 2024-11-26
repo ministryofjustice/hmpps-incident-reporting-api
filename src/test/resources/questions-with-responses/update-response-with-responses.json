@@ -1,0 +1,37 @@
+[
+  {
+    "code": "1",
+    "question": "Question #1",
+    "responses": [
+      {
+        "response": "Response #1",
+        "responseDate": "2023-12-04",
+        "additionalInformation": "Prose #1",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      },
+      {
+        "response": "Response #2",
+        "responseDate": "2023-12-03",
+        "additionalInformation": "Prose #2",
+        "recordedBy": "some-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ],
+    "additionalInformation": "Explanation #1"
+  },
+  {
+    "code": "2",
+    "question": "Updated question #2",
+    "responses": [
+      {
+        "response": "New response",
+        "responseDate": null,
+        "additionalInformation": null,
+        "recordedBy": "request-user",
+        "recordedAt": "2023-12-05T12:34:56"
+      }
+    ],
+    "additionalInformation": "Updated explanation #2"
+  }
+]

@@ -23,9 +23,20 @@ class HistoricalQuestion(
   @ManyToOne(fetch = FetchType.LAZY)
   val history: History,
 
-  // TODO: decide how this works and if it is ever unique (eg within 1 report)
+  /**
+   * Identifier that must be unique within one History item in a report; used for updating questions in place.
+   * Typically refers to a specific question for an incident type.
+   */
   val code: String,
+
+  /**
+   * The question text as seen by downstream data consumers
+   */
   val question: String,
+
+  /**
+   * Unused: could be a free-text response to a question
+   */
   val additionalInformation: String? = null,
 
   @OneToMany(mappedBy = "historicalQuestion", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
