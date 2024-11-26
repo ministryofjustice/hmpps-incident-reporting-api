@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 @Schema(description = "Response to a question making up an incident report", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class Response(
-  @Schema(description = "The response")
+  @Schema(description = "The response text as seen by downstream data consumers")
   val response: String,
   @Schema(description = "Optional response as a date", nullable = true, example = "2024-04-29")
   val responseDate: LocalDate? = null,

@@ -19,9 +19,21 @@ class HistoricalResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val historicalQuestion: HistoricalQuestion,
 
-  // TODO: should we add a `val code: String` like in Question?
+  // TODO: should we add a `val code: String` like in HistoricalQuestion?
+
+  /**
+   * The response text as seen by downstream data consumers
+   */
   val response: String,
+
+  /**
+   * Optional date attached to response
+   */
   val responseDate: LocalDate? = null,
+
+  /**
+   * Optional comment attached to response
+   */
   val additionalInformation: String? = null,
 
   val recordedBy: String,

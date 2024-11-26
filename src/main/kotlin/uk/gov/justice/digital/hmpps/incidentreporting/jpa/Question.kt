@@ -23,10 +23,21 @@ class Question(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
-  // TODO: decide how this works and if it is ever unique (eg within 1 report)
+  /**
+   * Identifier that must be unique within one report; used for updating questions in place.
+   * Typically refers to a specific question for an incident type.
+   */
   val code: String,
-  val question: String,
-  val additionalInformation: String? = null,
+
+  /**
+   * The question text as seen by downstream data consumers
+   */
+  var question: String,
+
+  /**
+   * Unused: could be a free-text response to a question
+   */
+  var additionalInformation: String? = null,
 
   @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @OrderColumn(name = "sequence", nullable = false)
@@ -40,6 +51,16 @@ class Question(
   fun getReport() = report
 
   fun getResponses(): List<Response> = responses
+
+  fun reset(
+    question: String,
+    additionalInformation: String? = null,
+  ): Question {
+    this.question = question
+    this.additionalInformation = additionalInformation
+    this.responses.clear()
+    return this
+  }
 
   fun addResponse(
     response: String,

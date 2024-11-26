@@ -2929,9 +2929,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
     }
 
-    @DisplayName("POST /incident-reports/{reportId}/questions")
+    @DisplayName("PUT /incident-reports/{reportId}/questions")
     @Nested
-    inner class AddQuestions {
+    inner class AddOrUpdateQuestions {
       private val validRequest = getResource("/questions-with-responses/add-request-with-responses.json")
 
       @DisplayName("is secured")
@@ -2940,7 +2940,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @DisplayName("by role and scope")
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.post().uri(urlWithQuestionsAndResponses).bodyValue(validRequest),
+          webTestClient.put().uri(urlWithQuestionsAndResponses).bodyValue(validRequest),
           "MAINTAIN_INCIDENT_REPORTS",
           "write",
         )
@@ -2951,7 +2951,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       inner class Validation {
         @Test
         fun `cannot add question and responses to a report if it is not found`() {
-          webTestClient.post().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions")
+          webTestClient.put().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequest)
@@ -2978,27 +2978,27 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "empty list",
               // language=json
               "[]",
-              "addQuestionWithResponses.addRequests: size must be between 1 and",
+              "addOrUpdateQuestionsWithResponses.requests: size must be between 1 and",
             ),
             InvalidRequestTestCase(
               "long code",
               getResource("/questions-with-responses/add-request-long-code.json"),
-              "addQuestionWithResponses.addRequests[0].code: size must be between 1 and 60",
+              "addOrUpdateQuestionsWithResponses.requests[0].code: size must be between 1 and 60",
             ),
             InvalidRequestTestCase(
               "empty question",
               getResource("/questions-with-responses/add-request-empty-question.json"),
-              "addQuestionWithResponses.addRequests[0].question: size must be between 1 and",
+              "addOrUpdateQuestionsWithResponses.requests[0].question: size must be between 1 and",
             ),
             InvalidRequestTestCase(
               "empty response",
               getResource("/questions-with-responses/add-request-empty-response.json"),
-              "addQuestionWithResponses.addRequests[0].responses[1].response: size must be between 1 and",
+              "addOrUpdateQuestionsWithResponses.requests[0].responses[1].response: size must be between 1 and",
             ),
           )
             .map { (name, request, expectedErrorText) ->
               DynamicTest.dynamicTest(name) {
-                webTestClient.post().uri(urlWithoutQuestions)
+                webTestClient.put().uri(urlWithoutQuestions)
                   .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
                   .header("Content-Type", "application/json")
                   .bodyValue(request)
@@ -3018,14 +3018,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @Test
         fun `cannot add question without responses`() {
           val invalidRequest = getResource("/questions-with-responses/add-request-without-responses.json")
-          webTestClient.post().uri(urlWithoutQuestions)
+          webTestClient.put().uri(urlWithoutQuestions)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(invalidRequest)
             .exchange()
             .expectStatus().isBadRequest
             .expectBody().jsonPath("developerMessage").value<String> {
-              assertThat(it).contains("addQuestionWithResponses.addRequests[0].responses: size must be between 1 and")
+              assertThat(it).contains("addOrUpdateQuestionsWithResponses.requests[0].responses: size must be between 1 and")
             }
 
           assertThatNoDomainEventsWereSent()
@@ -3038,12 +3038,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @Test
         fun `can add question with responses to empty report`() {
           val expectedResponse = getResource("/questions-with-responses/add-response-without-responses.json")
-          webTestClient.post().uri(urlWithoutQuestions)
+          webTestClient.put().uri(urlWithoutQuestions)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequest)
             .exchange()
-            .expectStatus().isCreated
+            .expectStatus().isOk
             .expectBody().json(
               expectedResponse,
               true,
@@ -3061,12 +3061,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @Test
         fun `can add question with responses to report with existing questions`() {
           val expectedResponse = getResource("/questions-with-responses/add-response-with-responses.json")
-          webTestClient.post().uri(urlWithQuestionsAndResponses)
+          webTestClient.put().uri(urlWithQuestionsAndResponses)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequest)
             .exchange()
-            .expectStatus().isCreated
+            .expectStatus().isOk
             .expectBody().json(
               expectedResponse,
               true,
@@ -3085,12 +3085,36 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         fun `can add question with responses that have nullable fields`() {
           val validRequestWithNulls = getResource("/questions-with-responses/add-request-with-responses-and-null-fields.json")
           val expectedResponse = getResource("/questions-with-responses/add-response-with-responses-and-null-fields.json")
-          webTestClient.post().uri(urlWithQuestionsAndResponses)
+          webTestClient.put().uri(urlWithQuestionsAndResponses)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequestWithNulls)
             .exchange()
-            .expectStatus().isCreated
+            .expectStatus().isOk
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+
+        @Test
+        fun `can update existing question with responses`() {
+          val validUpdateRequest = getResource("/questions-with-responses/update-request-with-responses.json")
+          val expectedResponse = getResource("/questions-with-responses/update-response-with-responses.json")
+          webTestClient.put().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validUpdateRequest)
+            .exchange()
+            .expectStatus().isOk
             .expectBody().json(
               expectedResponse,
               true,
@@ -3109,12 +3133,36 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         fun `can add multiple questions with responses in one go`() {
           val validRequestWith3Questions = getResource("/questions-with-responses/add-request-3-questions-with-responses.json")
           val expectedResponse = getResource("/questions-with-responses/add-response-3-questions-with-responses.json")
-          webTestClient.post().uri(urlWithQuestionsAndResponses)
+          webTestClient.put().uri(urlWithQuestionsAndResponses)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequestWith3Questions)
             .exchange()
-            .expectStatus().isCreated
+            .expectStatus().isOk
+            .expectBody().json(
+              expectedResponse,
+              true,
+            )
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+
+        @Test
+        fun `can add and update questions with one request containing several payloads`() {
+          val validAddAndUpdateRequest = getResource("/questions-with-responses/add-and-update-request-with-responses.json")
+          val expectedResponse = getResource("/questions-with-responses/add-and-update-response-with-responses.json")
+          webTestClient.put().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validAddAndUpdateRequest)
+            .exchange()
+            .expectStatus().isOk
             .expectBody().json(
               expectedResponse,
               true,
@@ -3141,12 +3189,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             ),
           )
 
-          webTestClient.post().uri("/incident-reports/${nomisReportWithQuestionsAndResponses.id}/questions")
+          webTestClient.put().uri("/incident-reports/${nomisReportWithQuestionsAndResponses.id}/questions")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequest)
             .exchange()
-            .expectStatus().isCreated
+            .expectStatus().isOk
 
           val updatedNomisReportWithQuestionsAndResponses = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
           assertThat(updatedNomisReportWithQuestionsAndResponses.createdInNomis).isTrue()

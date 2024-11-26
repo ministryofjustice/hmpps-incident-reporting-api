@@ -19,7 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddQuestionWithResponses
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddOrUpdateQuestionWithResponses
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
@@ -282,20 +282,37 @@ class ReportService(
   }
 
   @Transactional
-  fun addQuestionsWithResponses(reportId: UUID, addRequests: List<AddQuestionWithResponses>): Pair<ReportBasic, List<Question>>? {
+  fun addOrUpdateQuestionsWithResponses(
+    reportId: UUID,
+    requests: List<AddOrUpdateQuestionWithResponses>,
+  ): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
       val now = LocalDateTime.now(clock)
       val requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME
 
-      addRequests.forEach { addRequest ->
+      val questionMap = getQuestions().associateBy { question -> question.code }
+      var addedCount = 0
+      var updatedCount = 0
+
+      requests.forEach { request ->
+        val existingQuestion = questionMap[request.code]
         with(
-          addQuestion(
-            code = addRequest.code,
-            question = addRequest.question,
-            additionalInformation = addRequest.additionalInformation,
-          ),
+          if (existingQuestion != null) {
+            updatedCount += 1
+            existingQuestion.reset(
+              question = request.question,
+              additionalInformation = request.additionalInformation,
+            )
+          } else {
+            addedCount += 1
+            addQuestion(
+              code = request.code,
+              question = request.question,
+              additionalInformation = request.additionalInformation,
+            )
+          },
         ) {
-          addRequest.responses.forEach {
+          request.responses.forEach {
             addResponse(
               response = it.response,
               responseDate = it.responseDate,
@@ -313,9 +330,9 @@ class ReportService(
 
       val reportBasic = toDtoBasic()
 
-      log.info("Added ${addRequests.size} questions with responses to report reference=$reportReference ID=$id")
+      log.info("Added $addedCount and updated $updatedCount question(s) with responses in report reference=$reportReference ID=$id")
       telemetryClient.trackEvent(
-        "Added ${addRequests.size} questions with responses",
+        "Added $addedCount and updated $updatedCount question(s) with responses",
         reportBasic,
       )
 
