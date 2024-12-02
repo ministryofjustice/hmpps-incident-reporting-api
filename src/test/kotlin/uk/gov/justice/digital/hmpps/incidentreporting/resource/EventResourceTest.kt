@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
@@ -129,7 +130,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "totalPages": 0,
               "sort": ["eventDateAndTime,DESC"]
             }""",
-            true,
+            JsonCompareMode.STRICT,
           )
       }
 
@@ -162,7 +163,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "totalPages": 1,
               "sort": ["eventDateAndTime,DESC"]
             }""",
-            false,
+            JsonCompareMode.LENIENT,
           )
       }
 
@@ -225,7 +226,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "totalPages": 1,
               "sort": ["eventDateAndTime,DESC"]
             }""",
-              false,
+              JsonCompareMode.LENIENT,
             )
         }
 
@@ -256,7 +257,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 "totalPages": 3,
                 "sort": ["eventDateAndTime,DESC"]
               }""",
-              false,
+              JsonCompareMode.LENIENT,
             )
         }
 
@@ -287,7 +288,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 "totalPages": 3,
                 "sort": ["eventDateAndTime,DESC"]
               }""",
-              false,
+              JsonCompareMode.LENIENT,
             )
         }
 
@@ -328,7 +329,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 "totalPages": 1,
                 "sort": ["$sortParam"]
               }""",
-              false,
+              JsonCompareMode.LENIENT,
             ).jsonPath("content[*].eventReference").value<List<String>> {
               assertThat(it).isEqualTo(expectedEventReferences)
             }
@@ -450,7 +451,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1"
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
       }
 
@@ -527,7 +528,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1"
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
       }
     }
@@ -619,7 +620,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1"
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
       }
 
@@ -696,7 +697,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1"
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
       }
     }

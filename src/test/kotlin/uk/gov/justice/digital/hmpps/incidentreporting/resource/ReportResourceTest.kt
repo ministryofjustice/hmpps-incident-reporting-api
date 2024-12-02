@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
-import org.springframework.test.util.JsonExpectationsHelper
+import org.springframework.test.json.JsonAssert
+import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -61,7 +62,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "modifiedBy": "request-user"
           }
           """,
-        false,
+        JsonCompareMode.LENIENT,
       )
   }
 
@@ -175,7 +176,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "totalPages": 0,
               "sort": ["incidentDateAndTime,DESC"]
             }""",
-            true,
+            JsonCompareMode.STRICT,
           )
       }
 
@@ -201,7 +202,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "totalPages": 1,
               "sort": ["incidentDateAndTime,DESC"]
             }""",
-            false,
+            JsonCompareMode.LENIENT,
           )
       }
 
@@ -270,7 +271,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "totalPages": 1,
                 "sort": ["incidentDateAndTime,DESC"]
               }""",
-              false,
+              JsonCompareMode.LENIENT,
             )
         }
 
@@ -301,7 +302,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "totalPages": 3,
                 "sort": ["incidentDateAndTime,DESC"]
               }""",
-              false,
+              JsonCompareMode.LENIENT,
             )
         }
 
@@ -332,7 +333,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "totalPages": 3,
                 "sort": ["incidentDateAndTime,DESC"]
               }""",
-              false,
+              JsonCompareMode.LENIENT,
             )
         }
 
@@ -373,7 +374,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "totalPages": 1,
                 "sort": ["$sortParam"]
               }""",
-              false,
+              JsonCompareMode.LENIENT,
             ).jsonPath("content[*].reportReference").value<List<String>> {
               assertThat(it).isEqualTo(expectedReportReferences)
             }
@@ -501,7 +502,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
       }
     }
@@ -601,7 +602,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
       }
     }
@@ -674,7 +675,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
       }
     }
@@ -774,7 +775,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
       }
     }
@@ -951,7 +952,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         assertThatDomainEventWasSent("incident.report.created", null)
@@ -1017,7 +1018,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         assertThatDomainEventWasSent("incident.report.created", null)
@@ -1151,7 +1152,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
 
         assertThatNoDomainEventsWereSent()
@@ -1194,7 +1195,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
 
         assertThatDomainEventWasSent(
@@ -1263,7 +1264,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            true,
+            JsonCompareMode.STRICT,
           )
 
         assertThatDomainEventWasSent(
@@ -1294,7 +1295,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         val eventJson = eventRepository.findOneByEventReference("11124143")!!
           .toDto().toJson()
-        JsonExpectationsHelper().assertJsonEqual(
+        JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
           if (updateEvent) {
             // language=json
             """
@@ -1327,7 +1328,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """
           },
           eventJson,
-          false,
         )
 
         assertThatDomainEventWasSent(
@@ -1366,7 +1366,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
       }
     }
@@ -1498,7 +1498,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               ]
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         assertThatNoDomainEventsWereSent()
@@ -1551,7 +1551,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               ]
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         assertThatDomainEventWasSent(
@@ -1587,7 +1587,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
       }
     }
@@ -1786,7 +1786,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               ]
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         assertThatNoDomainEventsWereSent()
@@ -1888,7 +1888,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "questions": []
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         assertThatDomainEventWasSent(
@@ -1989,7 +1989,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "questions": []
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         assertThatDomainEventWasSent(
@@ -2025,7 +2025,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
       }
     }
@@ -2090,7 +2090,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143"
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         assertThat(reportRepository.findOneEagerlyById(reportId)).isNull()
@@ -2130,7 +2130,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143"
             }
             """,
-            false,
+            JsonCompareMode.LENIENT,
           )
 
         val remainingReportIds = reportRepository.findAllById(listOf(reportId, otherReportId)).map { it.id }
@@ -2207,7 +2207,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .expectBody().json(
               // language=json
               "[]",
-              true,
+              JsonCompareMode.STRICT,
             )
         }
 
@@ -2219,10 +2219,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
         }
       }
     }
@@ -2311,7 +2308,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validRequest)
             .exchange()
             .expectStatus().isCreated
-            .expectBody().json(expectedResponse, true)
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReport.id!!)
 
@@ -2332,7 +2329,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validRequest)
             .exchange()
             .expectStatus().isCreated
-            .expectBody().json(expectedResponse, true)
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
@@ -2486,10 +2483,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             )
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatNoDomainEventsWereSent()
         }
@@ -2509,10 +2503,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validRequest)
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
@@ -2534,10 +2525,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validPartialRequest)
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
@@ -2659,7 +2647,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(expectedResponse, true)
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
@@ -2674,7 +2662,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(expectedResponse, true)
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
@@ -2885,7 +2873,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .expectBody().json(
               // language=json
               "[]",
-              true,
+              JsonCompareMode.STRICT,
             )
         }
 
@@ -2897,10 +2885,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
         }
 
         @Test
@@ -3044,10 +3029,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validRequest)
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReport.id!!)
 
@@ -3067,10 +3049,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validRequest)
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
@@ -3091,10 +3070,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validRequestWithNulls)
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
@@ -3115,10 +3091,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validUpdateRequest)
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
@@ -3139,10 +3112,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validRequestWith3Questions)
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
@@ -3163,10 +3133,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .bodyValue(validAddAndUpdateRequest)
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(
-              expectedResponse,
-              true,
-            )
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
@@ -3261,7 +3228,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
-            .expectBody().json(expectedResponse, true)
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
 
@@ -3294,7 +3261,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .expectBody().json(
               // language=json
               "[]",
-              true,
+              JsonCompareMode.STRICT,
             )
 
           assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
@@ -3347,7 +3314,7 @@ data class NullablePropertyTestCase(
   data class ValidRequestTestCase(
     val name: String,
     val request: String,
-    val expectedFieldValue: String?,
+    val expectedFieldValue: Any?,
   )
 
   fun makeValidRequestTests(): List<ValidRequestTestCase> = listOf(

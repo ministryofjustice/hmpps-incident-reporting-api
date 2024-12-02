@@ -7,7 +7,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.util.JsonExpectationsHelper
+import org.springframework.test.json.JsonAssert
+import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
@@ -126,14 +127,14 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
     fun `can serialise basic report`() {
       val expectedJson = getResource("/entity-mapping/sample-report-basic.json")
       val json = report.toDtoBasic().toJson()
-      JsonExpectationsHelper().assertJsonEqual(expectedJson, json, false)
+      JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(expectedJson, json)
     }
 
     @Test
     fun `can serialise report with all related details`() {
       val expectedJson = getResource("/entity-mapping/sample-report-with-details.json")
       val json = report.toDtoWithDetails().toJson()
-      JsonExpectationsHelper().assertJsonEqual(expectedJson, json, false)
+      JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(expectedJson, json)
     }
   }
 }
