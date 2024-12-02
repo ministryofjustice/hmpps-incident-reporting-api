@@ -2,9 +2,11 @@
   {
     "code": "1",
     "question": "Updated question #1",
+    "sequence": 0,
     "responses": [
       {
         "response": "New response #1",
+        "sequence": 0,
         "responseDate": "2023-11-30",
         "additionalInformation": null,
         "recordedBy": "request-user",
@@ -12,6 +14,7 @@
       },
       {
         "response": "New response #2",
+        "sequence": 1,
         "responseDate": null,
         "additionalInformation": "Comment #1",
         "recordedBy": "request-user",
@@ -19,6 +22,7 @@
       },
       {
         "response": "New response #3",
+        "sequence": 2,
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",
@@ -30,9 +34,11 @@
   {
     "code": "2",
     "question": "Question #2",
+    "sequence": 1,
     "responses": [
       {
         "response": "Response #1",
+        "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
@@ -40,6 +46,7 @@
       },
       {
         "response": "Response #2",
+        "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
@@ -51,10 +58,12 @@
   {
     "code": "2002",
     "question": "Was anybody hurt?",
+    "sequence": 2,
     "additionalInformation": null,
     "responses": [
       {
         "response": "No",
+        "sequence": 0,
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",

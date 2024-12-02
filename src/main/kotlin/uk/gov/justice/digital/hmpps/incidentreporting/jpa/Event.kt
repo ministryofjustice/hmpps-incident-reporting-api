@@ -10,6 +10,8 @@ import jakarta.persistence.NamedEntityGraph
 import jakarta.persistence.NamedEntityGraphs
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
+import org.hibernate.Hibernate
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import java.time.LocalDateTime
 import java.util.UUID
@@ -17,6 +19,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.Event as EventDto
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.EventWithBasicReports as EventWithReportsDto
 
 @Entity
+@EntityOpen
 @NamedEntityGraphs(
   value = [
     NamedEntityGraph(
@@ -57,6 +60,7 @@ class Event(
   var modifiedAt: LocalDateTime,
   var modifiedBy: String,
 ) {
+
   override fun toString(): String {
     return "Event(eventReference=$eventReference)"
   }
@@ -92,4 +96,17 @@ class Event(
     modifiedBy = modifiedBy,
     reports = reports.map { it.toDtoBasic() },
   )
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as Event
+
+    return eventReference == other.eventReference
+  }
+
+  override fun hashCode(): Int {
+    return eventReference.hashCode()
+  }
 }

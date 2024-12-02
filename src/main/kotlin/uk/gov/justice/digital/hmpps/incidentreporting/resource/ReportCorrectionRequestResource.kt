@@ -177,13 +177,13 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
       "Updated a correction request in incident report",
       WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
-      val objects = report.correctionRequests
-      objects.elementAtIndex(index).updateWith(
-        request,
-        requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME,
-        now = LocalDateTime.now(clock),
-      )
-      objects.map { it.toDto() }
+      report.findCorrectionRequestByIndex(index)
+        .updateWith(
+          request,
+          requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME,
+          now = LocalDateTime.now(clock),
+        )
+      report.correctionRequests.map { it.toDto() }
     }
   }
 
@@ -228,9 +228,9 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
       "Deleted correction request from incident report",
       WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
-      val objects = report.correctionRequests
-      objects.removeElementAtIndex(index)
-      objects.map { it.toDto() }
+      report.findCorrectionRequestByIndex(index).let { report.removeCorrectionRequest(it) }
+
+      report.correctionRequests.map { it.toDto() }
     }
   }
 }

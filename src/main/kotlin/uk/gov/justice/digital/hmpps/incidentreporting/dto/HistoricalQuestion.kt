@@ -10,6 +10,8 @@ data class HistoricalQuestion(
   val code: String,
   @Schema(description = "The question text as seen by downstream data consumers")
   val question: String,
+  @Schema(description = "Sequence of the questions")
+  val sequence: Int,
   @Schema(description = "The responses to this question")
   val responses: List<HistoricalResponse> = emptyList(),
   @Schema(description = "Optional additional information", nullable = true)

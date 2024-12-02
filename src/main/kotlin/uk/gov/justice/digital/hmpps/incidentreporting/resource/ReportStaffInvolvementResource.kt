@@ -174,9 +174,8 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
       "Updated an involved member of staff in incident report",
       WhatChanged.STAFF_INVOLVED,
     ) { report ->
-      val objects = report.staffInvolved
-      objects.elementAtIndex(index).updateWith(request)
-      objects.map { it.toDto() }
+      report.findStaffInvolvedByIndex(index).updateWith(request)
+      report.staffInvolved.map { it.toDto() }
     }
   }
 
@@ -221,9 +220,9 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
       "Deleted an involved member of staff from incident report",
       WhatChanged.STAFF_INVOLVED,
     ) { report ->
-      val objects = report.staffInvolved
-      objects.removeElementAtIndex(index)
-      objects.map { it.toDto() }
+
+      report.findStaffInvolvedByIndex(index).let { report.removeStaffInvolved(it) }
+      report.staffInvolved.map { it.toDto() }
     }
   }
 }

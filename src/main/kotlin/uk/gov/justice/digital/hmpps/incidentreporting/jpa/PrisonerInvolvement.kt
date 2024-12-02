@@ -8,13 +8,16 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import org.hibernate.Hibernate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdatePrisonerInvolvement
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import kotlin.jvm.optionals.getOrNull
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.PrisonerInvolvement as PrisonerInvolvementDto
 
 @Entity
+@EntityOpen
 class PrisonerInvolvement(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +35,18 @@ class PrisonerInvolvement(
   var outcome: PrisonerOutcome? = null,
 
   var comment: String? = null,
-) {
-  override fun toString(): String {
-    return "PrisonerInvolvement(id=$id)"
+) : Comparable<PrisonerInvolvement> {
+  companion object {
+    private val COMPARATOR = compareBy<PrisonerInvolvement>
+      { it.report.id }
+      .thenBy(nullsLast()) { it.id }
+      .thenBy { it.prisonerNumber }
+      .thenBy { it.prisonerRole }
+      .thenBy { it.outcome }
+      .thenBy(nullsLast()) { it.comment }
   }
+
+  override fun compareTo(other: PrisonerInvolvement) = COMPARATOR.compare(this, other)
 
   fun getReport() = report
 
@@ -52,4 +63,34 @@ class PrisonerInvolvement(
     outcome = outcome,
     comment = comment,
   )
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as PrisonerInvolvement
+
+    if (report != other.report) return false
+    if (id != other.id) return false
+    if (prisonerNumber != other.prisonerNumber) return false
+    if (prisonerRole != other.prisonerRole) return false
+    if (outcome != other.outcome) return false
+    if (comment != other.comment) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = report.hashCode()
+    result = 31 * result + id.hashCode()
+    result = 31 * result + prisonerNumber.hashCode()
+    result = 31 * result + prisonerRole.hashCode()
+    result = 31 * result + outcome.hashCode()
+    result = 31 * result + (comment?.hashCode() ?: 0)
+    return result
+  }
+
+  override fun toString(): String {
+    return "PrisonerInvolvement(report=$report, prisonerNumber='$prisonerNumber', prisonerRole=$prisonerRole)"
+  }
 }
