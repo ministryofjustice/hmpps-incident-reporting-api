@@ -146,15 +146,22 @@ class Report(
   fun popLastQuestion(): Question? = questions.removeLastOrNull()
 
   fun changeType(newType: Type, changedAt: LocalDateTime, changedBy: String): Report {
-    copyToHistory(changedAt, changedBy)
-    questions.clear()
-    type = newType
+    if (type != newType) {
+      copyToHistory(changedAt, changedBy)
+      questions.clear()
+      type = newType
+      changeStatus(Status.DRAFT, changedAt, changedBy)
+      prisonersInvolved.clear()
+      staffInvolved.clear()
+    }
     return this
   }
 
   fun changeStatus(newStatus: Status, changedAt: LocalDateTime, changedBy: String): Report {
-    status = newStatus
-    addStatusHistory(newStatus, changedAt, changedBy)
+    if (status != newStatus) {
+      status = newStatus
+      addStatusHistory(newStatus, changedAt, changedBy)
+    }
     return this
   }
 

@@ -252,6 +252,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         ),
       )
     report.addStatusHistory(Status.DRAFT, now, "user5")
+    report.addStatusHistory(Status.AWAITING_ANALYSIS, now, "user1")
     report.addStaffInvolved(StaffRole.FIRST_ON_SCENE, "user1")
     report.addPrisonerInvolved("A1234AA", PrisonerRole.VICTIM)
 
@@ -305,7 +306,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
 
     report = reportRepository.findOneEagerlyByReportReference(report.reportReference)
       ?: throw EntityNotFoundException()
-    assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
+    assertThat(report.status).isEqualTo(Status.DRAFT)
     assertThat(report.type).isEqualTo(Type.ASSAULT)
     assertThat(report.getQuestions()).hasSize(1)
     assertThat(report.getQuestions()[0].code).isEqualTo("SOME_QUESTION")
@@ -314,7 +315,9 @@ class ReportRepositoryTest : IntegrationTestBase() {
     assertThat(report.history[2].questions).hasSize(3)
     assertThat(report.history[2].questions[1].getResponses()).hasSize(2)
     assertThat(report.history[2].questions[1].getResponses()[1].response).isEqualTo("OTHER")
-    assertThat(report.historyOfStatuses).hasSize(1)
+    assertThat(report.historyOfStatuses).hasSize(3)
     assertThat(report.historyOfStatuses[0].status).isEqualTo(Status.DRAFT)
+    assertThat(report.historyOfStatuses[1].status).isEqualTo(Status.AWAITING_ANALYSIS)
+    assertThat(report.historyOfStatuses[2].status).isEqualTo(Status.DRAFT)
   }
 }
