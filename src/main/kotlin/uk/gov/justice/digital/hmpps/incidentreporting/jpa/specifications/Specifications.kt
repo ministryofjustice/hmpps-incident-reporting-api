@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications
 
 import jakarta.persistence.criteria.Join
 import org.springframework.data.jpa.domain.Specification
+import java.util.*
 import kotlin.reflect.KProperty1
 
 /** Build «equal to» specification from an entity’s property */
