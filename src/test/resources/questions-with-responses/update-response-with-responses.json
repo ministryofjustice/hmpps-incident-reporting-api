@@ -2,9 +2,11 @@
   {
     "code": "1",
     "question": "Question #1",
+    "sequence": 0,
     "responses": [
       {
         "response": "Response #1",
+        "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
@@ -12,6 +14,7 @@
       },
       {
         "response": "Response #2",
+        "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
@@ -23,9 +26,11 @@
   {
     "code": "2",
     "question": "Updated question #2",
+    "sequence": 1,
     "responses": [
       {
         "response": "New response",
+        "sequence": 0,
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",

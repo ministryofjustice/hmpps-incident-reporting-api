@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications
 
 import jakarta.persistence.criteria.Join
 import org.springframework.data.jpa.domain.Specification
+import java.util.*
 import kotlin.reflect.KProperty1
 
 /** Build «equal to» specification from an entity’s property */
@@ -25,20 +26,6 @@ fun <T, V : Comparable<V>> KProperty1<T, V>.buildSpecForLessThan(value: V): Spec
   }
 }
 
-/** Build «less than or equal to» specification from an entity’s property */
-fun <T, V : Comparable<V>> KProperty1<T, V>.buildSpecForLessThanOrEqualTo(value: V): Specification<T> {
-  return Specification { root, _, criteriaBuilder ->
-    criteriaBuilder.lessThanOrEqualTo(root.get(name), value)
-  }
-}
-
-/** Build «greater than» specification from an entity’s property */
-fun <T, V : Comparable<V>> KProperty1<T, V>.buildSpecForGreaterThan(value: V): Specification<T> {
-  return Specification { root, _, criteriaBuilder ->
-    criteriaBuilder.greaterThan(root.get(name), value)
-  }
-}
-
 /** Build «greater than or equal to» specification from an entity’s property */
 fun <T, V : Comparable<V>> KProperty1<T, V>.buildSpecForGreaterThanOrEqualTo(value: V): Specification<T> {
   return Specification { root, _, criteriaBuilder ->
@@ -47,7 +34,7 @@ fun <T, V : Comparable<V>> KProperty1<T, V>.buildSpecForGreaterThanOrEqualTo(val
 }
 
 /** Build «equal to» specification joining to a related entity (via a list property) */
-fun <T, R, V> KProperty1<T, List<R>>.buildSpecForRelatedEntityPropertyEqualTo(property: KProperty1<R, V>, value: V): Specification<T> {
+fun <T, R, V> KProperty1<T, SortedSet<R>>.buildSpecForRelatedEntityPropertyEqualTo(property: KProperty1<R, V>, value: V): Specification<T> {
   return Specification { root, _, criteriaBuilder ->
     val relatedEntities: Join<R, T> = root.join(name)
     criteriaBuilder.equal(relatedEntities.get<V>(property.name), value)

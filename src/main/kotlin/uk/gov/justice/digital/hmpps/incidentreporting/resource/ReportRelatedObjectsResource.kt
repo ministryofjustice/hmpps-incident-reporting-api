@@ -75,13 +75,6 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
     return get(index - 1)
   }
 
-  protected inline fun <reified T : Any> MutableList<T>.removeElementAtIndex(index: Int) {
-    if (index < 1 || index > size) {
-      throw ObjectAtIndexNotFoundException(T::class, index)
-    }
-    removeAt(index - 1)
-  }
-
   abstract fun listObjects(reportId: UUID): List<ResponseDto>
   abstract fun addObject(reportId: UUID, @Valid request: AddRequest): List<ResponseDto>
   abstract fun updateObject(reportId: UUID, index: Int, @Valid request: UpdateRequest): List<ResponseDto>

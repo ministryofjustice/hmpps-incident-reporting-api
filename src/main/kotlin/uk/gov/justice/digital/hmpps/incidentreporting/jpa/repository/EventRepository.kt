@@ -10,12 +10,12 @@ import java.util.UUID
 
 @Repository
 interface EventRepository : JpaRepository<Event, UUID>, JpaSpecificationExecutor<Event> {
-  @EntityGraph(value = "Event.eager", type = EntityGraph.EntityGraphType.FETCH)
+  @EntityGraph(value = "Event.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyById(id: UUID): Event?
 
   fun findOneByEventReference(eventReference: String): Event?
 
-  @EntityGraph(value = "Event.eager", type = EntityGraph.EntityGraphType.FETCH)
+  @EntityGraph(value = "Event.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyByEventReference(eventReference: String): Event?
 
   @Query(value = "SELECT nextval('event_sequence')", nativeQuery = true)

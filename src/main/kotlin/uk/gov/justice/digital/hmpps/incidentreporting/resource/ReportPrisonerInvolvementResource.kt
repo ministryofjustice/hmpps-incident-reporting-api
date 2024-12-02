@@ -25,7 +25,7 @@ import java.util.UUID
 
 @RestController
 @Validated
-class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerInvolvement, AddPrisonerInvolvement, UpdatePrisonerInvolvement>() {
+class ReportPrisonerInvolvementResource() : ReportRelatedObjectsResource<PrisonerInvolvement, AddPrisonerInvolvement, UpdatePrisonerInvolvement>() {
   @GetMapping("/prisoners-involved")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -175,9 +175,8 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
       "Updated an involved prisoner in incident report",
       WhatChanged.PRISONERS_INVOLVED,
     ) { report ->
-      val objects = report.prisonersInvolved
-      objects.elementAtIndex(index).updateWith(request)
-      objects.map { it.toDto() }
+      report.findPrisonerInvolvedByIndex(index).updateWith(request)
+      report.prisonersInvolved.map { it.toDto() }
     }
   }
 
@@ -222,9 +221,8 @@ class ReportPrisonerInvolvementResource : ReportRelatedObjectsResource<PrisonerI
       "Deleted an involved prisoner from incident report",
       WhatChanged.PRISONERS_INVOLVED,
     ) { report ->
-      val objects = report.prisonersInvolved
-      objects.removeElementAtIndex(index)
-      objects.map { it.toDto() }
+      report.findPrisonerInvolvedByIndex(index).let { report.removePrisonerInvolved(it) }
+      report.prisonersInvolved.map { it.toDto() }
     }
   }
 }

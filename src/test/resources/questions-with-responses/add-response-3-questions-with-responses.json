@@ -2,9 +2,11 @@
   {
     "code": "1",
     "question": "Question #1",
+    "sequence": 0,
     "responses": [
       {
         "response": "Response #1",
+        "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
@@ -12,6 +14,7 @@
       },
       {
         "response": "Response #2",
+        "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
@@ -23,9 +26,11 @@
   {
     "code": "2",
     "question": "Question #2",
+    "sequence": 1,
     "responses": [
       {
         "response": "Response #1",
+        "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
@@ -33,6 +38,7 @@
       },
       {
         "response": "Response #2",
+        "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
@@ -44,10 +50,12 @@
   {
     "code": "2001",
     "question": "List every “find”",
+    "sequence": 2,
     "additionalInformation": "Amounts do not matter",
     "responses": [
       {
         "response": "Note with phone number",
+        "sequence": 0,
         "responseDate": null,
         "additionalInformation": "020 1111 2222",
         "recordedBy": "request-user",
@@ -55,6 +63,7 @@
       },
       {
         "response": "Mobile phone",
+        "sequence": 1,
         "responseDate": null,
         "additionalInformation": "Not a smartphone",
         "recordedBy": "request-user",
@@ -62,6 +71,7 @@
       },
       {
         "response": "Note with date",
+        "sequence": 2,
         "responseDate": "2023-11-30",
         "additionalInformation": null,
         "recordedBy": "request-user",
@@ -72,10 +82,12 @@
   {
     "code": "2002",
     "question": "Was anybody hurt?",
+    "sequence": 3,
     "additionalInformation": null,
     "responses": [
       {
         "response": "No",
+        "sequence": 0,
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",
@@ -86,10 +98,12 @@
   {
     "code": "2003",
     "question": "Was the governor informed?",
+    "sequence": 4,
     "additionalInformation": null,
     "responses": [
       {
         "response": "Yes",
+        "sequence": 0,
         "responseDate": "2023-12-01",
         "additionalInformation": null,
         "recordedBy": "request-user",

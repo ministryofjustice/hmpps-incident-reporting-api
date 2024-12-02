@@ -10,6 +10,8 @@ import java.time.LocalDateTime
 data class HistoricalResponse(
   @Schema(description = "The response text as seen by downstream data consumers")
   val response: String,
+  @Schema(description = "Sequence of the responses")
+  val sequence: Int,
   @Schema(description = "Optional response as a date", nullable = true, example = "2024-04-29")
   val responseDate: LocalDate? = null,
   @Schema(description = "Optional additional information", nullable = true)

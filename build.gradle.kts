@@ -76,3 +76,7 @@ tasks {
     compilerOptions.jvmTarget = JvmTarget.JVM_21
   }
 }
+
+allOpen {
+  annotation("uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen")
+}

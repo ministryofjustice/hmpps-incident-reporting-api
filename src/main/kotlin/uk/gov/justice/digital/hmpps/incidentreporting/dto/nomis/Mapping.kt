@@ -85,17 +85,17 @@ fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequir
 }
 
 fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
-  questions.sortedBy { it.sequence }.forEach { question ->
+  questions.forEach { question ->
     val dataItem = this.addQuestion(
       code = question.questionId.toString(),
+      sequence = question.sequence - 1,
       question = question.question,
     )
     question.answers
-      .filter { it.answer != null }
-      .sortedBy { it.sequence }
       .forEach { answer ->
         dataItem.addResponse(
           response = answer.answer!!,
+          sequence = answer.sequence - 1,
           responseDate = answer.responseDate,
           additionalInformation = answer.comment,
           recordedBy = answer.recordingStaff.username,
@@ -113,17 +113,17 @@ fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
       changedBy = history.incidentChangeStaff.username,
     )
 
-    history.questions.sortedBy { it.sequence }.forEach { question ->
+    history.questions.forEach { question ->
       val dataItem = historyRecord.addQuestion(
         code = question.questionId.toString(),
+        sequence = question.sequence - 1,
         question = question.question,
       )
       question.answers
-        .filter { it.answer != null }
-        .sortedBy { it.responseSequence }
         .forEach { answer ->
           dataItem.addResponse(
             response = answer.answer!!,
+            sequence = answer.responseSequence - 1,
             responseDate = answer.responseDate,
             additionalInformation = answer.comment,
             recordedBy = answer.recordingStaff.username,

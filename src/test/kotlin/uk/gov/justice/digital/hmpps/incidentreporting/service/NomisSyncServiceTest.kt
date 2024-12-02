@@ -182,8 +182,8 @@ class NomisSyncServiceTest {
   )
 
   init {
-    sampleReport.addQuestion("42", "What implement was used?")
-      .addResponse("Razor", null, null, reportedBy, now)
+    sampleReport.addQuestion("42", "What implement was used?", 1)
+      .addResponse("Razor", null, 0, null, reportedBy, now)
     sampleReport.addStaffInvolved(StaffRole.PRESENT_AT_SCENE, "user3", "Found offender in cell")
     sampleReport.addPrisonerInvolved(
       "A1234AA",

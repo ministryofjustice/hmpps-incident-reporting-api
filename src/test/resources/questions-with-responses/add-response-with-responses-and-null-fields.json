@@ -2,9 +2,11 @@
   {
     "code": "1",
     "question": "Question #1",
+    "sequence": 0,
     "responses": [
       {
         "response": "Response #1",
+        "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
@@ -12,6 +14,7 @@
       },
       {
         "response": "Response #2",
+        "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
@@ -23,9 +26,11 @@
   {
     "code": "2",
     "question": "Question #2",
+    "sequence": 1,
     "responses": [
       {
         "response": "Response #1",
+        "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
@@ -33,6 +38,7 @@
       },
       {
         "response": "Response #2",
+        "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
@@ -44,10 +50,12 @@
   {
     "code": "2001",
     "question": "List every “find”",
+    "sequence": 2,
     "additionalInformation": null,
     "responses": [
       {
         "response": "Note with phone number",
+        "sequence": 0,
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",
@@ -55,6 +63,7 @@
       },
       {
         "response": "Mobile phone",
+        "sequence": 1,
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",
@@ -62,6 +71,7 @@
       },
       {
         "response": "Chewing gum",
+        "sequence": 2,
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",

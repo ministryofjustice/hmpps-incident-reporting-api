@@ -286,7 +286,7 @@ class ReportService(
     reportId: UUID,
     requests: List<AddOrUpdateQuestionWithResponses>,
   ): Pair<ReportBasic, List<Question>>? {
-    return reportRepository.findOneEagerlyById(reportId)?.run {
+    return reportRepository.findById(reportId).getOrNull()?.run {
       val now = LocalDateTime.now(clock)
       val requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME
 
@@ -308,18 +308,22 @@ class ReportService(
             addQuestion(
               code = request.code,
               question = request.question,
+              sequence = this.getQuestions().size,
               additionalInformation = request.additionalInformation,
             )
           },
         ) {
+          var sequence = this.responses.size
           request.responses.forEach {
             addResponse(
               response = it.response,
+              sequence = sequence,
               responseDate = it.responseDate,
               recordedBy = requestUsername,
               recordedAt = now,
               additionalInformation = it.additionalInformation,
             )
+            sequence += 1
           }
         }
       }

@@ -8,13 +8,16 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
-import jakarta.persistence.OrderColumn
-import org.hibernate.annotations.BatchSize
+import org.hibernate.Hibernate
+import org.hibernate.annotations.SortNatural
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.*
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
 
 @Entity
+@EntityOpen
 class Question(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +32,8 @@ class Question(
    */
   val code: String,
 
+  val sequence: Int,
+
   /**
    * The question text as seen by downstream data consumers
    */
@@ -40,17 +45,38 @@ class Question(
   var additionalInformation: String? = null,
 
   @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-  @OrderColumn(name = "sequence", nullable = false)
-  @BatchSize(size = 10)
-  private val responses: MutableList<Response> = mutableListOf(),
-) {
-  override fun toString(): String {
-    return "Question(id=$id)"
+  @SortNatural
+  val responses: SortedSet<Response> = sortedSetOf(),
+
+) : Comparable<Question> {
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as Question
+
+    if (report != other.report) return false
+    if (sequence != other.sequence) return false
+    if (code != other.code) return false
+    return true
   }
 
-  fun getReport() = report
+  override fun hashCode(): Int {
+    var result = report.hashCode()
+    result = 31 * result + sequence.hashCode()
+    result = 31 * result + code.hashCode()
+    return result
+  }
 
-  fun getResponses(): List<Response> = responses
+  companion object {
+    private val COMPARATOR = compareBy<Question>
+      { it.report.id }
+      .thenBy { it.sequence }
+      .thenBy { it.code }
+  }
+
+  override fun compareTo(other: Question) = COMPARATOR.compare(this, other)
 
   fun reset(
     question: String,
@@ -65,6 +91,7 @@ class Question(
   fun addResponse(
     response: String,
     responseDate: LocalDate? = null,
+    sequence: Int,
     additionalInformation: String? = null,
     recordedBy: String,
     recordedAt: LocalDateTime,
@@ -73,6 +100,7 @@ class Question(
       Response(
         question = this,
         response = response,
+        sequence = sequence,
         responseDate = responseDate,
         additionalInformation = additionalInformation,
         recordedBy = recordedBy,
@@ -85,7 +113,12 @@ class Question(
   fun toDto() = QuestionDto(
     code = code,
     question = question,
+    sequence = sequence,
     additionalInformation = additionalInformation,
     responses = responses.map { it.toDto() },
   )
+
+  override fun toString(): String {
+    return "Question(report=$report, code='$code', sequence=$sequence)"
+  }
 }

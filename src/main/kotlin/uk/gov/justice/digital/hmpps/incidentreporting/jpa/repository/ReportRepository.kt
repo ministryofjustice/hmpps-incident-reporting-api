@@ -10,12 +10,12 @@ import java.util.UUID
 
 @Repository
 interface ReportRepository : JpaRepository<Report, UUID>, JpaSpecificationExecutor<Report> {
-  @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.FETCH)
+  @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyById(id: UUID): Report?
 
   fun findOneByReportReference(reportReference: String): Report?
 
-  @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.FETCH)
+  @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyByReportReference(reportReference: String): Report?
 
   @Query(value = "SELECT nextval('report_sequence')", nativeQuery = true)

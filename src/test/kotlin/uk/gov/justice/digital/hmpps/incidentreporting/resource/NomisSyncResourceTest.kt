@@ -1290,9 +1290,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "code": "4",
                     "question": "Who was involved?",
+                    "sequence": 0,
                     "responses": [
                       {
                         "response": "John",
+                        "sequence": 0,
                         "responseDate": "2023-12-03",
                         "additionalInformation": "comment 1",
                         "recordedBy": "user2",
@@ -1300,6 +1302,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       },
                       {
                         "response": "Trevor",
+                        "sequence": 1,
                         "responseDate": null,
                         "additionalInformation": "comment 2",
                         "recordedBy": "user2",
@@ -1307,6 +1310,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       },
                       {
                         "response": "Maybe someone else?",
+                        "sequence": 2,
                         "responseDate": "2023-12-02",
                         "additionalInformation": null,
                         "recordedBy": "user2",
@@ -1318,9 +1322,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "code": "5",
                     "question": "Where did this happen?",
+                    "sequence": 1,
                     "responses": [
                       {
                         "response": "Cell",
+                        "sequence": 0,
                         "responseDate": "2023-12-04",
                         "additionalInformation": "comment 1",
                         "recordedBy": "user2",
@@ -1328,6 +1334,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       },
                       {
                         "response": "Landing",
+                        "sequence": 1,
                         "responseDate": null,
                         "additionalInformation": "comment 2",
                         "recordedBy": "user2",
@@ -1335,6 +1342,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       },
                       {
                         "response": "Kitchen",
+                        "sequence": 2,
                         "responseDate": "2023-11-25",
                         "additionalInformation": null,
                         "recordedBy": "user2",
@@ -1342,6 +1350,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       },
                       {
                         "response": "Exercise area",
+                        "sequence": 3,
                         "responseDate": null,
                         "additionalInformation": null,
                         "recordedBy": "user2",
@@ -1361,9 +1370,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "1",
                         "question": "Old question 1",
+                        "sequence": 0,
                         "responses": [
                           {
                             "response": "Old answer 1",
+                            "sequence": 0,
                             "responseDate": "2023-12-05",
                             "additionalInformation": "comment 1",
                             "recordedBy": "user2",
@@ -1371,6 +1382,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           },
                           {
                             "response": "Old answer 2",
+                            "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": "comment 2",
                             "recordedBy": "user2",
@@ -1378,6 +1390,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           },
                           {
                             "response": "Old answer 3",
+                            "sequence": 2,
                             "responseDate": "2023-11-28",
                             "additionalInformation": null,
                             "recordedBy": "user2",
@@ -1389,9 +1402,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "2",
                         "question": "Old question 2",
+                        "sequence": 1,
                         "responses": [
                           {
                             "response": "Old answer 4",
+                            "sequence": 0,
                             "responseDate": "2023-12-04",
                             "additionalInformation": "comment 1",
                             "recordedBy": "user2",
@@ -1399,6 +1414,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           },
                           {
                             "response": "Old answer 5",
+                            "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": "comment 2",
                             "recordedBy": "user2",
@@ -1406,6 +1422,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           },
                           {
                             "response": "Old answer 6",
+                            "sequence": 2,
                             "responseDate": "2023-11-27",
                             "additionalInformation": null,
                             "recordedBy": "user2",
@@ -1425,9 +1442,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "11",
                         "question": "Old old question 1",
+                        "sequence": 0,
                         "responses": [
                           {
                             "response": "Old old answer 1",
+                            "sequence": 0,
                             "responseDate": null,
                             "additionalInformation": null,
                             "recordedBy": "user2",
@@ -1435,6 +1454,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           },
                           {
                             "response": "Old old answer 2",
+                            "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": null,
                             "recordedBy": "user2",
@@ -1446,9 +1466,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "22",
                         "question": "Old old question 2",
+                        "sequence": 1,
                         "responses": [
                           {
                             "response": "Old old answer 1",
+                            "sequence": 0,
                             "responseDate": null,
                             "additionalInformation": null,
                             "recordedBy": "user2",
@@ -1456,6 +1478,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           },
                           {
                             "response": "Old old answer 2",
+                            "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": null,
                             "recordedBy": "user2",
@@ -1483,42 +1506,42 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ],
                 "staffInvolved": [
                   {
-                    "staffUsername": "user2",
-                    "staffRole": "PRESENT_AT_SCENE",
-                    "comment": "REPORTER"
-                  },
-                  {
                     "staffUsername": "JAMESQ",
                     "staffRole": "PRESENT_AT_SCENE",
                     "comment": "James was also present actually"
+                  },
+                  {
+                    "staffUsername": "user2",
+                    "staffRole": "PRESENT_AT_SCENE",
+                    "comment": "REPORTER"
                   }
                 ],
                 "prisonersInvolved": [
-                  {
-                    "prisonerNumber": "B2222BB",
-                    "prisonerRole": "HOSTAGE",
-                    "outcome": "TRANSFER",
-                    "comment": "Prisoner was transferred after incident"
-                  },
                   {
                     "prisonerNumber": "A1234AA",
                     "prisonerRole": "PERPETRATOR",
                     "outcome": "LOCAL_INVESTIGATION",
                     "comment": "Trevor took another prisoner hostage"
+                  },
+                  {
+                    "prisonerNumber": "B2222BB",
+                    "prisonerRole": "HOSTAGE",
+                    "outcome": "TRANSFER",
+                    "comment": "Prisoner was transferred after incident"
                   }
                 ],
                 "correctionRequests": [
                   {
                     "reason": "NOT_SPECIFIED",
-                    "descriptionOfChange": "Also the description",
-                    "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T00:00:00"
-                  },
-                  {
-                    "reason": "NOT_SPECIFIED",
                     "descriptionOfChange": "Could you update the title please",
                     "correctionRequestedBy": "user2",
                     "correctionRequestedAt": "2023-11-28T00:00:00"
+                  },
+                  {
+                    "reason": "NOT_SPECIFIED",
+                    "descriptionOfChange": "Also the description",
+                    "correctionRequestedBy": "user2",
+                    "correctionRequestedAt": "2023-12-05T00:00:00"
                   }
                 ],
                 "reportedBy": "OF42",
