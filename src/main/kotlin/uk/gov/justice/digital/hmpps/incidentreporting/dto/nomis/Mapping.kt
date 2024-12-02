@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 
 fun NomisReport.toNewEntity(): Report {
@@ -84,26 +85,33 @@ fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequir
   }
 }
 
-fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
-  questions.forEach { question ->
-    val dataItem = this.addQuestion(
-      code = question.questionId.toString(),
-      sequence = question.sequence - 1,
-      question = question.question,
-    )
-    question.answers
-      .forEach { answer ->
-        dataItem.addResponse(
-          response = answer.answer!!,
-          sequence = answer.sequence - 1,
-          responseDate = answer.responseDate,
-          additionalInformation = answer.comment,
-          recordedBy = answer.recordingStaff.username,
-          recordedAt = this.reportedAt,
-        )
-      }
+fun Report.addNomisQuestions(nomisQuestions: Collection<NomisQuestion>) {
+  nomisQuestions.forEach { nomisQuestion ->
+    val question = addNomisQuestion(nomisQuestion)
+    nomisQuestion.answers.forEach { addNomisAnswerToQuestion(question, it) }
   }
 }
+
+fun Report.addNomisAnswerToQuestion(
+  question: Question,
+  answer: NomisResponse,
+) {
+  question.addResponse(
+    response = answer.answer!!,
+    sequence = answer.sequence - 1,
+    responseDate = answer.responseDate,
+    additionalInformation = answer.comment,
+    recordedBy = answer.recordingStaff.username,
+    recordedAt = this.reportedAt,
+  )
+}
+
+fun Report.addNomisQuestion(question: NomisQuestion) =
+  this.addQuestion(
+    code = question.questionId.toString(),
+    sequence = question.sequence - 1,
+    question = question.question,
+  )
 
 fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
   histories.forEach { history ->

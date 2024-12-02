@@ -25,11 +25,13 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisAnswerToQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestions
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
@@ -297,62 +299,88 @@ class Report(
     val updatedBy = upsert.lastModifiedBy ?: upsert.createdBy
     val now = LocalDateTime.now(clock)
 
-    modifiedIn = InformationSource.NOMIS
+    this.modifiedIn = InformationSource.NOMIS
 
-    type = Type.fromNomisCode(upsert.type)
+    this.type = Type.fromNomisCode(upsert.type)
 
     // NOTE: Currently we update the event information as well on update.
     //       For some of these fields makes more sense because that's explicitly
     //       the intent (e.g. `incidentDateTime`, `location`, etc... are also in the event)
     //       For Event's title/description may make less sense but we're keeping this in
     //       as well for now.
-    incidentDateAndTime = upsert.incidentDateTime
-    event.eventDateAndTime = incidentDateAndTime
+    this.incidentDateAndTime = upsert.incidentDateTime
+    this.event.eventDateAndTime = incidentDateAndTime
 
-    location = upsert.prison.code
-    event.location = location
+    this.location = upsert.prison.code
+    this.event.location = location
 
-    title = upsert.title ?: NO_DETAILS_GIVEN
-    event.title = title
+    this.title = upsert.title ?: NO_DETAILS_GIVEN
+    this.event.title = title
 
-    description = upsert.description ?: NO_DETAILS_GIVEN
-    event.description = description
+    this.description = upsert.description ?: NO_DETAILS_GIVEN
+    this.event.description = description
 
-    reportedBy = upsert.reportingStaff.username
-    reportedAt = upsert.reportedDateTime
+    this.reportedBy = upsert.reportingStaff.username
+    this.reportedAt = upsert.reportedDateTime
 
     val newStatus = Status.fromNomisCode(upsert.status.code)
     if (newStatus != status) {
-      status = newStatus
+      this.status = newStatus
       addStatusHistory(newStatus, now, updatedBy)
     }
 
-    questionSetId = "${upsert.questionnaireId}"
+    this.questionSetId = "${upsert.questionnaireId}"
 
-    createdAt = upsert.createDateTime
-    event.createdAt = upsert.createDateTime
+    this.createdAt = upsert.createDateTime
+    this.event.createdAt = upsert.createDateTime
 
-    modifiedAt = upsert.lastModifiedDateTime ?: upsert.createDateTime
-    event.modifiedAt = modifiedAt
+    this.modifiedAt = upsert.lastModifiedDateTime ?: upsert.createDateTime
+    this.event.modifiedAt = modifiedAt
 
-    modifiedBy = updatedBy
-    event.modifiedBy = updatedBy
+    this.modifiedBy = updatedBy
+    this.event.modifiedBy = updatedBy
 
-    staffInvolved.clear()
+    this.staffInvolved.clear()
     addNomisStaffInvolvements(upsert.staffParties)
 
-    prisonersInvolved.clear()
+    this.prisonersInvolved.clear()
     addNomisPrisonerInvolvements(upsert.offenderParties)
 
-    correctionRequests.clear()
+    this.correctionRequests.clear()
     addNomisCorrectionRequests(upsert.requirements)
 
-    questions.clear()
-    addNomisQuestions(upsert.questions)
+    updateQuestionAndResponses(upsert.questions)
 
-    history.clear()
+    this.history.clear()
     addNomisHistory(upsert.history)
   }
+
+  private fun updateQuestionAndResponses(nomisQuestions: List<NomisQuestion>) {
+    this.questions.retainAll(
+      nomisQuestions.map { nomisQuestion ->
+        val question = updateOrAddQuestion(nomisQuestion)
+        question.responses.clear()
+        nomisQuestion.answers.forEach { answer ->
+          addNomisAnswerToQuestion(question, answer)
+        }
+        question
+      }.toSet(),
+    )
+  }
+
+  fun findQuestion(code: String, sequence: Int) = this.questions.firstOrNull { it.code == code && it.sequence == sequence }
+
+  private fun updateOrAddQuestion(
+    nomisQuestion: NomisQuestion,
+  ) =
+    findQuestion(
+      code = nomisQuestion.questionId.toString(),
+      sequence = nomisQuestion.sequence - 1,
+    )?.apply {
+      question = nomisQuestion.question
+    } ?: addNomisQuestion(nomisQuestion).also { newQuestion ->
+      questions.add(newQuestion)
+    }
 
   fun toDtoBasic() = ReportBasic(
     id = id!!,
