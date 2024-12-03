@@ -25,11 +25,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisAnswerToQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
@@ -89,7 +89,7 @@ class Report(
   var id: UUID? = null,
 
   /**
-   * Human-readable reference. Previously known as ”incident number” in NOMIS.
+   * Human-readable reference. Previously known as "incident number" in NOMIS.
    */
   @Column(nullable = false, unique = true, length = 25)
   val reportReference: String,
@@ -306,7 +306,7 @@ class Report(
     // NOTE: Currently we update the event information as well on update.
     //       For some of these fields makes more sense because that's explicitly
     //       the intent (e.g. `incidentDateTime`, `location`, etc... are also in the event)
-    //       For Event's title/description may make less sense but we're keeping this in
+    //       For Event's title/description may make less sense, but we're keeping this in
     //       as well for now.
     this.incidentDateAndTime = upsert.incidentDateTime
     this.event.eventDateAndTime = incidentDateAndTime
@@ -351,11 +351,10 @@ class Report(
 
     updateQuestionAndResponses(upsert.questions)
 
-    this.history.clear()
-    addNomisHistory(upsert.history)
+    updateHistory(upsert.history)
   }
 
-  private fun updateQuestionAndResponses(nomisQuestions: List<NomisQuestion>) {
+  fun updateQuestionAndResponses(nomisQuestions: List<NomisQuestion>) {
     this.questions.retainAll(
       nomisQuestions.map { nomisQuestion ->
         val question = updateOrAddQuestion(nomisQuestion)
@@ -366,6 +365,17 @@ class Report(
         question
       }.toSet(),
     )
+  }
+
+  fun updateHistory(nomisHistory: Collection<NomisHistory>) {
+    nomisHistory.forEach { history ->
+      val historyRecord = this.addHistory(
+        type = Type.fromNomisCode(history.type),
+        changedAt = history.incidentChangeDate.atStartOfDay(),
+        changedBy = history.incidentChangeStaff.username,
+      )
+      historyRecord.updateOrAddHistoryQuestions(history, this.reportedAt)
+    }
   }
 
   fun findQuestion(code: String, sequence: Int) = this.questions.firstOrNull { it.code == code && it.sequence == sequence }

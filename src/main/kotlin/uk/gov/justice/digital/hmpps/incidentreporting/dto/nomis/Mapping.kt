@@ -47,8 +47,8 @@ fun NomisReport.toNewEntity(): Report {
   report.addNomisStaffInvolvements(staffParties)
   report.addNomisPrisonerInvolvements(offenderParties)
   report.addNomisCorrectionRequests(requirements)
-  report.addNomisQuestions(questions)
-  report.addNomisHistory(history)
+  report.updateQuestionAndResponses(questions)
+  report.updateHistory(history)
 
   return report
 }
@@ -85,13 +85,6 @@ fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequir
   }
 }
 
-fun Report.addNomisQuestions(nomisQuestions: Collection<NomisQuestion>) {
-  nomisQuestions.forEach { nomisQuestion ->
-    val question = addNomisQuestion(nomisQuestion)
-    nomisQuestion.answers.forEach { addNomisAnswerToQuestion(question, it) }
-  }
-}
-
 fun Report.addNomisAnswerToQuestion(
   question: Question,
   answer: NomisResponse,
@@ -112,32 +105,3 @@ fun Report.addNomisQuestion(question: NomisQuestion) =
     sequence = question.sequence - 1,
     question = question.question,
   )
-
-fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
-  histories.forEach { history ->
-    val historyRecord = this.addHistory(
-      type = Type.fromNomisCode(history.type),
-      changedAt = history.incidentChangeDate.atStartOfDay(),
-      changedBy = history.incidentChangeStaff.username,
-    )
-
-    history.questions.forEach { question ->
-      val dataItem = historyRecord.addQuestion(
-        code = question.questionId.toString(),
-        sequence = question.sequence - 1,
-        question = question.question,
-      )
-      question.answers
-        .forEach { answer ->
-          dataItem.addResponse(
-            response = answer.answer!!,
-            sequence = answer.responseSequence - 1,
-            responseDate = answer.responseDate,
-            additionalInformation = answer.comment,
-            recordedBy = answer.recordingStaff.username,
-            recordedAt = this.reportedAt,
-          )
-        }
-    }
-  }
-}

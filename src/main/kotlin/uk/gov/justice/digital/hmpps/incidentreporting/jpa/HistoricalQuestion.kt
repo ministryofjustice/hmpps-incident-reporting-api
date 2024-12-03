@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistoryResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -37,7 +38,7 @@ class HistoricalQuestion(
   /**
    * The question text as seen by downstream data consumers
    */
-  val question: String,
+  var question: String,
 
   /**
    * Unused: could be a free-text response to a question
@@ -81,6 +82,20 @@ class HistoricalQuestion(
   }
 
   override fun compareTo(other: HistoricalQuestion) = COMPARATOR.compare(this, other)
+
+  fun addNomisHistorialAnswerToQuestion(
+    answer: NomisHistoryResponse,
+    recordedAt: LocalDateTime,
+  ) {
+    this.addResponse(
+      response = answer.answer!!,
+      sequence = answer.responseSequence - 1,
+      responseDate = answer.responseDate,
+      additionalInformation = answer.comment,
+      recordedBy = answer.recordingStaff.username,
+      recordedAt = recordedAt,
+    )
+  }
 
   fun addResponse(
     response: String,
