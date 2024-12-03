@@ -126,15 +126,15 @@ class Report(
   // TODO: what's this for?
   val assignedTo: String,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val staffInvolved: SortedSet<StaffInvolvement> = sortedSetOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val prisonersInvolved: SortedSet<PrisonerInvolvement> = sortedSetOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val correctionRequests: SortedSet<CorrectionRequest> = sortedSetOf(),
 

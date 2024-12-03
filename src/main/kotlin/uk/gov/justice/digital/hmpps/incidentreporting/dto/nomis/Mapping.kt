@@ -82,12 +82,12 @@ private fun Report.createCorrectionRequest(correctionRequest: NomisRequirement):
   )
 
 fun Report.updateNomisPrisonerInvolvements(offenderParties: Collection<NomisOffenderParty>) {
-  this.prisonersInvolved.retainAll(
-    offenderParties.map { offenderParty ->
-      val newPrisoner = createPrisonerInvolvement(offenderParty)
-      prisonersInvolved.find { it == newPrisoner } ?: addPrisonerInvolved(newPrisoner)
-    }.toSet(),
-  )
+  val newInvolvements = offenderParties.map { offenderParty ->
+    val newPrisoner = createPrisonerInvolvement(offenderParty)
+    prisonersInvolved.find { it == newPrisoner } ?: addPrisonerInvolved(newPrisoner)
+  }.toSet()
+
+  this.prisonersInvolved.retainAll(newInvolvements)
 }
 
 fun Report.updateNomisCorrectionRequests(nomisRequirement: Collection<NomisRequirement>) {
