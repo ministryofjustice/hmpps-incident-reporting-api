@@ -11,7 +11,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.CorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.PrisonerInvolvement
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.StaffInvolvement
 
@@ -106,20 +105,6 @@ fun Report.updateNomisStaffInvolvements(staffParties: Collection<NomisStaffParty
       val newStaff = createStaffInvolved(staffParty)
       this.staffInvolved.find { it == newStaff } ?: addStaffInvolved(newStaff)
     }.toSet(),
-  )
-}
-
-fun Report.addNomisAnswerToQuestion(
-  question: Question,
-  answer: NomisResponse,
-) {
-  question.addResponse(
-    response = answer.answer!!,
-    sequence = answer.sequence - 1,
-    responseDate = answer.responseDate,
-    additionalInformation = answer.comment,
-    recordedBy = answer.recordingStaff.username,
-    recordedAt = this.reportedAt,
   )
 }
 

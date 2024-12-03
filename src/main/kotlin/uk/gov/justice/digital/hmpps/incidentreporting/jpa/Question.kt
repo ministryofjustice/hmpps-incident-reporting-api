@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -88,6 +89,34 @@ class Question(
     return this
   }
 
+  fun updateResponses(nomisResponses: List<NomisResponse>) {
+    this.responses.retainAll(
+      nomisResponses.map { nomisResponse ->
+        val newResponse = createResponse(nomisResponse, report.reportedAt)
+        this.responses.find { it == newResponse } ?: addResponse(newResponse)
+      }.toSet(),
+    )
+  }
+
+  fun addResponse(response: Response): Response {
+    this.responses.add(response)
+    return response
+  }
+
+  fun createResponse(
+    answer: NomisResponse,
+    recordedAt: LocalDateTime,
+  ) =
+    Response(
+      question = this,
+      response = answer.answer!!,
+      sequence = answer.sequence - 1,
+      responseDate = answer.responseDate,
+      additionalInformation = answer.comment,
+      recordedBy = answer.recordingStaff.username,
+      recordedAt = recordedAt,
+    )
+
   fun addResponse(
     response: String,
     responseDate: LocalDate? = null,
@@ -96,7 +125,7 @@ class Question(
     recordedBy: String,
     recordedAt: LocalDateTime,
   ): Question {
-    responses.add(
+    addResponse(
       Response(
         question = this,
         response = response,

@@ -1634,10 +1634,10 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             answers = listOf(
               NomisResponse(
                 questionResponseId = 100,
-                sequence = 0,
-                answer = "Q1-R1 Mod",
+                sequence = 1,
+                answer = "Q1-R1",
                 responseDate = now.toLocalDate(),
-                comment = "Info Q1 Changed",
+                comment = "Info Q1-R1",
                 recordingStaff = NomisStaff(username = "user1", staffId = 1L, firstName = "", lastName = ""),
                 createDateTime = now,
                 createdBy = "user1",

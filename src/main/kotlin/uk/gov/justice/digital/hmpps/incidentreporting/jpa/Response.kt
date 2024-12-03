@@ -52,6 +52,8 @@ class Response(
     if (question != other.question) return false
     if (sequence != other.sequence) return false
     if (response != other.response) return false
+    if (responseDate != other.responseDate) return false
+    if (additionalInformation != other.additionalInformation) return false
 
     return true
   }
@@ -60,6 +62,9 @@ class Response(
     var result = question.hashCode()
     result = 31 * result + sequence.hashCode()
     result = 31 * result + response.hashCode()
+    result = 31 * result + responseDate.hashCode()
+    result = 31 * result + additionalInformation.hashCode()
+
     return result
   }
 
@@ -68,6 +73,8 @@ class Response(
       { it.question.id }
       .thenBy { it.sequence }
       .thenBy { it.response }
+      .thenBy { it.responseDate }
+      .thenBy { it.additionalInformation }
   }
 
   override fun compareTo(other: Response) = COMPARATOR.compare(this, other)

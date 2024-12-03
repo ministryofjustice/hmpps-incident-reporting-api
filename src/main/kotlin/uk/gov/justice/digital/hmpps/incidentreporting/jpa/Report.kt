@@ -28,7 +28,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisAnswerToQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.updateNomisCorrectionRequests
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.updateNomisPrisonerInvolvements
@@ -377,10 +376,7 @@ class Report(
     this.questions.retainAll(
       nomisQuestions.map { nomisQuestion ->
         val question = updateOrAddQuestion(nomisQuestion)
-        question.responses.clear()
-        nomisQuestion.answers.forEach { answer ->
-          addNomisAnswerToQuestion(question, answer)
-        }
+        question.updateResponses(nomisQuestion.answers)
         question
       }.toSet(),
     )
