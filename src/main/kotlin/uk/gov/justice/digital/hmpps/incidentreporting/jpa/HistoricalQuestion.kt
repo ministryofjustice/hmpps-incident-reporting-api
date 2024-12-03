@@ -83,11 +83,21 @@ class HistoricalQuestion(
 
   override fun compareTo(other: HistoricalQuestion) = COMPARATOR.compare(this, other)
 
-  fun addNomisHistorialAnswerToQuestion(
+  fun updateResponses(nomisResponses: List<NomisHistoryResponse>, reportedAt: LocalDateTime) {
+    this.responses.retainAll(
+      nomisResponses.map { nomisResponse ->
+        val newResponse = createHistoricalResponse(nomisResponse, reportedAt)
+        this.responses.find { it == newResponse } ?: addResponse(newResponse)
+      }.toSet(),
+    )
+  }
+
+  fun createHistoricalResponse(
     answer: NomisHistoryResponse,
     recordedAt: LocalDateTime,
-  ) {
-    this.addResponse(
+  ) =
+    HistoricalResponse(
+      historicalQuestion = this,
       response = answer.answer!!,
       sequence = answer.responseSequence - 1,
       responseDate = answer.responseDate,
@@ -95,6 +105,10 @@ class HistoricalQuestion(
       recordedBy = answer.recordingStaff.username,
       recordedAt = recordedAt,
     )
+
+  fun addResponse(response: HistoricalResponse): HistoricalResponse {
+    this.responses.add(response)
+    return response
   }
 
   fun addResponse(
@@ -105,7 +119,7 @@ class HistoricalQuestion(
     recordedBy: String,
     recordedAt: LocalDateTime,
   ): HistoricalQuestion {
-    responses.add(
+    addResponse(
       HistoricalResponse(
         historicalQuestion = this,
         response = response,

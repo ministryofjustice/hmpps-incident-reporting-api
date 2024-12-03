@@ -50,10 +50,7 @@ class History(
     this.questions.retainAll(
       history.questions.map { nomisQuestion ->
         val question = this.updateOrAddQuestion(nomisQuestion)
-        question.responses.clear()
-        nomisQuestion.answers.forEach { answer ->
-          question.addNomisHistorialAnswerToQuestion(answer, recordedAt)
-        }
+        question.updateResponses(nomisQuestion.answers, recordedAt)
         question
       }.toSet(),
     )
