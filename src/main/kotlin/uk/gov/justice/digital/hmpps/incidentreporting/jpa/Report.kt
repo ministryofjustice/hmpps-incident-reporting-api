@@ -401,7 +401,7 @@ class Report(
     this.history.retainAll(
       nomisHistories.map { nomisHistory ->
         val foundHistory = findHistory(changedAt = nomisHistory.incidentChangeDate.atStartOfDay(), type = Type.fromNomisCode(nomisHistory.type))
-          ?: createHistory(nomisHistory)
+          ?: addHistory(createHistory(nomisHistory))
         foundHistory.updateOrAddHistoryQuestions(nomisHistory, this.reportedAt)
         foundHistory
       }.toSet(),
