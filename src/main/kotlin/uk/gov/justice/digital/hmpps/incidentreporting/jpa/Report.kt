@@ -288,13 +288,28 @@ class Report(
     ).also { questions.add(it) }
   }
 
-  fun addHistory(type: Type, changedAt: LocalDateTime, changedBy: String): History {
-    return History(
+  fun createHistory(nomisHistory: NomisHistory) =
+    History(
       report = this,
-      type = type,
-      changedAt = changedAt,
-      changedBy = changedBy,
-    ).also { history.add(it) }
+      type = Type.fromNomisCode(nomisHistory.type),
+      changedAt = nomisHistory.incidentChangeDate.atStartOfDay(),
+      changedBy = nomisHistory.incidentChangeStaff.username,
+    )
+
+  fun addHistory(history: History): History {
+    this.history.add(history)
+    return history
+  }
+
+  fun addHistory(type: Type, changedAt: LocalDateTime, changedBy: String): History {
+    return addHistory(
+      History(
+        report = this,
+        type = type,
+        changedAt = changedAt,
+        changedBy = changedBy,
+      ),
+    )
   }
 
   private fun copyToHistory(changedAt: LocalDateTime, changedBy: String): History {
@@ -382,16 +397,18 @@ class Report(
     )
   }
 
-  fun updateHistory(nomisHistory: Collection<NomisHistory>) {
-    nomisHistory.forEach { history ->
-      val historyRecord = this.addHistory(
-        type = Type.fromNomisCode(history.type),
-        changedAt = history.incidentChangeDate.atStartOfDay(),
-        changedBy = history.incidentChangeStaff.username,
-      )
-      historyRecord.updateOrAddHistoryQuestions(history, this.reportedAt)
-    }
+  fun updateHistory(nomisHistories: Collection<NomisHistory>) {
+    this.history.retainAll(
+      nomisHistories.map { nomisHistory ->
+        val foundHistory = findHistory(changedAt = nomisHistory.incidentChangeDate.atStartOfDay(), type = Type.fromNomisCode(nomisHistory.type))
+          ?: createHistory(nomisHistory)
+        foundHistory.updateOrAddHistoryQuestions(nomisHistory, this.reportedAt)
+        foundHistory
+      }.toSet(),
+    )
   }
+
+  fun findHistory(changedAt: LocalDateTime, type: Type) = this.history.firstOrNull { it.changedAt == changedAt && it.type == type }
 
   fun findQuestion(code: String, sequence: Int) = this.questions.firstOrNull { it.code == code && it.sequence == sequence }
 

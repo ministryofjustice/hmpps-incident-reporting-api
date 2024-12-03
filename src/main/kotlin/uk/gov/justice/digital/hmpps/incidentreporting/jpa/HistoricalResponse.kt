@@ -27,20 +27,20 @@ class HistoricalResponse(
   /**
    * The response text as seen by downstream data consumers
    */
-  val response: String,
+  var response: String,
 
   /**
    * Optional date attached to response
    */
-  val responseDate: LocalDate? = null,
+  var responseDate: LocalDate? = null,
 
   /**
    * Optional comment attached to response
    */
-  val additionalInformation: String? = null,
+  var additionalInformation: String? = null,
 
-  val recordedBy: String,
-  val recordedAt: LocalDateTime,
+  var recordedBy: String,
+  var recordedAt: LocalDateTime,
 ) : Comparable<HistoricalResponse> {
 
   override fun equals(other: Any?): Boolean {

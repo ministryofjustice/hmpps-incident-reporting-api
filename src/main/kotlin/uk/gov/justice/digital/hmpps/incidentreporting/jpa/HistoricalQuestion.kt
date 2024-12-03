@@ -51,7 +51,7 @@ class HistoricalQuestion(
 ) : Comparable<HistoricalQuestion> {
 
   override fun toString(): String {
-    return "HistoricalQuestion (report=${history.id}, code = $code, seq = $sequence)"
+    return "HistoricalQuestion (history=${history.id}, code = $code, seq = $sequence)"
   }
 
   override fun equals(other: Any?): Boolean {
@@ -87,7 +87,13 @@ class HistoricalQuestion(
     this.responses.retainAll(
       nomisResponses.map { nomisResponse ->
         val newResponse = createHistoricalResponse(nomisResponse, reportedAt)
-        this.responses.find { it == newResponse } ?: addResponse(newResponse)
+        this.responses.find { it == newResponse }?.apply {
+          response = newResponse.response
+          responseDate = newResponse.responseDate
+          additionalInformation = newResponse.additionalInformation
+          recordedBy = newResponse.recordedBy
+          recordedAt = newResponse.recordedAt
+        } ?: addResponse(newResponse)
       }.toSet(),
     )
   }
