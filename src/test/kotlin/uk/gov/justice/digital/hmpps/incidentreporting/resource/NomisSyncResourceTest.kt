@@ -1682,6 +1682,29 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             ),
           )
 
+        val newQuestion =
+          NomisQuestion(
+            questionId = 4,
+            sequence = 4,
+            createDateTime = now,
+            createdBy = "user6",
+            question = "Q4 New",
+            answers = listOf(
+              NomisResponse(
+                questionResponseId = 102,
+                sequence = 1,
+                answer = "Q4",
+                responseDate = now.toLocalDate(),
+                comment = "Info Q4",
+                recordingStaff = NomisStaff(username = "user6", staffId = 1L, firstName = "", lastName = ""),
+                createDateTime = now,
+                createdBy = "user6",
+                lastModifiedDateTime = now,
+                lastModifiedBy = "user6",
+              ),
+            ),
+          )
+
         val syncRequest = NomisSyncRequest(
           id = newReport.id,
           initialMigration = false,
@@ -1705,7 +1728,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             staffParties = listOf(),
             offenderParties = listOf(),
             requirements = listOf(),
-            questions = listOf(q1Replacement, q3Replacement),
+            questions = listOf(q1Replacement, q3Replacement, newQuestion),
             history = listOf(),
           ),
         )
@@ -1719,10 +1742,11 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
         val changedReport =
           reportRepository.findOneEagerlyById(newReport.id!!) ?: throw RuntimeException("Report not found")
-        assertThat(changedReport.getQuestions()).hasSize(2)
+        assertThat(changedReport.getQuestions()).hasSize(3)
         assertThat(changedReport.findQuestion(code = "1", sequence = 0)).isNotNull
         assertThat(changedReport.findQuestion(code = "2", sequence = 1)).isNull()
         assertThat(changedReport.findQuestion(code = "3", sequence = 2)).isNotNull
+        assertThat(changedReport.findQuestion(code = "4", sequence = 3)).isNotNull
 
         assertThatDomainEventWasSent(
           "incident.report.amended",

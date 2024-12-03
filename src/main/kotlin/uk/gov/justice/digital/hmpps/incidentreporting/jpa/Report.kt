@@ -29,10 +29,10 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisAnswerToQuestion
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestion
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.updateNomisCorrectionRequests
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.updateNomisPrisonerInvolvements
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.updateNomisStaffInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ObjectAtIndexNotFoundException
@@ -191,12 +191,14 @@ class Report(
   }
 
   fun addStaffInvolved(staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
-    return StaffInvolvement(
-      report = this,
-      staffUsername = staffUsername,
-      staffRole = staffRole,
-      comment = comment,
-    ).also { staffInvolved.add(it) }
+    return addStaffInvolved(
+      StaffInvolvement(
+        report = this,
+        staffUsername = staffUsername,
+        staffRole = staffRole,
+        comment = comment,
+      ),
+    )
   }
 
   fun addPrisonerInvolved(
@@ -205,28 +207,52 @@ class Report(
     outcome: PrisonerOutcome? = null,
     comment: String? = null,
   ): PrisonerInvolvement {
-    return PrisonerInvolvement(
-      report = this,
-      prisonerNumber = prisonerNumber,
-      prisonerRole = prisonerRole,
-      outcome = outcome,
-      comment = comment,
-    ).also { prisonersInvolved.add(it) }
+    return addPrisonerInvolved(
+      PrisonerInvolvement(
+        report = this,
+        prisonerNumber = prisonerNumber,
+        prisonerRole = prisonerRole,
+        outcome = outcome,
+        comment = comment,
+      ),
+    )
   }
 
+  fun addPrisonerInvolved(
+    prisonerInvolved: PrisonerInvolvement,
+  ): PrisonerInvolvement {
+    this.prisonersInvolved.add(prisonerInvolved)
+    return prisonerInvolved
+  }
+
+  fun addStaffInvolved(
+    staffInvolved: StaffInvolvement,
+  ): StaffInvolvement {
+    this.staffInvolved.add(staffInvolved)
+    return staffInvolved
+  }
+
+  fun addCorrectionRequest(
+    correctionRequest: CorrectionRequest,
+  ): CorrectionRequest {
+    this.correctionRequests.add(correctionRequest)
+    return correctionRequest
+  }
   fun addCorrectionRequest(
     correctionRequestedBy: String,
     correctionRequestedAt: LocalDateTime,
     reason: CorrectionReason,
     descriptionOfChange: String,
   ): CorrectionRequest {
-    return CorrectionRequest(
-      report = this,
-      correctionRequestedBy = correctionRequestedBy,
-      correctionRequestedAt = correctionRequestedAt,
-      reason = reason,
-      descriptionOfChange = descriptionOfChange,
-    ).also { correctionRequests.add(it) }
+    return addCorrectionRequest(
+      CorrectionRequest(
+        report = this,
+        correctionRequestedBy = correctionRequestedBy,
+        correctionRequestedAt = correctionRequestedAt,
+        reason = reason,
+        descriptionOfChange = descriptionOfChange,
+      ),
+    )
   }
 
   fun findStaffInvolvedByIndex(index: Int) =
@@ -340,17 +366,10 @@ class Report(
     this.modifiedBy = updatedBy
     this.event.modifiedBy = updatedBy
 
-    this.staffInvolved.clear()
-    addNomisStaffInvolvements(upsert.staffParties)
-
-    this.prisonersInvolved.clear()
-    addNomisPrisonerInvolvements(upsert.offenderParties)
-
-    this.correctionRequests.clear()
-    addNomisCorrectionRequests(upsert.requirements)
-
+    updateNomisStaffInvolvements(upsert.staffParties)
+    updateNomisPrisonerInvolvements(upsert.offenderParties)
+    updateNomisCorrectionRequests(upsert.requirements)
     updateQuestionAndResponses(upsert.questions)
-
     updateHistory(upsert.history)
   }
 

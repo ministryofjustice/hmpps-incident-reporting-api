@@ -48,8 +48,8 @@ class PrisonerInvolvementTest {
     val sortedSet = sortedSetOf(involvement2, involvement3, involvement1)
 
     assertThat(sortedSet.toList()).containsExactly(
-      involvement1,
       involvement3,
+      involvement1,
       involvement2,
     )
   }
