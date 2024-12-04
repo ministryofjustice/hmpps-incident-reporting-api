@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
-import java.util.*
+import java.util.UUID
 
 class PrisonerInvolvementTest {
 

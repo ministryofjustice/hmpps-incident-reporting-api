@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications
 
 import jakarta.persistence.criteria.Join
 import org.springframework.data.jpa.domain.Specification
-import java.util.*
 import kotlin.reflect.KProperty1
 
 /** Build «equal to» specification from an entity’s property */
@@ -33,7 +32,7 @@ fun <T, V : Comparable<V>> KProperty1<T, V>.buildSpecForGreaterThanOrEqualTo(val
   }
 }
 
-/** Build «equal to» specification joining to a related entity (via a list property) */
+/** Build «equal to» specification joining to a related entity (via a collection property) */
 fun <T, R, V> KProperty1<T, Collection<R>>.buildSpecForRelatedEntityPropertyEqualTo(property: KProperty1<R, V>, value: V): Specification<T> {
   return Specification { root, _, criteriaBuilder ->
     val relatedEntities: Join<R, T> = root.join(name)

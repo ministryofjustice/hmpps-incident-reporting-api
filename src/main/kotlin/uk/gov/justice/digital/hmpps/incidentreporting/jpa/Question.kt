@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
+import java.util.SortedSet
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
 
 @Entity
