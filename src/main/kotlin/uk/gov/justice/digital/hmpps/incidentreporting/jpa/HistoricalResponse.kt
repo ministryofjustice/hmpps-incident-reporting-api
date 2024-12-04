@@ -51,6 +51,7 @@ class HistoricalResponse(
 
     if (historicalQuestion != other.historicalQuestion) return false
     if (sequence != other.sequence) return false
+    if (response != other.response) return false
 
     return true
   }
@@ -58,6 +59,7 @@ class HistoricalResponse(
   override fun hashCode(): Int {
     var result = historicalQuestion.hashCode()
     result = 31 * result + sequence.hashCode()
+    result = 31 * result + response.hashCode()
     return result
   }
 
@@ -65,6 +67,7 @@ class HistoricalResponse(
     private val COMPARATOR = compareBy<HistoricalResponse>
       { it.historicalQuestion.id }
       .thenBy { it.sequence }
+      .thenBy { it.response }
   }
 
   override fun compareTo(other: HistoricalResponse) = COMPARATOR.compare(this, other)

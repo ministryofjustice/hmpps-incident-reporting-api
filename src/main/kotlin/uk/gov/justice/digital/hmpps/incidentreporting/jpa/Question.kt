@@ -93,7 +93,12 @@ class Question(
     this.responses.retainAll(
       nomisResponses.map { nomisResponse ->
         val newResponse = createResponse(nomisResponse, report.reportedAt)
-        this.responses.find { it == newResponse } ?: addResponse(newResponse)
+        this.responses.find { it == newResponse }?.apply {
+          responseDate = newResponse.responseDate
+          additionalInformation = newResponse.additionalInformation
+          recordedBy = newResponse.recordedBy
+          recordedAt = newResponse.recordedAt
+        } ?: addResponse(newResponse)
       }.toSet(),
     )
   }
