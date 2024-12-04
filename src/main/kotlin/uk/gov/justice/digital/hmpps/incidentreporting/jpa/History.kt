@@ -41,6 +41,35 @@ class History(
   val questions: SortedSet<HistoricalQuestion> = sortedSetOf(),
 ) : Comparable<History> {
 
+  companion object {
+    private val COMPARATOR = compareBy<History>
+      { it.report }
+      .thenBy { it.changedAt }
+      .thenBy { it.type }
+  }
+
+  override fun compareTo(other: History) = COMPARATOR.compare(this, other)
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as History
+
+    if (report != other.report) return false
+    if (changedAt != other.changedAt) return false
+    if (type != other.type) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = report.hashCode()
+    result = 31 * result + changedAt.hashCode()
+    result = 31 * result + type.hashCode()
+    return result
+  }
+
   fun findQuestion(code: String, sequence: Int) = this.questions.firstOrNull { it.code == code && it.sequence == sequence }
 
   fun updateOrAddHistoryQuestions(
@@ -96,35 +125,6 @@ class History(
     changedBy = changedBy,
     questions = questions.map { it.toDto() },
   )
-
-  companion object {
-    private val COMPARATOR = compareBy<History>
-      { it.report }
-      .thenBy { it.changedAt }
-      .thenBy { it.type }
-  }
-
-  override fun compareTo(other: History) = COMPARATOR.compare(this, other)
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as History
-
-    if (report != other.report) return false
-    if (changedAt != other.changedAt) return false
-    if (type != other.type) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = report.hashCode()
-    result = 31 * result + changedAt.hashCode()
-    result = 31 * result + type.hashCode()
-    return result
-  }
 
   override fun toString(): String {
     return "History(report=$report, type=$type, changedAt=$changedAt)"

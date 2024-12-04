@@ -68,6 +68,19 @@ class Event(
 
   override fun compareTo(other: Event) = COMPARATOR.compare(this, other)
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as Event
+
+    return eventReference == other.eventReference
+  }
+
+  override fun hashCode(): Int {
+    return eventReference.hashCode()
+  }
+
   override fun toString(): String {
     return "Event(eventReference=$eventReference)"
   }
@@ -103,17 +116,4 @@ class Event(
     modifiedBy = modifiedBy,
     reports = reports.map { it.toDtoBasic() },
   )
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as Event
-
-    return eventReference == other.eventReference
-  }
-
-  override fun hashCode(): Int {
-    return eventReference.hashCode()
-  }
 }

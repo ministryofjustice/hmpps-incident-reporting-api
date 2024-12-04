@@ -51,6 +51,15 @@ class Question(
 
 ) : Comparable<Question> {
 
+  companion object {
+    private val COMPARATOR = compareBy<Question>
+      { it.report }
+      .thenBy { it.sequence }
+      .thenBy { it.code }
+  }
+
+  override fun compareTo(other: Question) = COMPARATOR.compare(this, other)
+
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -60,6 +69,7 @@ class Question(
     if (report != other.report) return false
     if (sequence != other.sequence) return false
     if (code != other.code) return false
+
     return true
   }
 
@@ -69,15 +79,6 @@ class Question(
     result = 31 * result + code.hashCode()
     return result
   }
-
-  companion object {
-    private val COMPARATOR = compareBy<Question>
-      { it.report }
-      .thenBy { it.sequence }
-      .thenBy { it.code }
-  }
-
-  override fun compareTo(other: Question) = COMPARATOR.compare(this, other)
 
   fun reset(
     question: String,

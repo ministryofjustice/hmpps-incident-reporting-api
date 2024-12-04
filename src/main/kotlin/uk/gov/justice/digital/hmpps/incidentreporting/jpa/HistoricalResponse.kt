@@ -43,6 +43,15 @@ class HistoricalResponse(
   var recordedAt: LocalDateTime,
 ) : Comparable<HistoricalResponse> {
 
+  companion object {
+    private val COMPARATOR = compareBy<HistoricalResponse>
+      { it.historicalQuestion }
+      .thenBy { it.sequence }
+      .thenBy { it.response }
+  }
+
+  override fun compareTo(other: HistoricalResponse) = COMPARATOR.compare(this, other)
+
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -62,15 +71,6 @@ class HistoricalResponse(
     result = 31 * result + response.hashCode()
     return result
   }
-
-  companion object {
-    private val COMPARATOR = compareBy<HistoricalResponse>
-      { it.historicalQuestion }
-      .thenBy { it.sequence }
-      .thenBy { it.response }
-  }
-
-  override fun compareTo(other: HistoricalResponse) = COMPARATOR.compare(this, other)
 
   fun toDto() = HistoricalResponseDto(
     response = response,

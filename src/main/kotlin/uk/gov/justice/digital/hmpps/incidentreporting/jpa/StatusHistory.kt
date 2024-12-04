@@ -31,12 +31,6 @@ class StatusHistory(
   val changedBy: String,
 ) : Comparable<StatusHistory> {
 
-  fun toDto() = StatusHistoryDto(
-    status = status,
-    changedAt = changedAt,
-    changedBy = changedBy,
-  )
-
   companion object {
     private val COMPARATOR = compareBy<StatusHistory>
       { it.report }
@@ -65,6 +59,12 @@ class StatusHistory(
     result = 31 * result + status.hashCode()
     return result
   }
+
+  fun toDto() = StatusHistoryDto(
+    status = status,
+    changedAt = changedAt,
+    changedBy = changedBy,
+  )
 
   override fun toString(): String {
     return "StatusHistory(report=$report, status=$status, changedAt=$changedAt)"

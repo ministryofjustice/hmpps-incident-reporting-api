@@ -152,12 +152,26 @@ class Report(
   var modifiedAt: LocalDateTime,
   var modifiedBy: String,
 ) : Comparable<Report> {
+
   companion object {
     private val COMPARATOR = compareBy<Report>
       { it.reportReference }
   }
 
   override fun compareTo(other: Report) = COMPARATOR.compare(this, other)
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as Report
+
+    return reportReference == other.reportReference
+  }
+
+  override fun hashCode(): Int {
+    return reportReference.hashCode()
+  }
 
   fun getQuestions(): Set<Question> = questions
 
@@ -474,19 +488,6 @@ class Report(
     prisonersInvolved = prisonersInvolved.map { it.toDto() },
     correctionRequests = correctionRequests.map { it.toDto() },
   )
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as Report
-
-    return reportReference == other.reportReference
-  }
-
-  override fun hashCode(): Int {
-    return reportReference.hashCode()
-  }
 
   override fun toString(): String {
     return "Report(reportReference='$reportReference', type=$type, status=$status)"
