@@ -59,7 +59,14 @@ class Event(
   var createdAt: LocalDateTime,
   var modifiedAt: LocalDateTime,
   var modifiedBy: String,
-) {
+) : Comparable<Event> {
+
+  companion object {
+    private val COMPARATOR = compareBy<Event>
+      { it.eventReference }
+  }
+
+  override fun compareTo(other: Event) = COMPARATOR.compare(this, other)
 
   override fun toString(): String {
     return "Event(eventReference=$eventReference)"

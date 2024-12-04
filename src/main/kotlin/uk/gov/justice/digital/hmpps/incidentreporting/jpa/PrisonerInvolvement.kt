@@ -38,7 +38,7 @@ class PrisonerInvolvement(
 ) : Comparable<PrisonerInvolvement> {
   companion object {
     private val COMPARATOR = compareBy<PrisonerInvolvement>
-      { it.report.id }
+      { it.report }
       .thenBy { it.prisonerNumber }
       .thenBy { it.prisonerRole }
       .thenBy { it.outcome }

@@ -35,7 +35,7 @@ class StaffInvolvement(
 
   companion object {
     private val COMPARATOR = compareBy<StaffInvolvement>
-      { it.report.id }
+      { it.report }
       .thenBy { it.staffUsername }
       .thenBy { it.staffRole }
       .thenBy(nullsLast()) { it.comment }

@@ -66,7 +66,7 @@ class Response(
 
   companion object {
     private val COMPARATOR = compareBy<Response>
-      { it.question.id }
+      { it.question }
       .thenBy { it.sequence }
       .thenBy { it.response }
   }

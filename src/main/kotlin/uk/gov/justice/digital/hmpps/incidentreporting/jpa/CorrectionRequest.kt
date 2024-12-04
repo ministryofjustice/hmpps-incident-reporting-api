@@ -34,7 +34,7 @@ class CorrectionRequest(
 
   companion object {
     private val COMPARATOR = compareBy<CorrectionRequest>
-      { it.report.id }
+      { it.report }
       .thenBy { it.correctionRequestedAt }
       .thenBy { it.reason }
       .thenBy { it.descriptionOfChange }

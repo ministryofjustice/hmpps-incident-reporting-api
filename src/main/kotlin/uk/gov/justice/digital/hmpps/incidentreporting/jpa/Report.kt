@@ -151,7 +151,13 @@ class Report(
   var createdAt: LocalDateTime,
   var modifiedAt: LocalDateTime,
   var modifiedBy: String,
-) {
+) : Comparable<Report> {
+  companion object {
+    private val COMPARATOR = compareBy<Report>
+      { it.reportReference }
+  }
+
+  override fun compareTo(other: Report) = COMPARATOR.compare(this, other)
 
   fun getQuestions(): Set<Question> = questions
 

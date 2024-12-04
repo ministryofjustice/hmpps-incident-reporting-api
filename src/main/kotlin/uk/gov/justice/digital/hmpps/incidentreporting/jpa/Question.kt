@@ -72,7 +72,7 @@ class Question(
 
   companion object {
     private val COMPARATOR = compareBy<Question>
-      { it.report.id }
+      { it.report }
       .thenBy { it.sequence }
       .thenBy { it.code }
   }
