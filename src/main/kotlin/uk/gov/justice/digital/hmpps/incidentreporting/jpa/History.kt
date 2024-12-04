@@ -99,8 +99,8 @@ class History(
 
   companion object {
     private val COMPARATOR = compareBy<History>
-      { it.changedAt }
-      .thenBy { it.report.id }
+      { it.report }
+      .thenBy { it.changedAt }
       .thenBy { it.type }
   }
 
@@ -112,16 +112,16 @@ class History(
 
     other as History
 
-    if (changedAt != other.changedAt) return false
     if (report != other.report) return false
+    if (changedAt != other.changedAt) return false
     if (type != other.type) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = changedAt.hashCode()
-    result = 31 * result + report.hashCode()
+    var result = report.hashCode()
+    result = 31 * result + changedAt.hashCode()
     result = 31 * result + type.hashCode()
     return result
   }
