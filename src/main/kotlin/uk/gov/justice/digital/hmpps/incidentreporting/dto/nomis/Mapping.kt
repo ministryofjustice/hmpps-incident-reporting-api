@@ -8,8 +8,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.CorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.PrisonerInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.StaffInvolvement
 
 fun NomisReport.toNewEntity(): Report {
   val status = Status.fromNomisCode(status.code)
@@ -43,93 +46,71 @@ fun NomisReport.toNewEntity(): Report {
   )
   report.addStatusHistory(status, reportedDateTime, reportingStaff.username)
 
-  report.addNomisStaffInvolvements(staffParties)
-  report.addNomisPrisonerInvolvements(offenderParties)
-  report.addNomisCorrectionRequests(requirements)
-  report.addNomisQuestions(questions)
-  report.addNomisHistory(history)
+  report.updateNomisStaffInvolvements(staffParties)
+  report.updateNomisPrisonerInvolvements(offenderParties)
+  report.updateNomisCorrectionRequests(requirements)
+  report.updateQuestionAndResponses(questions)
+  report.updateHistory(history)
 
   return report
 }
 
-fun Report.addNomisStaffInvolvements(staffParties: Collection<NomisStaffParty>) {
-  staffParties.forEach {
-    this.addStaffInvolved(
-      staffRole = StaffRole.fromNomisCode(it.role.code),
-      staffUsername = it.staff.username,
-      comment = it.comment,
-    )
-  }
+private fun Report.createStaffInvolved(staffParty: NomisStaffParty): StaffInvolvement =
+  StaffInvolvement(
+    report = this,
+    staffUsername = staffParty.staff.username,
+    staffRole = StaffRole.fromNomisCode(staffParty.role.code),
+    comment = staffParty.comment,
+  )
+
+private fun Report.createPrisonerInvolvement(nomisOffenderParty: NomisOffenderParty): PrisonerInvolvement =
+  PrisonerInvolvement(
+    report = this,
+    prisonerNumber = nomisOffenderParty.offender.offenderNo,
+    prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
+    outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
+    comment = nomisOffenderParty.comment,
+  )
+
+private fun Report.createCorrectionRequest(correctionRequest: NomisRequirement): CorrectionRequest =
+  CorrectionRequest(
+    report = this,
+    correctionRequestedBy = correctionRequest.staff.username,
+    correctionRequestedAt = correctionRequest.date.atStartOfDay(),
+    descriptionOfChange = correctionRequest.comment ?: NO_DETAILS_GIVEN,
+    reason = CorrectionReason.NOT_SPECIFIED,
+  )
+
+fun Report.updateNomisPrisonerInvolvements(offenderParties: Collection<NomisOffenderParty>) {
+  val newInvolvements = offenderParties.map { offenderParty ->
+    val newPrisoner = createPrisonerInvolvement(offenderParty)
+    prisonersInvolved.find { it == newPrisoner } ?: addPrisonerInvolved(newPrisoner)
+  }.toSet()
+
+  this.prisonersInvolved.retainAll(newInvolvements)
 }
 
-fun Report.addNomisPrisonerInvolvements(offenderParties: Collection<NomisOffenderParty>) {
-  offenderParties.forEach {
-    this.addPrisonerInvolved(
-      prisonerNumber = it.offender.offenderNo,
-      prisonerRole = PrisonerRole.fromNomisCode(it.role.code),
-      outcome = it.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
-      comment = it.comment,
-    )
-  }
+fun Report.updateNomisCorrectionRequests(nomisRequirement: Collection<NomisRequirement>) {
+  this.correctionRequests.retainAll(
+    nomisRequirement.map { correctionRequest ->
+      val newCorrection = createCorrectionRequest(correctionRequest)
+      this.correctionRequests.find { it == newCorrection } ?: addCorrectionRequest(newCorrection)
+    }.toSet(),
+  )
 }
 
-fun Report.addNomisCorrectionRequests(correctionRequests: Collection<NomisRequirement>) {
-  correctionRequests.forEach {
-    this.addCorrectionRequest(
-      correctionRequestedBy = it.staff.username,
-      correctionRequestedAt = it.date.atStartOfDay(),
-      descriptionOfChange = it.comment ?: NO_DETAILS_GIVEN,
-      reason = CorrectionReason.NOT_SPECIFIED,
-    )
-  }
+fun Report.updateNomisStaffInvolvements(staffParties: Collection<NomisStaffParty>) {
+  this.staffInvolved.retainAll(
+    staffParties.map { staffParty ->
+      val newStaff = createStaffInvolved(staffParty)
+      this.staffInvolved.find { it == newStaff } ?: addStaffInvolved(newStaff)
+    }.toSet(),
+  )
 }
 
-fun Report.addNomisQuestions(questions: Collection<NomisQuestion>) {
-  questions.forEach { question ->
-    val dataItem = this.addQuestion(
-      code = question.questionId.toString(),
-      sequence = question.sequence - 1,
-      question = question.question,
-    )
-    question.answers
-      .forEach { answer ->
-        dataItem.addResponse(
-          response = answer.answer!!,
-          sequence = answer.sequence - 1,
-          responseDate = answer.responseDate,
-          additionalInformation = answer.comment,
-          recordedBy = answer.recordingStaff.username,
-          recordedAt = this.reportedAt,
-        )
-      }
-  }
-}
-
-fun Report.addNomisHistory(histories: Collection<NomisHistory>) {
-  histories.forEach { history ->
-    val historyRecord = this.addHistory(
-      type = Type.fromNomisCode(history.type),
-      changedAt = history.incidentChangeDate.atStartOfDay(),
-      changedBy = history.incidentChangeStaff.username,
-    )
-
-    history.questions.forEach { question ->
-      val dataItem = historyRecord.addQuestion(
-        code = question.questionId.toString(),
-        sequence = question.sequence - 1,
-        question = question.question,
-      )
-      question.answers
-        .forEach { answer ->
-          dataItem.addResponse(
-            response = answer.answer!!,
-            sequence = answer.responseSequence - 1,
-            responseDate = answer.responseDate,
-            additionalInformation = answer.comment,
-            recordedBy = answer.recordingStaff.username,
-            recordedAt = this.reportedAt,
-          )
-        }
-    }
-  }
-}
+fun Report.addNomisQuestion(question: NomisQuestion) =
+  this.addQuestion(
+    code = question.questionId.toString(),
+    sequence = question.sequence - 1,
+    question = question.question,
+  )

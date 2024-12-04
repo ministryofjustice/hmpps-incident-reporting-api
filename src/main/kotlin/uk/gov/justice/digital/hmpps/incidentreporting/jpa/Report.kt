@@ -25,12 +25,13 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisCorrectionRequests
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisHistory
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisPrisonerInvolvements
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestions
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisStaffInvolvements
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.addNomisQuestion
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.updateNomisCorrectionRequests
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.updateNomisPrisonerInvolvements
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.updateNomisStaffInvolvements
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ObjectAtIndexNotFoundException
@@ -87,7 +88,7 @@ class Report(
   var id: UUID? = null,
 
   /**
-   * Human-readable reference. Previously known as ”incident number” in NOMIS.
+   * Human-readable reference. Previously known as "incident number" in NOMIS.
    */
   @Column(nullable = false, unique = true, length = 25)
   val reportReference: String,
@@ -125,15 +126,15 @@ class Report(
   // TODO: what's this for?
   val assignedTo: String,
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val staffInvolved: SortedSet<StaffInvolvement> = sortedSetOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val prisonersInvolved: SortedSet<PrisonerInvolvement> = sortedSetOf(),
 
-  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val correctionRequests: SortedSet<CorrectionRequest> = sortedSetOf(),
 
@@ -150,7 +151,13 @@ class Report(
   var createdAt: LocalDateTime,
   var modifiedAt: LocalDateTime,
   var modifiedBy: String,
-) {
+) : Comparable<Report> {
+  companion object {
+    private val COMPARATOR = compareBy<Report>
+      { it.reportReference }
+  }
+
+  override fun compareTo(other: Report) = COMPARATOR.compare(this, other)
 
   fun getQuestions(): Set<Question> = questions
 
@@ -189,12 +196,14 @@ class Report(
   }
 
   fun addStaffInvolved(staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
-    return StaffInvolvement(
-      report = this,
-      staffUsername = staffUsername,
-      staffRole = staffRole,
-      comment = comment,
-    ).also { staffInvolved.add(it) }
+    return addStaffInvolved(
+      StaffInvolvement(
+        report = this,
+        staffUsername = staffUsername,
+        staffRole = staffRole,
+        comment = comment,
+      ),
+    )
   }
 
   fun addPrisonerInvolved(
@@ -203,28 +212,52 @@ class Report(
     outcome: PrisonerOutcome? = null,
     comment: String? = null,
   ): PrisonerInvolvement {
-    return PrisonerInvolvement(
-      report = this,
-      prisonerNumber = prisonerNumber,
-      prisonerRole = prisonerRole,
-      outcome = outcome,
-      comment = comment,
-    ).also { prisonersInvolved.add(it) }
+    return addPrisonerInvolved(
+      PrisonerInvolvement(
+        report = this,
+        prisonerNumber = prisonerNumber,
+        prisonerRole = prisonerRole,
+        outcome = outcome,
+        comment = comment,
+      ),
+    )
   }
 
+  fun addPrisonerInvolved(
+    prisonerInvolved: PrisonerInvolvement,
+  ): PrisonerInvolvement {
+    this.prisonersInvolved.add(prisonerInvolved)
+    return prisonerInvolved
+  }
+
+  fun addStaffInvolved(
+    staffInvolved: StaffInvolvement,
+  ): StaffInvolvement {
+    this.staffInvolved.add(staffInvolved)
+    return staffInvolved
+  }
+
+  fun addCorrectionRequest(
+    correctionRequest: CorrectionRequest,
+  ): CorrectionRequest {
+    this.correctionRequests.add(correctionRequest)
+    return correctionRequest
+  }
   fun addCorrectionRequest(
     correctionRequestedBy: String,
     correctionRequestedAt: LocalDateTime,
     reason: CorrectionReason,
     descriptionOfChange: String,
   ): CorrectionRequest {
-    return CorrectionRequest(
-      report = this,
-      correctionRequestedBy = correctionRequestedBy,
-      correctionRequestedAt = correctionRequestedAt,
-      reason = reason,
-      descriptionOfChange = descriptionOfChange,
-    ).also { correctionRequests.add(it) }
+    return addCorrectionRequest(
+      CorrectionRequest(
+        report = this,
+        correctionRequestedBy = correctionRequestedBy,
+        correctionRequestedAt = correctionRequestedAt,
+        reason = reason,
+        descriptionOfChange = descriptionOfChange,
+      ),
+    )
   }
 
   fun findStaffInvolvedByIndex(index: Int) =
@@ -261,13 +294,28 @@ class Report(
     ).also { questions.add(it) }
   }
 
-  fun addHistory(type: Type, changedAt: LocalDateTime, changedBy: String): History {
-    return History(
+  fun createHistory(nomisHistory: NomisHistory) =
+    History(
       report = this,
-      type = type,
-      changedAt = changedAt,
-      changedBy = changedBy,
-    ).also { history.add(it) }
+      type = Type.fromNomisCode(nomisHistory.type),
+      changedAt = nomisHistory.incidentChangeDate.atStartOfDay(),
+      changedBy = nomisHistory.incidentChangeStaff.username,
+    )
+
+  fun addHistory(history: History): History {
+    this.history.add(history)
+    return history
+  }
+
+  fun addHistory(type: Type, changedAt: LocalDateTime, changedBy: String): History {
+    return addHistory(
+      History(
+        report = this,
+        type = type,
+        changedAt = changedAt,
+        changedBy = changedBy,
+      ),
+    )
   }
 
   private fun copyToHistory(changedAt: LocalDateTime, changedBy: String): History {
@@ -297,62 +345,90 @@ class Report(
     val updatedBy = upsert.lastModifiedBy ?: upsert.createdBy
     val now = LocalDateTime.now(clock)
 
-    modifiedIn = InformationSource.NOMIS
+    this.modifiedIn = InformationSource.NOMIS
 
-    type = Type.fromNomisCode(upsert.type)
+    this.type = Type.fromNomisCode(upsert.type)
 
     // NOTE: Currently we update the event information as well on update.
     //       For some of these fields makes more sense because that's explicitly
     //       the intent (e.g. `incidentDateTime`, `location`, etc... are also in the event)
-    //       For Event's title/description may make less sense but we're keeping this in
+    //       For Event's title/description may make less sense, but we're keeping this in
     //       as well for now.
-    incidentDateAndTime = upsert.incidentDateTime
-    event.eventDateAndTime = incidentDateAndTime
+    this.incidentDateAndTime = upsert.incidentDateTime
+    this.event.eventDateAndTime = incidentDateAndTime
 
-    location = upsert.prison.code
-    event.location = location
+    this.location = upsert.prison.code
+    this.event.location = location
 
-    title = upsert.title ?: NO_DETAILS_GIVEN
-    event.title = title
+    this.title = upsert.title ?: NO_DETAILS_GIVEN
+    this.event.title = title
 
-    description = upsert.description ?: NO_DETAILS_GIVEN
-    event.description = description
+    this.description = upsert.description ?: NO_DETAILS_GIVEN
+    this.event.description = description
 
-    reportedBy = upsert.reportingStaff.username
-    reportedAt = upsert.reportedDateTime
+    this.reportedBy = upsert.reportingStaff.username
+    this.reportedAt = upsert.reportedDateTime
 
     val newStatus = Status.fromNomisCode(upsert.status.code)
     if (newStatus != status) {
-      status = newStatus
+      this.status = newStatus
       addStatusHistory(newStatus, now, updatedBy)
     }
 
-    questionSetId = "${upsert.questionnaireId}"
+    this.questionSetId = "${upsert.questionnaireId}"
 
-    createdAt = upsert.createDateTime
-    event.createdAt = upsert.createDateTime
+    this.createdAt = upsert.createDateTime
+    this.event.createdAt = upsert.createDateTime
 
-    modifiedAt = upsert.lastModifiedDateTime ?: upsert.createDateTime
-    event.modifiedAt = modifiedAt
+    this.modifiedAt = upsert.lastModifiedDateTime ?: upsert.createDateTime
+    this.event.modifiedAt = modifiedAt
 
-    modifiedBy = updatedBy
-    event.modifiedBy = updatedBy
+    this.modifiedBy = updatedBy
+    this.event.modifiedBy = updatedBy
 
-    staffInvolved.clear()
-    addNomisStaffInvolvements(upsert.staffParties)
-
-    prisonersInvolved.clear()
-    addNomisPrisonerInvolvements(upsert.offenderParties)
-
-    correctionRequests.clear()
-    addNomisCorrectionRequests(upsert.requirements)
-
-    questions.clear()
-    addNomisQuestions(upsert.questions)
-
-    history.clear()
-    addNomisHistory(upsert.history)
+    updateNomisStaffInvolvements(upsert.staffParties)
+    updateNomisPrisonerInvolvements(upsert.offenderParties)
+    updateNomisCorrectionRequests(upsert.requirements)
+    updateQuestionAndResponses(upsert.questions)
+    updateHistory(upsert.history)
   }
+
+  fun updateQuestionAndResponses(nomisQuestions: List<NomisQuestion>) {
+    this.questions.retainAll(
+      nomisQuestions.map { nomisQuestion ->
+        val question = updateOrAddQuestion(nomisQuestion)
+        question.updateResponses(nomisQuestion.answers)
+        question
+      }.toSet(),
+    )
+  }
+
+  fun updateHistory(nomisHistories: Collection<NomisHistory>) {
+    this.history.retainAll(
+      nomisHistories.map { nomisHistory ->
+        val foundHistory = findHistory(changedAt = nomisHistory.incidentChangeDate.atStartOfDay(), type = Type.fromNomisCode(nomisHistory.type))
+          ?: addHistory(createHistory(nomisHistory))
+        foundHistory.updateOrAddHistoryQuestions(nomisHistory, this.reportedAt)
+        foundHistory
+      }.toSet(),
+    )
+  }
+
+  fun findHistory(changedAt: LocalDateTime, type: Type) = this.history.firstOrNull { it.changedAt == changedAt && it.type == type }
+
+  fun findQuestion(code: String, sequence: Int) = this.questions.firstOrNull { it.code == code && it.sequence == sequence }
+
+  private fun updateOrAddQuestion(
+    nomisQuestion: NomisQuestion,
+  ) =
+    findQuestion(
+      code = nomisQuestion.questionId.toString(),
+      sequence = nomisQuestion.sequence - 1,
+    )?.apply {
+      question = nomisQuestion.question
+    } ?: addNomisQuestion(nomisQuestion).also { newQuestion ->
+      questions.add(newQuestion)
+    }
 
   fun toDtoBasic() = ReportBasic(
     id = id!!,

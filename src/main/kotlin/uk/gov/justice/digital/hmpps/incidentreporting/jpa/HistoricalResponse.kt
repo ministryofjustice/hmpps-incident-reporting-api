@@ -27,20 +27,20 @@ class HistoricalResponse(
   /**
    * The response text as seen by downstream data consumers
    */
-  val response: String,
+  var response: String,
 
   /**
    * Optional date attached to response
    */
-  val responseDate: LocalDate? = null,
+  var responseDate: LocalDate? = null,
 
   /**
    * Optional comment attached to response
    */
-  val additionalInformation: String? = null,
+  var additionalInformation: String? = null,
 
-  val recordedBy: String,
-  val recordedAt: LocalDateTime,
+  var recordedBy: String,
+  var recordedAt: LocalDateTime,
 ) : Comparable<HistoricalResponse> {
 
   override fun equals(other: Any?): Boolean {
@@ -51,6 +51,7 @@ class HistoricalResponse(
 
     if (historicalQuestion != other.historicalQuestion) return false
     if (sequence != other.sequence) return false
+    if (response != other.response) return false
 
     return true
   }
@@ -58,13 +59,15 @@ class HistoricalResponse(
   override fun hashCode(): Int {
     var result = historicalQuestion.hashCode()
     result = 31 * result + sequence.hashCode()
+    result = 31 * result + response.hashCode()
     return result
   }
 
   companion object {
     private val COMPARATOR = compareBy<HistoricalResponse>
-      { it.historicalQuestion.id }
+      { it.historicalQuestion }
       .thenBy { it.sequence }
+      .thenBy { it.response }
   }
 
   override fun compareTo(other: HistoricalResponse) = COMPARATOR.compare(this, other)

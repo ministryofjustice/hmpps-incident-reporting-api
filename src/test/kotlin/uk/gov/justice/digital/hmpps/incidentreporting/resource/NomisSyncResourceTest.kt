@@ -15,6 +15,7 @@ import org.springframework.test.util.JsonExpectationsHelper
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistoryQuestion
@@ -1564,6 +1565,192 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "$NOMIS_INCIDENT_NUMBER",
+          InformationSource.NOMIS,
+          WhatChanged.ANYTHING,
+        )
+      }
+
+      @Test
+      fun `can update a question and response`() {
+        val newReport = reportRepository.save(
+          buildReport(
+            reportReference = "${NOMIS_INCIDENT_NUMBER + 1}",
+            reportTime = now,
+            source = InformationSource.NOMIS,
+            status = Status.CLOSED,
+          ),
+        )
+
+        val q1 = newReport.addQuestion(code = "1", sequence = 0, question = "Q1")
+        val q2 = newReport.addQuestion(code = "2", sequence = 1, question = "Q2")
+        val q3 = newReport.addQuestion(code = "3", sequence = 2, question = "Q3")
+
+        q1.addResponse(
+          response = "Q1-R1",
+          responseDate = now.toLocalDate(),
+          sequence = 0,
+          additionalInformation = "Info Q1-R1",
+          recordedBy = "user1",
+          recordedAt = now,
+        )
+
+        q1.addResponse(
+          response = "Q1-R2",
+          responseDate = now.toLocalDate(),
+          sequence = 1,
+          additionalInformation = "Info Q1-R2",
+          recordedBy = "user2",
+          recordedAt = now,
+        )
+
+        q2.addResponse(
+          response = "Q2-R1",
+          responseDate = now.toLocalDate(),
+          sequence = 0,
+          additionalInformation = "Info Q2",
+          recordedBy = "user3",
+          recordedAt = now,
+        )
+
+        q3.addResponse(
+          response = "Q3-R1",
+          responseDate = now.toLocalDate(),
+          sequence = 0,
+          additionalInformation = "Info Q3",
+          recordedBy = "user4",
+          recordedAt = now,
+        )
+
+        reportRepository.save(newReport)
+
+        // These are the questions to replace
+        val q1Replacement =
+          NomisQuestion(
+            questionId = 1,
+            sequence = 1,
+            createDateTime = now,
+            createdBy = "user1",
+            question = "Q1 Modified",
+            answers = listOf(
+              NomisResponse(
+                questionResponseId = 100,
+                sequence = 1,
+                answer = "Q1-R1",
+                responseDate = now.toLocalDate(),
+                comment = "Info Q1-R1",
+                recordingStaff = NomisStaff(username = "user1", staffId = 1L, firstName = "", lastName = ""),
+                createDateTime = now,
+                createdBy = "user1",
+                lastModifiedDateTime = now,
+                lastModifiedBy = "user1",
+              ),
+            ),
+          )
+
+        val q3Replacement =
+          NomisQuestion(
+            questionId = 3,
+            sequence = 3,
+            createDateTime = now,
+            createdBy = "user5",
+            question = "Q3 Modified",
+            answers = listOf(
+              NomisResponse(
+                questionResponseId = 101,
+                sequence = 1,
+                answer = "Q3-R1 Mod",
+                responseDate = now.toLocalDate(),
+                comment = "Info Q3 Changed",
+                recordingStaff = NomisStaff(username = "user5", staffId = 1L, firstName = "", lastName = ""),
+                createDateTime = now,
+                createdBy = "user5",
+                lastModifiedDateTime = now,
+                lastModifiedBy = "user5",
+              ),
+              NomisResponse(
+                questionResponseId = 102,
+                sequence = 2,
+                answer = "Q3-R2 New",
+                responseDate = now.toLocalDate(),
+                comment = "Info Q3 Added response",
+                recordingStaff = NomisStaff(username = "user5", staffId = 1L, firstName = "", lastName = ""),
+                createDateTime = now,
+                createdBy = "user5",
+                lastModifiedDateTime = now,
+                lastModifiedBy = "user5",
+              ),
+            ),
+          )
+
+        val newQuestion =
+          NomisQuestion(
+            questionId = 4,
+            sequence = 4,
+            createDateTime = now,
+            createdBy = "user6",
+            question = "Q4 New",
+            answers = listOf(
+              NomisResponse(
+                questionResponseId = 102,
+                sequence = 1,
+                answer = "Q4",
+                responseDate = now.toLocalDate(),
+                comment = "Info Q4",
+                recordingStaff = NomisStaff(username = "user6", staffId = 1L, firstName = "", lastName = ""),
+                createDateTime = now,
+                createdBy = "user6",
+                lastModifiedDateTime = now,
+                lastModifiedBy = "user6",
+              ),
+            ),
+          )
+
+        val syncRequest = NomisSyncRequest(
+          id = newReport.id,
+          initialMigration = false,
+          incidentReport = NomisReport(
+            description = newReport.description,
+            incidentId = 1L,
+            questionnaireId = 1L,
+            title = newReport.title,
+            prison = NomisCode(code = newReport.location, description = ""),
+            status = NomisStatus(code = newReport.status.nomisStatus!!, description = ""),
+            type = newReport.type.nomisType!!,
+            lockedResponse = false,
+            incidentDateTime = newReport.incidentDateAndTime,
+            reportingStaff = NomisStaff(newReport.reportedBy, staffId = 1L, firstName = "", lastName = ""),
+            reportedDateTime = newReport.reportedAt,
+            createDateTime = newReport.createdAt,
+            createdBy = newReport.modifiedBy,
+            lastModifiedDateTime = newReport.modifiedAt,
+            lastModifiedBy = newReport.modifiedBy,
+            followUpDate = null,
+            staffParties = listOf(),
+            offenderParties = listOf(),
+            requirements = listOf(),
+            questions = listOf(q1Replacement, q3Replacement, newQuestion),
+            history = listOf(),
+          ),
+        )
+
+        webTestClient.post().uri("/sync/upsert")
+          .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(syncRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+
+        val changedReport =
+          reportRepository.findOneEagerlyById(newReport.id!!) ?: throw RuntimeException("Report not found")
+        assertThat(changedReport.getQuestions()).hasSize(3)
+        assertThat(changedReport.findQuestion(code = "1", sequence = 0)).isNotNull
+        assertThat(changedReport.findQuestion(code = "2", sequence = 1)).isNull()
+        assertThat(changedReport.findQuestion(code = "3", sequence = 2)).isNotNull
+        assertThat(changedReport.findQuestion(code = "4", sequence = 3)).isNotNull
+
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "${NOMIS_INCIDENT_NUMBER + 1}",
           InformationSource.NOMIS,
           WhatChanged.ANYTHING,
         )

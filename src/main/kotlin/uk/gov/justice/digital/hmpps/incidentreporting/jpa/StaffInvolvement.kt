@@ -35,8 +35,7 @@ class StaffInvolvement(
 
   companion object {
     private val COMPARATOR = compareBy<StaffInvolvement>
-      { it.report.id }
-      .thenBy(nullsLast()) { it.id }
+      { it.report }
       .thenBy { it.staffUsername }
       .thenBy { it.staffRole }
       .thenBy(nullsLast()) { it.comment }
@@ -63,7 +62,6 @@ class StaffInvolvement(
     other as StaffInvolvement
 
     if (report != other.report) return false
-    if (id != other.id) return false
     if (staffUsername != other.staffUsername) return false
     if (staffRole != other.staffRole) return false
     if (comment != other.comment) return false
@@ -73,7 +71,6 @@ class StaffInvolvement(
 
   override fun hashCode(): Int {
     var result = report.hashCode()
-    result = 31 * result + id.hashCode()
     result = 31 * result + staffUsername.hashCode()
     result = 31 * result + staffRole.hashCode()
     result = 31 * result + (comment?.hashCode() ?: 0)

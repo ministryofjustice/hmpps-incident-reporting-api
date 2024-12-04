@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistoryResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -37,7 +38,7 @@ class HistoricalQuestion(
   /**
    * The question text as seen by downstream data consumers
    */
-  val question: String,
+  var question: String,
 
   /**
    * Unused: could be a free-text response to a question
@@ -50,7 +51,7 @@ class HistoricalQuestion(
 ) : Comparable<HistoricalQuestion> {
 
   override fun toString(): String {
-    return "HistoricalQuestion (report=${history.id}, code = $code, seq = $sequence)"
+    return "HistoricalQuestion (history=${history.id}, code = $code, seq = $sequence)"
   }
 
   override fun equals(other: Any?): Boolean {
@@ -75,12 +76,45 @@ class HistoricalQuestion(
 
   companion object {
     private val COMPARATOR = compareBy<HistoricalQuestion>
-      { it.history.id }
+      { it.history }
       .thenBy { it.sequence }
       .thenBy { it.code }
   }
 
   override fun compareTo(other: HistoricalQuestion) = COMPARATOR.compare(this, other)
+
+  fun updateResponses(nomisResponses: List<NomisHistoryResponse>, reportedAt: LocalDateTime) {
+    this.responses.retainAll(
+      nomisResponses.map { nomisResponse ->
+        val newResponse = createHistoricalResponse(nomisResponse, reportedAt)
+        this.responses.find { it == newResponse }?.apply {
+          responseDate = newResponse.responseDate
+          additionalInformation = newResponse.additionalInformation
+          recordedBy = newResponse.recordedBy
+          recordedAt = newResponse.recordedAt
+        } ?: addResponse(newResponse)
+      }.toSet(),
+    )
+  }
+
+  fun createHistoricalResponse(
+    answer: NomisHistoryResponse,
+    recordedAt: LocalDateTime,
+  ) =
+    HistoricalResponse(
+      historicalQuestion = this,
+      response = answer.answer!!,
+      sequence = answer.responseSequence - 1,
+      responseDate = answer.responseDate,
+      additionalInformation = answer.comment,
+      recordedBy = answer.recordingStaff.username,
+      recordedAt = recordedAt,
+    )
+
+  fun addResponse(response: HistoricalResponse): HistoricalResponse {
+    this.responses.add(response)
+    return response
+  }
 
   fun addResponse(
     response: String,
@@ -90,7 +124,7 @@ class HistoricalQuestion(
     recordedBy: String,
     recordedAt: LocalDateTime,
   ): HistoricalQuestion {
-    responses.add(
+    addResponse(
       HistoricalResponse(
         historicalQuestion = this,
         response = response,

@@ -13,6 +13,8 @@ import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistoryQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
 import java.util.SortedSet
@@ -38,6 +40,40 @@ class History(
   @SortNatural
   val questions: SortedSet<HistoricalQuestion> = sortedSetOf(),
 ) : Comparable<History> {
+
+  fun findQuestion(code: String, sequence: Int) = this.questions.firstOrNull { it.code == code && it.sequence == sequence }
+
+  fun updateOrAddHistoryQuestions(
+    history: NomisHistory,
+    recordedAt: LocalDateTime,
+  ) {
+    this.questions.retainAll(
+      history.questions.map { nomisQuestion ->
+        val question = this.updateOrAddQuestion(nomisQuestion)
+        question.updateResponses(nomisQuestion.answers, recordedAt)
+        question
+      }.toSet(),
+    )
+  }
+
+  fun updateOrAddQuestion(
+    nomisQuestion: NomisHistoryQuestion,
+  ) =
+    findQuestion(
+      code = nomisQuestion.questionId.toString(),
+      sequence = nomisQuestion.sequence - 1,
+    )?.apply {
+      question = nomisQuestion.question
+    } ?: addNomisHistoryQuestion(nomisQuestion).also { newQuestion ->
+      questions.add(newQuestion)
+    }
+
+  private fun addNomisHistoryQuestion(question: NomisHistoryQuestion) =
+    this.addQuestion(
+      code = question.questionId.toString(),
+      sequence = question.sequence - 1,
+      question = question.question,
+    )
 
   fun addQuestion(
     code: String,

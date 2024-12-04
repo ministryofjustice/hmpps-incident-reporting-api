@@ -34,8 +34,7 @@ class CorrectionRequest(
 
   companion object {
     private val COMPARATOR = compareBy<CorrectionRequest>
-      { it.report.id }
-      .thenBy(nullsLast()) { it.id }
+      { it.report }
       .thenBy { it.correctionRequestedAt }
       .thenBy { it.reason }
       .thenBy { it.descriptionOfChange }
@@ -64,7 +63,6 @@ class CorrectionRequest(
     other as CorrectionRequest
 
     if (report != other.report) return false
-    if (id != other.id) return false
     if (correctionRequestedAt != other.correctionRequestedAt) return false
     if (reason != other.reason) return false
     if (descriptionOfChange != other.descriptionOfChange) return false
@@ -74,7 +72,6 @@ class CorrectionRequest(
 
   override fun hashCode(): Int {
     var result = report.hashCode()
-    result = 31 * result + id.hashCode()
     result = 31 * result + correctionRequestedAt.hashCode()
     result = 31 * result + reason.hashCode()
     result = 31 * result + descriptionOfChange.hashCode()
