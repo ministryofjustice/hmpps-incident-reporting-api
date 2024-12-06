@@ -20,7 +20,7 @@ interface ReportRepository : JpaRepository<Report, UUID>, JpaSpecificationExecut
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @QueryHints(value = [QueryHint(name = "jakarta.persistence.lock.timeout", value = "2000")])
   @Query(value = "SELECT r.id FROM Report r WHERE r.id = :id")
-  fun findReportById(id: UUID): UUID?
+  fun findReportByIdAndLockRecord(id: UUID): UUID?
 
   fun findOneByReportReference(reportReference: String): Report?
 
