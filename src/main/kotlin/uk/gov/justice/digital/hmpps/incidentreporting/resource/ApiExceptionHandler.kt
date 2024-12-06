@@ -25,6 +25,10 @@ import kotlin.reflect.KClass
 
 @RestControllerAdvice
 class ApiExceptionHandler {
+  companion object {
+    private val log = LoggerFactory.getLogger(this::class.java)
+  }
+
   @ExceptionHandler(ValidationException::class)
   fun handleValidationException(e: ValidationException): ResponseEntity<ErrorResponse> {
     log.info("Validation exception: {}", e.message)
@@ -289,8 +293,18 @@ class ApiExceptionHandler {
       )
   }
 
-  companion object {
-    private val log = LoggerFactory.getLogger(this::class.java)
+  @ExceptionHandler(SubjectAccessRequestNoReports::class)
+  fun handleSarNoReports(e: SubjectAccessRequestNoReports): ResponseEntity<ErrorResponse> {
+    log.debug(e.message)
+    return ResponseEntity
+      .status(HttpStatus.NO_CONTENT)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.NO_CONTENT,
+          userMessage = "${e.message}",
+          developerMessage = e.message,
+        ),
+      )
   }
 }
 
@@ -311,3 +325,5 @@ class ReportModifiedInDpsException(description: String) : Exception("Report last
 }
 
 class ObjectAtIndexNotFoundException(type: KClass<*>, index: Int) : Exception("Object ${type.simpleName} at index $index not found")
+
+class SubjectAccessRequestNoReports : Exception("No reports found for given SAR filters")
