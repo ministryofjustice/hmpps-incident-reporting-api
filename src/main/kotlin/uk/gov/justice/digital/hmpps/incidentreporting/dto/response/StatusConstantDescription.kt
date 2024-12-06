@@ -10,6 +10,8 @@ data class StatusConstantDescription(
   val code: String,
   @Schema(description = "Human-readable description of this value", example = "In analysis")
   val description: String,
+  @Schema(description = "True for statuses that were used in NOMIS but are no longer used in DPS", example = "false")
+  val deprecated: Boolean,
 
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
   @Schema(description = "Machine-readable NOMIS identifier of this value, which may be null for statuses that cannot be mapped", nullable = true, example = "INAN", deprecated = true)

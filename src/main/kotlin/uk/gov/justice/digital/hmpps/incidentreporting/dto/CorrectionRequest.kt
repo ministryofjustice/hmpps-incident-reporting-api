@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 @Schema(description = "Request to make a correction to incident report", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class CorrectionRequest(
+  // TODO: likely to be removed
   @Schema(description = "Why the correction is needed")
   val reason: CorrectionReason,
   @Schema(description = "The changes being requested")
