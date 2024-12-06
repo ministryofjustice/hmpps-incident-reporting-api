@@ -33,8 +33,9 @@ class NomisSyncService(
   fun upsert(syncRequest: NomisSyncRequest): ReportWithDetails {
     syncRequest.validate()
 
-    val report = if (syncRequest.id != null) {
-      updateExistingReport(syncRequest.id, syncRequest.incidentReport)
+    val id = syncRequest.id
+    val report = if (id != null) {
+      updateExistingReport(id, syncRequest.incidentReport)
     } else {
       createNewReport(syncRequest.incidentReport)
     }
@@ -52,8 +53,9 @@ class NomisSyncService(
   }
 
   private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportWithDetails {
-    val reportToUpdate = reportRepository.findOneEagerlyById(reportId)
-      ?: throw ReportNotFoundException(reportId)
+    reportRepository.findReportById(reportId) // will lock this table row.
+    val reportToUpdate = reportRepository.findOneEagerlyById(reportId) ?: throw ReportNotFoundException(reportId)
+
     if (reportToUpdate.modifiedIn != InformationSource.NOMIS) {
       throw ReportModifiedInDpsException(reportId)
     }
