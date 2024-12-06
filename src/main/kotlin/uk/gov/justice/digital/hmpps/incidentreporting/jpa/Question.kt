@@ -104,24 +104,21 @@ class Question(
     )
   }
 
+  fun createResponse(nomisResponse: NomisResponse, recordedAt: LocalDateTime): Response =
+    Response(
+      question = this,
+      response = nomisResponse.answer!!,
+      sequence = nomisResponse.sequence - 1,
+      responseDate = nomisResponse.responseDate,
+      additionalInformation = nomisResponse.comment,
+      recordedBy = nomisResponse.recordingStaff.username,
+      recordedAt = recordedAt,
+    )
+
   fun addResponse(response: Response): Response {
     this.responses.add(response)
     return response
   }
-
-  fun createResponse(
-    answer: NomisResponse,
-    recordedAt: LocalDateTime,
-  ) =
-    Response(
-      question = this,
-      response = answer.answer!!,
-      sequence = answer.sequence - 1,
-      responseDate = answer.responseDate,
-      additionalInformation = answer.comment,
-      recordedBy = answer.recordingStaff.username,
-      recordedAt = recordedAt,
-    )
 
   fun addResponse(
     response: String,

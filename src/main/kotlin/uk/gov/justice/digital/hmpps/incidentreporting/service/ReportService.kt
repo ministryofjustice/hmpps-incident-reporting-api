@@ -308,7 +308,7 @@ class ReportService(
             addQuestion(
               code = request.code,
               question = request.question,
-              sequence = this.getQuestions().size,
+              sequence = getQuestions().size,
               additionalInformation = request.additionalInformation,
             )
           },

@@ -70,14 +70,12 @@ class History(
     return result
   }
 
-  fun findQuestion(code: String, sequence: Int) = this.questions.firstOrNull { it.code == code && it.sequence == sequence }
+  fun findQuestion(code: String, sequence: Int): HistoricalQuestion? =
+    this.questions.firstOrNull { it.code == code && it.sequence == sequence }
 
-  fun updateOrAddHistoryQuestions(
-    history: NomisHistory,
-    recordedAt: LocalDateTime,
-  ) {
+  fun updateQuestionAndResponses(nomisHistory: NomisHistory, recordedAt: LocalDateTime) {
     this.questions.retainAll(
-      history.questions.map { nomisQuestion ->
+      nomisHistory.questions.map { nomisQuestion ->
         val question = this.updateOrAddQuestion(nomisQuestion)
         question.updateResponses(nomisQuestion.answers, recordedAt)
         question
@@ -85,24 +83,15 @@ class History(
     )
   }
 
-  fun updateOrAddQuestion(
-    nomisQuestion: NomisHistoryQuestion,
-  ) =
+  private fun updateOrAddQuestion(nomisQuestion: NomisHistoryQuestion): HistoricalQuestion =
     findQuestion(
       code = nomisQuestion.questionId.toString(),
       sequence = nomisQuestion.sequence - 1,
     )?.apply {
       question = nomisQuestion.question
-    } ?: addNomisHistoryQuestion(nomisQuestion).also { newQuestion ->
+    } ?: addQuestion(nomisQuestion).also { newQuestion ->
       questions.add(newQuestion)
     }
-
-  private fun addNomisHistoryQuestion(question: NomisHistoryQuestion) =
-    this.addQuestion(
-      code = question.questionId.toString(),
-      sequence = question.sequence - 1,
-      question = question.question,
-    )
 
   fun addQuestion(
     code: String,
@@ -119,6 +108,12 @@ class History(
     ).also { questions.add(it) }
   }
 
+  fun addQuestion(historyQuestion: NomisHistoryQuestion): HistoricalQuestion =
+    this.addQuestion(
+      code = historyQuestion.questionId.toString(),
+      sequence = historyQuestion.sequence - 1,
+      question = historyQuestion.question,
+    )
   fun toDto() = HistoryDto(
     type = type,
     changedAt = changedAt,

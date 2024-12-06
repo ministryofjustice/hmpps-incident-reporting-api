@@ -86,7 +86,7 @@ class HistoricalQuestion(
   fun updateResponses(nomisResponses: List<NomisHistoryResponse>, reportedAt: LocalDateTime) {
     this.responses.retainAll(
       nomisResponses.map { nomisResponse ->
-        val newResponse = createHistoricalResponse(nomisResponse, reportedAt)
+        val newResponse = createResponse(nomisResponse, reportedAt)
         this.responses.find { it == newResponse }?.apply {
           responseDate = newResponse.responseDate
           additionalInformation = newResponse.additionalInformation
@@ -97,17 +97,14 @@ class HistoricalQuestion(
     )
   }
 
-  fun createHistoricalResponse(
-    answer: NomisHistoryResponse,
-    recordedAt: LocalDateTime,
-  ) =
+  fun createResponse(nomisResponse: NomisHistoryResponse, recordedAt: LocalDateTime): HistoricalResponse =
     HistoricalResponse(
       historicalQuestion = this,
-      response = answer.answer!!,
-      sequence = answer.responseSequence - 1,
-      responseDate = answer.responseDate,
-      additionalInformation = answer.comment,
-      recordedBy = answer.recordingStaff.username,
+      response = nomisResponse.answer!!,
+      sequence = nomisResponse.responseSequence - 1,
+      responseDate = nomisResponse.responseDate,
+      additionalInformation = nomisResponse.comment,
+      recordedBy = nomisResponse.recordingStaff.username,
       recordedAt = recordedAt,
     )
 

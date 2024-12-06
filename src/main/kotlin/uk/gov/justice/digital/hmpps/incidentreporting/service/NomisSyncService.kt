@@ -10,8 +10,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.toNewEntity
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportModifiedInDpsException
@@ -62,9 +62,9 @@ class NomisSyncService(
   }
 
   private fun createNewReport(incidentReport: NomisReport): ReportWithDetails {
-    val reportToCreate = incidentReport.toNewEntity()
+    val unsavedReportEntity = Event.createReport(incidentReport)
     val reportEntity = try {
-      reportRepository.save(reportToCreate)
+      reportRepository.save(unsavedReportEntity)
     } catch (e: DataIntegrityViolationException) {
       val constraintViolation = e.cause as? org.hibernate.exception.ConstraintViolationException
       if (
