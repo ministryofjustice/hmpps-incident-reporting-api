@@ -62,7 +62,7 @@ class SubjectAccessRequestResourceTest : SqsIntegrationTestBase() {
   )
 
   @Test
-  fun `SAR endpoint returns report if given prisoner is involved`() {
+  fun `SAR endpoint returns reports if given prisoner is involved`() {
     webTestClient.get()
       .uri("/subject-access-request?prn=A0001AA")
       .headers(setAuthorisation(roles = listOf("ROLE_SAR_DATA_ACCESS")))
@@ -75,6 +75,27 @@ class SubjectAccessRequestResourceTest : SqsIntegrationTestBase() {
         {
           "content": [
             {"reportReference":  "1000001"},
+            {"reportReference":  "1000002"}
+          ]
+        }
+        """,
+        JsonCompareMode.LENIENT,
+      )
+  }
+
+  @Test
+  fun `SAR endpoint returns filtered report if given prisoner is involved`() {
+    webTestClient.get()
+      .uri("/subject-access-request?prn=A0002AA")
+      .headers(setAuthorisation(roles = listOf("ROLE_SAR_DATA_ACCESS")))
+      .header("Content-Type", "application/json")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody().json(
+        // language=json
+        """
+        {
+          "content": [
             {"reportReference":  "1000002"}
           ]
         }
