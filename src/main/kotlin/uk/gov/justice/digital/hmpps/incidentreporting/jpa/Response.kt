@@ -22,6 +22,8 @@ class Response(
   @ManyToOne(fetch = FetchType.LAZY)
   val question: Question,
 
+  // TODO: should we add a `val code: String` like in Question?
+
   val sequence: Int,
 
   /**

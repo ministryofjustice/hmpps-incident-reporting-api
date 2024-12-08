@@ -22,6 +22,8 @@ class HistoricalResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val historicalQuestion: HistoricalQuestion,
 
+  // TODO: should we add a `val code: String` like in HistoricalQuestion?
+
   val sequence: Int,
 
   /**

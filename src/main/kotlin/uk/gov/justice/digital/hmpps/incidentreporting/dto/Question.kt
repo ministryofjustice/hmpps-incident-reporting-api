@@ -10,7 +10,8 @@ data class Question(
   val code: String,
   @Schema(description = "The question text as seen by downstream data consumers")
   val question: String,
-  @Schema(description = "Sequence of the questions")
+  // TODO: sequences are only being exposed while we sort out sync problems: they do not need to remain in the api contract
+  @Schema(description = "Sequence of the questions", deprecated = true)
   val sequence: Int,
   @Schema(description = "The responses to this question")
   val responses: List<Response> = emptyList(),
