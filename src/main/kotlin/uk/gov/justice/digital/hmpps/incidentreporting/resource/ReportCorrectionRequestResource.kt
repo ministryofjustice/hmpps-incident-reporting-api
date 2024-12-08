@@ -229,7 +229,6 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
       WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
       report.findCorrectionRequestByIndex(index).let { report.removeCorrectionRequest(it) }
-
       report.correctionRequests.map { it.toDto() }
     }
   }
