@@ -80,7 +80,7 @@ class HistoricalQuestion(
   }
 
   override fun toString(): String {
-    return "HistoricalQuestion (history=${history.id}, code = $code, seq = $sequence)"
+    return "HistoricalQuestion(id=$id, historyId=${history.id}, sequence=$sequence, code=$code)"
   }
 
   fun updateResponses(nomisResponses: List<NomisHistoryResponse>, reportedAt: LocalDateTime) {

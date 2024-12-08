@@ -60,13 +60,13 @@ class StatusHistory(
     return result
   }
 
+  override fun toString(): String {
+    return "StatusHistory(id=$id, reportReference=${report.reportReference}, changedAt=$changedAt, status=$status)"
+  }
+
   fun toDto() = StatusHistoryDto(
     status = status,
     changedAt = changedAt,
     changedBy = changedBy,
   )
-
-  override fun toString(): String {
-    return "StatusHistory(report=$report, status=$status, changedAt=$changedAt)"
-  }
 }

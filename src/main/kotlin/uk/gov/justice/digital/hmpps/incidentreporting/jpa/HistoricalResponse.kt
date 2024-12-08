@@ -74,6 +74,10 @@ class HistoricalResponse(
     return result
   }
 
+  override fun toString(): String {
+    return "HistoricalResponse(id=$id, historicalQuestionId=${historicalQuestion.id}, sequence=$sequence, response=$response)"
+  }
+
   fun toDto() = HistoricalResponseDto(
     response = response,
     sequence = sequence,
@@ -82,8 +86,4 @@ class HistoricalResponse(
     recordedAt = recordedAt,
     additionalInformation = additionalInformation,
   )
-
-  override fun toString(): String {
-    return "HistoricalResponse(historicalQuestion=$historicalQuestion, sequence=$sequence, response='$response')"
-  }
 }

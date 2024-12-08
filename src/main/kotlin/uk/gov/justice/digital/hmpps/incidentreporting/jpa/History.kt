@@ -70,6 +70,10 @@ class History(
     return result
   }
 
+  override fun toString(): String {
+    return "History(id=$id, reportReference=${report.reportReference}, changedAt=$changedAt, type=$type)"
+  }
+
   fun findQuestion(code: String, sequence: Int): HistoricalQuestion? =
     this.questions.firstOrNull { it.code == code && it.sequence == sequence }
 
@@ -114,14 +118,11 @@ class History(
       sequence = historyQuestion.sequence - 1,
       question = historyQuestion.question,
     )
+
   fun toDto() = HistoryDto(
     type = type,
     changedAt = changedAt,
     changedBy = changedBy,
     questions = questions.map { it.toDto() },
   )
-
-  override fun toString(): String {
-    return "History(report=$report, type=$type, changedAt=$changedAt)"
-  }
 }

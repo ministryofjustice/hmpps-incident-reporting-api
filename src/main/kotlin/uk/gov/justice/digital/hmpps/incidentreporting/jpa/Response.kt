@@ -74,6 +74,10 @@ class Response(
     return result
   }
 
+  override fun toString(): String {
+    return "Response(id=$id, questionId=${question.id}, sequence=$sequence, response=$response)"
+  }
+
   fun toDto() = ResponseDto(
     response = response,
     sequence = sequence,
@@ -82,8 +86,4 @@ class Response(
     recordedAt = recordedAt,
     additionalInformation = additionalInformation,
   )
-
-  override fun toString(): String {
-    return "Response(question=$question, sequence=$sequence, response='$response')"
-  }
 }

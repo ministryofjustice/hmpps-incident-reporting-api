@@ -65,6 +65,10 @@ class StaffInvolvement(
     return result
   }
 
+  override fun toString(): String {
+    return "StaffInvolvement(id=$id, reportReference=${report.reportReference}, staffUsername=$staffUsername, staffRole=$staffRole, comment=$comment)"
+  }
+
   fun updateWith(request: UpdateStaffInvolvement) {
     request.staffUsername?.let { staffUsername = it }
     request.staffRole?.let { staffRole = it }
@@ -76,8 +80,4 @@ class StaffInvolvement(
     staffRole = staffRole,
     comment = comment,
   )
-
-  override fun toString(): String {
-    return "StaffInvolvement(report=$report, staffUsername='$staffUsername', staffRole=$staffRole)"
-  }
 }

@@ -172,6 +172,10 @@ class Report(
     return reportReference.hashCode()
   }
 
+  override fun toString(): String {
+    return "Report(id=$id, reportReference=$reportReference, type=$type, status=$status, location=$location)"
+  }
+
   fun changeType(newType: Type, changedAt: LocalDateTime, changedBy: String): Report {
     copyToHistory(changedAt, changedBy)
     questions.clear()
@@ -550,8 +554,4 @@ class Report(
     prisonersInvolved = prisonersInvolved.map { it.toDto() },
     correctionRequests = correctionRequests.map { it.toDto() },
   )
-
-  override fun toString(): String {
-    return "Report(reportReference='$reportReference', type=$type, status=$status)"
-  }
 }

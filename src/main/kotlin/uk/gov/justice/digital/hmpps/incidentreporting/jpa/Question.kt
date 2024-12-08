@@ -80,6 +80,10 @@ class Question(
     return result
   }
 
+  override fun toString(): String {
+    return "Question(id=$id, reportReference=${report.reportReference}, sequence=$sequence, code=$code)"
+  }
+
   fun reset(
     question: String,
     additionalInformation: String? = null,
@@ -149,8 +153,4 @@ class Question(
     additionalInformation = additionalInformation,
     responses = responses.map { it.toDto() },
   )
-
-  override fun toString(): String {
-    return "Question(report=$report, code='$code', sequence=$sequence)"
-  }
 }

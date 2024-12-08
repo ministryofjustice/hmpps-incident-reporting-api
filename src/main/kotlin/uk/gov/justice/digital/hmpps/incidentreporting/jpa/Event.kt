@@ -129,7 +129,7 @@ class Event(
   }
 
   override fun toString(): String {
-    return "Event(eventReference=$eventReference)"
+    return "Event(id=$id, eventReference=$eventReference)"
   }
 
   fun addReport(report: Report): Report {

@@ -72,6 +72,10 @@ class PrisonerInvolvement(
     return result
   }
 
+  override fun toString(): String {
+    return "PrisonerInvolvement(id=$id, reportReference=${report.reportReference}, prisonerNumber=$prisonerNumber, prisonerRole=$prisonerRole, outcome=$outcome, comment=$comment)"
+  }
+
   fun getReport() = report
 
   fun updateWith(request: UpdatePrisonerInvolvement) {
@@ -87,8 +91,4 @@ class PrisonerInvolvement(
     outcome = outcome,
     comment = comment,
   )
-
-  override fun toString(): String {
-    return "PrisonerInvolvement(report=$report, prisonerNumber='$prisonerNumber', prisonerRole=$prisonerRole)"
-  }
 }
