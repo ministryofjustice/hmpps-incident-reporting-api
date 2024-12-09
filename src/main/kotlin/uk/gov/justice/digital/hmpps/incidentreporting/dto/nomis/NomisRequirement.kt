@@ -7,6 +7,8 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisRequirement(
+  @Schema(description = "The sequence number providing an order for a list of requirements")
+  val sequence: Int,
   @Schema(description = "The update required to the incident report")
   val comment: String?,
   @Schema(description = "Date the requirement was recorded")
