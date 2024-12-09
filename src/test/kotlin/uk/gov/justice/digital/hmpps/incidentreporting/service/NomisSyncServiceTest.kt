@@ -83,6 +83,7 @@ class NomisSyncServiceTest {
       staffParties = listOf(
         NomisStaffParty(
           NomisStaff("user3", 124, "Mary", "Jones"),
+          sequence = null,
           NomisCode("PAS", "Present at scene"),
           "Found offender in cell",
           createDateTime = now,
