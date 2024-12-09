@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
+// TODO: likely to be removed
 enum class CorrectionReason(
   val description: String,
 ) {
