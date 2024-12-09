@@ -44,7 +44,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
   private data class ConstantsTestCase(
     val endpoint: String,
     val expectedCount: Int,
-    val expectedSamples: Array<Map<String, Any?>>,
+    val expectedSamples: List<Map<String, Any?>>,
   )
 
   @DisplayName("exposes constants")
@@ -53,28 +53,28 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
     ConstantsTestCase(
       "error-codes",
       ErrorCode.entries.size,
-      arrayOf(
+      listOf(
         mapOf("code" to "100", "description" to "ValidationFailure"),
       ),
     ),
     ConstantsTestCase(
       "correction-reasons",
       CorrectionReason.entries.size,
-      arrayOf(
+      listOf(
         mapOf("code" to "MISTAKE", "description" to "Mistake"),
       ),
     ),
     ConstantsTestCase(
       "information-sources",
       InformationSource.entries.size,
-      arrayOf(
+      listOf(
         mapOf("code" to "DPS", "description" to "DPS"),
       ),
     ),
     ConstantsTestCase(
       "prisoner-outcomes",
       PrisonerOutcome.entries.size,
-      arrayOf(
+      listOf(
         mapOf(
           "code" to "LOCAL_INVESTIGATION",
           "description" to "Investigation (local)",
@@ -85,7 +85,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
     ConstantsTestCase(
       "prisoner-roles",
       PrisonerRole.entries.size,
-      arrayOf(
+      listOf(
         mapOf(
           "code" to "ABSCONDER",
           "description" to "Absconder",
@@ -101,7 +101,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
     ConstantsTestCase(
       "staff-roles",
       StaffRole.entries.size,
-      arrayOf(
+      listOf(
         mapOf(
           "code" to "ACTIVELY_INVOLVED",
           "description" to "Actively involved",
@@ -112,7 +112,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
     ConstantsTestCase(
       "statuses",
       Status.entries.size,
-      arrayOf(
+      listOf(
         mapOf(
           "code" to "DRAFT",
           "description" to "Draft",
@@ -128,7 +128,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
     ConstantsTestCase(
       "types",
       Type.entries.size,
-      arrayOf(
+      listOf(
         mapOf(
           "code" to "DISORDER",
           "description" to "Disorder",
@@ -152,7 +152,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
         .expectStatus().isOk
         .expectBody().jsonPath("$").value<List<Map<String, Any?>>> { list ->
           assertThat(list).hasSize(expectedCount)
-          assertThat(list).containsOnlyOnce(*expectedSamples)
+          assertThat(list).containsOnlyOnce(*expectedSamples.toTypedArray())
         }
     }
   }

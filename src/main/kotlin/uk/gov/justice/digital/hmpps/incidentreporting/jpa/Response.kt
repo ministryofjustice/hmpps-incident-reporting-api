@@ -22,6 +22,8 @@ class Response(
   @ManyToOne(fetch = FetchType.LAZY)
   val question: Question,
 
+  // TODO: should we add a `val code: String` like in Question?
+
   val sequence: Int,
 
   /**
@@ -43,6 +45,15 @@ class Response(
   var recordedAt: LocalDateTime,
 ) : Comparable<Response> {
 
+  companion object {
+    private val COMPARATOR = compareBy<Response>
+      { it.question }
+      .thenBy { it.sequence }
+      .thenBy { it.response }
+  }
+
+  override fun compareTo(other: Response) = COMPARATOR.compare(this, other)
+
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -60,18 +71,12 @@ class Response(
     var result = question.hashCode()
     result = 31 * result + sequence.hashCode()
     result = 31 * result + response.hashCode()
-
     return result
   }
 
-  companion object {
-    private val COMPARATOR = compareBy<Response>
-      { it.question }
-      .thenBy { it.sequence }
-      .thenBy { it.response }
+  override fun toString(): String {
+    return "Response(id=$id, questionId=${question.id}, sequence=$sequence, response=$response)"
   }
-
-  override fun compareTo(other: Response) = COMPARATOR.compare(this, other)
 
   fun toDto() = ResponseDto(
     response = response,
@@ -81,8 +86,4 @@ class Response(
     recordedAt = recordedAt,
     additionalInformation = additionalInformation,
   )
-
-  override fun toString(): String {
-    return "Response(question=$question, sequence=$sequence, response='$response')"
-  }
 }

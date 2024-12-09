@@ -50,9 +50,14 @@ class HistoricalQuestion(
   val responses: SortedSet<HistoricalResponse> = sortedSetOf(),
 ) : Comparable<HistoricalQuestion> {
 
-  override fun toString(): String {
-    return "HistoricalQuestion (history=${history.id}, code = $code, seq = $sequence)"
+  companion object {
+    private val COMPARATOR = compareBy<HistoricalQuestion>
+      { it.history }
+      .thenBy { it.sequence }
+      .thenBy { it.code }
   }
+
+  override fun compareTo(other: HistoricalQuestion) = COMPARATOR.compare(this, other)
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -74,19 +79,14 @@ class HistoricalQuestion(
     return result
   }
 
-  companion object {
-    private val COMPARATOR = compareBy<HistoricalQuestion>
-      { it.history }
-      .thenBy { it.sequence }
-      .thenBy { it.code }
+  override fun toString(): String {
+    return "HistoricalQuestion(id=$id, historyId=${history.id}, sequence=$sequence, code=$code)"
   }
-
-  override fun compareTo(other: HistoricalQuestion) = COMPARATOR.compare(this, other)
 
   fun updateResponses(nomisResponses: List<NomisHistoryResponse>, reportedAt: LocalDateTime) {
     this.responses.retainAll(
       nomisResponses.map { nomisResponse ->
-        val newResponse = createHistoricalResponse(nomisResponse, reportedAt)
+        val newResponse = createResponse(nomisResponse, reportedAt)
         this.responses.find { it == newResponse }?.apply {
           responseDate = newResponse.responseDate
           additionalInformation = newResponse.additionalInformation
@@ -97,17 +97,14 @@ class HistoricalQuestion(
     )
   }
 
-  fun createHistoricalResponse(
-    answer: NomisHistoryResponse,
-    recordedAt: LocalDateTime,
-  ) =
+  fun createResponse(nomisResponse: NomisHistoryResponse, recordedAt: LocalDateTime): HistoricalResponse =
     HistoricalResponse(
       historicalQuestion = this,
-      response = answer.answer!!,
-      sequence = answer.responseSequence - 1,
-      responseDate = answer.responseDate,
-      additionalInformation = answer.comment,
-      recordedBy = answer.recordingStaff.username,
+      response = nomisResponse.answer!!,
+      sequence = nomisResponse.responseSequence - 1,
+      responseDate = nomisResponse.responseDate,
+      additionalInformation = nomisResponse.comment,
+      recordedBy = nomisResponse.recordingStaff.username,
       recordedAt = recordedAt,
     )
 

@@ -3,19 +3,20 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 import io.opentelemetry.sdk.testing.assertj.OpenTelemetryAssertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
-import java.util.*
+import java.util.UUID
 
 class PrisonerInvolvementTest {
 
-  val report: Report = Mockito.mock(Report::class.java)
+  val report: Report = mock()
 
   @BeforeEach
   fun setUp() {
-    Mockito.`when`(report.id).thenReturn(UUID.randomUUID())
-    Mockito.`when`(report.reportReference).thenReturn("123456")
+    whenever(report.id).thenReturn(UUID.randomUUID())
+    whenever(report.reportReference).thenReturn("123456")
   }
 
   @Test

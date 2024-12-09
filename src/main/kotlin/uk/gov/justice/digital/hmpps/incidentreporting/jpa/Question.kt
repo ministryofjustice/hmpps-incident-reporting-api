@@ -14,7 +14,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
+import java.util.SortedSet
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question as QuestionDto
 
 @Entity
@@ -51,6 +51,15 @@ class Question(
 
 ) : Comparable<Question> {
 
+  companion object {
+    private val COMPARATOR = compareBy<Question>
+      { it.report }
+      .thenBy { it.sequence }
+      .thenBy { it.code }
+  }
+
+  override fun compareTo(other: Question) = COMPARATOR.compare(this, other)
+
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -60,6 +69,7 @@ class Question(
     if (report != other.report) return false
     if (sequence != other.sequence) return false
     if (code != other.code) return false
+
     return true
   }
 
@@ -70,14 +80,9 @@ class Question(
     return result
   }
 
-  companion object {
-    private val COMPARATOR = compareBy<Question>
-      { it.report }
-      .thenBy { it.sequence }
-      .thenBy { it.code }
+  override fun toString(): String {
+    return "Question(id=$id, reportReference=${report.reportReference}, sequence=$sequence, code=$code)"
   }
-
-  override fun compareTo(other: Question) = COMPARATOR.compare(this, other)
 
   fun reset(
     question: String,
@@ -103,24 +108,21 @@ class Question(
     )
   }
 
+  fun createResponse(nomisResponse: NomisResponse, recordedAt: LocalDateTime): Response =
+    Response(
+      question = this,
+      response = nomisResponse.answer!!,
+      sequence = nomisResponse.sequence - 1,
+      responseDate = nomisResponse.responseDate,
+      additionalInformation = nomisResponse.comment,
+      recordedBy = nomisResponse.recordingStaff.username,
+      recordedAt = recordedAt,
+    )
+
   fun addResponse(response: Response): Response {
     this.responses.add(response)
     return response
   }
-
-  fun createResponse(
-    answer: NomisResponse,
-    recordedAt: LocalDateTime,
-  ) =
-    Response(
-      question = this,
-      response = answer.answer!!,
-      sequence = answer.sequence - 1,
-      responseDate = answer.responseDate,
-      additionalInformation = answer.comment,
-      recordedBy = answer.recordingStaff.username,
-      recordedAt = recordedAt,
-    )
 
   fun addResponse(
     response: String,
@@ -151,8 +153,4 @@ class Question(
     additionalInformation = additionalInformation,
     responses = responses.map { it.toDto() },
   )
-
-  override fun toString(): String {
-    return "Question(report=$report, code='$code', sequence=$sequence)"
-  }
 }

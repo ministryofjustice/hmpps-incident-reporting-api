@@ -31,16 +31,10 @@ class StatusHistory(
   val changedBy: String,
 ) : Comparable<StatusHistory> {
 
-  fun toDto() = StatusHistoryDto(
-    status = status,
-    changedAt = changedAt,
-    changedBy = changedBy,
-  )
-
   companion object {
     private val COMPARATOR = compareBy<StatusHistory>
-      { it.changedAt }
-      .thenBy { it.report.id }
+      { it.report }
+      .thenBy { it.changedAt }
       .thenBy { it.status }
   }
 
@@ -52,21 +46,27 @@ class StatusHistory(
 
     other as StatusHistory
 
-    if (changedAt != other.changedAt) return false
     if (report != other.report) return false
+    if (changedAt != other.changedAt) return false
     if (status != other.status) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = changedAt.hashCode()
-    result = 31 * result + report.hashCode()
+    var result = report.hashCode()
+    result = 31 * result + changedAt.hashCode()
     result = 31 * result + status.hashCode()
     return result
   }
 
   override fun toString(): String {
-    return "StatusHistory(report=$report, status=$status, changedAt=$changedAt)"
+    return "StatusHistory(id=$id, reportReference=${report.reportReference}, changedAt=$changedAt, status=$status)"
   }
+
+  fun toDto() = StatusHistoryDto(
+    status = status,
+    changedAt = changedAt,
+    changedBy = changedBy,
+  )
 }

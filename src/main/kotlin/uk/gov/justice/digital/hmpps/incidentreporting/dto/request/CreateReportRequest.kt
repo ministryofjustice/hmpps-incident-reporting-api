@@ -42,7 +42,7 @@ data class CreateReportRequest(
     }
   }
 
-  fun toNewEntity(reportReference: String, event: Event, requestUsername: String, now: LocalDateTime): Report {
+  fun createReport(reportReference: String, event: Event, requestUsername: String, now: LocalDateTime): Report {
     val status = Status.DRAFT
     val report = Report(
       reportReference = reportReference,
@@ -66,7 +66,7 @@ data class CreateReportRequest(
     return report
   }
 
-  fun toNewEvent(generatedEventReference: String, requestUsername: String, now: LocalDateTime): Event {
+  fun createEvent(generatedEventReference: String, requestUsername: String, now: LocalDateTime): Event {
     return Event(
       eventReference = generatedEventReference,
       eventDateAndTime = incidentDateAndTime,

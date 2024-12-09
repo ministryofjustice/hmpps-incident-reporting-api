@@ -159,21 +159,21 @@ class ReportService(
       eventRepository.findOneByEventReference(createReportRequest.linkedEventReference)
         ?: throw EventNotFoundException(createReportRequest.linkedEventReference)
     } else {
-      createReportRequest.toNewEvent(
+      createReportRequest.createEvent(
         eventRepository.generateEventReference(),
         requestUsername = requestUsername,
         now = now,
       )
     }
 
-    val newReport = createReportRequest.toNewEntity(
+    val unsavedReport = createReportRequest.createReport(
       reportReference = reportRepository.generateReportReference(),
       event = event,
       requestUsername = requestUsername,
       now = now,
     )
 
-    val report = reportRepository.save(newReport).toDtoWithDetails()
+    val report = reportRepository.save(unsavedReport).toDtoWithDetails()
 
     log.info("Created draft incident report reference=${report.reportReference} ID=${report.id}")
     telemetryClient.trackEvent(
@@ -308,7 +308,7 @@ class ReportService(
             addQuestion(
               code = request.code,
               question = request.question,
-              sequence = this.getQuestions().size,
+              sequence = getQuestions().size,
               additionalInformation = request.additionalInformation,
             )
           },

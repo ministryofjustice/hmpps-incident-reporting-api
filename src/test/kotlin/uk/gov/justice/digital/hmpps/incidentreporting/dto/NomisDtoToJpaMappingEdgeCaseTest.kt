@@ -10,10 +10,10 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.toNewEntity
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 
 /**
  * Tests for edge cases when converting NOMIS DTOs to JPA entities.
@@ -50,7 +50,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     fun `report details should be copied to new report and event`() {
       val reportDto = minimalReportDto.copy()
 
-      val reportEntity = reportDto.toNewEntity()
+      val reportEntity = Event.createReport(reportDto)
       assertThat(reportEntity.title).isEqualTo("TITLE")
       assertThat(reportEntity.description).isEqualTo("DESCRIPTION")
       assertThat(reportEntity.reportReference).isEqualTo("112414323")
@@ -83,7 +83,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     fun `missing report title adopts a fallback value`() {
       val reportDto = minimalReportDto.copy(title = null)
 
-      val reportEntity = reportDto.toNewEntity()
+      val reportEntity = Event.createReport(reportDto)
       assertThat(reportEntity.title).isEqualTo("NO DETAILS GIVEN")
       assertThat(reportEntity.description).isEqualTo("DESCRIPTION")
 
@@ -96,7 +96,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     fun `missing report description adopts a fallback value`() {
       val reportDto = minimalReportDto.copy(description = null)
 
-      val reportEntity = reportDto.toNewEntity()
+      val reportEntity = Event.createReport(reportDto)
       assertThat(reportEntity.title).isEqualTo("TITLE")
       assertThat(reportEntity.description).isEqualTo("NO DETAILS GIVEN")
 

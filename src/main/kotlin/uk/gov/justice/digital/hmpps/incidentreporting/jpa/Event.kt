@@ -11,6 +11,11 @@ import jakarta.persistence.NamedEntityGraphs
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import org.hibernate.Hibernate
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import java.time.LocalDateTime
@@ -62,14 +67,69 @@ class Event(
 ) : Comparable<Event> {
 
   companion object {
+    fun createReport(nomisReport: NomisReport): Report {
+      val event = Event(
+        eventReference = "${nomisReport.incidentId}",
+        eventDateAndTime = nomisReport.incidentDateTime,
+        location = nomisReport.prison.code,
+        title = nomisReport.title ?: NO_DETAILS_GIVEN,
+        description = nomisReport.description ?: NO_DETAILS_GIVEN,
+        createdAt = nomisReport.createDateTime,
+        modifiedAt = nomisReport.lastModifiedDateTime ?: nomisReport.createDateTime,
+        modifiedBy = nomisReport.lastModifiedBy ?: nomisReport.createdBy,
+      )
+      val status = Status.fromNomisCode(nomisReport.status.code)
+      val report = Report(
+        reportReference = "${nomisReport.incidentId}",
+        type = Type.fromNomisCode(nomisReport.type),
+        incidentDateAndTime = nomisReport.incidentDateTime,
+        location = nomisReport.prison.code,
+        title = nomisReport.title ?: NO_DETAILS_GIVEN,
+        description = nomisReport.description ?: NO_DETAILS_GIVEN,
+        reportedBy = nomisReport.reportingStaff.username,
+        reportedAt = nomisReport.reportedDateTime,
+        status = status,
+        questionSetId = "${nomisReport.questionnaireId}",
+        createdAt = nomisReport.createDateTime,
+        modifiedAt = nomisReport.lastModifiedDateTime ?: nomisReport.createDateTime,
+        modifiedBy = nomisReport.lastModifiedBy ?: nomisReport.createdBy,
+        source = InformationSource.NOMIS,
+        modifiedIn = InformationSource.NOMIS,
+        assignedTo = nomisReport.reportingStaff.username,
+        event = event,
+      )
+      report.addStatusHistory(status, nomisReport.reportedDateTime, nomisReport.reportingStaff.username)
+
+      report.updateStaffInvolved(nomisReport.staffParties)
+      report.updatePrisonerInvolved(nomisReport.offenderParties)
+      report.updateCorrectionRequests(nomisReport.requirements)
+      report.updateQuestionAndResponses(nomisReport.questions)
+      report.updateHistory(nomisReport.history)
+
+      return report
+    }
+
     private val COMPARATOR = compareBy<Event>
       { it.eventReference }
   }
 
   override fun compareTo(other: Event) = COMPARATOR.compare(this, other)
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+
+    other as Event
+
+    return eventReference == other.eventReference
+  }
+
+  override fun hashCode(): Int {
+    return eventReference.hashCode()
+  }
+
   override fun toString(): String {
-    return "Event(eventReference=$eventReference)"
+    return "Event(id=$id, eventReference=$eventReference)"
   }
 
   fun addReport(report: Report): Report {
@@ -103,17 +163,4 @@ class Event(
     modifiedBy = modifiedBy,
     reports = reports.map { it.toDtoBasic() },
   )
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-
-    other as Event
-
-    return eventReference == other.eventReference
-  }
-
-  override fun hashCode(): Int {
-    return eventReference.hashCode()
-  }
 }

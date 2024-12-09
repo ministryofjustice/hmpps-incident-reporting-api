@@ -36,6 +36,7 @@ class PrisonerInvolvement(
 
   var comment: String? = null,
 ) : Comparable<PrisonerInvolvement> {
+
   companion object {
     private val COMPARATOR = compareBy<PrisonerInvolvement>
       { it.report }
@@ -46,22 +47,6 @@ class PrisonerInvolvement(
   }
 
   override fun compareTo(other: PrisonerInvolvement) = COMPARATOR.compare(this, other)
-
-  fun getReport() = report
-
-  fun updateWith(request: UpdatePrisonerInvolvement) {
-    request.prisonerNumber?.let { prisonerNumber = it }
-    request.prisonerRole?.let { prisonerRole = it }
-    request.outcome?.let { outcome = it.getOrNull() }
-    request.comment?.let { comment = it.getOrNull() }
-  }
-
-  fun toDto() = PrisonerInvolvementDto(
-    prisonerNumber = prisonerNumber,
-    prisonerRole = prisonerRole,
-    outcome = outcome,
-    comment = comment,
-  )
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -88,6 +73,22 @@ class PrisonerInvolvement(
   }
 
   override fun toString(): String {
-    return "PrisonerInvolvement(report=$report, prisonerNumber='$prisonerNumber', prisonerRole=$prisonerRole)"
+    return "PrisonerInvolvement(id=$id, reportReference=${report.reportReference}, prisonerNumber=$prisonerNumber, prisonerRole=$prisonerRole, outcome=$outcome, comment=$comment)"
   }
+
+  fun getReport() = report
+
+  fun updateWith(request: UpdatePrisonerInvolvement) {
+    request.prisonerNumber?.let { prisonerNumber = it }
+    request.prisonerRole?.let { prisonerRole = it }
+    request.outcome?.let { outcome = it.getOrNull() }
+    request.comment?.let { comment = it.getOrNull() }
+  }
+
+  fun toDto() = PrisonerInvolvementDto(
+    prisonerNumber = prisonerNumber,
+    prisonerRole = prisonerRole,
+    outcome = outcome,
+    comment = comment,
+  )
 }

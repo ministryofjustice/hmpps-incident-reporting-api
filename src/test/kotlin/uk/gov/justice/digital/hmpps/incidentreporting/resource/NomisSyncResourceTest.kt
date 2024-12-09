@@ -11,7 +11,8 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpStatus
-import org.springframework.test.util.JsonExpectationsHelper
+import org.springframework.test.json.JsonAssert
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -465,7 +466,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             val reportId = UUID.fromString(it)
             val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
             val reportJson = report.toJson()
-            JsonExpectationsHelper().assertJsonEqual(
+            JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
               // language=json
               """
               {
@@ -725,7 +726,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               }
               """,
               reportJson,
-              false,
             )
           }
 
@@ -753,7 +753,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             val reportId = UUID.fromString(it)
             val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
             val reportJson = report.toJson()
-            JsonExpectationsHelper().assertJsonEqual(
+            JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
               // language=json
               """
               {
@@ -1013,7 +1013,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               }
               """,
               reportJson,
-              false,
             )
           }
 
@@ -1268,7 +1267,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             val reportId = UUID.fromString(it)
             val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
             val reportJson = report.toJson()
-            JsonExpectationsHelper().assertJsonEqual(
+            JsonAssert.comparator(JsonCompareMode.STRICT).assertIsMatch(
               // language=json
               """
               {
@@ -1564,7 +1563,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               }
               """,
               reportJson,
-              true,
             )
           }
 

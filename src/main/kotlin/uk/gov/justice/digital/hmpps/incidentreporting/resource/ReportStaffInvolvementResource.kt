@@ -220,7 +220,6 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
       "Deleted an involved member of staff from incident report",
       WhatChanged.STAFF_INVOLVED,
     ) { report ->
-
       report.findStaffInvolvedByIndex(index).let { report.removeStaffInvolved(it) }
       report.staffInvolved.map { it.toDto() }
     }

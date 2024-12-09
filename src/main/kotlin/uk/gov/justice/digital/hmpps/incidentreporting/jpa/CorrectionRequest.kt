@@ -42,20 +42,6 @@ class CorrectionRequest(
 
   override fun compareTo(other: CorrectionRequest) = COMPARATOR.compare(this, other)
 
-  fun updateWith(request: UpdateCorrectionRequest, requestUsername: String, now: LocalDateTime) {
-    request.reason?.let { reason = it }
-    request.descriptionOfChange?.let { descriptionOfChange = it }
-    correctionRequestedBy = requestUsername
-    correctionRequestedAt = now
-  }
-
-  fun toDto() = CorrectionRequestDto(
-    reason = reason,
-    descriptionOfChange = descriptionOfChange,
-    correctionRequestedBy = correctionRequestedBy,
-    correctionRequestedAt = correctionRequestedAt,
-  )
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -79,6 +65,20 @@ class CorrectionRequest(
   }
 
   override fun toString(): String {
-    return "CorrectionRequest(report=$report, reason=$reason, descriptionOfChange='$descriptionOfChange', correctionRequestedAt=$correctionRequestedAt)"
+    return "CorrectionRequest(id=$id, reportReference=${report.reportReference}, correctionRequestedAt=$correctionRequestedAt, reason=$reason, descriptionOfChange=$descriptionOfChange)"
   }
+
+  fun updateWith(request: UpdateCorrectionRequest, requestUsername: String, now: LocalDateTime) {
+    request.reason?.let { reason = it }
+    request.descriptionOfChange?.let { descriptionOfChange = it }
+    correctionRequestedBy = requestUsername
+    correctionRequestedAt = now
+  }
+
+  fun toDto() = CorrectionRequestDto(
+    reason = reason,
+    descriptionOfChange = descriptionOfChange,
+    correctionRequestedBy = correctionRequestedBy,
+    correctionRequestedAt = correctionRequestedAt,
+  )
 }
