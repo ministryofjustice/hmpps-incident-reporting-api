@@ -9,7 +9,7 @@ data class NomisOffenderParty(
   @Schema(description = "Offender involved in the incident")
   val offender: NomisOffender,
   @Schema(description = "The sequence number providing an order for a list of offender parties")
-  val sequence: Int,
+  val sequence: Int? = null,
   @Schema(description = "Offender role in the incident")
   val role: NomisCode,
   @Schema(description = "The outcome of the incident")
