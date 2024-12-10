@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 
 @Schema(description = "Add a correction request to an incident report", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class AddCorrectionRequest(
+  // TODO: likely to be removed
   @Schema(description = "Why the correction is needed", requiredMode = Schema.RequiredMode.REQUIRED)
   val reason: CorrectionReason,
   @Schema(description = "The changes being requested", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
