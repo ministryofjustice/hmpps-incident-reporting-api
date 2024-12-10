@@ -23,7 +23,7 @@ data class NomisSyncRequest(
 
 @Schema(description = "Incident report created in NOMIS", accessMode = Schema.AccessMode.WRITE_ONLY)
 interface NomisSyncCreateRequest {
-  @get:Schema(description = "Set to true for initial migration", requiredMode = Schema.RequiredMode.REQUIRED, allowableValues = ["true"], example = "true")
+  @get:Schema(description = "Set to true for initial migration", requiredMode = Schema.RequiredMode.NOT_REQUIRED, allowableValues = ["true", "false"], defaultValue = "false", example = "true")
   val initialMigration: Boolean
 
   @get:Schema(description = "Complete incident report payload", requiredMode = Schema.RequiredMode.REQUIRED)
