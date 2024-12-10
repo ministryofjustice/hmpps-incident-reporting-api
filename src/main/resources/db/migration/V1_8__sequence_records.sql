@@ -1,7 +1,3 @@
-alter table correction_request add column sequence integer default 0 not null;
-alter table staff_involvement add column sequence integer default 0 not null;
-alter table prisoner_involvement add column sequence integer default 0 not null;
-
 -- Update correction_request sequences by report_id
 WITH numbered_rows AS (
   SELECT id,
