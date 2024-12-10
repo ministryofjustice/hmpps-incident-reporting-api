@@ -305,15 +305,16 @@ class ReportService(
             )
           } else {
             addedCount += 1
+            val sequence = if (this.getQuestions().isEmpty()) 0 else this.getQuestions().last().sequence + 1
             addQuestion(
               code = request.code,
               question = request.question,
-              sequence = getQuestions().size,
+              sequence = sequence,
               additionalInformation = request.additionalInformation,
             )
           },
         ) {
-          var sequence = this.responses.size
+          var sequence = if (this.responses.isEmpty()) 0 else this.responses.last().sequence + 1
           request.responses.forEach {
             addResponse(
               response = it.response,

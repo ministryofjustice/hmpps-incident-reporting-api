@@ -357,7 +357,7 @@ class Report(
     correctionRequests.remove(correctionRequest)
   }
 
-  fun getQuestions(): Set<Question> = questions
+  fun getQuestions(): SortedSet<Question> = questions
 
   fun findQuestion(code: String, sequence: Int): Question? =
     this.questions.firstOrNull { it.code == code && it.sequence == sequence }
