@@ -188,7 +188,7 @@ class EventResource(
     ],
   )
   fun getEventByReference(
-    @Schema(description = "The event reference", example = "2342341242", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "The event reference", example = "\"2342341242\"", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     eventReference: String,
   ): EventWithBasicReports {
