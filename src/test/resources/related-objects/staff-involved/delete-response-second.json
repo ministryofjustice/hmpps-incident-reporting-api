@@ -2,6 +2,7 @@
   {
     "staffUsername": "staff-1",
     "staffRole": "AUTHORISING_OFFICER",
-    "comment": "Comment #1"
+    "comment": "Comment #1",
+    "sequence": 0
   }
 ]

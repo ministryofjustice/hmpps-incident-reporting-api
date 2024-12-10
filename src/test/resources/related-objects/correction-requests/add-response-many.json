@@ -1,20 +1,23 @@
 [
   {
-    "reason": "INCORRECT_INFORMATION",
-    "descriptionOfChange": "Description needs to mention prisoner numbers",
-    "correctionRequestedBy": "request-user",
-    "correctionRequestedAt": "2023-12-05T12:34:56"
-  },
-  {
+    "sequence": 0,
     "reason": "NOT_SPECIFIED",
     "descriptionOfChange": "Fix request #1",
     "correctionRequestedBy": "qa",
     "correctionRequestedAt": "2023-12-05T12:34:56"
   },
   {
+    "sequence": 1,
     "reason": "NOT_SPECIFIED",
     "descriptionOfChange": "Fix request #2",
     "correctionRequestedBy": "qa",
+    "correctionRequestedAt": "2023-12-05T12:34:56"
+  },
+  {
+    "sequence": 2,
+    "reason": "INCORRECT_INFORMATION",
+    "descriptionOfChange": "Description needs to mention prisoner numbers",
+    "correctionRequestedBy": "request-user",
     "correctionRequestedAt": "2023-12-05T12:34:56"
   }
 ]

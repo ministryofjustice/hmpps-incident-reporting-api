@@ -24,6 +24,7 @@ class PrisonerInvolvementTest {
     val involvement1 = PrisonerInvolvement(
       id = 1L,
       report = report,
+      sequence = 1,
       prisonerNumber = "A1234BC",
       prisonerRole = PrisonerRole.VICTIM,
       outcome = PrisonerOutcome.REMAND,
@@ -32,6 +33,7 @@ class PrisonerInvolvementTest {
     val involvement2 = PrisonerInvolvement(
       id = null,
       report = report,
+      sequence = 2,
       prisonerNumber = "B2345CD",
       prisonerRole = PrisonerRole.PERPETRATOR,
       outcome = PrisonerOutcome.CONVICTED,
@@ -40,6 +42,7 @@ class PrisonerInvolvementTest {
     val involvement3 = PrisonerInvolvement(
       id = null,
       report = report,
+      sequence = 0,
       prisonerNumber = "A1234BC",
       prisonerRole = PrisonerRole.VICTIM,
       outcome = null,

@@ -3,6 +3,7 @@
     "prisonerNumber": "A0002AA",
     "prisonerRole": "ASSAILANT",
     "outcome": "CONVICTED",
-    "comment": "Comment #2"
+    "comment": "Comment #2",
+    "sequence": 1
   }
 ]

@@ -111,7 +111,9 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
       WhatChanged.STAFF_INVOLVED,
     ) { report ->
       with(request) {
+        val sequence = if (report.staffInvolved.isEmpty()) 0 else report.staffInvolved.last().sequence + 1
         report.addStaffInvolved(
+          sequence = sequence,
           staffUsername = staffUsername,
           staffRole = staffRole,
           comment = comment,

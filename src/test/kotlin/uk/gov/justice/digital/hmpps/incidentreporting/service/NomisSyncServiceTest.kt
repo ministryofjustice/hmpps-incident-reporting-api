@@ -83,7 +83,7 @@ class NomisSyncServiceTest {
       staffParties = listOf(
         NomisStaffParty(
           NomisStaff("user3", 124, "Mary", "Jones"),
-          sequence = null,
+          sequence = 1,
           NomisCode("PAS", "Present at scene"),
           "Found offender in cell",
           createDateTime = now,
@@ -97,6 +97,7 @@ class NomisSyncServiceTest {
             firstName = "Trevor",
             lastName = "Smith",
           ),
+          sequence = 1,
           role = NomisCode("PERP", "Perpetrator"),
           outcome = NomisCode("HELTH", "ACCT"),
           comment = "First time self-harming",
@@ -106,6 +107,7 @@ class NomisSyncServiceTest {
       ),
       requirements = listOf(
         NomisRequirement(
+          sequence = 1,
           comment = "Title should include prisoner number",
           date = now.toLocalDate(),
           prisonId = "MDI",
@@ -185,18 +187,25 @@ class NomisSyncServiceTest {
   init {
     sampleReport.addQuestion("42", "What implement was used?", 1)
       .addResponse("Razor", null, 0, null, reportedBy, now)
-    sampleReport.addStaffInvolved(StaffRole.PRESENT_AT_SCENE, "user3", "Found offender in cell")
+    sampleReport.addStaffInvolved(
+      sequence = 0,
+      staffRole = StaffRole.PRESENT_AT_SCENE,
+      staffUsername = "user3",
+      comment = "Found offender in cell",
+    )
     sampleReport.addPrisonerInvolved(
-      "A1234AA",
-      PrisonerRole.PERPETRATOR,
-      PrisonerOutcome.SEEN_HEALTHCARE,
-      "First time self-harming",
+      prisonerNumber = "A1234AA",
+      sequence = 0,
+      prisonerRole = PrisonerRole.PERPETRATOR,
+      outcome = PrisonerOutcome.SEEN_HEALTHCARE,
+      comment = "First time self-harming",
     )
     sampleReport.addCorrectionRequest(
-      "checking-user",
-      now,
-      CorrectionReason.NOT_SPECIFIED,
-      "Title should include prisoner number",
+      sequence = 0,
+      correctionRequestedBy = "checking-user",
+      correctionRequestedAt = now,
+      reason = CorrectionReason.NOT_SPECIFIED,
+      descriptionOfChange = "Title should include prisoner number",
     )
   }
 

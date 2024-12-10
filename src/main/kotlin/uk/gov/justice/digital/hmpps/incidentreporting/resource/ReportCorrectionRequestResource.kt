@@ -113,7 +113,9 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
       WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
       with(request) {
+        val sequence = if (report.correctionRequests.isEmpty()) 0 else report.correctionRequests.last().sequence + 1
         report.addCorrectionRequest(
+          sequence = sequence,
           reason = reason,
           descriptionOfChange = descriptionOfChange,
           correctionRequestedBy = authenticationHolder.username ?: SYSTEM_USERNAME,

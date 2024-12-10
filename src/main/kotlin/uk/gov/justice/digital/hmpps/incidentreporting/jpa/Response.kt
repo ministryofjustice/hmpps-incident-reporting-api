@@ -29,7 +29,7 @@ class Response(
   /**
    * The response text as seen by downstream data consumers
    */
-  val response: String,
+  var response: String,
 
   /**
    * Optional date attached to response
@@ -49,7 +49,6 @@ class Response(
     private val COMPARATOR = compareBy<Response>
       { it.question }
       .thenBy { it.sequence }
-      .thenBy { it.response }
   }
 
   override fun compareTo(other: Response) = COMPARATOR.compare(this, other)
@@ -62,7 +61,6 @@ class Response(
 
     if (question != other.question) return false
     if (sequence != other.sequence) return false
-    if (response != other.response) return false
 
     return true
   }
@@ -70,7 +68,6 @@ class Response(
   override fun hashCode(): Int {
     var result = question.hashCode()
     result = 31 * result + sequence.hashCode()
-    result = 31 * result + response.hashCode()
     return result
   }
 

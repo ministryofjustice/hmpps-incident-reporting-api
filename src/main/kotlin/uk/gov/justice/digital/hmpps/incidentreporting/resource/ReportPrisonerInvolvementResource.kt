@@ -111,7 +111,9 @@ class ReportPrisonerInvolvementResource() : ReportRelatedObjectsResource<Prisone
       WhatChanged.PRISONERS_INVOLVED,
     ) { report ->
       with(request) {
+        val sequence = if (report.prisonersInvolved.isEmpty()) 0 else report.prisonersInvolved.last().sequence + 1
         report.addPrisonerInvolved(
+          sequence = sequence,
           prisonerNumber = prisonerNumber,
           prisonerRole = prisonerRole,
           outcome = outcome,

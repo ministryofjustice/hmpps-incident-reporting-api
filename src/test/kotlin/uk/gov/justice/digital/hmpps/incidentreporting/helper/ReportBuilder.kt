@@ -56,6 +56,7 @@ fun buildReport(
 
   (1..generateStaffInvolvement).forEach { staffIndex ->
     report.addStaffInvolved(
+      sequence = staffIndex - 1,
       staffUsername = "staff-$staffIndex",
       staffRole = StaffRole.entries.elementAtWrapped(staffIndex),
       comment = "Comment #$staffIndex",
@@ -63,6 +64,7 @@ fun buildReport(
   }
   (1..generatePrisonerInvolvement).forEach { prisonerIndex ->
     report.addPrisonerInvolved(
+      sequence = prisonerIndex - 1,
       prisonerNumber = "A%04dAA".format(prisonerIndex),
       prisonerRole = PrisonerRole.entries.elementAtWrapped(prisonerIndex),
       outcome = PrisonerOutcome.entries.elementAtWrapped(prisonerIndex),
@@ -71,6 +73,7 @@ fun buildReport(
   }
   (1..generateCorrections).forEach { correctionIndex ->
     report.addCorrectionRequest(
+      sequence = correctionIndex - 1,
       correctionRequestedAt = reportTime,
       correctionRequestedBy = "qa",
       reason = CorrectionReason.NOT_SPECIFIED,

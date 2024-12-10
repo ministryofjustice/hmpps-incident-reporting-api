@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 @Schema(description = "Prisoner involved in an incident", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class PrisonerInvolvement(
+  @Schema(description = "Sequence of the prisoner involvement for this report")
+  val sequence: Int,
   @Schema(description = "Prisoner’s NOMIS number")
   val prisonerNumber: String,
   @Schema(description = "Their role")

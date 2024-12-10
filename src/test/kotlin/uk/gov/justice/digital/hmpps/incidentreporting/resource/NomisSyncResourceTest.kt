@@ -105,6 +105,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         staffParties = listOf(
           NomisStaffParty(
             staff = reportingStaff,
+            sequence = 1,
             role = NomisCode("PAS", "Present at scene"),
             comment = "REPORTER",
             createDateTime = now,
@@ -118,6 +119,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               firstName = "Trevor",
               lastName = "Smith",
             ),
+            sequence = 1,
             role = NomisCode("PERP", "Perpetrator"),
             outcome = NomisCode("ACCT", "ACCT"),
             comment = "Comment",
@@ -127,7 +129,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         ),
         requirements = listOf(
           NomisRequirement(
-            sequence = null,
+            sequence = 1,
             comment = "Change 1",
             date = LocalDate.now(clock),
             staff = reportingStaff,
@@ -136,7 +138,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             createdBy = reportingStaff.username,
           ),
           NomisRequirement(
-            sequence = null,
+            sequence = 2,
             comment = "Change 2",
             date = LocalDate.now(clock).minusWeeks(1),
             staff = reportingStaff,
@@ -147,12 +149,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         ),
         questions = listOf(
           NomisQuestion(
-            4,
-            1,
+            questionId = 4,
+            sequence = 1,
             createDateTime = now,
             createdBy = reportingStaff.username,
-            "Question 1",
-            listOf(
+            question = "Question 1",
+            answers = listOf(
               NomisResponse(
                 10,
                 1,
@@ -164,21 +166,21 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 recordingStaff = reportingStaff,
               ),
               NomisResponse(
-                11,
-                2,
-                "Answer 2",
-                null,
-                "comment 2",
+                questionResponseId = 11,
+                sequence = 2,
+                answer = "Answer 2",
+                responseDate = null,
+                comment = "comment 2",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
               ),
               NomisResponse(
-                12,
-                3,
-                "Answer 3",
-                now.toLocalDate().minusDays(3),
-                null,
+                questionResponseId = 12,
+                sequence = 3,
+                answer = "Answer 3",
+                responseDate = now.toLocalDate().minusDays(3),
+                comment = null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
@@ -186,48 +188,48 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             ),
           ),
           NomisQuestion(
-            5,
-            2,
+            questionId = 5,
+            sequence = 2,
             createDateTime = now,
             createdBy = reportingStaff.username,
-            "Question 2",
-            listOf(
+            question = "Question 2",
+            answers = listOf(
               NomisResponse(
-                13,
-                1,
-                "Answer 1",
-                now.toLocalDate().minusDays(1),
-                "comment 1",
+                questionResponseId = 13,
+                sequence = 1,
+                answer = "Answer 1",
+                responseDate = now.toLocalDate().minusDays(1),
+                comment = "comment 1",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
               ),
               NomisResponse(
-                14,
-                2,
-                "Answer 2",
-                null,
-                "comment 2",
+                questionResponseId = 14,
+                sequence = 2,
+                answer = "Answer 2",
+                responseDate = null,
+                comment = "comment 2",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
               ),
               NomisResponse(
-                15,
-                3,
-                "Answer 3",
-                now.toLocalDate().minusDays(10),
-                null,
+                questionResponseId = 15,
+                sequence = 3,
+                answer = "Answer 3",
+                responseDate = now.toLocalDate().minusDays(10),
+                comment = null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
               ),
               NomisResponse(
-                16,
-                4,
-                "Answer 4",
-                null,
-                null,
+                questionResponseId = 16,
+                sequence = 4,
+                answer = "Answer 4",
+                responseDate = null,
+                comment = null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
@@ -235,12 +237,12 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             ),
           ),
           NomisQuestion(
-            6,
-            3,
+            questionId = 6,
+            sequence = 3,
             createDateTime = now,
             createdBy = reportingStaff.username,
-            "Question 3",
-            listOf(
+            question = "Question 3",
+            answers = listOf(
               NomisResponse(
                 16,
                 1,
@@ -252,21 +254,21 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 recordingStaff = reportingStaff,
               ),
               NomisResponse(
-                17,
-                2,
-                "Answer 2",
-                null,
-                "comment 2",
+                questionResponseId = 17,
+                sequence = 2,
+                answer = "Answer 2",
+                responseDate = null,
+                comment = "comment 2",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
               ),
               NomisResponse(
-                18,
-                3,
-                "Answer 3",
-                now.toLocalDate().minusDays(7),
-                null,
+                questionResponseId = 18,
+                sequence = 3,
+                answer = "Answer 3",
+                responseDate = now.toLocalDate().minusDays(7),
+                comment = null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
                 recordingStaff = reportingStaff,
@@ -276,39 +278,39 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         ),
         history = listOf(
           NomisHistory(
-            1,
-            "DAMAGE",
-            "Damage",
+            questionnaireId = 1,
+            type = "DAMAGE",
+            description = "Damage",
             createDateTime = now,
             createdBy = reportingStaff.username,
             incidentChangeDate = LocalDate.now(clock),
             incidentChangeStaff = reportingStaff,
             questions = listOf(
               NomisHistoryQuestion(
-                1,
-                1,
-                "Old question 1",
-                listOf(
+                questionId = 1,
+                sequence = 1,
+                question = "Old question 1",
+                answers = listOf(
                   NomisHistoryResponse(1, 1, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
                   NomisHistoryResponse(2, 2, "Old answer 2", null, "comment 2", reportingStaff),
                   NomisHistoryResponse(3, 3, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
                 ),
               ),
               NomisHistoryQuestion(
-                2,
-                2,
-                "Old question 2",
-                listOf(
+                questionId = 2,
+                sequence = 2,
+                question = "Old question 2",
+                answers = listOf(
                   NomisHistoryResponse(4, 1, "Old answer 1", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
                   NomisHistoryResponse(5, 2, "Old answer 2", null, "comment 2", reportingStaff),
                   NomisHistoryResponse(6, 3, "Old answer 3", now.toLocalDate().minusDays(8), null, reportingStaff),
                 ),
               ),
               NomisHistoryQuestion(
-                3,
-                3,
-                "Old question 3",
-                listOf(
+                questionId = 3,
+                sequence = 3,
+                question = "Old question 3",
+                answers = listOf(
                   NomisHistoryResponse(7, 1, "Old answer 1", null, null, reportingStaff),
                   NomisHistoryResponse(8, 2, "Old answer 2", null, null, reportingStaff),
                   NomisHistoryResponse(9, 3, "Old answer 3", null, null, reportingStaff),
@@ -1041,18 +1043,18 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             prison = NomisCode("FBI", "Forest Bank (HMP & YOI)"),
             staffParties = listOf(
               NomisStaffParty(
-                staff = reportingStaff,
-                sequence = null,
-                role = NomisCode(code = "PAS", description = "Present at scene"),
-                comment = "REPORTER",
+                sequence = 1,
+                staff = NomisStaff("JAMESQ", 2, "James", "Quids"),
+                role = NomisCode("PAS", "Present at scene"),
+                comment = "James was also present actually",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
               ),
               NomisStaffParty(
-                sequence = null,
-                staff = NomisStaff("JAMESQ", 2, "James", "Quids"),
-                role = NomisCode("PAS", "Present at scene"),
-                comment = "James was also present actually",
+                staff = reportingStaff,
+                sequence = 2,
+                role = NomisCode(code = "PAS", description = "Present at scene"),
+                comment = "REPORTER",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
               ),
@@ -1060,43 +1062,45 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             offenderParties = listOf(
               NomisOffenderParty(
                 offender = NomisOffender(
-                  offenderNo = "B2222BB",
-                  firstName = "John",
-                  lastName = "Also-Smith",
-                ),
-                role = NomisCode("HOST", "Hostage"),
-                outcome = NomisCode("TRN", "Transfer"),
-                comment = "Prisoner was transferred after incident",
-                createDateTime = now,
-                createdBy = reportingStaff.username,
-              ),
-              NomisOffenderParty(
-                offender = NomisOffender(
                   offenderNo = "A1234AA",
                   firstName = "Trevor",
                   lastName = "Smith",
                 ),
+                sequence = 1,
                 role = NomisCode("PERP", "Perpetrator"),
                 outcome = NomisCode("ILOC", "ILOC"),
                 comment = "Trevor took another prisoner hostage",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
               ),
+              NomisOffenderParty(
+                offender = NomisOffender(
+                  offenderNo = "B2222BB",
+                  firstName = "John",
+                  lastName = "Also-Smith",
+                ),
+                sequence = 2,
+                role = NomisCode("HOST", "Hostage"),
+                outcome = NomisCode("TRN", "Transfer"),
+                comment = "Prisoner was transferred after incident",
+                createDateTime = now,
+                createdBy = reportingStaff.username,
+              ),
             ),
             requirements = listOf(
               NomisRequirement(
-                sequence = null,
-                comment = "Also the description",
-                date = LocalDate.now(clock),
+                sequence = 1,
+                comment = "Could you update the title please",
+                date = LocalDate.now(clock).minusWeeks(1),
                 staff = reportingStaff,
                 prisonId = "MDI",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
               ),
               NomisRequirement(
-                sequence = null,
-                comment = "Could you update the title please",
-                date = LocalDate.now(clock).minusWeeks(1),
+                sequence = 2,
+                comment = "Also the description",
+                date = LocalDate.now(clock),
                 staff = reportingStaff,
                 prisonId = "MDI",
                 createDateTime = now,
@@ -1513,11 +1517,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "staffInvolved": [
                   {
                     "staffUsername": "JAMESQ",
+                    "sequence": 0,
                     "staffRole": "PRESENT_AT_SCENE",
                     "comment": "James was also present actually"
                   },
                   {
                     "staffUsername": "user2",
+                    "sequence": 1,
                     "staffRole": "PRESENT_AT_SCENE",
                     "comment": "REPORTER"
                   }
@@ -1525,12 +1531,14 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonersInvolved": [
                   {
                     "prisonerNumber": "A1234AA",
+                    "sequence": 0,
                     "prisonerRole": "PERPETRATOR",
                     "outcome": "LOCAL_INVESTIGATION",
                     "comment": "Trevor took another prisoner hostage"
                   },
                   {
                     "prisonerNumber": "B2222BB",
+                    "sequence": 1,
                     "prisonerRole": "HOSTAGE",
                     "outcome": "TRANSFER",
                     "comment": "Prisoner was transferred after incident"
@@ -1539,12 +1547,14 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "correctionRequests": [
                   {
                     "reason": "NOT_SPECIFIED",
+                    "sequence": 0,
                     "descriptionOfChange": "Could you update the title please",
                     "correctionRequestedBy": "user2",
                     "correctionRequestedAt": "2023-11-28T00:00:00"
                   },
                   {
                     "reason": "NOT_SPECIFIED",
+                    "sequence": 1,
                     "descriptionOfChange": "Also the description",
                     "correctionRequestedBy": "user2",
                     "correctionRequestedAt": "2023-12-05T00:00:00"
