@@ -207,9 +207,9 @@ class Report(
       nomisStaffParties.map { staffParty ->
         val newStaff = createStaffInvolved(staffParty)
         this.staffInvolved.find { it == newStaff }?.apply {
-          staffUsername = staffParty.staff.username
-          staffRole = StaffRole.fromNomisCode(staffParty.role.code)
-          comment = staffParty.comment
+          staffUsername = newStaff.staffUsername
+          staffRole = newStaff.staffRole
+          comment = newStaff.comment
         } ?: addStaffInvolved(newStaff)
       }.toSet(),
     )
@@ -253,10 +253,10 @@ class Report(
     val newInvolvements = nomisOffenderParties.map { nomisOffenderParty ->
       val newPrisoner = createPrisonerInvolved(nomisOffenderParty)
       prisonersInvolved.find { it == newPrisoner }?.apply {
-        prisonerNumber = nomisOffenderParty.offender.offenderNo
-        prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code)
-        outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) }
-        comment = nomisOffenderParty.comment
+        prisonerNumber = newPrisoner.prisonerNumber
+        prisonerRole = newPrisoner.prisonerRole
+        outcome = newPrisoner.outcome
+        comment = newPrisoner.comment
       } ?: addPrisonerInvolved(newPrisoner)
     }.toSet()
 
@@ -310,10 +310,10 @@ class Report(
       nomisRequirements.map { nomisRequirement ->
         val newCorrection = createCorrectionRequest(nomisRequirement)
         this.correctionRequests.find { it == newCorrection }?.apply {
-          correctionRequestedBy = nomisRequirement.staff.username
-          correctionRequestedAt = nomisRequirement.date.atStartOfDay()
-          descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN
-          reason = CorrectionReason.NOT_SPECIFIED
+          correctionRequestedBy = newCorrection.correctionRequestedBy
+          correctionRequestedAt = newCorrection.correctionRequestedAt
+          descriptionOfChange = newCorrection.descriptionOfChange
+          reason = newCorrection.reason
         } ?: addCorrectionRequest(newCorrection)
       }.toSet(),
     )
