@@ -88,6 +88,7 @@ class HistoricalQuestion(
       nomisResponses.map { nomisResponse ->
         val newResponse = createResponse(nomisResponse, reportedAt)
         this.responses.find { it == newResponse }?.apply {
+          response = newResponse.response
           responseDate = newResponse.responseDate
           additionalInformation = newResponse.additionalInformation
           recordedBy = newResponse.recordedBy

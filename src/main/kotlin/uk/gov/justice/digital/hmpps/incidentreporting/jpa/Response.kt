@@ -29,7 +29,7 @@ class Response(
   /**
    * The response text as seen by downstream data consumers
    */
-  val response: String,
+  var response: String,
 
   /**
    * Optional date attached to response
