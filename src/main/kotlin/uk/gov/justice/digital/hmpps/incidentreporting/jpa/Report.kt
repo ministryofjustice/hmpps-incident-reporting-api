@@ -214,6 +214,7 @@ class Report(
   fun createStaffInvolved(nomisStaffParty: NomisStaffParty): StaffInvolvement =
     StaffInvolvement(
       report = this,
+      sequence = nomisStaffParty.sequence - 1,
       staffUsername = nomisStaffParty.staff.username,
       staffRole = StaffRole.fromNomisCode(nomisStaffParty.role.code),
       comment = nomisStaffParty.comment,
@@ -224,10 +225,11 @@ class Report(
     return staffInvolvement
   }
 
-  fun addStaffInvolved(staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
+  fun addStaffInvolved(sequence: Int, staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
     return addStaffInvolved(
       StaffInvolvement(
         report = this,
+        sequence = sequence,
         staffUsername = staffUsername,
         staffRole = staffRole,
         comment = comment,
@@ -255,6 +257,7 @@ class Report(
   fun createPrisonerInvolved(nomisOffenderParty: NomisOffenderParty): PrisonerInvolvement =
     PrisonerInvolvement(
       report = this,
+      sequence = nomisOffenderParty.sequence - 1,
       prisonerNumber = nomisOffenderParty.offender.offenderNo,
       prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
       outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
@@ -268,6 +271,7 @@ class Report(
 
   fun addPrisonerInvolved(
     prisonerNumber: String,
+    sequence: Int,
     prisonerRole: PrisonerRole,
     outcome: PrisonerOutcome? = null,
     comment: String? = null,
@@ -275,6 +279,7 @@ class Report(
     return addPrisonerInvolved(
       PrisonerInvolvement(
         report = this,
+        sequence = sequence,
         prisonerNumber = prisonerNumber,
         prisonerRole = prisonerRole,
         outcome = outcome,
@@ -303,6 +308,7 @@ class Report(
   fun createCorrectionRequest(nomisRequirement: NomisRequirement): CorrectionRequest =
     CorrectionRequest(
       report = this,
+      sequence = nomisRequirement.sequence - 1,
       correctionRequestedBy = nomisRequirement.staff.username,
       correctionRequestedAt = nomisRequirement.date.atStartOfDay(),
       descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
@@ -315,6 +321,7 @@ class Report(
   }
 
   fun addCorrectionRequest(
+    sequence: Int,
     correctionRequestedBy: String,
     correctionRequestedAt: LocalDateTime,
     reason: CorrectionReason,
@@ -323,6 +330,7 @@ class Report(
     return addCorrectionRequest(
       CorrectionRequest(
         report = this,
+        sequence = sequence,
         correctionRequestedBy = correctionRequestedBy,
         correctionRequestedAt = correctionRequestedAt,
         reason = reason,

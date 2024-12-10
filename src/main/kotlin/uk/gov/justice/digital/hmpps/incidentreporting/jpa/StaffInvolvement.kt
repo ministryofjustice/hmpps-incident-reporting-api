@@ -25,6 +25,8 @@ class StaffInvolvement(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
+  val sequence: Int,
+
   var staffUsername: String,
 
   @Enumerated(EnumType.STRING)
@@ -36,9 +38,7 @@ class StaffInvolvement(
   companion object {
     private val COMPARATOR = compareBy<StaffInvolvement>
       { it.report }
-      .thenBy { it.staffUsername }
-      .thenBy { it.staffRole }
-      .thenBy(nullsLast()) { it.comment }
+      .thenBy { it.sequence }
   }
 
   override fun compareTo(other: StaffInvolvement) = COMPARATOR.compare(this, other)
@@ -50,18 +50,14 @@ class StaffInvolvement(
     other as StaffInvolvement
 
     if (report != other.report) return false
-    if (staffUsername != other.staffUsername) return false
-    if (staffRole != other.staffRole) return false
-    if (comment != other.comment) return false
+    if (sequence != other.sequence) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = report.hashCode()
-    result = 31 * result + staffUsername.hashCode()
-    result = 31 * result + staffRole.hashCode()
-    result = 31 * result + (comment?.hashCode() ?: 0)
+    result = 31 * result + sequence.hashCode()
     return result
   }
 
@@ -76,6 +72,7 @@ class StaffInvolvement(
   }
 
   fun toDto() = StaffInvolvementDto(
+    sequence = sequence,
     staffUsername = staffUsername,
     staffRole = staffRole,
     comment = comment,

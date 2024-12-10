@@ -2,11 +2,13 @@
   {
     "staffUsername": "abc321",
     "staffRole": "WITNESS",
-    "comment": "Present at scene"
+    "comment": "Present at scene",
+    "sequence": 0
   },
   {
     "staffUsername": "staff-2",
     "staffRole": "CR_HEAD",
-    "comment": "Comment #2"
+    "comment": "Comment #2",
+    "sequence": 1
   }
 ]

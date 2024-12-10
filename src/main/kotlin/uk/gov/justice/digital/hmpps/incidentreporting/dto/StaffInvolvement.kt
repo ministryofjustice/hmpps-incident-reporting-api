@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 @Schema(description = "Member of staff involved in an incident", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class StaffInvolvement(
+  @Schema(description = "Sequence of the staff involvement for this report")
+  val sequence: Int,
   @Schema(description = "Username")
   val staffUsername: String,
   @Schema(description = "Their role")

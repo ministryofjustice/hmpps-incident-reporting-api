@@ -25,6 +25,8 @@ class CorrectionRequest(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
+  val sequence: Int,
+
   @Enumerated(EnumType.STRING)
   var reason: CorrectionReason,
   var descriptionOfChange: String,
@@ -35,9 +37,7 @@ class CorrectionRequest(
   companion object {
     private val COMPARATOR = compareBy<CorrectionRequest>
       { it.report }
-      .thenBy { it.correctionRequestedAt }
-      .thenBy { it.reason }
-      .thenBy { it.descriptionOfChange }
+      .thenBy { it.sequence }
   }
 
   override fun compareTo(other: CorrectionRequest) = COMPARATOR.compare(this, other)
@@ -49,18 +49,14 @@ class CorrectionRequest(
     other as CorrectionRequest
 
     if (report != other.report) return false
-    if (correctionRequestedAt != other.correctionRequestedAt) return false
-    if (reason != other.reason) return false
-    if (descriptionOfChange != other.descriptionOfChange) return false
+    if (sequence != other.sequence) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = report.hashCode()
-    result = 31 * result + correctionRequestedAt.hashCode()
-    result = 31 * result + reason.hashCode()
-    result = 31 * result + descriptionOfChange.hashCode()
+    result = 31 * result + sequence.hashCode()
     return result
   }
 
@@ -76,6 +72,7 @@ class CorrectionRequest(
   }
 
   fun toDto() = CorrectionRequestDto(
+    sequence = sequence,
     reason = reason,
     descriptionOfChange = descriptionOfChange,
     correctionRequestedBy = correctionRequestedBy,

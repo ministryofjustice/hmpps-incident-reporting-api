@@ -9,7 +9,7 @@ data class NomisStaffParty(
   @Schema(description = "Staff involved in the incident")
   val staff: NomisStaff,
   @Schema(description = "The sequence number providing an order for a list of staff parties")
-  val sequence: Int? = null,
+  val sequence: Int,
   @Schema(description = "Staff role in the incident")
   val role: NomisCode,
   @Schema(description = "General information about the incident")

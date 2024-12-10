@@ -26,6 +26,8 @@ class PrisonerInvolvement(
   @ManyToOne(fetch = FetchType.LAZY)
   private val report: Report,
 
+  val sequence: Int,
+
   var prisonerNumber: String,
 
   @Enumerated(EnumType.STRING)
@@ -40,10 +42,7 @@ class PrisonerInvolvement(
   companion object {
     private val COMPARATOR = compareBy<PrisonerInvolvement>
       { it.report }
-      .thenBy { it.prisonerNumber }
-      .thenBy { it.prisonerRole }
-      .thenBy { it.outcome }
-      .thenBy(nullsLast()) { it.comment }
+      .thenBy { it.sequence }
   }
 
   override fun compareTo(other: PrisonerInvolvement) = COMPARATOR.compare(this, other)
@@ -55,20 +54,14 @@ class PrisonerInvolvement(
     other as PrisonerInvolvement
 
     if (report != other.report) return false
-    if (prisonerNumber != other.prisonerNumber) return false
-    if (prisonerRole != other.prisonerRole) return false
-    if (outcome != other.outcome) return false
-    if (comment != other.comment) return false
+    if (sequence != other.sequence) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = report.hashCode()
-    result = 31 * result + prisonerNumber.hashCode()
-    result = 31 * result + prisonerRole.hashCode()
-    result = 31 * result + outcome.hashCode()
-    result = 31 * result + (comment?.hashCode() ?: 0)
+    result = 31 * result + sequence.hashCode()
     return result
   }
 
@@ -86,6 +79,7 @@ class PrisonerInvolvement(
   }
 
   fun toDto() = PrisonerInvolvementDto(
+    sequence = sequence,
     prisonerNumber = prisonerNumber,
     prisonerRole = prisonerRole,
     outcome = outcome,
