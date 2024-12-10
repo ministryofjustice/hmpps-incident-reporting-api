@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncRepo
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
+import io.swagger.v3.oas.annotations.parameters.RequestBody as RequestBodySchema
 
 @RestController
 @Validated
@@ -72,10 +73,16 @@ class NomisSyncResource(
     ],
   )
   fun upsertIncidentReport(
-    @Schema(
-      description = "Incident report created/updated in NOMIS",
-      accessMode = Schema.AccessMode.WRITE_ONLY,
-      oneOf = [NomisSyncRequest::class, NomisSyncCreateRequest::class, NomisSyncUpdateRequest::class],
+    @RequestBodySchema(
+      description = "Incident report created or updated in NOMIS",
+      content = [
+        Content(
+          schema = Schema(
+            accessMode = Schema.AccessMode.WRITE_ONLY,
+            oneOf = [NomisSyncRequest::class, NomisSyncCreateRequest::class, NomisSyncUpdateRequest::class],
+          ),
+        ),
+      ],
     )
     @RequestBody
     @Valid
