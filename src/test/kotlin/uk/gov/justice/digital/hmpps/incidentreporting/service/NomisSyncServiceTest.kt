@@ -83,7 +83,7 @@ class NomisSyncServiceTest {
       staffParties = listOf(
         NomisStaffParty(
           NomisStaff("user3", 124, "Mary", "Jones"),
-          sequence = 1,
+          sequence = 0,
           NomisCode("PAS", "Present at scene"),
           "Found offender in cell",
           createDateTime = now,
@@ -97,7 +97,7 @@ class NomisSyncServiceTest {
             firstName = "Trevor",
             lastName = "Smith",
           ),
-          sequence = 1,
+          sequence = 0,
           role = NomisCode("PERP", "Perpetrator"),
           outcome = NomisCode("HELTH", "ACCT"),
           comment = "First time self-harming",
@@ -107,7 +107,7 @@ class NomisSyncServiceTest {
       ),
       requirements = listOf(
         NomisRequirement(
-          sequence = 1,
+          sequence = 0,
           comment = "Title should include prisoner number",
           date = now.toLocalDate(),
           prisonId = "MDI",
@@ -132,7 +132,7 @@ class NomisSyncServiceTest {
             NomisResponse(
               answer = "Razor",
               questionResponseId = null,
-              sequence = 1,
+              sequence = 0,
               comment = null,
               createDateTime = now,
               createdBy = reportedBy,
