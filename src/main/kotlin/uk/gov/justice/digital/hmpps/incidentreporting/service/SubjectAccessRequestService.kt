@@ -26,7 +26,7 @@ class SubjectAccessRequestService(
     val prisonerInvolvementList = prisonerInvolvementRepository.findAllByPrisonerNumber(prn)
     val content: List<ReportWithDetails> = prisonerInvolvementList
       .asSequence()
-      .map { it.getReport() }
+      .map { it.report }
       .distinctBy { it.id }
       .filter {
         val modifiedDate = it.modifiedAt.toLocalDate()

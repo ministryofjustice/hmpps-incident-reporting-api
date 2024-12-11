@@ -24,7 +24,7 @@ class PrisonerInvolvement(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private val report: Report,
+  val report: Report,
 
   val sequence: Int,
 
@@ -68,8 +68,6 @@ class PrisonerInvolvement(
   override fun toString(): String {
     return "PrisonerInvolvement(id=$id, reportReference=${report.reportReference}, prisonerNumber=$prisonerNumber, prisonerRole=$prisonerRole, outcome=$outcome, comment=$comment)"
   }
-
-  fun getReport() = report
 
   fun updateWith(request: UpdatePrisonerInvolvement) {
     request.prisonerNumber?.let { prisonerNumber = it }

@@ -1756,7 +1756,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
         val changedReport =
           reportRepository.findOneEagerlyById(newReport.id!!) ?: throw RuntimeException("Report not found")
-        assertThat(changedReport.getQuestions()).hasSize(3)
+        assertThat(changedReport.questions).hasSize(3)
         assertThat(changedReport.findQuestion(code = "1", sequence = 0)).isNotNull
         assertThat(changedReport.findQuestion(code = "2", sequence = 1)).isNull()
         assertThat(changedReport.findQuestion(code = "3", sequence = 2)).isNotNull
