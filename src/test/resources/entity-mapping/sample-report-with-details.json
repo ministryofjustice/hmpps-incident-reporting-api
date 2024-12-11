@@ -275,12 +275,16 @@
     {
       "sequence": 0,
       "staffUsername": "staff-1",
+      "firstName": null,
+      "lastName": null,
       "staffRole": "AUTHORISING_OFFICER",
       "comment": "Comment #1"
     },
     {
       "sequence": 1,
       "staffUsername": "staff-2",
+      "firstName": null,
+      "lastName": null,
       "staffRole": "CR_HEAD",
       "comment": "Comment #2"
     }
@@ -289,6 +293,8 @@
     {
       "sequence": 0,
       "prisonerNumber": "A0001AA",
+      "firstName": null,
+      "lastName": null,
       "prisonerRole": "ACTIVE_INVOLVEMENT",
       "outcome": "CHARGED_BY_POLICE",
       "comment": "Comment #1"
@@ -296,6 +302,8 @@
     {
       "sequence": 1,
       "prisonerNumber": "A0002AA",
+      "firstName": null,
+      "lastName": null,
       "prisonerRole": "ASSAILANT",
       "outcome": "CONVICTED",
       "comment": "Comment #2"

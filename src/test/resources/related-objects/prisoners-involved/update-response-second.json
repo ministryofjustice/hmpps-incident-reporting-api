@@ -1,6 +1,8 @@
 [
   {
     "prisonerNumber": "A0001AA",
+    "firstName": null,
+    "lastName": null,
     "prisonerRole": "ACTIVE_INVOLVEMENT",
     "outcome": "CHARGED_BY_POLICE",
     "comment": "Comment #1",
@@ -8,6 +10,8 @@
   },
   {
     "prisonerNumber": "A1234BB",
+    "firstName": null,
+    "lastName": null,
     "prisonerRole": "PRESENT_AT_SCENE",
     "outcome": null,
     "comment": "Onlooker",

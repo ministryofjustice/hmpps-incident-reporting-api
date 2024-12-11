@@ -1,6 +1,8 @@
 [
   {
     "prisonerNumber": "A0002AA",
+    "firstName": null,
+    "lastName": null,
     "prisonerRole": "ASSAILANT",
     "outcome": "CONVICTED",
     "comment": "Comment #2",

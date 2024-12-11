@@ -28,6 +28,8 @@ class StaffInvolvement(
   val sequence: Int,
 
   var staffUsername: String,
+  var firstName: String? = null,
+  var lastName: String? = null,
 
   @Enumerated(EnumType.STRING)
   var staffRole: StaffRole,
@@ -74,6 +76,8 @@ class StaffInvolvement(
   fun toDto() = StaffInvolvementDto(
     sequence = sequence,
     staffUsername = staffUsername,
+    firstName = firstName,
+    lastName = lastName,
     staffRole = staffRole,
     comment = comment,
   )

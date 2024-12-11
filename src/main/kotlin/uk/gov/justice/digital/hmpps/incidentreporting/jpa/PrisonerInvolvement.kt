@@ -29,6 +29,8 @@ class PrisonerInvolvement(
   val sequence: Int,
 
   var prisonerNumber: String,
+  var firstName: String? = null,
+  var lastName: String? = null,
 
   @Enumerated(EnumType.STRING)
   var prisonerRole: PrisonerRole,
@@ -79,6 +81,8 @@ class PrisonerInvolvement(
   fun toDto() = PrisonerInvolvementDto(
     sequence = sequence,
     prisonerNumber = prisonerNumber,
+    firstName = firstName,
+    lastName = lastName,
     prisonerRole = prisonerRole,
     outcome = outcome,
     comment = comment,

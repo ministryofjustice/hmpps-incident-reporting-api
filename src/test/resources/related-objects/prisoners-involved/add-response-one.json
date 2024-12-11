@@ -1,6 +1,8 @@
 [
   {
     "prisonerNumber": "A1234BB",
+    "firstName": null,
+    "lastName": null,
     "prisonerRole": "PRESENT_AT_SCENE",
     "outcome": null,
     "comment": "Onlooker",

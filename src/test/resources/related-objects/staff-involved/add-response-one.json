@@ -1,6 +1,8 @@
 [
   {
     "staffUsername": "abc321",
+    "firstName": null,
+    "lastName": null,
     "staffRole": "WITNESS",
     "comment": "Present at scene",
     "sequence": 0
