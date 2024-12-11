@@ -191,11 +191,15 @@ class NomisSyncServiceTest {
       sequence = 0,
       staffRole = StaffRole.PRESENT_AT_SCENE,
       staffUsername = "user3",
+      firstName = "Mary",
+      lastName = "Jones",
       comment = "Found offender in cell",
     )
     sampleReport.addPrisonerInvolved(
-      prisonerNumber = "A1234AA",
       sequence = 0,
+      prisonerNumber = "A1234AA",
+      firstName = "Trevor",
+      lastName = "Smith",
       prisonerRole = PrisonerRole.PERPETRATOR,
       outcome = PrisonerOutcome.SEEN_HEALTHCARE,
       comment = "First time self-harming",
@@ -288,6 +292,7 @@ class NomisSyncServiceTest {
     assertThat(report.prisonersInvolved).hasSize(1)
     val prisonerInvolved = report.prisonersInvolved[0]
     assertThat(prisonerInvolved.prisonerNumber).isEqualTo("A1234AA")
+    assertThat(prisonerInvolved.firstName).isEqualTo("Trevor")
     assertThat(prisonerInvolved.prisonerRole).isEqualTo(PrisonerRole.PERPETRATOR)
     assertThat(prisonerInvolved.outcome).isEqualTo(PrisonerOutcome.SEEN_HEALTHCARE)
     assertThat(prisonerInvolved.comment).isEqualTo("First time self-harming")
@@ -295,6 +300,7 @@ class NomisSyncServiceTest {
     assertThat(report.staffInvolved).hasSize(1)
     val staffInvolved = report.staffInvolved[0]
     assertThat(staffInvolved.staffUsername).isEqualTo("user3")
+    assertThat(staffInvolved.firstName).isEqualTo("Mary")
     assertThat(staffInvolved.staffRole).isEqualTo(StaffRole.PRESENT_AT_SCENE)
     assertThat(staffInvolved.comment).isEqualTo("Found offender in cell")
 

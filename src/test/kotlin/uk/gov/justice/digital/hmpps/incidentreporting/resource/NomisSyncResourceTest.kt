@@ -689,8 +689,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "staffInvolved": [
                   {
                     "staffUsername": "user2",
-                    "firstName": null,
-                    "lastName": null,
+                    "firstName": "John",
+                    "lastName": "Smith",
                     "staffRole": "PRESENT_AT_SCENE",
                     "comment": "REPORTER"
                   }
@@ -698,8 +698,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonersInvolved": [
                   {
                     "prisonerNumber": "A1234AA",
-                    "firstName": null,
-                    "lastName": null,
+                    "firstName": "Trevor",
+                    "lastName": "Smith",
                     "prisonerRole": "PERPETRATOR",
                     "outcome": "ACCT",
                     "comment": "Comment"
@@ -980,8 +980,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "staffInvolved": [
                   {
                     "staffUsername": "user2",
-                    "firstName": null,
-                    "lastName": null,
+                    "firstName": "John",
+                    "lastName": "Smith",
                     "staffRole": "PRESENT_AT_SCENE",
                     "comment": "REPORTER"
                   }
@@ -989,8 +989,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonersInvolved": [
                   {
                     "prisonerNumber": "A1234AA",
-                    "firstName": null,
-                    "lastName": null,
+                    "firstName": "Trevor",
+                    "lastName": "Smith",
                     "prisonerRole": "PERPETRATOR",
                     "outcome": "ACCT",
                     "comment": "Comment"
@@ -1525,16 +1525,16 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "staffInvolved": [
                   {
                     "staffUsername": "JAMESQ",
-                    "firstName": null,
-                    "lastName": null,
+                    "firstName": "James",
+                    "lastName": "Quids",
                     "sequence": 0,
                     "staffRole": "PRESENT_AT_SCENE",
                     "comment": "James was also present actually"
                   },
                   {
                     "staffUsername": "user2",
-                    "firstName": null,
-                    "lastName": null,
+                    "firstName": "John",
+                    "lastName": "Smith",
                     "sequence": 1,
                     "staffRole": "PRESENT_AT_SCENE",
                     "comment": "REPORTER"
@@ -1543,8 +1543,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonersInvolved": [
                   {
                     "prisonerNumber": "A1234AA",
-                    "firstName": null,
-                    "lastName": null,
+                    "firstName": "Trevor",
+                    "lastName": "Smith",
                     "sequence": 0,
                     "prisonerRole": "PERPETRATOR",
                     "outcome": "LOCAL_INVESTIGATION",
@@ -1552,8 +1552,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   },
                   {
                     "prisonerNumber": "B2222BB",
-                    "firstName": null,
-                    "lastName": null,
+                    "firstName": "John",
+                    "lastName": "Also-Smith",
                     "sequence": 1,
                     "prisonerRole": "HOSTAGE",
                     "outcome": "TRANSFER",

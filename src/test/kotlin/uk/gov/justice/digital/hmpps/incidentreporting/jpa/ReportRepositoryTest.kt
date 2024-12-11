@@ -252,8 +252,16 @@ class ReportRepositoryTest : IntegrationTestBase() {
         ),
       )
     report.addStatusHistory(Status.DRAFT, now, "user5")
-    report.addStaffInvolved(0, StaffRole.FIRST_ON_SCENE, "user1")
-    report.addPrisonerInvolved("A1234AA", 0, PrisonerRole.VICTIM)
+    report.addStaffInvolved(
+      sequence = 0,
+      staffUsername = "user1",
+      staffRole = StaffRole.FIRST_ON_SCENE,
+    )
+    report.addPrisonerInvolved(
+      sequence = 0,
+      prisonerNumber = "A1234AA",
+      prisonerRole = PrisonerRole.VICTIM,
+    )
 
     TestTransaction.flagForCommit()
     TestTransaction.end()
