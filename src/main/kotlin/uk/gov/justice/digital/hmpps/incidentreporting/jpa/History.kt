@@ -28,7 +28,7 @@ class History(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private val report: Report,
+  val report: Report,
 
   @Enumerated(EnumType.STRING)
   val type: Type,

@@ -25,7 +25,7 @@ class Question(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private val report: Report,
+  val report: Report,
 
   /**
    * Identifier that must be unique within one report; used for updating questions in place.

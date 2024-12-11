@@ -139,7 +139,7 @@ class Report(
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
-  private val questions: SortedSet<Question> = sortedSetOf(),
+  val questions: SortedSet<Question> = sortedSetOf(),
 
   var questionSetId: String? = null,
 
@@ -357,8 +357,6 @@ class Report(
     correctionRequests.remove(correctionRequest)
   }
 
-  fun getQuestions(): SortedSet<Question> = questions
-
   fun findQuestion(code: String, sequence: Int): Question? =
     this.questions.firstOrNull { it.code == code && it.sequence == sequence }
 
@@ -459,7 +457,7 @@ class Report(
 
   private fun copyToHistory(changedAt: LocalDateTime, changedBy: String): History {
     val history = addHistory(type, changedAt, changedBy)
-    getQuestions().forEach { question ->
+    questions.forEach { question ->
       val historicalQuestion = history.addQuestion(
         code = question.code,
         question = question.question,

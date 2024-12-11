@@ -30,6 +30,7 @@
   "reportedDateTime": "2023-12-20T15:10:00",
   "staffParties": [
     {
+      "sequence": 0,
       "staff": {
         "username": "staff1",
         "staffId": 200001,
@@ -45,6 +46,7 @@
       "createdBy": "user1"
     },
     {
+      "sequence": 1,
       "staff": {
         "username": "user1",
         "staffId": 100001,
@@ -62,6 +64,7 @@
   ],
   "offenderParties": [
     {
+      "sequence": 0,
       "offender": {
         "offenderNo": "A1234BC",
         "firstName": "DAVID",
@@ -80,6 +83,7 @@
       "createdBy": "user1"
     },
     {
+      "sequence": 1,
       "offender": {
         "offenderNo": "A1235EF",
         "firstName": "FRED",
@@ -100,6 +104,7 @@
   ],
   "requirements": [
     {
+      "sequence": 0,
       "comment": "Type should be assault",
       "date": "2024-01-20",
       "staff": {
@@ -113,6 +118,7 @@
       "createdBy": "user1"
     },
     {
+      "sequence": 1,
       "comment": "Add details to description",
       "date": "2024-01-21",
       "staff": {

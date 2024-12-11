@@ -277,7 +277,7 @@ class ReportService(
 
   fun getQuestionsWithResponses(reportId: UUID): List<Question>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
-      getQuestions().map { it.toDto() }
+      questions.map { it.toDto() }
     }
   }
 
@@ -290,7 +290,7 @@ class ReportService(
       val now = LocalDateTime.now(clock)
       val requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME
 
-      val questionMap = getQuestions().associateBy { question -> question.code }
+      val questionMap = questions.associateBy { question -> question.code }
       var addedCount = 0
       var updatedCount = 0
 
@@ -305,7 +305,7 @@ class ReportService(
             )
           } else {
             addedCount += 1
-            val sequence = if (this.getQuestions().isEmpty()) 1 else this.getQuestions().last().sequence + 1
+            val sequence = if (this.questions.isEmpty()) 1 else this.questions.last().sequence + 1
             addQuestion(
               code = request.code,
               question = request.question,
@@ -341,7 +341,7 @@ class ReportService(
         reportBasic,
       )
 
-      reportBasic to getQuestions().map { it.toDto() }
+      reportBasic to questions.map { it.toDto() }
     }
   }
 
@@ -363,7 +363,7 @@ class ReportService(
         reportBasic,
       )
 
-      reportBasic to getQuestions().map { it.toDto() }
+      reportBasic to questions.map { it.toDto() }
     }
   }
 
@@ -419,7 +419,7 @@ class ReportService(
     return buildMap {
       prisonerInvolvementRepository.findAllByPrisonerNumber(removedPrisonerNumber)
         .forEach { prisonerInvolvement ->
-          val report = prisonerInvolvement.getReport()
+          val report = prisonerInvolvement.report
           if (!containsKey(report.id)) {
             put(report.id, report)
           }

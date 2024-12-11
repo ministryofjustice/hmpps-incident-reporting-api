@@ -23,7 +23,7 @@ class StaffInvolvement(
   val id: Long? = null,
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private val report: Report,
+  val report: Report,
 
   val sequence: Int,
 
