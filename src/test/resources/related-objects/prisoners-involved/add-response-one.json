@@ -3,6 +3,7 @@
     "prisonerNumber": "A1234BB",
     "prisonerRole": "PRESENT_AT_SCENE",
     "outcome": null,
-    "comment": "Onlooker"
+    "comment": "Onlooker",
+    "sequence": 0
   }
 ]

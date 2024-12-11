@@ -99,6 +99,7 @@ class Question(
       nomisResponses.map { nomisResponse ->
         val newResponse = createResponse(nomisResponse, report.reportedAt)
         this.responses.find { it == newResponse }?.apply {
+          response = newResponse.response
           responseDate = newResponse.responseDate
           additionalInformation = newResponse.additionalInformation
           recordedBy = newResponse.recordedBy

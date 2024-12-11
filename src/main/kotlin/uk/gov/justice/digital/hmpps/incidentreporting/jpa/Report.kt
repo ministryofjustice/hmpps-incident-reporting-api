@@ -206,7 +206,11 @@ class Report(
     this.staffInvolved.retainAll(
       nomisStaffParties.map { staffParty ->
         val newStaff = createStaffInvolved(staffParty)
-        this.staffInvolved.find { it == newStaff } ?: addStaffInvolved(newStaff)
+        this.staffInvolved.find { it == newStaff }?.apply {
+          staffUsername = newStaff.staffUsername
+          staffRole = newStaff.staffRole
+          comment = newStaff.comment
+        } ?: addStaffInvolved(newStaff)
       }.toSet(),
     )
   }
@@ -214,6 +218,7 @@ class Report(
   fun createStaffInvolved(nomisStaffParty: NomisStaffParty): StaffInvolvement =
     StaffInvolvement(
       report = this,
+      sequence = nomisStaffParty.sequence - 1,
       staffUsername = nomisStaffParty.staff.username,
       staffRole = StaffRole.fromNomisCode(nomisStaffParty.role.code),
       comment = nomisStaffParty.comment,
@@ -224,10 +229,11 @@ class Report(
     return staffInvolvement
   }
 
-  fun addStaffInvolved(staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
+  fun addStaffInvolved(sequence: Int, staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
     return addStaffInvolved(
       StaffInvolvement(
         report = this,
+        sequence = sequence,
         staffUsername = staffUsername,
         staffRole = staffRole,
         comment = comment,
@@ -246,7 +252,12 @@ class Report(
   fun updatePrisonerInvolved(nomisOffenderParties: Collection<NomisOffenderParty>) {
     val newInvolvements = nomisOffenderParties.map { nomisOffenderParty ->
       val newPrisoner = createPrisonerInvolved(nomisOffenderParty)
-      prisonersInvolved.find { it == newPrisoner } ?: addPrisonerInvolved(newPrisoner)
+      prisonersInvolved.find { it == newPrisoner }?.apply {
+        prisonerNumber = newPrisoner.prisonerNumber
+        prisonerRole = newPrisoner.prisonerRole
+        outcome = newPrisoner.outcome
+        comment = newPrisoner.comment
+      } ?: addPrisonerInvolved(newPrisoner)
     }.toSet()
 
     this.prisonersInvolved.retainAll(newInvolvements)
@@ -255,6 +266,7 @@ class Report(
   fun createPrisonerInvolved(nomisOffenderParty: NomisOffenderParty): PrisonerInvolvement =
     PrisonerInvolvement(
       report = this,
+      sequence = nomisOffenderParty.sequence - 1,
       prisonerNumber = nomisOffenderParty.offender.offenderNo,
       prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
       outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
@@ -268,6 +280,7 @@ class Report(
 
   fun addPrisonerInvolved(
     prisonerNumber: String,
+    sequence: Int,
     prisonerRole: PrisonerRole,
     outcome: PrisonerOutcome? = null,
     comment: String? = null,
@@ -275,6 +288,7 @@ class Report(
     return addPrisonerInvolved(
       PrisonerInvolvement(
         report = this,
+        sequence = sequence,
         prisonerNumber = prisonerNumber,
         prisonerRole = prisonerRole,
         outcome = outcome,
@@ -295,7 +309,12 @@ class Report(
     this.correctionRequests.retainAll(
       nomisRequirements.map { nomisRequirement ->
         val newCorrection = createCorrectionRequest(nomisRequirement)
-        this.correctionRequests.find { it == newCorrection } ?: addCorrectionRequest(newCorrection)
+        this.correctionRequests.find { it == newCorrection }?.apply {
+          correctionRequestedBy = newCorrection.correctionRequestedBy
+          correctionRequestedAt = newCorrection.correctionRequestedAt
+          descriptionOfChange = newCorrection.descriptionOfChange
+          reason = newCorrection.reason
+        } ?: addCorrectionRequest(newCorrection)
       }.toSet(),
     )
   }
@@ -303,6 +322,7 @@ class Report(
   fun createCorrectionRequest(nomisRequirement: NomisRequirement): CorrectionRequest =
     CorrectionRequest(
       report = this,
+      sequence = nomisRequirement.sequence - 1,
       correctionRequestedBy = nomisRequirement.staff.username,
       correctionRequestedAt = nomisRequirement.date.atStartOfDay(),
       descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
@@ -315,6 +335,7 @@ class Report(
   }
 
   fun addCorrectionRequest(
+    sequence: Int,
     correctionRequestedBy: String,
     correctionRequestedAt: LocalDateTime,
     reason: CorrectionReason,
@@ -323,6 +344,7 @@ class Report(
     return addCorrectionRequest(
       CorrectionRequest(
         report = this,
+        sequence = sequence,
         correctionRequestedBy = correctionRequestedBy,
         correctionRequestedAt = correctionRequestedAt,
         reason = reason,
@@ -335,7 +357,7 @@ class Report(
     correctionRequests.remove(correctionRequest)
   }
 
-  fun getQuestions(): Set<Question> = questions
+  fun getQuestions(): SortedSet<Question> = questions
 
   fun findQuestion(code: String, sequence: Int): Question? =
     this.questions.firstOrNull { it.code == code && it.sequence == sequence }
