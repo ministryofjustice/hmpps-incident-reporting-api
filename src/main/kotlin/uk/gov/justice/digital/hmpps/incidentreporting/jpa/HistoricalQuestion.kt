@@ -102,7 +102,7 @@ class HistoricalQuestion(
     HistoricalResponse(
       historicalQuestion = this,
       response = nomisResponse.answer!!,
-      sequence = nomisResponse.responseSequence - 1,
+      sequence = nomisResponse.responseSequence,
       responseDate = nomisResponse.responseDate,
       additionalInformation = nomisResponse.comment,
       recordedBy = nomisResponse.recordingStaff.username,

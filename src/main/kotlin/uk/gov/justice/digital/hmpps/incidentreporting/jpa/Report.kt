@@ -218,7 +218,7 @@ class Report(
   fun createStaffInvolved(nomisStaffParty: NomisStaffParty): StaffInvolvement =
     StaffInvolvement(
       report = this,
-      sequence = nomisStaffParty.sequence - 1,
+      sequence = nomisStaffParty.sequence,
       staffUsername = nomisStaffParty.staff.username,
       staffRole = StaffRole.fromNomisCode(nomisStaffParty.role.code),
       comment = nomisStaffParty.comment,
@@ -266,7 +266,7 @@ class Report(
   fun createPrisonerInvolved(nomisOffenderParty: NomisOffenderParty): PrisonerInvolvement =
     PrisonerInvolvement(
       report = this,
-      sequence = nomisOffenderParty.sequence - 1,
+      sequence = nomisOffenderParty.sequence,
       prisonerNumber = nomisOffenderParty.offender.offenderNo,
       prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
       outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
@@ -322,7 +322,7 @@ class Report(
   fun createCorrectionRequest(nomisRequirement: NomisRequirement): CorrectionRequest =
     CorrectionRequest(
       report = this,
-      sequence = nomisRequirement.sequence - 1,
+      sequence = nomisRequirement.sequence,
       correctionRequestedBy = nomisRequirement.staff.username,
       correctionRequestedAt = nomisRequirement.date.atStartOfDay(),
       descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
@@ -373,7 +373,7 @@ class Report(
   private fun updateOrAddQuestion(nomisQuestion: NomisQuestion): Question =
     findQuestion(
       code = nomisQuestion.questionId.toString(),
-      sequence = nomisQuestion.sequence - 1,
+      sequence = nomisQuestion.sequence,
     )?.apply {
       question = nomisQuestion.question
     } ?: addQuestion(nomisQuestion).also { newQuestion ->
@@ -398,7 +398,7 @@ class Report(
   fun addQuestion(nomisQuestion: NomisQuestion): Question =
     this.addQuestion(
       code = nomisQuestion.questionId.toString(),
-      sequence = nomisQuestion.sequence - 1,
+      sequence = nomisQuestion.sequence,
       question = nomisQuestion.question,
     )
 

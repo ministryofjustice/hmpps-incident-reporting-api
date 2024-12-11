@@ -305,7 +305,7 @@ class ReportService(
             )
           } else {
             addedCount += 1
-            val sequence = if (this.questions.isEmpty()) 0 else this.questions.last().sequence + 1
+            val sequence = if (this.questions.isEmpty()) 1 else this.questions.last().sequence + 1
             addQuestion(
               code = request.code,
               question = request.question,

@@ -90,7 +90,7 @@ class History(
   private fun updateOrAddQuestion(nomisQuestion: NomisHistoryQuestion): HistoricalQuestion =
     findQuestion(
       code = nomisQuestion.questionId.toString(),
-      sequence = nomisQuestion.sequence - 1,
+      sequence = nomisQuestion.sequence,
     )?.apply {
       question = nomisQuestion.question
     } ?: addQuestion(nomisQuestion).also { newQuestion ->
@@ -115,7 +115,7 @@ class History(
   fun addQuestion(historyQuestion: NomisHistoryQuestion): HistoricalQuestion =
     this.addQuestion(
       code = historyQuestion.questionId.toString(),
-      sequence = historyQuestion.sequence - 1,
+      sequence = historyQuestion.sequence,
       question = historyQuestion.question,
     )
 

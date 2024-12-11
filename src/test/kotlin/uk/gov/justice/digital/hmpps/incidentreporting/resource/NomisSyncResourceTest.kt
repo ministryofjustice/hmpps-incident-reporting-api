@@ -105,7 +105,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         staffParties = listOf(
           NomisStaffParty(
             staff = reportingStaff,
-            sequence = 1,
+            sequence = 0,
             role = NomisCode("PAS", "Present at scene"),
             comment = "REPORTER",
             createDateTime = now,
@@ -119,7 +119,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               firstName = "Trevor",
               lastName = "Smith",
             ),
-            sequence = 1,
+            sequence = 0,
             role = NomisCode("PERP", "Perpetrator"),
             outcome = NomisCode("ACCT", "ACCT"),
             comment = "Comment",
@@ -129,7 +129,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         ),
         requirements = listOf(
           NomisRequirement(
-            sequence = 1,
+            sequence = 0,
             comment = "Change 1",
             date = LocalDate.now(clock),
             staff = reportingStaff,
@@ -138,7 +138,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             createdBy = reportingStaff.username,
           ),
           NomisRequirement(
-            sequence = 2,
+            sequence = 1,
             comment = "Change 2",
             date = LocalDate.now(clock).minusWeeks(1),
             staff = reportingStaff,
@@ -157,7 +157,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             answers = listOf(
               NomisResponse(
                 10,
-                1,
+                0,
                 "Answer 1",
                 now.toLocalDate().minusDays(2),
                 "comment 1",
@@ -167,7 +167,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisResponse(
                 questionResponseId = 11,
-                sequence = 2,
+                sequence = 1,
                 answer = "Answer 2",
                 responseDate = null,
                 comment = "comment 2",
@@ -177,7 +177,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisResponse(
                 questionResponseId = 12,
-                sequence = 3,
+                sequence = 2,
                 answer = "Answer 3",
                 responseDate = now.toLocalDate().minusDays(3),
                 comment = null,
@@ -196,7 +196,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             answers = listOf(
               NomisResponse(
                 questionResponseId = 13,
-                sequence = 1,
+                sequence = 0,
                 answer = "Answer 1",
                 responseDate = now.toLocalDate().minusDays(1),
                 comment = "comment 1",
@@ -206,7 +206,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisResponse(
                 questionResponseId = 14,
-                sequence = 2,
+                sequence = 1,
                 answer = "Answer 2",
                 responseDate = null,
                 comment = "comment 2",
@@ -216,7 +216,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisResponse(
                 questionResponseId = 15,
-                sequence = 3,
+                sequence = 2,
                 answer = "Answer 3",
                 responseDate = now.toLocalDate().minusDays(10),
                 comment = null,
@@ -226,7 +226,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisResponse(
                 questionResponseId = 16,
-                sequence = 4,
+                sequence = 3,
                 answer = "Answer 4",
                 responseDate = null,
                 comment = null,
@@ -245,7 +245,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             answers = listOf(
               NomisResponse(
                 16,
-                1,
+                0,
                 "Answer 1",
                 now.toLocalDate(),
                 "comment 1",
@@ -255,7 +255,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisResponse(
                 questionResponseId = 17,
-                sequence = 2,
+                sequence = 1,
                 answer = "Answer 2",
                 responseDate = null,
                 comment = "comment 2",
@@ -265,7 +265,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisResponse(
                 questionResponseId = 18,
-                sequence = 3,
+                sequence = 2,
                 answer = "Answer 3",
                 responseDate = now.toLocalDate().minusDays(7),
                 comment = null,
@@ -291,9 +291,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 sequence = 1,
                 question = "Old question 1",
                 answers = listOf(
-                  NomisHistoryResponse(1, 1, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
-                  NomisHistoryResponse(2, 2, "Old answer 2", null, "comment 2", reportingStaff),
-                  NomisHistoryResponse(3, 3, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
+                  NomisHistoryResponse(1, 0, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
+                  NomisHistoryResponse(2, 1, "Old answer 2", null, "comment 2", reportingStaff),
+                  NomisHistoryResponse(3, 2, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
                 ),
               ),
               NomisHistoryQuestion(
@@ -301,9 +301,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 sequence = 2,
                 question = "Old question 2",
                 answers = listOf(
-                  NomisHistoryResponse(4, 1, "Old answer 1", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
-                  NomisHistoryResponse(5, 2, "Old answer 2", null, "comment 2", reportingStaff),
-                  NomisHistoryResponse(6, 3, "Old answer 3", now.toLocalDate().minusDays(8), null, reportingStaff),
+                  NomisHistoryResponse(4, 0, "Old answer 1", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
+                  NomisHistoryResponse(5, 1, "Old answer 2", null, "comment 2", reportingStaff),
+                  NomisHistoryResponse(6, 2, "Old answer 3", now.toLocalDate().minusDays(8), null, reportingStaff),
                 ),
               ),
               NomisHistoryQuestion(
@@ -311,9 +311,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 sequence = 3,
                 question = "Old question 3",
                 answers = listOf(
-                  NomisHistoryResponse(7, 1, "Old answer 1", null, null, reportingStaff),
-                  NomisHistoryResponse(8, 2, "Old answer 2", null, null, reportingStaff),
-                  NomisHistoryResponse(9, 3, "Old answer 3", null, null, reportingStaff),
+                  NomisHistoryResponse(7, 0, "Old answer 1", null, null, reportingStaff),
+                  NomisHistoryResponse(8, 1, "Old answer 2", null, null, reportingStaff),
+                  NomisHistoryResponse(9, 2, "Old answer 3", null, null, reportingStaff),
                 ),
               ),
             ),
@@ -1043,7 +1043,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             prison = NomisCode("FBI", "Forest Bank (HMP & YOI)"),
             staffParties = listOf(
               NomisStaffParty(
-                sequence = 1,
+                sequence = 0,
                 staff = NomisStaff("JAMESQ", 2, "James", "Quids"),
                 role = NomisCode("PAS", "Present at scene"),
                 comment = "James was also present actually",
@@ -1052,7 +1052,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisStaffParty(
                 staff = reportingStaff,
-                sequence = 2,
+                sequence = 1,
                 role = NomisCode(code = "PAS", description = "Present at scene"),
                 comment = "REPORTER",
                 createDateTime = now,
@@ -1066,7 +1066,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   firstName = "Trevor",
                   lastName = "Smith",
                 ),
-                sequence = 1,
+                sequence = 0,
                 role = NomisCode("PERP", "Perpetrator"),
                 outcome = NomisCode("ILOC", "ILOC"),
                 comment = "Trevor took another prisoner hostage",
@@ -1079,7 +1079,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   firstName = "John",
                   lastName = "Also-Smith",
                 ),
-                sequence = 2,
+                sequence = 1,
                 role = NomisCode("HOST", "Hostage"),
                 outcome = NomisCode("TRN", "Transfer"),
                 comment = "Prisoner was transferred after incident",
@@ -1089,7 +1089,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             ),
             requirements = listOf(
               NomisRequirement(
-                sequence = 1,
+                sequence = 0,
                 comment = "Could you update the title please",
                 date = LocalDate.now(clock).minusWeeks(1),
                 staff = reportingStaff,
@@ -1098,7 +1098,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 createdBy = reportingStaff.username,
               ),
               NomisRequirement(
-                sequence = 2,
+                sequence = 1,
                 comment = "Also the description",
                 date = LocalDate.now(clock),
                 staff = reportingStaff,
@@ -1117,7 +1117,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 listOf(
                   NomisResponse(
                     10,
-                    1,
+                    0,
                     "John",
                     now.toLocalDate().minusDays(2),
                     "comment 1",
@@ -1127,7 +1127,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   ),
                   NomisResponse(
                     11,
-                    2,
+                    1,
                     "Trevor",
                     null,
                     "comment 2",
@@ -1137,7 +1137,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   ),
                   NomisResponse(
                     12,
-                    3,
+                    2,
                     "Maybe someone else?",
                     now.toLocalDate().minusDays(3),
                     null,
@@ -1156,7 +1156,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 listOf(
                   NomisResponse(
                     13,
-                    1,
+                    0,
                     "Cell",
                     now.toLocalDate().minusDays(1),
                     "comment 1",
@@ -1166,7 +1166,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   ),
                   NomisResponse(
                     14,
-                    2,
+                    1,
                     "Landing",
                     null,
                     "comment 2",
@@ -1176,7 +1176,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   ),
                   NomisResponse(
                     15,
-                    3,
+                    2,
                     "Kitchen",
                     now.toLocalDate().minusDays(10),
                     null,
@@ -1186,7 +1186,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   ),
                   NomisResponse(
                     16,
-                    4,
+                    3,
                     "Exercise area",
                     null,
                     null,
@@ -1212,9 +1212,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     1,
                     "Old question 1",
                     listOf(
-                      NomisHistoryResponse(1, 1, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
-                      NomisHistoryResponse(2, 2, "Old answer 2", null, "comment 2", reportingStaff),
-                      NomisHistoryResponse(3, 3, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
+                      NomisHistoryResponse(1, 0, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
+                      NomisHistoryResponse(2, 1, "Old answer 2", null, "comment 2", reportingStaff),
+                      NomisHistoryResponse(3, 2, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
                     ),
                   ),
                   NomisHistoryQuestion(
@@ -1222,9 +1222,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     2,
                     "Old question 2",
                     listOf(
-                      NomisHistoryResponse(4, 1, "Old answer 4", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
-                      NomisHistoryResponse(5, 2, "Old answer 5", null, "comment 2", reportingStaff),
-                      NomisHistoryResponse(6, 3, "Old answer 6", now.toLocalDate().minusDays(8), null, reportingStaff),
+                      NomisHistoryResponse(4, 0, "Old answer 4", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
+                      NomisHistoryResponse(5, 1, "Old answer 5", null, "comment 2", reportingStaff),
+                      NomisHistoryResponse(6, 2, "Old answer 6", now.toLocalDate().minusDays(8), null, reportingStaff),
                     ),
                   ),
                 ),
@@ -1243,8 +1243,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     1,
                     "Old old question 1",
                     listOf(
-                      NomisHistoryResponse(12, 1, "Old old answer 1", null, null, reportingStaff),
-                      NomisHistoryResponse(22, 2, "Old old answer 2", null, null, reportingStaff),
+                      NomisHistoryResponse(12, 0, "Old old answer 1", null, null, reportingStaff),
+                      NomisHistoryResponse(22, 1, "Old old answer 2", null, null, reportingStaff),
                     ),
                   ),
                   NomisHistoryQuestion(
@@ -1252,8 +1252,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     2,
                     "Old old question 2",
                     listOf(
-                      NomisHistoryResponse(44, 1, "Old old answer 1", null, null, reportingStaff),
-                      NomisHistoryResponse(55, 2, "Old old answer 2", null, null, reportingStaff),
+                      NomisHistoryResponse(44, 0, "Old old answer 1", null, null, reportingStaff),
+                      NomisHistoryResponse(55, 1, "Old old answer 2", null, null, reportingStaff),
                     ),
                   ),
                 ),
@@ -1300,7 +1300,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "code": "4",
                     "question": "Who was involved?",
-                    "sequence": 0,
+                    "sequence": 1,
                     "responses": [
                       {
                         "response": "John",
@@ -1332,7 +1332,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "code": "5",
                     "question": "Where did this happen?",
-                    "sequence": 1,
+                    "sequence": 2,
                     "responses": [
                       {
                         "response": "Cell",
@@ -1380,7 +1380,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "1",
                         "question": "Old question 1",
-                        "sequence": 0,
+                        "sequence": 1,
                         "responses": [
                           {
                             "response": "Old answer 1",
@@ -1412,7 +1412,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "2",
                         "question": "Old question 2",
-                        "sequence": 1,
+                        "sequence": 2,
                         "responses": [
                           {
                             "response": "Old answer 4",
@@ -1452,7 +1452,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "11",
                         "question": "Old old question 1",
-                        "sequence": 0,
+                        "sequence": 1,
                         "responses": [
                           {
                             "response": "Old old answer 1",
@@ -1476,7 +1476,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "22",
                         "question": "Old old question 2",
-                        "sequence": 1,
+                        "sequence": 2,
                         "responses": [
                           {
                             "response": "Old old answer 1",
@@ -1595,9 +1595,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           ),
         )
 
-        val q1 = newReport.addQuestion(code = "1", sequence = 0, question = "Q1")
-        val q2 = newReport.addQuestion(code = "2", sequence = 1, question = "Q2")
-        val q3 = newReport.addQuestion(code = "3", sequence = 2, question = "Q3")
+        val q1 = newReport.addQuestion(code = "1", sequence = 1, question = "Q1")
+        val q2 = newReport.addQuestion(code = "2", sequence = 2, question = "Q2")
+        val q3 = newReport.addQuestion(code = "3", sequence = 3, question = "Q3")
 
         q1.addResponse(
           response = "Q1-R1",
@@ -1648,7 +1648,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             answers = listOf(
               NomisResponse(
                 questionResponseId = 100,
-                sequence = 1,
+                sequence = 0,
                 answer = "Q1-R1",
                 responseDate = now.toLocalDate(),
                 comment = "Info Q1-R1",
@@ -1671,7 +1671,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             answers = listOf(
               NomisResponse(
                 questionResponseId = 101,
-                sequence = 1,
+                sequence = 0,
                 answer = "Q3-R1 Mod",
                 responseDate = now.toLocalDate(),
                 comment = "Info Q3 Changed",
@@ -1683,7 +1683,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               ),
               NomisResponse(
                 questionResponseId = 102,
-                sequence = 2,
+                sequence = 1,
                 answer = "Q3-R2 New",
                 responseDate = now.toLocalDate(),
                 comment = "Info Q3 Added response",
@@ -1706,7 +1706,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             answers = listOf(
               NomisResponse(
                 questionResponseId = 102,
-                sequence = 1,
+                sequence = 0,
                 answer = "Q4",
                 responseDate = now.toLocalDate(),
                 comment = "Info Q4",
@@ -1757,10 +1757,10 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         val changedReport =
           reportRepository.findOneEagerlyById(newReport.id!!) ?: throw RuntimeException("Report not found")
         assertThat(changedReport.questions).hasSize(3)
-        assertThat(changedReport.findQuestion(code = "1", sequence = 0)).isNotNull
-        assertThat(changedReport.findQuestion(code = "2", sequence = 1)).isNull()
-        assertThat(changedReport.findQuestion(code = "3", sequence = 2)).isNotNull
-        assertThat(changedReport.findQuestion(code = "4", sequence = 3)).isNotNull
+        assertThat(changedReport.findQuestion(code = "1", sequence = 1)).isNotNull
+        assertThat(changedReport.findQuestion(code = "2", sequence = 2)).isNull()
+        assertThat(changedReport.findQuestion(code = "3", sequence = 3)).isNotNull
+        assertThat(changedReport.findQuestion(code = "4", sequence = 4)).isNotNull
 
         assertThatDomainEventWasSent(
           "incident.report.amended",
