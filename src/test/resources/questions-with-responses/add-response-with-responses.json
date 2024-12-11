@@ -2,7 +2,7 @@
   {
     "code": "1",
     "question": "Question #1",
-    "sequence": 0,
+    "sequence": 1,
     "responses": [
       {
         "response": "Response #1",
@@ -26,7 +26,7 @@
   {
     "code": "2",
     "question": "Question #2",
-    "sequence": 1,
+    "sequence": 2,
     "responses": [
       {
         "response": "Response #1",
@@ -50,7 +50,7 @@
   {
     "code": "2001",
     "question": "List every “find”",
-    "sequence": 2,
+    "sequence": 3,
     "additionalInformation": "Amounts do not matter",
     "responses": [
       {

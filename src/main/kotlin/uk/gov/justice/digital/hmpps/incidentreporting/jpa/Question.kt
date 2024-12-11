@@ -113,7 +113,7 @@ class Question(
     Response(
       question = this,
       response = nomisResponse.answer!!,
-      sequence = nomisResponse.sequence - 1,
+      sequence = nomisResponse.sequence,
       responseDate = nomisResponse.responseDate,
       additionalInformation = nomisResponse.comment,
       recordedBy = nomisResponse.recordingStaff.username,

@@ -85,7 +85,7 @@ fun buildReport(
     val question = report.addQuestion(
       code = questionIndex.toString(),
       question = "Question #$questionIndex",
-      sequence = questionIndex - 1,
+      sequence = questionIndex,
       additionalInformation = "Explanation #$questionIndex",
     )
     (1..generateResponses).forEach { responseIndex ->
@@ -110,7 +110,7 @@ fun buildReport(
       val historicalQuestion = history.addQuestion(
         code = "$historyIndex-$questionIndex",
         question = "Historical question #$historyIndex-$questionIndex",
-        sequence = questionIndex - 1,
+        sequence = questionIndex,
         additionalInformation = "Explanation #$questionIndex in history #$historyIndex",
       )
       (1..generateResponses).forEach { responseIndex ->
