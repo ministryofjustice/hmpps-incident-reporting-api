@@ -223,7 +223,8 @@
           ]
         }
       ],
-      "incidentChangeDate": "2024-01-20T16:00:00",
+      "incidentChangeDate": "2024-01-20",
+      "incidentChangeDateTime": "2024-01-20T16:00:00",
       "incidentChangeStaff": {
         "username": "user1",
         "staffId": 100001,
