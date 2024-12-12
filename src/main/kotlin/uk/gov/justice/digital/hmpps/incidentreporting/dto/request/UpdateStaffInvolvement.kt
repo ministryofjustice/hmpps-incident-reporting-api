@@ -11,6 +11,12 @@ data class UpdateStaffInvolvement(
   @Schema(description = "Username", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 3, maxLength = 120)
   @field:Size(min = 3, max = 120)
   val staffUsername: String? = null,
+  @Schema(description = "First name", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 1, maxLength = 255)
+  @field:Size(min = 1, max = 255)
+  val firstName: String? = null,
+  @Schema(description = "Surname", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 1, maxLength = 255)
+  @field:Size(min = 1, max = 255)
+  val lastName: String? = null,
   @Schema(description = "Their role", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null")
   val staffRole: StaffRole? = null,
   @Schema(description = "Optional comment on staff member involvement – omit to preserve existing comment, provide null to clear it", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true)
@@ -18,5 +24,9 @@ data class UpdateStaffInvolvement(
 ) {
   @JsonIgnore
   val isEmpty: Boolean =
-    staffUsername == null && staffRole == null && comment == null
+    staffUsername == null &&
+      firstName == null &&
+      lastName == null &&
+      staffRole == null &&
+      comment == null
 }

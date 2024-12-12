@@ -73,6 +73,8 @@ class PrisonerInvolvement(
 
   fun updateWith(request: UpdatePrisonerInvolvement) {
     request.prisonerNumber?.let { prisonerNumber = it }
+    request.firstName?.let { firstName = it }
+    request.lastName?.let { lastName = it }
     request.prisonerRole?.let { prisonerRole = it }
     request.outcome?.let { outcome = it.getOrNull() }
     request.comment?.let { comment = it.getOrNull() }

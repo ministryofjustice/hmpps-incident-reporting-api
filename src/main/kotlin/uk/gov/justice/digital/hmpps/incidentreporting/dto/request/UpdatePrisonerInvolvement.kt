@@ -12,6 +12,12 @@ data class UpdatePrisonerInvolvement(
   @Schema(description = "Prisoner’s NOMIS number", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 7, maxLength = 10)
   @field:Size(min = 7, max = 10)
   val prisonerNumber: String? = null,
+  @Schema(description = "First name", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 1, maxLength = 255)
+  @field:Size(min = 1, max = 255)
+  val firstName: String? = null,
+  @Schema(description = "Surname", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 1, maxLength = 255)
+  @field:Size(min = 1, max = 255)
+  val lastName: String? = null,
   @Schema(description = "Their role", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null")
   val prisonerRole: PrisonerRole? = null,
   @Schema(description = "Optional outcome of prisoner’s involvement – omit to preserve existing outcome, provide null to clear it", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true)
@@ -21,5 +27,10 @@ data class UpdatePrisonerInvolvement(
 ) {
   @JsonIgnore
   val isEmpty: Boolean =
-    prisonerNumber == null && prisonerRole == null && outcome == null && comment == null
+    prisonerNumber == null &&
+      firstName == null &&
+      lastName == null &&
+      prisonerRole == null &&
+      outcome == null &&
+      comment == null
 }

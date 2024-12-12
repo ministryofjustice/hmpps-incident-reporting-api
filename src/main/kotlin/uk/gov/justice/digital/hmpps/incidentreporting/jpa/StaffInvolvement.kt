@@ -69,6 +69,8 @@ class StaffInvolvement(
 
   fun updateWith(request: UpdateStaffInvolvement) {
     request.staffUsername?.let { staffUsername = it }
+    request.firstName?.let { firstName = it }
+    request.lastName?.let { lastName = it }
     request.staffRole?.let { staffRole = it }
     request.comment?.let { comment = it.getOrNull() }
   }
