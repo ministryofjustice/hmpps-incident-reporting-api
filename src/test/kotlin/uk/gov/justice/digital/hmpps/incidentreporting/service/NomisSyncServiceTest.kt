@@ -38,6 +38,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.today
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
@@ -109,7 +110,7 @@ class NomisSyncServiceTest {
         NomisRequirement(
           sequence = 0,
           comment = "Title should include prisoner number",
-          date = now.toLocalDate(),
+          date = today,
           prisonId = "MDI",
           staff = NomisStaff(
             staffId = 42,
@@ -307,7 +308,7 @@ class NomisSyncServiceTest {
     assertThat(report.correctionRequests).hasSize(1)
     val correctionRequest = report.correctionRequests[0]
     assertThat(correctionRequest.correctionRequestedBy).isEqualTo("checking-user")
-    assertThat(correctionRequest.correctionRequestedAt.toLocalDate()).isEqualTo(now.toLocalDate())
+    assertThat(correctionRequest.correctionRequestedAt.toLocalDate()).isEqualTo(today)
     assertThat(correctionRequest.reason).isEqualTo(CorrectionReason.NOT_SPECIFIED)
     assertThat(correctionRequest.descriptionOfChange).isEqualTo("Title should include prisoner number")
   }

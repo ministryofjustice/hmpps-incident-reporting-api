@@ -63,10 +63,10 @@ class EventRepositoryTest : IntegrationTestBase() {
 
       val matchingSpecifications = listOf(
         filterEventsByLocations("MDI"),
-        filterEventsByEventDateFrom(now.toLocalDate().minusDays(2)),
-        filterEventsByEventDateFrom(now.toLocalDate().minusDays(1)),
-        filterEventsByEventDateUntil(now.toLocalDate().minusDays(1)),
-        filterEventsByEventDateUntil(now.toLocalDate()),
+        filterEventsByEventDateFrom(today.minusDays(2)),
+        filterEventsByEventDateFrom(today.minusDays(1)),
+        filterEventsByEventDateUntil(today.minusDays(1)),
+        filterEventsByEventDateUntil(today),
       )
       matchingSpecifications.forEach { specification ->
         val eventsFound = eventRepository.findAll(
@@ -79,8 +79,8 @@ class EventRepositoryTest : IntegrationTestBase() {
 
       val nonMatchingSpecifications = listOf(
         filterEventsByLocations("LEI"),
-        filterEventsByEventDateFrom(now.toLocalDate()),
-        filterEventsByEventDateUntil(now.toLocalDate().minusDays(2)),
+        filterEventsByEventDateFrom(today),
+        filterEventsByEventDateUntil(today.minusDays(2)),
       )
       nonMatchingSpecifications.forEach { specification ->
         val eventsFound = eventRepository.findAll(
@@ -141,7 +141,7 @@ class EventRepositoryTest : IntegrationTestBase() {
       )
       assertSpecificationReturnsEvents(
         filterEventsByLocations("MDI")
-          .and(filterEventsByEventDateUntil(now.toLocalDate().minusDays(2))),
+          .and(filterEventsByEventDateUntil(today.minusDays(2))),
         listOf(event1Id),
       )
     }

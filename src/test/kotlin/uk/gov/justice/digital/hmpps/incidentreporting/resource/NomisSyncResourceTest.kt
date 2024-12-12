@@ -38,8 +38,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventReposi
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.UUID
 
 /** NOMIS incident number maps to a report’s reference */
@@ -132,7 +130,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           NomisRequirement(
             sequence = 0,
             comment = "Change 1",
-            date = LocalDate.now(clock),
+            date = today,
             staff = reportingStaff,
             prisonId = "MDI",
             createDateTime = now,
@@ -141,7 +139,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           NomisRequirement(
             sequence = 1,
             comment = "Change 2",
-            date = LocalDate.now(clock).minusWeeks(1),
+            date = today.minusWeeks(1),
             staff = reportingStaff,
             prisonId = "MDI",
             createDateTime = now,
@@ -160,7 +158,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 10,
                 0,
                 "Answer 1",
-                now.toLocalDate().minusDays(2),
+                today.minusDays(2),
                 "comment 1",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -180,7 +178,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 questionResponseId = 12,
                 sequence = 2,
                 answer = "Answer 3",
-                responseDate = now.toLocalDate().minusDays(3),
+                responseDate = today.minusDays(3),
                 comment = null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -199,7 +197,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 questionResponseId = 13,
                 sequence = 0,
                 answer = "Answer 1",
-                responseDate = now.toLocalDate().minusDays(1),
+                responseDate = today.minusDays(1),
                 comment = "comment 1",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -219,7 +217,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 questionResponseId = 15,
                 sequence = 2,
                 answer = "Answer 3",
-                responseDate = now.toLocalDate().minusDays(10),
+                responseDate = today.minusDays(10),
                 comment = null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -248,7 +246,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 16,
                 0,
                 "Answer 1",
-                now.toLocalDate(),
+                today,
                 "comment 1",
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -268,7 +266,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 questionResponseId = 18,
                 sequence = 2,
                 answer = "Answer 3",
-                responseDate = now.toLocalDate().minusDays(7),
+                responseDate = today.minusDays(7),
                 comment = null,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
@@ -284,7 +282,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             description = "Damage",
             createDateTime = now,
             createdBy = reportingStaff.username,
-            incidentChangeDate = now.toLocalDate(),
+            incidentChangeDate = today,
             incidentChangeDateTime = now,
             incidentChangeStaff = reportingStaff,
             questions = listOf(
@@ -293,9 +291,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 sequence = 1,
                 question = "Old question 1",
                 answers = listOf(
-                  NomisHistoryResponse(1, 0, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
+                  NomisHistoryResponse(1, 0, "Old answer 1", today, "comment 1", reportingStaff),
                   NomisHistoryResponse(2, 1, "Old answer 2", null, "comment 2", reportingStaff),
-                  NomisHistoryResponse(3, 2, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
+                  NomisHistoryResponse(3, 2, "Old answer 3", today.minusDays(7), null, reportingStaff),
                 ),
               ),
               NomisHistoryQuestion(
@@ -303,9 +301,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 sequence = 2,
                 question = "Old question 2",
                 answers = listOf(
-                  NomisHistoryResponse(4, 0, "Old answer 1", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
+                  NomisHistoryResponse(4, 0, "Old answer 1", today.minusDays(1), "comment 1", reportingStaff),
                   NomisHistoryResponse(5, 1, "Old answer 2", null, "comment 2", reportingStaff),
-                  NomisHistoryResponse(6, 2, "Old answer 3", now.toLocalDate().minusDays(8), null, reportingStaff),
+                  NomisHistoryResponse(6, 2, "Old answer 3", today.minusDays(8), null, reportingStaff),
                 ),
               ),
               NomisHistoryQuestion(
@@ -1101,7 +1099,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               NomisRequirement(
                 sequence = 0,
                 comment = "Could you update the title please",
-                date = LocalDate.now(clock).minusWeeks(1),
+                date = today.minusWeeks(1),
                 staff = reportingStaff,
                 prisonId = "MDI",
                 createDateTime = now,
@@ -1110,7 +1108,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               NomisRequirement(
                 sequence = 1,
                 comment = "Also the description",
-                date = LocalDate.now(clock),
+                date = today,
                 staff = reportingStaff,
                 prisonId = "MDI",
                 createDateTime = now,
@@ -1129,7 +1127,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     10,
                     0,
                     "John",
-                    now.toLocalDate().minusDays(2),
+                    today.minusDays(2),
                     "comment 1",
                     createDateTime = now,
                     createdBy = reportingStaff.username,
@@ -1149,7 +1147,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     12,
                     2,
                     "Maybe someone else?",
-                    now.toLocalDate().minusDays(3),
+                    today.minusDays(3),
                     null,
                     createDateTime = now,
                     createdBy = reportingStaff.username,
@@ -1168,7 +1166,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     13,
                     0,
                     "Cell",
-                    now.toLocalDate().minusDays(1),
+                    today.minusDays(1),
                     "comment 1",
                     createDateTime = now,
                     createdBy = reportingStaff.username,
@@ -1188,7 +1186,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     15,
                     2,
                     "Kitchen",
-                    now.toLocalDate().minusDays(10),
+                    today.minusDays(10),
                     null,
                     createDateTime = now,
                     createdBy = reportingStaff.username,
@@ -1212,10 +1210,10 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 1,
                 "DAMAGE",
                 "Damage",
-                incidentChangeDate = LocalDate.now(clock).minusDays(2),
-                incidentChangeDateTime = LocalDateTime.now(clock).minusDays(2),
+                incidentChangeDate = today.minusDays(2),
+                incidentChangeDateTime = now.minusDays(2),
                 incidentChangeStaff = reportingStaff,
-                createDateTime = LocalDateTime.now(clock).minusDays(2),
+                createDateTime = now.minusDays(2),
                 createdBy = reportingStaff.username,
                 questions = listOf(
                   NomisHistoryQuestion(
@@ -1223,9 +1221,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     1,
                     "Old question 1",
                     listOf(
-                      NomisHistoryResponse(1, 0, "Old answer 1", now.toLocalDate(), "comment 1", reportingStaff),
+                      NomisHistoryResponse(1, 0, "Old answer 1", today, "comment 1", reportingStaff),
                       NomisHistoryResponse(2, 1, "Old answer 2", null, "comment 2", reportingStaff),
-                      NomisHistoryResponse(3, 2, "Old answer 3", now.toLocalDate().minusDays(7), null, reportingStaff),
+                      NomisHistoryResponse(3, 2, "Old answer 3", today.minusDays(7), null, reportingStaff),
                     ),
                   ),
                   NomisHistoryQuestion(
@@ -1233,9 +1231,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     2,
                     "Old question 2",
                     listOf(
-                      NomisHistoryResponse(4, 0, "Old answer 4", now.toLocalDate().minusDays(1), "comment 1", reportingStaff),
+                      NomisHistoryResponse(4, 0, "Old answer 4", today.minusDays(1), "comment 1", reportingStaff),
                       NomisHistoryResponse(5, 1, "Old answer 5", null, "comment 2", reportingStaff),
-                      NomisHistoryResponse(6, 2, "Old answer 6", now.toLocalDate().minusDays(8), null, reportingStaff),
+                      NomisHistoryResponse(6, 2, "Old answer 6", today.minusDays(8), null, reportingStaff),
                     ),
                   ),
                 ),
@@ -1244,10 +1242,10 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 2,
                 "BOMB",
                 "Bomb",
-                incidentChangeDate = LocalDate.now(clock).minusDays(1),
-                incidentChangeDateTime = LocalDateTime.now(clock).minusDays(1),
+                incidentChangeDate = today.minusDays(1),
+                incidentChangeDateTime = now.minusDays(1),
                 incidentChangeStaff = reportingStaff,
-                createDateTime = LocalDateTime.now(clock).minusDays(1),
+                createDateTime = now.minusDays(1),
                 createdBy = reportingStaff.username,
                 questions = listOf(
                   NomisHistoryQuestion(
@@ -1621,7 +1619,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
         q1.addResponse(
           response = "Q1-R1",
-          responseDate = now.toLocalDate(),
+          responseDate = today,
           sequence = 0,
           additionalInformation = "Info Q1-R1",
           recordedBy = "user1",
@@ -1630,7 +1628,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
         q1.addResponse(
           response = "Q1-R2",
-          responseDate = now.toLocalDate(),
+          responseDate = today,
           sequence = 1,
           additionalInformation = "Info Q1-R2",
           recordedBy = "user2",
@@ -1639,7 +1637,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
         q2.addResponse(
           response = "Q2-R1",
-          responseDate = now.toLocalDate(),
+          responseDate = today,
           sequence = 0,
           additionalInformation = "Info Q2",
           recordedBy = "user3",
@@ -1648,7 +1646,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
         q3.addResponse(
           response = "Q3-R1",
-          responseDate = now.toLocalDate(),
+          responseDate = today,
           sequence = 0,
           additionalInformation = "Info Q3",
           recordedBy = "user4",
@@ -1670,7 +1668,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 questionResponseId = 100,
                 sequence = 0,
                 answer = "Q1-R1",
-                responseDate = now.toLocalDate(),
+                responseDate = today,
                 comment = "Info Q1-R1",
                 recordingStaff = NomisStaff(username = "user1", staffId = 1L, firstName = "", lastName = ""),
                 createDateTime = now,
@@ -1693,7 +1691,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 questionResponseId = 101,
                 sequence = 0,
                 answer = "Q3-R1 Mod",
-                responseDate = now.toLocalDate(),
+                responseDate = today,
                 comment = "Info Q3 Changed",
                 recordingStaff = NomisStaff(username = "user5", staffId = 1L, firstName = "", lastName = ""),
                 createDateTime = now,
@@ -1705,7 +1703,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 questionResponseId = 102,
                 sequence = 1,
                 answer = "Q3-R2 New",
-                responseDate = now.toLocalDate(),
+                responseDate = today,
                 comment = "Info Q3 Added response",
                 recordingStaff = NomisStaff(username = "user5", staffId = 1L, firstName = "", lastName = ""),
                 createDateTime = now,
@@ -1728,7 +1726,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 questionResponseId = 102,
                 sequence = 0,
                 answer = "Q4",
-                responseDate = now.toLocalDate(),
+                responseDate = today,
                 comment = "Info Q4",
                 recordingStaff = NomisStaff(username = "user6", staffId = 1L, firstName = "", lastName = ""),
                 createDateTime = now,
