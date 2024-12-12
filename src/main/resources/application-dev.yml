@@ -5,6 +5,7 @@ api:
   base:
     url:
       oauth: http://localhost:9090/auth
+      prisoner-search: http://localhost:8081
 
 management.endpoint:
   health.cache.time-to-live: 0

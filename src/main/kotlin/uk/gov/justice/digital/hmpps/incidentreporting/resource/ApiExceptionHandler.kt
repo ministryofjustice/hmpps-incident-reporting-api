@@ -20,6 +20,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.resource.NoResourceFoundException
+import uk.gov.justice.digital.hmpps.incidentreporting.service.PrisonersNotFoundException
 import java.util.UUID
 import kotlin.reflect.KClass
 
@@ -301,6 +302,20 @@ class ApiExceptionHandler {
       .body(
         ErrorResponse(
           status = HttpStatus.NO_CONTENT,
+          userMessage = "${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(PrisonersNotFoundException::class)
+  fun handlePrisonerSearchNotFound(e: PrisonersNotFoundException): ResponseEntity<ErrorResponse> {
+    log.debug(e.message)
+    return ResponseEntity
+      .status(HttpStatus.NOT_FOUND)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.NOT_FOUND,
           userMessage = "${e.message}",
           developerMessage = e.message,
         ),
