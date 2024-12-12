@@ -282,10 +282,10 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             questionnaireId = 1,
             type = "DAMAGE",
             description = "Damage",
-            createDateTime = LocalDateTime.now(clock),
+            createDateTime = now,
             createdBy = reportingStaff.username,
-            incidentChangeDate = LocalDate.now(clock),
-            incidentChangeDateTime = LocalDateTime.now(clock),
+            incidentChangeDate = now.toLocalDate(),
+            incidentChangeDateTime = now,
             incidentChangeStaff = reportingStaff,
             questions = listOf(
               NomisHistoryQuestion(

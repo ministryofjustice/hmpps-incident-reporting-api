@@ -437,7 +437,7 @@ class Report(
     History(
       report = this,
       type = Type.fromNomisCode(nomisHistory.type),
-      changedAt = nomisHistory.createDateTime,
+      changedAt = nomisHistory.incidentChangeDateTime ?: nomisHistory.createDateTime,
       changedBy = nomisHistory.incidentChangeStaff.username,
     )
 
