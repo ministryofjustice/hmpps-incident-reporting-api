@@ -39,6 +39,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 /** NOMIS incident number maps to a report’s reference */
@@ -283,7 +284,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             description = "Damage",
             createDateTime = now,
             createdBy = reportingStaff.username,
-            incidentChangeDate = LocalDate.now(clock),
+            incidentChangeDate = now.toLocalDate(),
+            incidentChangeDateTime = now,
             incidentChangeStaff = reportingStaff,
             questions = listOf(
               NomisHistoryQuestion(
@@ -588,7 +590,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "type": "DAMAGE",
                     "nomisType": "DAMAGE",
-                    "changedAt": "2023-12-05T00:00:00",
+                    "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2",
                     "questions": [
                       {
@@ -879,7 +881,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "type": "DAMAGE",
                     "nomisType": "DAMAGE",
-                    "changedAt": "2023-12-05T00:00:00",
+                    "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2",
                     "questions": [
                       {
@@ -1211,8 +1213,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "DAMAGE",
                 "Damage",
                 incidentChangeDate = LocalDate.now(clock).minusDays(2),
+                incidentChangeDateTime = LocalDateTime.now(clock).minusDays(2),
                 incidentChangeStaff = reportingStaff,
-                createDateTime = now,
+                createDateTime = LocalDateTime.now(clock).minusDays(2),
                 createdBy = reportingStaff.username,
                 questions = listOf(
                   NomisHistoryQuestion(
@@ -1242,8 +1245,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "BOMB",
                 "Bomb",
                 incidentChangeDate = LocalDate.now(clock).minusDays(1),
+                incidentChangeDateTime = LocalDateTime.now(clock).minusDays(1),
                 incidentChangeStaff = reportingStaff,
-                createDateTime = now,
+                createDateTime = LocalDateTime.now(clock).minusDays(1),
                 createdBy = reportingStaff.username,
                 questions = listOf(
                   NomisHistoryQuestion(
@@ -1382,7 +1386,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "type": "DAMAGE",
                     "nomisType": "DAMAGE",
-                    "changedAt": "2023-12-03T00:00:00",
+                    "changedAt": "2023-12-03T12:34:56",
                     "changedBy": "user2",
                     "questions": [
                       {
@@ -1454,7 +1458,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "type": "BOMB_THREAT",
                     "nomisType": "BOMB",
-                    "changedAt": "2023-12-04T00:00:00",
+                    "changedAt": "2023-12-04T12:34:56",
                     "changedBy": "user2",
                     "questions": [
                       {
