@@ -23,6 +23,7 @@ classDiagram
         String  correctionRequestedBy
         String  descriptionOfChange
         CorrectionReason  reason
+        int  sequence
     }
     class Event {
         UUID  id
@@ -40,6 +41,7 @@ classDiagram
         String  additionalInformation
         String  code
         String  question
+        int  sequence
     }
     class HistoricalResponse {
         Long  id
@@ -48,6 +50,7 @@ classDiagram
         String  recordedBy
         String  response
         LocalDate  responseDate
+        int  sequence
     }
     class History {
         Long  id
@@ -58,15 +61,19 @@ classDiagram
     class PrisonerInvolvement {
         Long  id
         String  comment
+        String  firstName
+        String  lastName
         PrisonerOutcome  outcome
         String  prisonerNumber
         PrisonerRole  prisonerRole
+        int  sequence
     }
     class Question {
         Long  id
         String  additionalInformation
         String  code
         String  question
+        int  sequence
     }
     class Report {
         UUID  id
@@ -74,15 +81,15 @@ classDiagram
         LocalDateTime  createdAt
         String  description
         LocalDateTime  incidentDateAndTime
+        String  location
         LocalDateTime  modifiedAt
         String  modifiedBy
-        String  location
+        InformationSource  modifiedIn
         String  questionSetId
         String  reportReference
         LocalDateTime  reportedAt
         String  reportedBy
         InformationSource  source
-        InformationSource  modifiedIn
         Status  status
         String  title
         Type  type
@@ -94,10 +101,14 @@ classDiagram
         String  recordedBy
         String  response
         LocalDate  responseDate
+        int  sequence
     }
     class StaffInvolvement {
         Long  id
         String  comment
+        String  firstName
+        String  lastName
+        int  sequence
         StaffRole  staffRole
         String  staffUsername
     }
@@ -131,6 +142,7 @@ classDiagram
         text description_of_change
         timestamp correction_requested_at
         varchar(120) correction_requested_by
+        integer sequence
         integer id
     }
     class event {
@@ -175,6 +187,9 @@ classDiagram
         varchar(60) prisoner_role
         varchar(60) outcome
         text comment
+        integer sequence
+        varchar(255) first_name
+        varchar(255) last_name
         integer id
     }
     class question {
@@ -220,6 +235,9 @@ classDiagram
         varchar(120) staff_username
         varchar(60) staff_role
         text comment
+        integer sequence
+        varchar(255) first_name
+        varchar(255) last_name
         integer id
     }
     class status_history {
