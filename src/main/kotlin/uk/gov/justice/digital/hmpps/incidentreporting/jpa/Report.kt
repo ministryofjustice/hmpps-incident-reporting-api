@@ -437,18 +437,18 @@ class Report(
     History(
       report = this,
       type = Type.fromNomisCode(nomisHistory.type),
-      changedAt = nomisHistory.incidentChangeDate.atStartOfDay(),
+      changedAt = nomisHistory.createDateTime,
       changedBy = nomisHistory.incidentChangeStaff.username,
     )
 
   fun updateHistory(nomisHistories: Collection<NomisHistory>) {
     this.history.retainAll(
       nomisHistories.map { nomisHistory ->
+        val newHistory = createHistory(nomisHistory)
         val foundHistory = findHistory(
-          changedAt = nomisHistory.incidentChangeDate.atStartOfDay(),
-          type = Type.fromNomisCode(nomisHistory.type),
-        )
-          ?: addHistory(createHistory(nomisHistory))
+          changedAt = newHistory.changedAt,
+          type = newHistory.type,
+        ) ?: addHistory(newHistory)
         foundHistory.updateQuestionAndResponses(nomisHistory, this.reportedAt)
         foundHistory
       }.toSet(),
