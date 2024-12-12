@@ -2712,6 +2712,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           getResource("/related-objects/staff-involved/add-request-short-username.json"),
           "addStaffInvolvement.staffUsername: size must be between 3 and 120",
         ),
+        InvalidRequestTestCase(
+          "empty surname",
+          getResource("/related-objects/staff-involved/add-request-empty-surname.json"),
+          "addStaffInvolvement.lastName: size must be between 1 and 255",
+        ),
+        InvalidRequestTestCase(
+          "long surname",
+          getResource("/related-objects/staff-involved/add-request-long-surname.json"),
+          "addStaffInvolvement.lastName: size must be between 1 and 255",
+        ),
       ),
     )
 
@@ -2748,7 +2758,20 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("POST /incident-reports/{reportId}/prisoners-involved")
     @Nested
-    inner class AddObject : RelatedObjects.AddObject()
+    inner class AddObject : RelatedObjects.AddObject(
+      invalidRequests = listOf(
+        InvalidRequestTestCase(
+          "empty name",
+          getResource("/related-objects/prisoners-involved/add-request-empty-name.json"),
+          "addPrisonerInvolvement.firstName: size must be between 1 and 255",
+        ),
+        InvalidRequestTestCase(
+          "long name",
+          getResource("/related-objects/prisoners-involved/add-request-long-name.json"),
+          "addPrisonerInvolvement.firstName: size must be between 1 and 255",
+        ),
+      ),
+    )
 
     @DisplayName("PATCH /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested

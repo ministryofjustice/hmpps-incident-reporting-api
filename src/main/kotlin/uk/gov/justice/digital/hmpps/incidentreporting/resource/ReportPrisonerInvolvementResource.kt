@@ -115,6 +115,8 @@ class ReportPrisonerInvolvementResource() : ReportRelatedObjectsResource<Prisone
         report.addPrisonerInvolved(
           sequence = sequence,
           prisonerNumber = prisonerNumber,
+          firstName = firstName,
+          lastName = lastName,
           prisonerRole = prisonerRole,
           outcome = outcome,
           comment = comment,

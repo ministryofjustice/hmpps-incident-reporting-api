@@ -115,6 +115,8 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
         report.addStaffInvolved(
           sequence = sequence,
           staffUsername = staffUsername,
+          firstName = firstName,
+          lastName = lastName,
           staffRole = staffRole,
           comment = comment,
         )
