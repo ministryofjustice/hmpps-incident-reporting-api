@@ -16,7 +16,10 @@ data class NomisHistory(
   @Schema(description = "Questions asked for the questionnaire")
   val questions: List<NomisHistoryQuestion>,
   @Schema(description = "When the questionnaire was changed")
+  @Deprecated("Use incidentChangeDateTime instead")
   val incidentChangeDate: LocalDate,
+  @Schema(description = "When the questionnaire was changed with time")
+  val incidentChangeDateTime: LocalDateTime? = null,
   @Schema(description = "Who changed the questionnaire")
   val incidentChangeStaff: NomisStaff,
 
