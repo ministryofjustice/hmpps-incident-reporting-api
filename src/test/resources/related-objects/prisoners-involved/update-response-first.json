@@ -1,6 +1,8 @@
 [
   {
     "prisonerNumber": "A1234BB",
+    "firstName": "David",
+    "lastName": "Jones",
     "prisonerRole": "PRESENT_AT_SCENE",
     "outcome": null,
     "comment": "Onlooker",
@@ -8,6 +10,8 @@
   },
   {
     "prisonerNumber": "A0002AA",
+    "firstName": "First 2",
+    "lastName": "Last 2",
     "prisonerRole": "ASSAILANT",
     "outcome": "CONVICTED",
     "comment": "Comment #2",

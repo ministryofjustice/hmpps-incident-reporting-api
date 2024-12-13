@@ -58,6 +58,8 @@ fun buildReport(
     report.addStaffInvolved(
       sequence = staffIndex - 1,
       staffUsername = "staff-$staffIndex",
+      firstName = "First $staffIndex",
+      lastName = "Last $staffIndex",
       staffRole = StaffRole.entries.elementAtWrapped(staffIndex),
       comment = "Comment #$staffIndex",
     )
@@ -66,6 +68,8 @@ fun buildReport(
     report.addPrisonerInvolved(
       sequence = prisonerIndex - 1,
       prisonerNumber = "A%04dAA".format(prisonerIndex),
+      firstName = "First $prisonerIndex",
+      lastName = "Last $prisonerIndex",
       prisonerRole = PrisonerRole.entries.elementAtWrapped(prisonerIndex),
       outcome = PrisonerOutcome.entries.elementAtWrapped(prisonerIndex),
       comment = "Comment #$prisonerIndex",

@@ -20,6 +20,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.prisonersearch.Prisoner
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
@@ -39,6 +40,7 @@ class PrisonerMergeTest {
   private val reportRepository: ReportRepository = mock()
   private val eventRepository: EventRepository = mock()
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository = mock()
+  private val prisonerSearchService: PrisonerSearchService = mock()
   private val authenticationHolder: HmppsAuthenticationHolder = mock()
   private val telemetryClient: TelemetryClient = mock()
 
@@ -46,6 +48,7 @@ class PrisonerMergeTest {
     reportRepository = reportRepository,
     eventRepository = eventRepository,
     prisonerInvolvementRepository = prisonerInvolvementRepository,
+    prisonerSearchService = prisonerSearchService,
     telemetryClient = telemetryClient,
     authenticationHolder = authenticationHolder,
     clock = clock,
@@ -112,12 +115,26 @@ class PrisonerMergeTest {
       )
       assertThat(reportsInDateRange).isEmpty()
 
+      verify(prisonerSearchService, never())
+        .searchByPrisonerNumbers(any())
+
       verify(telemetryClient, never())
         .trackEvent(any(), any(), anyOrNull())
     }
 
     @Test
     fun `can replace all instances of a prisoner number in prisoner involvement entities`() {
+      whenever(prisonerSearchService.searchByPrisonerNumbers(setOf("A0002BB")))
+        .thenReturn(
+          mapOf(
+            "A0002BB" to Prisoner(
+              prisonerNumber = "A0002BB",
+              firstName = "New first name",
+              lastName = "New surname",
+            ),
+          ),
+        )
+
       val reports = reportService.replacePrisonerNumber("A0002AA", "A0002BB")
       val reportIds = reports.map { it.reportReference }
       assertThat(reportIds)
@@ -129,9 +146,18 @@ class PrisonerMergeTest {
         .isEqualTo(listOf("A0001AA", "A0002BB"))
       assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
         .isEqualTo(listOf("A0001AA", "A0002BB", "A0003AA"))
+      assertThat(mockReport1.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("Last 1, First 1"))
+      assertThat(mockReport2.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("Last 1, First 1", "New surname, New first name"))
+      assertThat(mockReport3.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("Last 1, First 1", "New surname, New first name", "Last 3, First 3"))
       assertThat(mockReport1.modifiedAt).isBefore(now)
       assertThat(mockReport2.modifiedAt).isEqualTo(now)
       assertThat(mockReport3.modifiedAt).isEqualTo(now)
+
+      verify(prisonerSearchService, times(1))
+        .searchByPrisonerNumbers(setOf("A0002BB"))
 
       verify(telemetryClient, times(2))
         .trackEvent(
@@ -145,6 +171,17 @@ class PrisonerMergeTest {
 
     @Test
     fun `can replace instances of a prisoner number in prisoner involvement entities for a date range`() {
+      whenever(prisonerSearchService.searchByPrisonerNumbers(setOf("A0001BB")))
+        .thenReturn(
+          mapOf(
+            "A0001BB" to Prisoner(
+              prisonerNumber = "A0001BB",
+              firstName = "New first name",
+              lastName = "New surname",
+            ),
+          ),
+        )
+
       val reports = reportService.replacePrisonerNumberInDateRange("A0001AA", "A0001BB", now.minusDays(2), now.minusDays(2))
       val reportIds = reports.map { it.reportReference }
       assertThat(reportIds)
@@ -156,9 +193,18 @@ class PrisonerMergeTest {
         .isEqualTo(listOf("A0001BB", "A0002AA"))
       assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
         .isEqualTo(listOf("A0001AA", "A0002AA", "A0003AA"))
+      assertThat(mockReport1.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("Last 1, First 1"))
+      assertThat(mockReport2.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("New surname, New first name", "Last 2, First 2"))
+      assertThat(mockReport3.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("Last 1, First 1", "Last 2, First 2", "Last 3, First 3"))
       assertThat(mockReport1.modifiedAt).isBefore(now)
       assertThat(mockReport2.modifiedAt).isEqualTo(now)
       assertThat(mockReport3.modifiedAt).isBefore(now)
+
+      verify(prisonerSearchService, times(1))
+        .searchByPrisonerNumbers(setOf("A0001BB"))
 
       verify(telemetryClient, times(1))
         .trackEvent(
@@ -172,6 +218,17 @@ class PrisonerMergeTest {
 
     @Test
     fun `can replace instances of a prisoner number in prisoner involvement entities since a date`() {
+      whenever(prisonerSearchService.searchByPrisonerNumbers(setOf("A0001BB")))
+        .thenReturn(
+          mapOf(
+            "A0001BB" to Prisoner(
+              prisonerNumber = "A0001BB",
+              firstName = "New first name",
+              lastName = "New surname",
+            ),
+          ),
+        )
+
       val reports = reportService.replacePrisonerNumberInDateRange("A0001AA", "A0001BB", now.minusDays(2), null)
       val reportIds = reports.map { it.reportReference }
       assertThat(reportIds)
@@ -183,9 +240,18 @@ class PrisonerMergeTest {
         .isEqualTo(listOf("A0001BB", "A0002AA"))
       assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
         .isEqualTo(listOf("A0001BB", "A0002AA", "A0003AA"))
+      assertThat(mockReport1.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("Last 1, First 1"))
+      assertThat(mockReport2.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("New surname, New first name", "Last 2, First 2"))
+      assertThat(mockReport3.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("New surname, New first name", "Last 2, First 2", "Last 3, First 3"))
       assertThat(mockReport1.modifiedAt).isBefore(now)
       assertThat(mockReport2.modifiedAt).isEqualTo(now)
       assertThat(mockReport3.modifiedAt).isEqualTo(now)
+
+      verify(prisonerSearchService, times(1))
+        .searchByPrisonerNumbers(setOf("A0001BB"))
 
       verify(telemetryClient, times(2))
         .trackEvent(
@@ -199,6 +265,17 @@ class PrisonerMergeTest {
 
     @Test
     fun `can replace instances of a prisoner number in prisoner involvement entities until a date`() {
+      whenever(prisonerSearchService.searchByPrisonerNumbers(setOf("A0001BB")))
+        .thenReturn(
+          mapOf(
+            "A0001BB" to Prisoner(
+              prisonerNumber = "A0001BB",
+              firstName = "New first name",
+              lastName = "New surname",
+            ),
+          ),
+        )
+
       val reports = reportService.replacePrisonerNumberInDateRange("A0001AA", "A0001BB", null, now.minusDays(2))
       val reportIds = reports.map { it.reportReference }
       assertThat(reportIds)
@@ -210,9 +287,18 @@ class PrisonerMergeTest {
         .isEqualTo(listOf("A0001BB", "A0002AA"))
       assertThat(mockReport3.prisonersInvolved.map { it.prisonerNumber })
         .isEqualTo(listOf("A0001AA", "A0002AA", "A0003AA"))
+      assertThat(mockReport1.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("New surname, New first name"))
+      assertThat(mockReport2.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("New surname, New first name", "Last 2, First 2"))
+      assertThat(mockReport3.prisonersInvolved.map { "${it.lastName}, ${it.firstName}" })
+        .isEqualTo(listOf("Last 1, First 1", "Last 2, First 2", "Last 3, First 3"))
       assertThat(mockReport1.modifiedAt).isEqualTo(now)
       assertThat(mockReport2.modifiedAt).isEqualTo(now)
       assertThat(mockReport3.modifiedAt).isBefore(now)
+
+      verify(prisonerSearchService, times(1))
+        .searchByPrisonerNumbers(setOf("A0001BB"))
 
       verify(telemetryClient, times(2))
         .trackEvent(
@@ -227,6 +313,17 @@ class PrisonerMergeTest {
 
   @Test
   fun `does not de-duplicate situations where a prisoner number is involved more than once`() {
+    whenever(prisonerSearchService.searchByPrisonerNumbers(setOf("A0001AA")))
+      .thenReturn(
+        mapOf(
+          "A0001AA" to Prisoner(
+            prisonerNumber = "A0001AA",
+            firstName = "New first name",
+            lastName = "New surname",
+          ),
+        ),
+      )
+
     // report with A0001AA and A0002AA
     val mockReport = buildReport(
       reportReference = "94728",

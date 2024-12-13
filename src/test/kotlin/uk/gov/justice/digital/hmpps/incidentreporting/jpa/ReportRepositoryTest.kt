@@ -81,10 +81,10 @@ class ReportRepositoryTest : IntegrationTestBase() {
         filterBySource(InformationSource.DPS),
         filterByStatuses(Status.DRAFT),
         filterByType(Type.FINDS),
-        filterByIncidentDateFrom(now.toLocalDate().minusDays(2)),
-        filterByIncidentDateUntil(now.toLocalDate()),
-        filterByReportedDateFrom(now.toLocalDate().minusDays(2)),
-        filterByReportedDateUntil(now.toLocalDate()),
+        filterByIncidentDateFrom(today.minusDays(2)),
+        filterByIncidentDateUntil(today),
+        filterByReportedDateFrom(today.minusDays(2)),
+        filterByReportedDateUntil(today),
       )
       matchingSpecifications.forEach { specification ->
         val reportsFound = reportRepository.findAll(
@@ -100,10 +100,10 @@ class ReportRepositoryTest : IntegrationTestBase() {
         filterBySource(InformationSource.NOMIS),
         filterByStatuses(Status.AWAITING_ANALYSIS),
         filterByType(Type.FOOD_REFUSAL),
-        filterByIncidentDateFrom(now.toLocalDate()),
-        filterByIncidentDateUntil(now.toLocalDate().minusDays(2)),
-        filterByReportedDateFrom(now.toLocalDate()),
-        filterByReportedDateUntil(now.toLocalDate().minusDays(2)),
+        filterByIncidentDateFrom(today),
+        filterByIncidentDateUntil(today.minusDays(2)),
+        filterByReportedDateFrom(today),
+        filterByReportedDateUntil(today.minusDays(2)),
       )
       nonMatchingSpecifications.forEach { specification ->
         val reportsFound = reportRepository.findAll(
@@ -208,14 +208,14 @@ class ReportRepositoryTest : IntegrationTestBase() {
         emptyList(),
       )
       assertSpecificationReturnsReports(
-        filterByIncidentDateFrom(now.toLocalDate().minusDays(3))
-          .and(filterByIncidentDateUntil(now.toLocalDate().minusDays(3)))
+        filterByIncidentDateFrom(today.minusDays(3))
+          .and(filterByIncidentDateUntil(today.minusDays(3)))
           .and(filterByType(Type.ASSAULT)),
         listOf(report1Id),
       )
       assertSpecificationReturnsReports(
-        filterByReportedDateFrom(now.toLocalDate().minusDays(4))
-          .and(filterByReportedDateUntil(now.toLocalDate().minusDays(4))),
+        filterByReportedDateFrom(today.minusDays(4))
+          .and(filterByReportedDateUntil(today.minusDays(4))),
         emptyList(),
       )
     }
@@ -252,8 +252,16 @@ class ReportRepositoryTest : IntegrationTestBase() {
         ),
       )
     report.addStatusHistory(Status.DRAFT, now, "user5")
-    report.addStaffInvolved(0, StaffRole.FIRST_ON_SCENE, "user1")
-    report.addPrisonerInvolved("A1234AA", 0, PrisonerRole.VICTIM)
+    report.addStaffInvolved(
+      sequence = 0,
+      staffUsername = "user1",
+      staffRole = StaffRole.FIRST_ON_SCENE,
+    )
+    report.addPrisonerInvolved(
+      sequence = 0,
+      prisonerNumber = "A1234AA",
+      prisonerRole = PrisonerRole.VICTIM,
+    )
 
     TestTransaction.flagForCommit()
     TestTransaction.end()

@@ -16,6 +16,7 @@ generic-service:
     # temporarily reduce sampling for NOMIS migration in dev:
     APPLICATIONINSIGHTS_SAMPLING_PERCENTAGE: '1'
     API_BASE_URL_OAUTH: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+    API_BASE_URL_PRISONER_SEARCH: https://prisoner-search-dev.prison.service.justice.gov.uk
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-incident-reporting-dev

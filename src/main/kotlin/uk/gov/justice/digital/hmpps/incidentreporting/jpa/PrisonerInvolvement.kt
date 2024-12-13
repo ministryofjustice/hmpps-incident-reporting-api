@@ -29,6 +29,8 @@ class PrisonerInvolvement(
   val sequence: Int,
 
   var prisonerNumber: String,
+  var firstName: String? = null,
+  var lastName: String? = null,
 
   @Enumerated(EnumType.STRING)
   var prisonerRole: PrisonerRole,
@@ -71,6 +73,8 @@ class PrisonerInvolvement(
 
   fun updateWith(request: UpdatePrisonerInvolvement) {
     request.prisonerNumber?.let { prisonerNumber = it }
+    request.firstName?.let { firstName = it }
+    request.lastName?.let { lastName = it }
     request.prisonerRole?.let { prisonerRole = it }
     request.outcome?.let { outcome = it.getOrNull() }
     request.comment?.let { comment = it.getOrNull() }
@@ -79,6 +83,8 @@ class PrisonerInvolvement(
   fun toDto() = PrisonerInvolvementDto(
     sequence = sequence,
     prisonerNumber = prisonerNumber,
+    firstName = firstName,
+    lastName = lastName,
     prisonerRole = prisonerRole,
     outcome = outcome,
     comment = comment,

@@ -1,6 +1,8 @@
 [
   {
     "staffUsername": "staff-2",
+    "firstName": "First 2",
+    "lastName": "Last 2",
     "staffRole": "CR_HEAD",
     "comment": "Comment #2",
     "sequence": 1

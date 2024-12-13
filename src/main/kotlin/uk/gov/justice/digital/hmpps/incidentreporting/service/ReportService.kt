@@ -56,6 +56,7 @@ class ReportService(
   private val reportRepository: ReportRepository,
   private val eventRepository: EventRepository,
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository,
+  private val prisonerSearchService: PrisonerSearchService,
   private val telemetryClient: TelemetryClient,
   private val authenticationHolder: HmppsAuthenticationHolder,
   private val clock: Clock,
@@ -404,6 +405,10 @@ class ReportService(
   ): List<ReportBasic> {
     // TODO: maybe free text fields should be replaced too? especially if we end up generating report titles automatically
 
+    val prisoner by lazy {
+      prisonerSearchService.searchByPrisonerNumbers(setOf(prisonerNumber))[prisonerNumber]!!
+    }
+
     val reportedAtFilter: (ReportEntity) -> Boolean = when {
       // reported between `since` and `until`
       since != null && until != null -> { report -> report.reportedAt >= since && report.reportedAt <= until }
@@ -428,7 +433,7 @@ class ReportService(
       .values
       .filter(reportedAtFilter)
       .map { report ->
-        // mark report as kinda modified
+        // mark report as kinda-modified in case downstream consumers use this to spot changes
         report.modifiedAt = now
         // NB: report.modifiedIn is not changed since currently only a NOMIS-sourced domain event triggers this
         // NB: there is no actor user to set report.modifiedBy
@@ -438,6 +443,8 @@ class ReportService(
           prisonerInvolvement.prisonerNumber == removedPrisonerNumber
         }.forEach { prisonerInvolvement ->
           prisonerInvolvement.prisonerNumber = prisonerNumber
+          prisonerInvolvement.firstName = prisoner.firstName
+          prisonerInvolvement.lastName = prisoner.lastName
         }
 
         report.toDtoBasic()

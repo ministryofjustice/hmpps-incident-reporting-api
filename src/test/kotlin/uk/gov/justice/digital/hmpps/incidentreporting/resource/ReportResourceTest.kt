@@ -2712,6 +2712,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           getResource("/related-objects/staff-involved/add-request-short-username.json"),
           "addStaffInvolvement.staffUsername: size must be between 3 and 120",
         ),
+        InvalidRequestTestCase(
+          "empty surname",
+          getResource("/related-objects/staff-involved/add-request-empty-surname.json"),
+          "addStaffInvolvement.lastName: size must be between 1 and 255",
+        ),
+        InvalidRequestTestCase(
+          "long surname",
+          getResource("/related-objects/staff-involved/add-request-long-surname.json"),
+          "addStaffInvolvement.lastName: size must be between 1 and 255",
+        ),
       ),
     )
 
@@ -2723,6 +2733,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "short staff username",
           getResource("/related-objects/staff-involved/update-request-short-username.json"),
           "updateStaffInvolvement.staffUsername: size must be between 3 and 120",
+        ),
+        InvalidRequestTestCase(
+          "empty name",
+          getResource("/related-objects/staff-involved/update-request-empty-name.json"),
+          "updateStaffInvolvement.firstName: size must be between 1 and 255",
+        ),
+        InvalidRequestTestCase(
+          "long name",
+          getResource("/related-objects/staff-involved/update-request-long-name.json"),
+          "updateStaffInvolvement.firstName: size must be between 1 and 255",
         ),
       ),
       nullablePropertyRequests = listOf(
@@ -2748,11 +2768,36 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("POST /incident-reports/{reportId}/prisoners-involved")
     @Nested
-    inner class AddObject : RelatedObjects.AddObject()
+    inner class AddObject : RelatedObjects.AddObject(
+      invalidRequests = listOf(
+        InvalidRequestTestCase(
+          "empty name",
+          getResource("/related-objects/prisoners-involved/add-request-empty-name.json"),
+          "addPrisonerInvolvement.firstName: size must be between 1 and 255",
+        ),
+        InvalidRequestTestCase(
+          "long name",
+          getResource("/related-objects/prisoners-involved/add-request-long-name.json"),
+          "addPrisonerInvolvement.firstName: size must be between 1 and 255",
+        ),
+      ),
+    )
 
     @DisplayName("PATCH /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested
     inner class UpdateObject : RelatedObjects.UpdateObject(
+      invalidRequests = listOf(
+        InvalidRequestTestCase(
+          "empty surname",
+          getResource("/related-objects/prisoners-involved/update-request-empty-surname.json"),
+          "updatePrisonerInvolvement.lastName: size must be between 1 and 255",
+        ),
+        InvalidRequestTestCase(
+          "long surname",
+          getResource("/related-objects/prisoners-involved/update-request-long-surname.json"),
+          "updatePrisonerInvolvement.lastName: size must be between 1 and 255",
+        ),
+      ),
       nullablePropertyRequests = listOf(
         NullablePropertyTestCase(
           field = "outcome",

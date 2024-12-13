@@ -208,6 +208,8 @@ class Report(
         val newStaff = createStaffInvolved(staffParty)
         this.staffInvolved.find { it == newStaff }?.apply {
           staffUsername = newStaff.staffUsername
+          firstName = newStaff.firstName
+          lastName = newStaff.lastName
           staffRole = newStaff.staffRole
           comment = newStaff.comment
         } ?: addStaffInvolved(newStaff)
@@ -220,6 +222,8 @@ class Report(
       report = this,
       sequence = nomisStaffParty.sequence,
       staffUsername = nomisStaffParty.staff.username,
+      firstName = nomisStaffParty.staff.firstName,
+      lastName = nomisStaffParty.staff.lastName,
       staffRole = StaffRole.fromNomisCode(nomisStaffParty.role.code),
       comment = nomisStaffParty.comment,
     )
@@ -229,12 +233,21 @@ class Report(
     return staffInvolvement
   }
 
-  fun addStaffInvolved(sequence: Int, staffRole: StaffRole, staffUsername: String, comment: String? = null): StaffInvolvement {
+  fun addStaffInvolved(
+    sequence: Int,
+    staffRole: StaffRole,
+    staffUsername: String,
+    firstName: String? = null,
+    lastName: String? = null,
+    comment: String? = null,
+  ): StaffInvolvement {
     return addStaffInvolved(
       StaffInvolvement(
         report = this,
         sequence = sequence,
         staffUsername = staffUsername,
+        firstName = firstName,
+        lastName = lastName,
         staffRole = staffRole,
         comment = comment,
       ),
@@ -254,6 +267,8 @@ class Report(
       val newPrisoner = createPrisonerInvolved(nomisOffenderParty)
       prisonersInvolved.find { it == newPrisoner }?.apply {
         prisonerNumber = newPrisoner.prisonerNumber
+        firstName = newPrisoner.firstName
+        lastName = newPrisoner.lastName
         prisonerRole = newPrisoner.prisonerRole
         outcome = newPrisoner.outcome
         comment = newPrisoner.comment
@@ -268,6 +283,8 @@ class Report(
       report = this,
       sequence = nomisOffenderParty.sequence,
       prisonerNumber = nomisOffenderParty.offender.offenderNo,
+      firstName = nomisOffenderParty.offender.firstName,
+      lastName = nomisOffenderParty.offender.lastName,
       prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
       outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
       comment = nomisOffenderParty.comment,
@@ -279,8 +296,10 @@ class Report(
   }
 
   fun addPrisonerInvolved(
-    prisonerNumber: String,
     sequence: Int,
+    prisonerNumber: String,
+    firstName: String? = null,
+    lastName: String? = null,
     prisonerRole: PrisonerRole,
     outcome: PrisonerOutcome? = null,
     comment: String? = null,
@@ -290,6 +309,8 @@ class Report(
         report = this,
         sequence = sequence,
         prisonerNumber = prisonerNumber,
+        firstName = firstName,
+        lastName = lastName,
         prisonerRole = prisonerRole,
         outcome = outcome,
         comment = comment,

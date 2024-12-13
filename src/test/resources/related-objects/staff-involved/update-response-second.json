@@ -1,12 +1,16 @@
 [
   {
     "staffUsername": "staff-1",
+    "firstName": "First 1",
+    "lastName": "Last 1",
     "staffRole": "AUTHORISING_OFFICER",
     "comment": "Comment #1",
     "sequence": 0
   },
   {
     "staffUsername": "abc321",
+    "firstName": "Laura",
+    "lastName": "Farmer",
     "staffRole": "WITNESS",
     "comment": "Present at scene",
     "sequence": 1

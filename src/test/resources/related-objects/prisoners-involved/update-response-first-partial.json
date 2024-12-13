@@ -1,6 +1,8 @@
 [
   {
     "prisonerNumber": "A0001AA",
+    "firstName": "First 1",
+    "lastName": "Last 1",
     "prisonerRole": "ACTIVE_INVOLVEMENT",
     "outcome": "LOCAL_INVESTIGATION",
     "comment": "Comment #1",
@@ -8,6 +10,8 @@
   },
   {
     "prisonerNumber": "A0002AA",
+    "firstName": "First 2",
+    "lastName": "Last 2",
     "prisonerRole": "ASSAILANT",
     "outcome": "CONVICTED",
     "comment": "Comment #2",

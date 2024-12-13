@@ -6,6 +6,7 @@ import org.springframework.test.context.DynamicPropertySource
 import uk.gov.justice.digital.hmpps.incidentreporting.config.PostgresContainer
 import java.time.Clock
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -13,12 +14,14 @@ import java.time.ZoneId
 abstract class IntegrationTestBase {
 
   companion object {
+    // All tests should use a frozen instant for “now”: 12:34:56 on 5 December 2023 in London
     val zoneId: ZoneId = ZoneId.of("Europe/London")
     val clock: Clock = Clock.fixed(
       Instant.parse("2023-12-05T12:34:56+00:00"),
       zoneId,
     )
     val now: LocalDateTime = LocalDateTime.now(clock)
+    val today: LocalDate = now.toLocalDate()
 
     private val pgContainer = PostgresContainer.instance
 
