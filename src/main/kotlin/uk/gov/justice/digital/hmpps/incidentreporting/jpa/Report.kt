@@ -283,7 +283,7 @@ class Report(
       report = this,
       sequence = nomisOffenderParty.sequence,
       prisonerNumber = nomisOffenderParty.offender.offenderNo,
-      firstName = nomisOffenderParty.offender.firstName!!,
+      firstName = nomisOffenderParty.offender.firstName,
       lastName = nomisOffenderParty.offender.lastName,
       prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
       outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
