@@ -282,7 +282,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             description = "Damage",
             createDateTime = now,
             createdBy = reportingStaff.username,
-            incidentChangeDate = today,
             incidentChangeDateTime = now,
             incidentChangeStaff = reportingStaff,
             questions = listOf(
@@ -1210,7 +1209,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 1,
                 "DAMAGE",
                 "Damage",
-                incidentChangeDate = today.minusDays(2),
                 incidentChangeDateTime = now.minusDays(2),
                 incidentChangeStaff = reportingStaff,
                 createDateTime = now.minusDays(2),
@@ -1242,7 +1240,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 2,
                 "BOMB",
                 "Bomb",
-                incidentChangeDate = today.minusDays(1),
                 incidentChangeDateTime = now.minusDays(1),
                 incidentChangeStaff = reportingStaff,
                 createDateTime = now.minusDays(1),
