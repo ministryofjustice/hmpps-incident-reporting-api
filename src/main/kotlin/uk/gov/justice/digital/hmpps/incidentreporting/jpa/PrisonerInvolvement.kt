@@ -29,8 +29,8 @@ class PrisonerInvolvement(
   val sequence: Int,
 
   var prisonerNumber: String,
-  var firstName: String? = null,
-  var lastName: String? = null,
+  var firstName: String,
+  var lastName: String,
 
   @Enumerated(EnumType.STRING)
   var prisonerRole: PrisonerRole,

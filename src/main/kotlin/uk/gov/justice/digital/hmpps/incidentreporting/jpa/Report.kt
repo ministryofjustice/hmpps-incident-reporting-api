@@ -237,8 +237,8 @@ class Report(
     sequence: Int,
     staffRole: StaffRole,
     staffUsername: String,
-    firstName: String? = null,
-    lastName: String? = null,
+    firstName: String,
+    lastName: String,
     comment: String? = null,
   ): StaffInvolvement {
     return addStaffInvolved(
@@ -283,7 +283,7 @@ class Report(
       report = this,
       sequence = nomisOffenderParty.sequence,
       prisonerNumber = nomisOffenderParty.offender.offenderNo,
-      firstName = nomisOffenderParty.offender.firstName,
+      firstName = nomisOffenderParty.offender.firstName!!,
       lastName = nomisOffenderParty.offender.lastName,
       prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
       outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
@@ -298,8 +298,8 @@ class Report(
   fun addPrisonerInvolved(
     sequence: Int,
     prisonerNumber: String,
-    firstName: String? = null,
-    lastName: String? = null,
+    firstName: String,
+    lastName: String,
     prisonerRole: PrisonerRole,
     outcome: PrisonerOutcome? = null,
     comment: String? = null,

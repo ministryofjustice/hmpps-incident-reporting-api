@@ -28,8 +28,8 @@ class StaffInvolvement(
   val sequence: Int,
 
   var staffUsername: String,
-  var firstName: String? = null,
-  var lastName: String? = null,
+  var firstName: String,
+  var lastName: String,
 
   @Enumerated(EnumType.STRING)
   var staffRole: StaffRole,

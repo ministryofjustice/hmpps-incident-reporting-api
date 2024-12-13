@@ -12,10 +12,10 @@ data class StaffInvolvement(
   val sequence: Int,
   @Schema(description = "Username")
   val staffUsername: String,
-  @Schema(description = "First name (will become non-null in future)", nullable = true)
-  var firstName: String? = null,
-  @Schema(description = "Surname (will become non-null in future)", nullable = true)
-  var lastName: String? = null,
+  @Schema(description = "First name")
+  var firstName: String,
+  @Schema(description = "Surname")
+  var lastName: String,
   @Schema(description = "Their role")
   val staffRole: StaffRole,
   @Schema(description = "Optional comment on staff member involvement", nullable = true)

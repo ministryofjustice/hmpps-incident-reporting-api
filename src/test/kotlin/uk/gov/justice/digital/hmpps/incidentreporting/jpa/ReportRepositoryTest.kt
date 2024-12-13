@@ -255,11 +255,15 @@ class ReportRepositoryTest : IntegrationTestBase() {
     report.addStaffInvolved(
       sequence = 0,
       staffUsername = "user1",
+      firstName = "Mary",
+      lastName = "Jones",
       staffRole = StaffRole.FIRST_ON_SCENE,
     )
     report.addPrisonerInvolved(
       sequence = 0,
       prisonerNumber = "A1234AA",
+      firstName = "Trevor",
+      lastName = "Smith",
       prisonerRole = PrisonerRole.VICTIM,
     )
 
@@ -324,5 +328,9 @@ class ReportRepositoryTest : IntegrationTestBase() {
     assertThat(report.history.elementAt(2).questions.elementAt(1).responses.elementAt(1).response).isEqualTo("OTHER")
     assertThat(report.historyOfStatuses).hasSize(1)
     assertThat(report.historyOfStatuses.elementAt(0).status).isEqualTo(Status.DRAFT)
+    assertThat(report.staffInvolved).hasSize(1)
+    assertThat(report.staffInvolved.elementAt(0).lastName).isEqualTo("Jones")
+    assertThat(report.prisonersInvolved).hasSize(1)
+    assertThat(report.prisonersInvolved.elementAt(0).lastName).isEqualTo("Smith")
   }
 }

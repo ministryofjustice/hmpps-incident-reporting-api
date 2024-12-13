@@ -13,10 +13,10 @@ data class PrisonerInvolvement(
   val sequence: Int,
   @Schema(description = "Prisoner’s NOMIS number")
   val prisonerNumber: String,
-  @Schema(description = "First name (will become non-null in future)", nullable = true)
-  var firstName: String? = null,
-  @Schema(description = "Surname (will become non-null in future)", nullable = true)
-  var lastName: String? = null,
+  @Schema(description = "First name")
+  var firstName: String,
+  @Schema(description = "Surname")
+  var lastName: String,
   @Schema(description = "Their role")
   val prisonerRole: PrisonerRole,
   @Schema(description = "Optional outcome of prisoner’s involvement", nullable = true)
