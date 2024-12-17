@@ -346,9 +346,13 @@ class ReportService(
   }
 
   @Transactional
-  fun deleteQuestionsAndResponses(reportId: UUID, questionCodes: Set<String>): Pair<ReportBasic, List<Question>>? {
+  fun deleteQuestionsAndResponses(
+    reportId: UUID,
+    questionCodes: Set<String>,
+    ignoreMissingCodes: Boolean = false,
+  ): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
-      removeQuestions(questionCodes)
+      removeQuestions(questionCodes, ignoreMissingCodes)
 
       modifiedIn = InformationSource.DPS
       modifiedAt = LocalDateTime.now(clock)
