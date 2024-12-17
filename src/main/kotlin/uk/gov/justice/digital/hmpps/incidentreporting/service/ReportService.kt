@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.microsoft.applicationinsights.TelemetryClient
-import jakarta.validation.ValidationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
@@ -347,10 +346,9 @@ class ReportService(
   }
 
   @Transactional
-  fun deleteLastQuestionAndResponses(reportId: UUID): Pair<ReportBasic, List<Question>>? {
+  fun deleteQuestionsAndResponses(reportId: UUID, questionCodes: Set<String>): Pair<ReportBasic, List<Question>>? {
     return reportRepository.findOneEagerlyById(reportId)?.run {
-      popLastQuestion()
-        ?: throw ValidationException("Question list is empty")
+      removeQuestions(questionCodes)
 
       modifiedIn = InformationSource.DPS
       modifiedAt = LocalDateTime.now(clock)
