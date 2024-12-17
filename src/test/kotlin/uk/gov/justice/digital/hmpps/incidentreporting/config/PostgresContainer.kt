@@ -3,19 +3,23 @@ package uk.gov.justice.digital.hmpps.incidentreporting.config
 import org.slf4j.LoggerFactory
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.utility.DockerImageName
 import java.io.IOException
 import java.net.ServerSocket
 
 object PostgresContainer {
-  val instance: PostgreSQLContainer<Nothing>? by lazy { startPostgresqlContainer() }
+  private val log = LoggerFactory.getLogger(this::class.java)
+  val instance: PostgreSQLContainer<Nothing>? by lazy { startPostgresIfNotRunning() }
 
-  private fun startPostgresqlContainer(): PostgreSQLContainer<Nothing>? {
+  private fun startPostgresIfNotRunning(): PostgreSQLContainer<Nothing>? {
     if (isPostgresRunning()) {
       log.warn("Using existing Postgres database")
       return null
     }
     log.info("Creating a Postgres database")
-    return PostgreSQLContainer<Nothing>("postgres").apply {
+    return PostgreSQLContainer<Nothing>(
+      DockerImageName.parse("postgres").withTag("16"),
+    ).apply {
       withEnv("HOSTNAME_EXTERNAL", "localhost")
       withDatabaseName("incident_reporting")
       withUsername("incident_reporting")
@@ -34,6 +38,4 @@ object PostgresContainer {
     } catch (e: IOException) {
       true
     }
-
-  private val log = LoggerFactory.getLogger(this::class.java)
 }
