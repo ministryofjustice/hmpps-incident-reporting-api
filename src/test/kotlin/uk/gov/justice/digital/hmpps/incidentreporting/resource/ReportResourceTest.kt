@@ -2031,6 +2031,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
+  // TODO: decide if a different role should be used!
   @DisplayName("DELETE /incident-reports/{id}")
   @Nested
   inner class DeleteReport {
@@ -3224,7 +3225,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @DisplayName("by role and scope")
         @TestFactory
         fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.delete().uri(urlWithQuestionsAndResponses),
+          webTestClient.delete().uri("$urlWithQuestionsAndResponses?code=1"),
           "MAINTAIN_INCIDENT_REPORTS",
           "write",
         )
@@ -3234,8 +3235,36 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Nested
       inner class Validation {
         @Test
-        fun `cannot delete last question from a report if it is not found`() {
-          webTestClient.delete().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions")
+        fun `cannot delete zero questions from a report`() {
+          webTestClient.delete().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("deleteQuestionsAndResponses.code: size must be between 1")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
+
+        @Test
+        fun `cannot delete question with blank codes`() {
+          webTestClient.delete().uri("$urlWithQuestionsAndResponses?code=&code=")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("size must be between 1")
+            }
+
+          assertThatNoDomainEventsWereSent()
+        }
+
+        @Test
+        fun `cannot delete question from a report when report is not found`() {
+          webTestClient.delete().uri("/incident-reports/11111111-2222-3333-4444-555555555555/questions?code=1")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -3248,17 +3277,41 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         }
 
         @Test
-        fun `cannot delete question from a report when the question list is empty`() {
-          webTestClient.delete().uri(urlWithoutQuestions)
+        fun `cannot delete question from a report when the code is not found`() {
+          webTestClient.delete().uri("$urlWithoutQuestions?code=1")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .exchange()
-            .expectStatus().isBadRequest
+            .expectStatus().isNotFound
             .expectBody().jsonPath("developerMessage").value<String> {
-              assertThat(it).contains("Question list is empty")
+              assertThat(it).contains("Questions codes not found: 1")
             }
 
           assertThatNoDomainEventsWereSent()
+
+          val remainingQuestionCodes = reportRepository.findOneEagerlyById(existingReport.id!!)!!
+            .questions
+            .map { it.code }
+          assertThat(remainingQuestionCodes).isEmpty()
+        }
+
+        @Test
+        fun `cannot delete any questions from a report when at least one code is not found`() {
+          webTestClient.delete().uri("$urlWithQuestionsAndResponses?code=1&code=3&code=4")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isNotFound
+            .expectBody().jsonPath("developerMessage").value<String> {
+              assertThat(it).contains("Questions codes not found: 3, 4")
+            }
+
+          assertThatNoDomainEventsWereSent()
+
+          val remainingQuestionCodes = reportRepository.findOneEagerlyById(existingReportWithQuestionsAndResponses.id!!)!!
+            .questions
+            .map { it.code }
+          assertThat(remainingQuestionCodes).isEqualTo(listOf("1", "2"))
         }
       }
 
@@ -3266,9 +3319,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Nested
       inner class HappyPath {
         @Test
-        fun `can delete last question from a report when there are several`() {
+        fun `can delete a question from a report`() {
           val expectedResponse = getResource("/questions-with-responses/delete-response.json")
-          webTestClient.delete().uri(urlWithQuestionsAndResponses)
+          webTestClient.delete().uri("$urlWithQuestionsAndResponses?code=2")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -3284,21 +3337,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           )
         }
 
-        @Test
-        fun `can delete all questions from a report`() {
-          webTestClient.delete().uri(urlWithQuestionsAndResponses)
-            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-
-          assertThatDomainEventWasSent(
-            "incident.report.amended",
-            "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
-          )
-
-          webTestClient.delete().uri(urlWithQuestionsAndResponses)
+        @ParameterizedTest(name = "can delete several questions from a report with {0}")
+        @ValueSource(strings = ["code=1,2", "code=1&code=2"])
+        fun `can delete several questions from a report`(queryString: String) {
+          webTestClient.delete().uri("$urlWithQuestionsAndResponses?$queryString")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -3330,11 +3372,20 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             ),
           )
 
-          webTestClient.delete().uri("/incident-reports/${nomisReportWithQuestionsAndResponses.id}/questions")
+          webTestClient.delete().uri("/incident-reports/${nomisReportWithQuestionsAndResponses.id}/questions?code=1")
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .exchange()
             .expectStatus().isOk
+            .expectBody().json(
+              // language=json
+              """
+              [
+                {"code": "2"}
+              ]
+              """,
+              JsonCompareMode.LENIENT,
+            )
 
           val updatedNomisReportWithQuestionsAndResponses = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
           assertThat(updatedNomisReportWithQuestionsAndResponses.createdInNomis).isTrue()

@@ -207,7 +207,6 @@ class ApiExceptionHandler {
   @ExceptionHandler(PropertyReferenceException::class)
   fun handlePropertyReferenceException(e: PropertyReferenceException): ResponseEntity<ErrorResponse> {
     log.debug("PropertyReferenceException caught: {}", e.message)
-
     return ResponseEntity
       .status(BAD_REQUEST)
       .body(
@@ -222,7 +221,7 @@ class ApiExceptionHandler {
 
   @ExceptionHandler(EventNotFoundException::class)
   fun handleEventNotFound(e: EventNotFoundException): ResponseEntity<ErrorResponse> {
-    log.debug("Event not found exception caught: {}", e.message)
+    log.debug(e.message)
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
       .body(
@@ -237,7 +236,7 @@ class ApiExceptionHandler {
 
   @ExceptionHandler(ReportNotFoundException::class)
   fun handleReportNotFound(e: ReportNotFoundException): ResponseEntity<ErrorResponse> {
-    log.debug("Report not found exception caught: {}", e.message)
+    log.debug(e.message)
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
       .body(
@@ -252,7 +251,7 @@ class ApiExceptionHandler {
 
   @ExceptionHandler(ReportAlreadyExistsException::class)
   fun handleReportAlreadyExists(e: ReportAlreadyExistsException): ResponseEntity<ErrorResponse> {
-    log.debug("Report already exists exception caught: {}", e.message)
+    log.debug(e.message)
     return ResponseEntity
       .status(HttpStatus.CONFLICT)
       .body(
@@ -267,13 +266,28 @@ class ApiExceptionHandler {
 
   @ExceptionHandler(ReportModifiedInDpsException::class)
   fun handleReportModifedInDps(e: ReportModifiedInDpsException): ResponseEntity<ErrorResponse> {
-    log.debug("Report edit conflict: {}", e.message)
+    log.debug(e.message)
     return ResponseEntity
       .status(HttpStatus.CONFLICT)
       .body(
         ErrorResponse(
           status = HttpStatus.CONFLICT,
           errorCode = ErrorCode.ReportModifedInDps,
+          userMessage = "${e.message}",
+          developerMessage = e.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(QuestionsNotFoundException::class)
+  fun handleQuestionsNotFound(e: QuestionsNotFoundException): ResponseEntity<ErrorResponse> {
+    log.debug(e.message)
+    return ResponseEntity
+      .status(HttpStatus.NOT_FOUND)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.NOT_FOUND,
+          errorCode = ErrorCode.ReportNotFound,
           userMessage = "${e.message}",
           developerMessage = e.message,
         ),
@@ -340,5 +354,7 @@ class ReportModifiedInDpsException(description: String) : Exception("Report last
 }
 
 class ObjectAtIndexNotFoundException(type: KClass<*>, index: Int) : Exception("Object ${type.simpleName} at index $index not found")
+
+class QuestionsNotFoundException(questionCodes: Set<String>) : Exception("Questions codes not found: ${questionCodes.sorted().joinToString()}")
 
 class SubjectAccessRequestNoReports : Exception("No reports found for given SAR filters")

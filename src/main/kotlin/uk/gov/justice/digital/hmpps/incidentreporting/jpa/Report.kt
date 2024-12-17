@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStaffParty
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.id.GeneratedUuidV7
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ObjectAtIndexNotFoundException
+import uk.gov.justice.digital.hmpps.incidentreporting.resource.QuestionsNotFoundException
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.SortedSet
@@ -423,16 +424,20 @@ class Report(
       question = nomisQuestion.question,
     )
 
-  fun popLastQuestion(): Question? {
-    val lastQuestion = if (questions.isNotEmpty()) {
-      questions.last()
-    } else {
-      null
+  fun removeQuestion(question: Question) {
+    questions.remove(question)
+  }
+
+  fun removeQuestions(questionCodes: Set<String>) {
+    val questionsToRemove = questions.filter { questionCodes.contains(it.code) }
+    val questionCodesFound = questionsToRemove.mapTo(mutableSetOf()) { it.code }
+    val missingCodes = questionCodes - questionCodesFound
+    if (missingCodes.isNotEmpty()) {
+      throw QuestionsNotFoundException(missingCodes)
     }
-    if (lastQuestion != null) {
-      questions.remove(lastQuestion)
+    questionsToRemove.forEach {
+      removeQuestion(it)
     }
-    return lastQuestion
   }
 
   fun findHistory(changedAt: LocalDateTime, type: Type): History? =
