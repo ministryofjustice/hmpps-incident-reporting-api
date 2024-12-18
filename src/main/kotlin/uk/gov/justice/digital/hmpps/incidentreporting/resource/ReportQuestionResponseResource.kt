@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
@@ -145,12 +146,12 @@ class ReportQuestionResponseResource(
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-    summary = "Deletes the last question from an incident report along with its responses",
+    summary = "Deletes questions (identified by code) from an incident report along with their responses",
     description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Returns all questions and responses in report",
+        description = "Returns all remaining questions and responses in report",
       ),
       ApiResponse(
         responseCode = "400",
@@ -174,12 +175,30 @@ class ReportQuestionResponseResource(
       ),
     ],
   )
-  fun deleteLastQuestionAndResponses(
+  fun deleteQuestionsAndResponses(
     @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportId: UUID,
+    @Parameter(
+      description = "Codes for questions to delete",
+      example = "40102,40103",
+      array = ArraySchema(
+        schema = Schema(example = "40102", minLength = 1),
+        arraySchema = Schema(
+          requiredMode = Schema.RequiredMode.REQUIRED,
+          nullable = false,
+          minLength = 1,
+        ),
+      ),
+    )
+    @RequestParam(required = false)
+    @Size(min = 1)
+    code: Set<
+      @Size(min = 1)
+      String,
+      > = emptySet(),
   ): List<Question> {
-    val (report, questions) = reportService.deleteLastQuestionAndResponses(reportId)
+    val (report, questions) = reportService.deleteQuestionsAndResponses(reportId, code)
       ?: throw ReportNotFoundException(reportId)
     eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_AMENDED,

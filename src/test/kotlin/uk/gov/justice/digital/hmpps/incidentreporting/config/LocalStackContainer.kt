@@ -11,7 +11,7 @@ import java.net.ServerSocket
 
 object LocalStackContainer {
   private val log = LoggerFactory.getLogger(this::class.java)
-  val instance by lazy { startLocalstackIfNotRunning() }
+  val instance: LocalStackContainer? by lazy { startLocalstackIfNotRunning() }
 
   fun setLocalStackProperties(localStackContainer: LocalStackContainer, registry: DynamicPropertyRegistry) {
     val localstackUrl = localStackContainer.getEndpointOverride(LocalStackContainer.Service.SNS).toString()
@@ -21,7 +21,10 @@ object LocalStackContainer {
   }
 
   private fun startLocalstackIfNotRunning(): LocalStackContainer? {
-    if (localstackIsRunning()) return null
+    if (localstackIsRunning()) {
+      log.warn("Using existing localstack instance")
+      return null
+    }
     val logConsumer = Slf4jLogConsumer(log).withPrefix("localstack")
     return LocalStackContainer(
       DockerImageName.parse("localstack/localstack").withTag("4"),
