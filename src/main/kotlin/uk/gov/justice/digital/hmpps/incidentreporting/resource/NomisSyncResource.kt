@@ -100,8 +100,7 @@ class NomisSyncResource(
       eventPublishAndAuditNomisEvent(
         eventType,
         whatChanged,
-        report,
-      )
+      ) { report }
     }
     val status = if (isUpdate) {
       HttpStatus.OK
