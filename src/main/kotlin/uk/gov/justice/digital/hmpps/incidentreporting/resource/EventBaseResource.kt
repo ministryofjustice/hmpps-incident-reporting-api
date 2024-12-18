@@ -31,4 +31,20 @@ abstract class EventBaseResource {
         auditData = report,
       )
     }
+
+  protected fun eventPublishAndAuditNomisEvent(
+    event: ReportDomainEventType,
+    whatChanged: WhatChanged? = null,
+    report: ReportBasic,
+  ) {
+    eventPublishAndAuditService.publishEvent(
+      eventType = event,
+      additionalInformation = AdditionalInformation(
+        id = report.id,
+        reportReference = report.reportReference,
+        source = InformationSource.NOMIS,
+        whatChanged = whatChanged,
+      ),
+    )
+  }
 }
