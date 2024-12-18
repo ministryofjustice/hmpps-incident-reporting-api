@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncCreateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncUpdateRequest
@@ -98,9 +97,8 @@ class NomisSyncResource(
         ReportDomainEventType.INCIDENT_REPORT_CREATED to null
       }
 
-      eventPublishAndAudit(
+      eventPublishAndAuditNomisEvent(
         eventType,
-        InformationSource.NOMIS,
         whatChanged,
       ) { report }
     }
