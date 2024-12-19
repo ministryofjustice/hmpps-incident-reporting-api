@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -35,6 +37,10 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody as RequestBodySchema
 class NomisSyncResource(
   private val syncService: NomisSyncService,
 ) : EventBaseResource() {
+
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
 
   @PostMapping("/upsert")
   @Operation(
@@ -96,7 +102,7 @@ class NomisSyncResource(
       } else {
         ReportDomainEventType.INCIDENT_REPORT_CREATED to null
       }
-
+      log.info("Incident report synchronised: ${report.reportReference}")
       eventPublishAndAuditNomisEvent(
         eventType,
         whatChanged,
