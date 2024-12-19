@@ -22,8 +22,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncReque
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncUpdateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncReportId
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
-import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
-import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import io.swagger.v3.oas.annotations.parameters.RequestBody as RequestBodySchema
 
 @RestController
@@ -95,24 +93,12 @@ class NomisSyncResource(
   ): ResponseEntity<NomisSyncReportId> {
     val isUpdate = syncRequest.id != null
     val report = syncService.upsert(syncRequest)
-
-    if (!syncRequest.initialMigration) {
-      val (eventType, whatChanged) = if (isUpdate) {
-        ReportDomainEventType.INCIDENT_REPORT_AMENDED to WhatChanged.ANYTHING
-      } else {
-        ReportDomainEventType.INCIDENT_REPORT_CREATED to null
-      }
-      log.info("Incident report synchronised: ${report.reportReference}")
-      eventPublishAndAuditNomisEvent(
-        eventType,
-        whatChanged,
-      ) { report }
-    }
     val status = if (isUpdate) {
       HttpStatus.OK
     } else {
       HttpStatus.CREATED
     }
+    log.info("Incident report synchronised: ${report.reportReference}")
     return ResponseEntity(NomisSyncReportId(report.id), status)
   }
 }
