@@ -53,13 +53,16 @@ class NomisSyncService(
   }
 
   private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportWithDetails {
+    log.debug("Locking existing report: ${incidentReport.incidentId}")
     reportRepository.findReportByIdAndLockRecord(reportId) // will lock this table row.
+    log.debug("Lock obtained for: ${incidentReport.incidentId}")
     val reportToUpdate = reportRepository.findOneEagerlyById(reportId) ?: throw ReportNotFoundException(reportId)
 
     if (reportToUpdate.modifiedIn != InformationSource.NOMIS) {
       throw ReportModifiedInDpsException(reportId)
     }
     reportToUpdate.updateWith(incidentReport, clock)
+
     return reportToUpdate.toDtoWithDetails()
   }
 
