@@ -31,6 +31,7 @@ class NomisSyncService(
   }
 
   fun upsert(syncRequest: NomisSyncRequest): ReportWithDetails {
+    log.info("Starting synchronisation of Incident Report: ${syncRequest.incidentReport.incidentId}")
     syncRequest.validate()
 
     val id = syncRequest.id
@@ -53,9 +54,9 @@ class NomisSyncService(
   }
 
   private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportWithDetails {
-    log.debug("Locking existing report: ${incidentReport.incidentId}")
+    log.info("Locking existing report: ${incidentReport.incidentId}")
     reportRepository.findReportByIdAndLockRecord(reportId) // will lock this table row.
-    log.debug("Lock obtained for: ${incidentReport.incidentId}")
+    log.info("Lock obtained for: ${incidentReport.incidentId}")
     val reportToUpdate = reportRepository.findOneEagerlyById(reportId) ?: throw ReportNotFoundException(reportId)
 
     if (reportToUpdate.modifiedIn != InformationSource.NOMIS) {
