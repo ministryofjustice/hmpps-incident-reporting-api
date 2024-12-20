@@ -36,7 +36,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
 import java.util.UUID
 
@@ -1024,8 +1023,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               reportJson,
             )
           }
-
-        assertThatDomainEventWasSent("incident.report.created", "$newIncidentId", InformationSource.NOMIS)
       }
 
       @Test
@@ -1590,13 +1587,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               reportJson,
             )
           }
-
-        assertThatDomainEventWasSent(
-          "incident.report.amended",
-          "$NOMIS_INCIDENT_NUMBER",
-          InformationSource.NOMIS,
-          WhatChanged.ANYTHING,
-        )
       }
 
       @Test
@@ -1776,13 +1766,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         assertThat(changedReport.findQuestion(code = "2", sequence = 2)).isNull()
         assertThat(changedReport.findQuestion(code = "3", sequence = 3)).isNotNull
         assertThat(changedReport.findQuestion(code = "4", sequence = 4)).isNotNull
-
-        assertThatDomainEventWasSent(
-          "incident.report.amended",
-          "${NOMIS_INCIDENT_NUMBER + 1}",
-          InformationSource.NOMIS,
-          WhatChanged.ANYTHING,
-        )
       }
     }
   }
@@ -1811,26 +1794,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         .apply(assertions)
     }
 
-    private fun assertCreatedReportDomainMessageSent() {
-      assertThat(getDomainEvents(1)).allMatch { event ->
-        event.eventType == "incident.report.created" &&
-          event.additionalInformation?.let { additionalInformation ->
-            additionalInformation.id != existingNomisReport.id && // note that ids should not match
-              additionalInformation.source == InformationSource.NOMIS
-          } ?: false
-      }
-    }
-
-    private fun assertAmendedReportDomainMessageSent() {
-      assertThat(getDomainEvents(1)).allMatch { event ->
-        event.eventType == "incident.report.amended" &&
-          event.additionalInformation?.let { additionalInformation ->
-            additionalInformation.id == existingNomisReport.id &&
-              additionalInformation.source == InformationSource.NOMIS
-          } ?: false
-      }
-    }
-
     @Test
     fun `can create a report during initial migration`() {
       deleteAllReports() // drop reports from test setup to prevent report and event reference clashes
@@ -1841,9 +1804,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       ) {
         // new report created
         expectStatus().isCreated
-
-        // no domain events sent because migrating from NOMIS
-        assertThatNoDomainEventsWereSent()
       }
     }
 
@@ -1857,9 +1817,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       ) {
         // new report created
         expectStatus().isCreated
-
-        // already migrated, so domain event should be raised
-        assertCreatedReportDomainMessageSent()
       }
     }
 
@@ -1876,9 +1833,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               "Cannot update an existing report (${existingNomisReport.id}) during initial migration",
             )
           }
-
-        // no domain events sent because migrating from NOMIS
-        assertThatNoDomainEventsWereSent()
       }
     }
 
@@ -1890,9 +1844,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       ) {
         // existing report updated
         expectStatus().isOk
-
-        // already migrated, so domain event should be raised
-        assertAmendedReportDomainMessageSent()
       }
     }
   }

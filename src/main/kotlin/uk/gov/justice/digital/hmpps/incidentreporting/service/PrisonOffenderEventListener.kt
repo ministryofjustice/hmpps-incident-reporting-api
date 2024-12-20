@@ -33,14 +33,14 @@ class PrisonOffenderEventListener(
 
     when (eventType) {
       PRISONER_MERGE_EVENT_TYPE -> {
-        val mergeEvent = mapper.readValue(message, HMPPSMergeDomainEvent::class.java)
+        val mergeEvent = mapper.readValue(message, HMPPSPrisonerMergeDomainEvent::class.java)
         reportService.replacePrisonerNumber(
           removedPrisonerNumber = mergeEvent.additionalInformation.removedNomsNumber,
           prisonerNumber = mergeEvent.additionalInformation.nomsNumber,
         )
       }
       PRISONER_BOOKING_MOVED_EVENT_TYPE -> {
-        val moveEvent = mapper.readValue(message, HMPPSMergeBookingMovedEvent::class.java)
+        val moveEvent = mapper.readValue(message, HMPPSBookingMovedDomainEvent::class.java)
         val additionalInformation = moveEvent.additionalInformation
         reportService.replacePrisonerNumberInDateRange(
           removedPrisonerNumber = additionalInformation.movedFromNomsNumber,
@@ -61,20 +61,20 @@ class PrisonOffenderEventListener(
   }
 }
 
-data class HMPPSMergeDomainEvent(
+data class HMPPSPrisonerMergeDomainEvent(
   val eventType: String? = null,
-  val additionalInformation: AdditionalInformationMerge,
+  val additionalInformation: AdditionalInformationPrisonerMerge,
   val version: String,
   val occurredAt: ZonedDateTime,
   val description: String,
 )
 
-data class AdditionalInformationMerge(
+data class AdditionalInformationPrisonerMerge(
   val nomsNumber: String,
   val removedNomsNumber: String,
 )
 
-data class HMPPSMergeBookingMovedEvent(
+data class HMPPSBookingMovedDomainEvent(
   val eventType: String? = null,
   val additionalInformation: AdditionalInformationBookingMoved,
   val version: String,

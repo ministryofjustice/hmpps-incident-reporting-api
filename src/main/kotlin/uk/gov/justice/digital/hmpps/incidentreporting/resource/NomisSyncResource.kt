@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -15,14 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncCreateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncUpdateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncReportId
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
-import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
-import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import io.swagger.v3.oas.annotations.parameters.RequestBody as RequestBodySchema
 
 @RestController
@@ -36,6 +35,10 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody as RequestBodySchema
 class NomisSyncResource(
   private val syncService: NomisSyncService,
 ) : EventBaseResource() {
+
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
 
   @PostMapping("/upsert")
   @Operation(
@@ -90,25 +93,12 @@ class NomisSyncResource(
   ): ResponseEntity<NomisSyncReportId> {
     val isUpdate = syncRequest.id != null
     val report = syncService.upsert(syncRequest)
-
-    if (!syncRequest.initialMigration) {
-      val (eventType, whatChanged) = if (isUpdate) {
-        ReportDomainEventType.INCIDENT_REPORT_AMENDED to WhatChanged.ANYTHING
-      } else {
-        ReportDomainEventType.INCIDENT_REPORT_CREATED to null
-      }
-
-      eventPublishAndAudit(
-        eventType,
-        InformationSource.NOMIS,
-        whatChanged,
-      ) { report }
-    }
     val status = if (isUpdate) {
       HttpStatus.OK
     } else {
       HttpStatus.CREATED
     }
+    log.info("Incident report synchronised: ${report.reportReference}")
     return ResponseEntity(NomisSyncReportId(report.id), status)
   }
 }
