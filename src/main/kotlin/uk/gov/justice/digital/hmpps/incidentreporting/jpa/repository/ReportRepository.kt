@@ -17,8 +17,8 @@ interface ReportRepository : JpaRepository<Report, UUID>, JpaSpecificationExecut
   @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyById(id: UUID): Report?
 
-  @Lock(LockModeType.PESSIMISTIC_WRITE)
-  @QueryHints(value = [QueryHint(name = "jakarta.persistence.lock.timeout", value = "2000")])
+  @Lock(LockModeType.PESSIMISTIC_READ)
+  @QueryHints(value = [QueryHint(name = "jakarta.persistence.lock.timeout", value = "1000")])
   @Query(value = "SELECT r.id FROM Report r WHERE r.id = :id")
   fun findReportByIdAndLockRecord(id: UUID): UUID?
 
