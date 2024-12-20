@@ -237,8 +237,8 @@ class Report(
     sequence: Int,
     staffRole: StaffRole,
     staffUsername: String,
-    firstName: String? = null,
-    lastName: String? = null,
+    firstName: String,
+    lastName: String,
     comment: String? = null,
   ): StaffInvolvement {
     return addStaffInvolved(
@@ -298,8 +298,8 @@ class Report(
   fun addPrisonerInvolved(
     sequence: Int,
     prisonerNumber: String,
-    firstName: String? = null,
-    lastName: String? = null,
+    firstName: String,
+    lastName: String,
     prisonerRole: PrisonerRole,
     outcome: PrisonerOutcome? = null,
     comment: String? = null,
