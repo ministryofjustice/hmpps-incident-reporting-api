@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
@@ -43,23 +42,6 @@ class ConstantsResource {
   fun errorCodes(): List<ConstantDescription> {
     return ErrorCode.entries.map {
       ConstantDescription(it.errorCode.toString(), it.name)
-    }
-  }
-
-  @GetMapping("/correction-reasons")
-  @ResponseStatus(HttpStatus.OK)
-  @Operation(
-    summary = "List codes and descriptions of reasons for correction requests made about a report",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Returns codes and descriptions",
-      ),
-    ],
-  )
-  fun correctionReasons(): List<ConstantDescription> {
-    return CorrectionReason.entries.map {
-      ConstantDescription(it.name, it.description)
     }
   }
 

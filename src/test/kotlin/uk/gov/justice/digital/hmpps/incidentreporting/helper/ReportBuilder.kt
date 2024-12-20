@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.helper
 
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
@@ -80,7 +79,6 @@ fun buildReport(
       sequence = correctionIndex - 1,
       correctionRequestedAt = reportTime,
       correctionRequestedBy = "qa",
-      reason = CorrectionReason.NOT_SPECIFIED,
       descriptionOfChange = "Fix request #$correctionIndex",
     )
   }

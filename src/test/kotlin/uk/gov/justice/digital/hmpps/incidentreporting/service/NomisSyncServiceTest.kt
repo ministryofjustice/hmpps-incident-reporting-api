@@ -17,7 +17,6 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.dao.DataIntegrityViolationException
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
@@ -209,7 +208,6 @@ class NomisSyncServiceTest {
       sequence = 0,
       correctionRequestedBy = "checking-user",
       correctionRequestedAt = now,
-      reason = CorrectionReason.NOT_SPECIFIED,
       descriptionOfChange = "Title should include prisoner number",
     )
   }
@@ -309,7 +307,6 @@ class NomisSyncServiceTest {
     val correctionRequest = report.correctionRequests[0]
     assertThat(correctionRequest.correctionRequestedBy).isEqualTo("checking-user")
     assertThat(correctionRequest.correctionRequestedAt.toLocalDate()).isEqualTo(today)
-    assertThat(correctionRequest.reason).isEqualTo(CorrectionReason.NOT_SPECIFIED)
     assertThat(correctionRequest.descriptionOfChange).isEqualTo("Title should include prisoner number")
   }
 

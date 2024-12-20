@@ -1,15 +1,12 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import org.hibernate.Hibernate
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
@@ -27,8 +24,6 @@ class CorrectionRequest(
 
   val sequence: Int,
 
-  @Enumerated(EnumType.STRING)
-  var reason: CorrectionReason,
   var descriptionOfChange: String,
   var correctionRequestedBy: String,
   var correctionRequestedAt: LocalDateTime,
@@ -61,11 +56,10 @@ class CorrectionRequest(
   }
 
   override fun toString(): String {
-    return "CorrectionRequest(id=$id, reportReference=${report.reportReference}, correctionRequestedAt=$correctionRequestedAt, reason=$reason, descriptionOfChange=$descriptionOfChange)"
+    return "CorrectionRequest(id=$id, reportReference=${report.reportReference}, correctionRequestedAt=$correctionRequestedAt, descriptionOfChange=$descriptionOfChange)"
   }
 
   fun updateWith(request: UpdateCorrectionRequest, requestUsername: String, now: LocalDateTime) {
-    request.reason?.let { reason = it }
     request.descriptionOfChange?.let { descriptionOfChange = it }
     correctionRequestedBy = requestUsername
     correctionRequestedAt = now
@@ -73,7 +67,6 @@ class CorrectionRequest(
 
   fun toDto() = CorrectionRequestDto(
     sequence = sequence,
-    reason = reason,
     descriptionOfChange = descriptionOfChange,
     correctionRequestedBy = correctionRequestedBy,
     correctionRequestedAt = correctionRequestedAt,

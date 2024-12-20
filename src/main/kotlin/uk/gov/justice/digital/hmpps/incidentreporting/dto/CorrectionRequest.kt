@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import java.time.LocalDateTime
 
 @Schema(description = "Request to make a correction to incident report", accessMode = Schema.AccessMode.READ_ONLY)
@@ -11,8 +10,6 @@ data class CorrectionRequest(
   // TODO: sequences are only being exposed while we sort out sync problems: they do not need to remain in the api contract
   @Schema(description = "Sequence of the correction requests for this report", deprecated = true)
   val sequence: Int,
-  @Schema(description = "Why the correction is needed")
-  val reason: CorrectionReason,
   @Schema(description = "The changes being requested")
   val descriptionOfChange: String,
   @Schema(description = "Member of staff requesting changed")

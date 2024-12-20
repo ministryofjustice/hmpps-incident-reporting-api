@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
@@ -18,7 +17,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 @DisplayName("Constants resource")
 class ConstantsResourceTest : SqsIntegrationTestBase() {
   @ParameterizedTest(name = "cannot access {0} constants without authorisation")
-  @ValueSource(strings = ["error-codes", "correction-reasons", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types"])
+  @ValueSource(strings = ["error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types"])
   fun `cannot access without authorisation`(endpoint: String) {
     webTestClient.get().uri("/constants/$endpoint")
       .exchange()
@@ -26,7 +25,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
   }
 
   @ParameterizedTest(name = "can access {0} constants without special roles")
-  @ValueSource(strings = ["error-codes", "correction-reasons", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types"])
+  @ValueSource(strings = ["error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types"])
   fun `can access without special roles`(endpoint: String) {
     webTestClient.get().uri("/constants/$endpoint")
       .headers(setAuthorisation(roles = emptyList(), scopes = listOf("read")))
@@ -55,13 +54,6 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
       ErrorCode.entries.size,
       listOf(
         mapOf("code" to "100", "description" to "ValidationFailure"),
-      ),
-    ),
-    ConstantsTestCase(
-      "correction-reasons",
-      CorrectionReason.entries.size,
-      listOf(
-        mapOf("code" to "MISTAKE", "description" to "Mistake"),
       ),
     ),
     ConstantsTestCase(
