@@ -16,7 +16,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/incident_reporting?sslmode=prefer
     username: incident_reporting
     password: incident_reporting
-
+    hikari:
+      maximum-pool-size: 10
   main:
     allow-bean-definition-overriding: true
 

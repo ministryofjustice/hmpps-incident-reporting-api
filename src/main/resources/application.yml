@@ -25,6 +25,7 @@ spring:
         provider:
           hmpps-auth:
             token-uri: ${api.base.url.oauth}/oauth/token
+
   jackson:
     date-format: "yyyy-MM-dd'T'HH:mm:ssZ"
     serialization:
@@ -43,7 +44,6 @@ spring:
         - "dev"
         - "seed"
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
     show-sql: false
     generate-ddl: false
@@ -59,7 +59,8 @@ spring:
     password: ${DATABASE_PASSWORD}
     hikari:
       pool-name: IRS-DB-CP
-      maximum-pool-size: 10
+      maximum-pool-size: 20
+      max-lifetime: 600000
       connection-timeout: 1000
       validation-timeout: 500
 
