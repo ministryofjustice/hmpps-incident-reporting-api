@@ -3361,6 +3361,25 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         }
 
         @Test
+        fun `can delete questions ignoring missing codes if explicitly requested`() {
+          val expectedResponse = getResource("/questions-with-responses/delete-response.json")
+          webTestClient.delete().uri("$urlWithQuestionsAndResponses?ignoreMissingCodes=true&code=2&code=3&code=0")
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+
+        @Test
         fun `can delete a question from a report first created in NOMIS`() {
           val nomisReportWithQuestionsAndResponses = reportRepository.save(
             buildReport(
