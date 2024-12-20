@@ -15,7 +15,6 @@ import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.CorrectionReason
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
@@ -335,7 +334,6 @@ class Report(
           correctionRequestedBy = newCorrection.correctionRequestedBy
           correctionRequestedAt = newCorrection.correctionRequestedAt
           descriptionOfChange = newCorrection.descriptionOfChange
-          reason = newCorrection.reason
         } ?: addCorrectionRequest(newCorrection)
       }.toSet(),
     )
@@ -348,7 +346,6 @@ class Report(
       correctionRequestedBy = nomisRequirement.staff.username,
       correctionRequestedAt = nomisRequirement.date.atStartOfDay(),
       descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
-      reason = CorrectionReason.NOT_SPECIFIED,
     )
 
   fun addCorrectionRequest(correctionRequest: CorrectionRequest): CorrectionRequest {
@@ -360,7 +357,6 @@ class Report(
     sequence: Int,
     correctionRequestedBy: String,
     correctionRequestedAt: LocalDateTime,
-    reason: CorrectionReason,
     descriptionOfChange: String,
   ): CorrectionRequest {
     return addCorrectionRequest(
@@ -369,7 +365,6 @@ class Report(
         sequence = sequence,
         correctionRequestedBy = correctionRequestedBy,
         correctionRequestedAt = correctionRequestedAt,
-        reason = reason,
         descriptionOfChange = descriptionOfChange,
       ),
     )

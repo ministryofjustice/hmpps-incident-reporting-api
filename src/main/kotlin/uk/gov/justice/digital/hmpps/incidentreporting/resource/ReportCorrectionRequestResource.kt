@@ -116,7 +116,6 @@ class ReportCorrectionRequestResource : ReportRelatedObjectsResource<CorrectionR
         val sequence = if (report.correctionRequests.isEmpty()) 0 else report.correctionRequests.last().sequence + 1
         report.addCorrectionRequest(
           sequence = sequence,
-          reason = reason,
           descriptionOfChange = descriptionOfChange,
           correctionRequestedBy = authenticationHolder.username ?: SYSTEM_USERNAME,
           correctionRequestedAt = LocalDateTime.now(clock),
