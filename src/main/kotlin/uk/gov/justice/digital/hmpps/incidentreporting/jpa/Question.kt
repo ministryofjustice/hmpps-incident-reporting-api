@@ -115,7 +115,7 @@ class Question(
     nomisResponse.answer?.let {
       Response(
         question = this,
-        response = nomisResponse.answer,
+        response = it,
         sequence = nomisResponse.sequence,
         responseDate = nomisResponse.responseDate,
         additionalInformation = nomisResponse.comment,
