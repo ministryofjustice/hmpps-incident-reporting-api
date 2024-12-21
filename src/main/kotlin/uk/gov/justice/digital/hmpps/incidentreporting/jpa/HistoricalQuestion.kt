@@ -87,14 +87,14 @@ class HistoricalQuestion(
     this.responses.retainAll(
       nomisResponses.map { nomisResponse ->
         val newResponse = createResponse(nomisResponse, reportedAt)
-        newResponse?.let {
-          this.responses.find { it == newResponse }?.apply {
-            response = newResponse.response
-            responseDate = newResponse.responseDate
-            additionalInformation = newResponse.additionalInformation
-            recordedBy = newResponse.recordedBy
-            recordedAt = newResponse.recordedAt
-          } ?: addResponse(newResponse)
+        newResponse?.let { newVersion ->
+          this.responses.find { it == newVersion }?.apply {
+            response = newVersion.response
+            responseDate = newVersion.responseDate
+            additionalInformation = newVersion.additionalInformation
+            recordedBy = newVersion.recordedBy
+            recordedAt = newVersion.recordedAt
+          } ?: addResponse(newVersion)
         }
       }.toSet(),
     )
