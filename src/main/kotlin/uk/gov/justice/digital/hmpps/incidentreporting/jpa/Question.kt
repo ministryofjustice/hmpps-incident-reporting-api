@@ -98,27 +98,31 @@ class Question(
     this.responses.retainAll(
       nomisResponses.map { nomisResponse ->
         val newResponse = createResponse(nomisResponse, report.reportedAt)
-        this.responses.find { it == newResponse }?.apply {
-          response = newResponse.response
-          responseDate = newResponse.responseDate
-          additionalInformation = newResponse.additionalInformation
-          recordedBy = newResponse.recordedBy
-          recordedAt = newResponse.recordedAt
-        } ?: addResponse(newResponse)
+        newResponse?.let { newVersion ->
+          this.responses.find { it == newVersion }?.apply {
+            response = newVersion.response
+            responseDate = newVersion.responseDate
+            additionalInformation = newVersion.additionalInformation
+            recordedBy = newVersion.recordedBy
+            recordedAt = newVersion.recordedAt
+          } ?: addResponse(newVersion)
+        }
       }.toSet(),
     )
   }
 
-  fun createResponse(nomisResponse: NomisResponse, recordedAt: LocalDateTime): Response =
-    Response(
-      question = this,
-      response = nomisResponse.answer!!,
-      sequence = nomisResponse.sequence,
-      responseDate = nomisResponse.responseDate,
-      additionalInformation = nomisResponse.comment,
-      recordedBy = nomisResponse.recordingStaff.username,
-      recordedAt = recordedAt,
-    )
+  fun createResponse(nomisResponse: NomisResponse, recordedAt: LocalDateTime): Response? =
+    nomisResponse.answer?.let {
+      Response(
+        question = this,
+        response = it,
+        sequence = nomisResponse.sequence,
+        responseDate = nomisResponse.responseDate,
+        additionalInformation = nomisResponse.comment,
+        recordedBy = nomisResponse.recordingStaff.username,
+        recordedAt = recordedAt,
+      )
+    }
 
   fun addResponse(response: Response): Response {
     this.responses.add(response)

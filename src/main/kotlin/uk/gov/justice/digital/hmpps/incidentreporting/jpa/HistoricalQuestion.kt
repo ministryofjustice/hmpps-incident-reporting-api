@@ -87,27 +87,31 @@ class HistoricalQuestion(
     this.responses.retainAll(
       nomisResponses.map { nomisResponse ->
         val newResponse = createResponse(nomisResponse, reportedAt)
-        this.responses.find { it == newResponse }?.apply {
-          response = newResponse.response
-          responseDate = newResponse.responseDate
-          additionalInformation = newResponse.additionalInformation
-          recordedBy = newResponse.recordedBy
-          recordedAt = newResponse.recordedAt
-        } ?: addResponse(newResponse)
+        newResponse?.let { newVersion ->
+          this.responses.find { it == newVersion }?.apply {
+            response = newVersion.response
+            responseDate = newVersion.responseDate
+            additionalInformation = newVersion.additionalInformation
+            recordedBy = newVersion.recordedBy
+            recordedAt = newVersion.recordedAt
+          } ?: addResponse(newVersion)
+        }
       }.toSet(),
     )
   }
 
-  fun createResponse(nomisResponse: NomisHistoryResponse, recordedAt: LocalDateTime): HistoricalResponse =
-    HistoricalResponse(
-      historicalQuestion = this,
-      response = nomisResponse.answer!!,
-      sequence = nomisResponse.responseSequence,
-      responseDate = nomisResponse.responseDate,
-      additionalInformation = nomisResponse.comment,
-      recordedBy = nomisResponse.recordingStaff.username,
-      recordedAt = recordedAt,
-    )
+  fun createResponse(nomisResponse: NomisHistoryResponse, recordedAt: LocalDateTime): HistoricalResponse? =
+    nomisResponse.answer?.let {
+      HistoricalResponse(
+        historicalQuestion = this,
+        response = it,
+        sequence = nomisResponse.responseSequence,
+        responseDate = nomisResponse.responseDate,
+        additionalInformation = nomisResponse.comment,
+        recordedBy = nomisResponse.recordingStaff.username,
+        recordedAt = recordedAt,
+      )
+    }
 
   fun addResponse(response: HistoricalResponse): HistoricalResponse {
     this.responses.add(response)
