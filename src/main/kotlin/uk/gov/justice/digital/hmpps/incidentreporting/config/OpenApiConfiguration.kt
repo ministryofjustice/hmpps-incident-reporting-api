@@ -40,7 +40,7 @@ class OpenApiConfiguration(
         .version(version)
         .description("API for viewing and managing incident reports")
         .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk"))
-        .license(License().name("MIT")),
+        .license(License().name("MIT").identifier("MIT")),
     )
     .components(
       Components()

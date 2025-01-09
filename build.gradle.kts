@@ -30,7 +30,7 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.4")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1")
 
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
@@ -38,6 +38,7 @@ dependencies {
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
+  testImplementation("javax.xml.bind:jaxb-api:2.3.1")
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.1.1")
   testImplementation("org.wiremock:wiremock-standalone:3.10.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.2")
