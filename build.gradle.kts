@@ -38,6 +38,7 @@ dependencies {
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
+  testImplementation("javax.xml.bind:jaxb-api:2.3.1")
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.1.1")
   testImplementation("org.wiremock:wiremock-standalone:3.10.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.2")
