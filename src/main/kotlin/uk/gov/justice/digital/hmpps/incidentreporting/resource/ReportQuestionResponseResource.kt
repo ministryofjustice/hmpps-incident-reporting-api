@@ -181,7 +181,7 @@ class ReportQuestionResponseResource(
     reportId: UUID,
     @Parameter(
       description = "Codes for questions to delete",
-      example = "40102,40103",
+      example = "[40102,40103]",
       array = ArraySchema(
         schema = Schema(example = "40102", minLength = 1),
         arraySchema = Schema(

@@ -9,7 +9,7 @@ data class ErrorResponse(
   val status: Int,
   @Schema(description = "User message for the error", example = "No incident report found for ID `55544222`")
   val userMessage: String,
-  @Schema(description = "More detailed error message", example = "[Details, sometimes a stack trace]")
+  @Schema(description = "More detailed error message", example = "Details, sometimes a stack trace")
   val developerMessage: String,
   @Schema(description = "When present, uniquely identifies the type of error making it easier for clients to discriminate without relying on error description or HTTP status code; see ` uk.gov.justice.digital.hmpps.incidentreporting.resource.ErrorCode` enumeration in hmpps-incident-reporting-api", example = "101", nullable = true, defaultValue = "null")
   val errorCode: Int? = null,

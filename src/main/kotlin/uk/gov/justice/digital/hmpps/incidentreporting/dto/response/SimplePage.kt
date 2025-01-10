@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort
 @Schema(description = "Page of results", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class SimplePage<T>(
-  @Schema(description = "Elements in this pages", example = "[…]")
+  @Schema(description = "Elements in this pages", example = "[Item1,Item2]")
   val content: List<T>,
   @Schema(description = "Page number (0-based)", example = "0")
   val number: Int,

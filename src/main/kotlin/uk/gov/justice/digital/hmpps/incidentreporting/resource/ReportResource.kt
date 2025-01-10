@@ -86,7 +86,7 @@ class ReportResource(
   fun getBasicReports(
     @Parameter(
       description = "Filter by given locations, typically prison IDs",
-      example = "LEI,MDI",
+      example = "[LEI,MDI]",
       array = ArraySchema(
         schema = Schema(example = "MDI", minLength = 2, maxLength = 20),
         arraySchema = Schema(
@@ -127,7 +127,7 @@ class ReportResource(
     source: InformationSource? = null,
     @Parameter(
       description = "Filter by given statuses",
-      example = "CLOSED,DUPLICATE",
+      example = "[CLOSED,DUPLICATE]",
       array = ArraySchema(
         schema = Schema(implementation = Status::class),
         arraySchema = Schema(
@@ -347,7 +347,7 @@ class ReportResource(
     ],
   )
   fun getBasicReportByReference(
-    @Schema(description = "The incident report reference", example = "\"2342341242\"", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "The incident report reference", example = "\"11124143\"", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportReference: String,
   ): ReportBasic {
@@ -384,7 +384,7 @@ class ReportResource(
     ],
   )
   fun getReportWithDetailsByReference(
-    @Schema(description = "The incident report reference", example = "\"2342341242\"", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "The incident report reference", example = "\"11124143\"", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportReference: String,
   ): ReportWithDetails {

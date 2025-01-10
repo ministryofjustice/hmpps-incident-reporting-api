@@ -71,7 +71,7 @@ class EventResource(
   fun getEvents(
     @Parameter(
       description = "Filter by given locations, typically prison IDs",
-      example = "LEI,MDI",
+      example = "[LEI,MDI]",
       array = ArraySchema(
         schema = Schema(example = "MDI", minLength = 2, maxLength = 20),
         arraySchema = Schema(
@@ -188,7 +188,7 @@ class EventResource(
     ],
   )
   fun getEventByReference(
-    @Schema(description = "The event reference", example = "\"2342341242\"", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "The event reference", example = "\"11124143\"", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     eventReference: String,
   ): EventWithBasicReports {
