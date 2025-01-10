@@ -125,6 +125,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @ParameterizedTest(name = "cannot filter by invalid `{0}`")
       @ValueSource(
         strings = [
+          "reference=",
+          "reference=IR1234",
+          "reference=123456789012345678901234567890",
           "location=M",
           "location=Moorland+(HMP and YOI)",
           "source=nomis",
@@ -384,6 +387,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         @CsvSource(
           value = [
             "''                                                          | 5",
+            "reference=11006603                                          | 1",
+            "reference=11006603&location=MDI                             | 0",
+            "reference=11006604                                          | 0",
             "location=                                                   | 5",
             "location=MDI                                                | 3",
             "location=LEI,MDI                                            | 5",

@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventReposi
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByLocations
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByReference
 import java.time.LocalDate
 import java.util.UUID
 
@@ -21,6 +22,7 @@ class EventService(
   private val eventRepository: EventRepository,
 ) {
   fun getEvents(
+    reference: String? = null,
     locations: List<String> = emptyList(),
     eventDateFrom: LocalDate? = null,
     eventDateUntil: LocalDate? = null,
@@ -28,6 +30,7 @@ class EventService(
   ): Page<EventWithBasicReports> {
     val specification = Specification.allOf(
       buildList {
+        reference?.let { add(filterEventsByReference(reference)) }
         if (locations.isNotEmpty()) {
           add(filterEventsByLocations(locations))
         }

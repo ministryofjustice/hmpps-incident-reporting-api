@@ -8,6 +8,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.StaffInvolvement
 import java.time.LocalDate
 
+fun filterByReference(reference: String) = Report::reportReference.buildSpecForEqualTo(reference)
+
 fun filterByLocations(locations: Collection<String>) = Report::location.buildSpecForIn(locations)
 fun filterByLocations(vararg locations: String) = filterByLocations(locations.toList())
 

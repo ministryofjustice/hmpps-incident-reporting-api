@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateRep
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLocations
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
@@ -216,6 +217,16 @@ class ReportRepositoryTest : IntegrationTestBase() {
       assertSpecificationReturnsReports(
         filterByReportedDateFrom(today.minusDays(4))
           .and(filterByReportedDateUntil(today.minusDays(4))),
+        emptyList(),
+      )
+      assertSpecificationReturnsReports(
+        filterByReference("11124143")
+          .and(filterByLocations("MDI")),
+        listOf(report3Id),
+      )
+      assertSpecificationReturnsReports(
+        filterByReference("11124143")
+          .and(filterByLocations("LEI")),
         emptyList(),
       )
     }
