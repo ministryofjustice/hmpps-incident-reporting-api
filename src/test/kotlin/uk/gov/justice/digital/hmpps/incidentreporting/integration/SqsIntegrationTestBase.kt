@@ -16,8 +16,7 @@ import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
-import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer
-import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackContainer.setLocalStackProperties
+import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackTestcontainer
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSDomainEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSMessage
@@ -33,6 +32,17 @@ import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class SqsIntegrationTestBase : IntegrationTestBase() {
+
+  companion object {
+    private val localstackInstance = LocalStackTestcontainer.instance
+
+    @Suppress("unused")
+    @JvmStatic
+    @DynamicPropertySource
+    fun localstackProperties(registry: DynamicPropertyRegistry) {
+      localstackInstance?.let { LocalStackTestcontainer.setupProperties(localstackInstance, registry) }
+    }
+  }
 
   @Autowired
   lateinit var webTestClient: WebTestClient
@@ -190,15 +200,4 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   }
 
   protected fun Any.toJson(): String = objectMapper.writeValueAsString(this)
-
-  companion object {
-    private val localStackContainer = LocalStackContainer.instance
-
-    @Suppress("unused")
-    @JvmStatic
-    @DynamicPropertySource
-    fun testcontainers(registry: DynamicPropertyRegistry) {
-      localStackContainer?.also { setLocalStackProperties(it, registry) }
-    }
-  }
 }
