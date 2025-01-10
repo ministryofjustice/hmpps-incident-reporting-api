@@ -20,6 +20,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByEventDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByLocations
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterEventsByReference
 import java.util.UUID
 
 @DisplayName("Event repository")
@@ -143,6 +144,16 @@ class EventRepositoryTest : IntegrationTestBase() {
         filterEventsByLocations("MDI")
           .and(filterEventsByEventDateUntil(today.minusDays(2))),
         listOf(event1Id),
+      )
+      assertSpecificationReturnsEvents(
+        filterEventsByReference("11124143")
+          .and(filterEventsByLocations("MDI")),
+        listOf(event3Id),
+      )
+      assertSpecificationReturnsEvents(
+        filterEventsByReference("11124143")
+          .and(filterEventsByLocations("LEI")),
+        emptyList(),
       )
     }
   }

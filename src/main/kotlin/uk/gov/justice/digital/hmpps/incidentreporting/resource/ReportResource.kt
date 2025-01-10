@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.ValidationException
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
@@ -84,9 +85,24 @@ class ReportResource(
     ],
   )
   fun getBasicReports(
+    @Schema(
+      description = "Filter by given human-readable report reference",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
+      defaultValue = "null",
+      type = "string",
+      pattern = "^\\d+$",
+      example = "\"11124143\"",
+      minLength = 1,
+      maxLength = 25,
+    )
+    @RequestParam(required = false)
+    @Size(min = 1, max = 25)
+    @Pattern(regexp = "^\\d+$")
+    reference: String? = null,
     @Parameter(
       description = "Filter by given locations, typically prison IDs",
-      example = "LEI,MDI",
+      example = "[LEI,MDI]",
       array = ArraySchema(
         schema = Schema(example = "MDI", minLength = 2, maxLength = 20),
         arraySchema = Schema(
@@ -127,7 +143,7 @@ class ReportResource(
     source: InformationSource? = null,
     @Parameter(
       description = "Filter by given statuses",
-      example = "CLOSED,DUPLICATE",
+      example = "[CLOSED,DUPLICATE]",
       array = ArraySchema(
         schema = Schema(implementation = Status::class),
         arraySchema = Schema(
@@ -228,6 +244,7 @@ class ReportResource(
     }
     val locations = location ?: if (prisonId != null) listOf(prisonId) else emptyList()
     return reportService.getBasicReports(
+      reference = reference,
       locations = locations,
       source = source,
       statuses = status ?: emptyList(),
@@ -347,7 +364,7 @@ class ReportResource(
     ],
   )
   fun getBasicReportByReference(
-    @Schema(description = "The incident report reference", example = "\"2342341242\"", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "The incident report reference", example = "\"11124143\"", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportReference: String,
   ): ReportBasic {
@@ -384,7 +401,7 @@ class ReportResource(
     ],
   )
   fun getReportWithDetailsByReference(
-    @Schema(description = "The incident report reference", example = "\"2342341242\"", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "The incident report reference", example = "\"11124143\"", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     reportReference: String,
   ): ReportWithDetails {

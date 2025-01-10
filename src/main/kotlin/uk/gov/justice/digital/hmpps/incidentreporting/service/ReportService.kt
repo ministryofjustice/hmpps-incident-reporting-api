@@ -34,6 +34,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedPrisoner
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLocations
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedBy
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
@@ -65,6 +66,7 @@ class ReportService(
   }
 
   fun getBasicReports(
+    reference: String? = null,
     locations: List<String> = emptyList(),
     source: InformationSource? = null,
     statuses: List<Status> = emptyList(),
@@ -80,6 +82,7 @@ class ReportService(
   ): Page<ReportBasic> {
     val specification = Specification.allOf(
       buildList {
+        reference?.let { add(filterByReference(reference)) }
         if (locations.isNotEmpty()) {
           add(filterByLocations(locations))
         }

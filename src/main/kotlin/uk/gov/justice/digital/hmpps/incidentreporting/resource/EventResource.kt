@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.ValidationException
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
@@ -69,9 +70,24 @@ class EventResource(
     ],
   )
   fun getEvents(
+    @Schema(
+      description = "Filter by given human-readable event reference",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+      nullable = true,
+      defaultValue = "null",
+      type = "string",
+      pattern = "^\\d+$",
+      example = "\"11124143\"",
+      minLength = 1,
+      maxLength = 25,
+    )
+    @RequestParam(required = false)
+    @Size(min = 1, max = 25)
+    @Pattern(regexp = "^\\d+$")
+    reference: String? = null,
     @Parameter(
       description = "Filter by given locations, typically prison IDs",
-      example = "LEI,MDI",
+      example = "[LEI,MDI]",
       array = ArraySchema(
         schema = Schema(example = "MDI", minLength = 2, maxLength = 20),
         arraySchema = Schema(
@@ -114,6 +130,7 @@ class EventResource(
       throw ValidationException("Page size must be 50 or less")
     }
     return eventService.getEvents(
+      reference = reference,
       locations = location ?: emptyList(),
       eventDateFrom = eventDateFrom,
       eventDateUntil = eventDateUntil,
@@ -188,7 +205,7 @@ class EventResource(
     ],
   )
   fun getEventByReference(
-    @Schema(description = "The event reference", example = "\"2342341242\"", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "The event reference", example = "\"11124143\"", requiredMode = Schema.RequiredMode.REQUIRED)
     @PathVariable
     eventReference: String,
   ): EventWithBasicReports {
