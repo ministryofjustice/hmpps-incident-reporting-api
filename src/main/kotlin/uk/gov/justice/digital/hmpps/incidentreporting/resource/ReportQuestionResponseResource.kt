@@ -197,8 +197,11 @@ class ReportQuestionResponseResource(
       @Size(min = 1)
       String,
       > = emptySet(),
+    @Schema(description = "Whether missing question codes should be ignored", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "false")
+    @RequestParam(required = false)
+    ignoreMissingCodes: Boolean = false,
   ): List<Question> {
-    val (report, questions) = reportService.deleteQuestionsAndResponses(reportId, code)
+    val (report, questions) = reportService.deleteQuestionsAndResponses(reportId, code, ignoreMissingCodes)
       ?: throw ReportNotFoundException(reportId)
     eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_AMENDED,

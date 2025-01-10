@@ -423,12 +423,14 @@ class Report(
     questions.remove(question)
   }
 
-  fun removeQuestions(questionCodes: Set<String>) {
+  fun removeQuestions(questionCodes: Set<String>, ignoreMissingCodes: Boolean = false) {
     val questionsToRemove = questions.filter { questionCodes.contains(it.code) }
-    val questionCodesFound = questionsToRemove.mapTo(mutableSetOf()) { it.code }
-    val missingCodes = questionCodes - questionCodesFound
-    if (missingCodes.isNotEmpty()) {
-      throw QuestionsNotFoundException(missingCodes)
+    if (!ignoreMissingCodes) {
+      val questionCodesFound = questionsToRemove.mapTo(mutableSetOf()) { it.code }
+      val missingCodes = questionCodes - questionCodesFound
+      if (missingCodes.isNotEmpty()) {
+        throw QuestionsNotFoundException(missingCodes)
+      }
     }
     questionsToRemove.forEach {
       removeQuestion(it)
