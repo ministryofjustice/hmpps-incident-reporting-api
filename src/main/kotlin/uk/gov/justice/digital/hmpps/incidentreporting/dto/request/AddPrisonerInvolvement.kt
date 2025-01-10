@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
@@ -9,6 +10,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 data class AddPrisonerInvolvement(
   @Schema(description = "Prisoner’s NOMIS number", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 7, maxLength = 10)
   @field:Size(min = 7, max = 10)
+  @field:Pattern(regexp = "^[A-Z]\\d{4}[A-Z]{2}$", flags = [Pattern.Flag.CASE_INSENSITIVE])
   val prisonerNumber: String,
   @Schema(description = "First name", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1, maxLength = 255)
   @field:Size(min = 1, max = 255)

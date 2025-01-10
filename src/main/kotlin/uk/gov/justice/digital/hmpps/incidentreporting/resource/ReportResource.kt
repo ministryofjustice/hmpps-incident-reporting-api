@@ -218,6 +218,7 @@ class ReportResource(
     )
     @RequestParam(required = false)
     @Size(min = 7, max = 10)
+    @Pattern(regexp = "^[A-Z]\\d{4}[A-Z]{2}$", flags = [Pattern.Flag.CASE_INSENSITIVE])
     involvingPrisonerNumber: String? = null,
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
