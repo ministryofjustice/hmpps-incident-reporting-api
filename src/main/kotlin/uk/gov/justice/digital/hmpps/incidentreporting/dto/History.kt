@@ -19,6 +19,7 @@ data class History(
   val questions: List<HistoricalQuestion> = emptyList(),
 ) {
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
+  @Suppress("unused")
   @get:Schema(description = "Previous NOMIS incident report type code, which may be null for newer incident types", nullable = true, deprecated = true)
   @get:JsonProperty
   val nomisType: String?

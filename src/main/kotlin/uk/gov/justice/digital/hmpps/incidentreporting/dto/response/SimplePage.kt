@@ -25,16 +25,19 @@ data class SimplePage<T>(
   @JsonIgnore
   val sort: Sort,
 ) {
+  @Suppress("unused")
   @get:Schema(description = "Total number of pages", example = "3")
   @get:JsonProperty
   val totalPages: Int
     get() = kotlin.math.ceil(totalElements.toDouble() / size.toDouble()).toInt()
 
+  @Suppress("unused")
   @get:Schema(description = "Number of elements in this page", example = "20")
   @get:JsonProperty
   val numberOfElements: Int
     get() = content.size
 
+  @Suppress("unused")
   @get:Schema(description = "Sort orders", example = "[\"property,ASC\"]")
   @get:JsonProperty("sort")
   val sortOrderList: List<String>
