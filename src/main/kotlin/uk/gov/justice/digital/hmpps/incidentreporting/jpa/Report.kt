@@ -128,10 +128,12 @@ class Report(
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val staffInvolved: SortedSet<StaffInvolvement> = sortedSetOf(),
+  var staffInvolvementDone: Boolean = true,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val prisonersInvolved: SortedSet<PrisonerInvolvement> = sortedSetOf(),
+  var prisonerInvolvementDone: Boolean = true,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
@@ -594,5 +596,7 @@ class Report(
     staffInvolved = staffInvolved.map { it.toDto() },
     prisonersInvolved = prisonersInvolved.map { it.toDto() },
     correctionRequests = correctionRequests.map { it.toDto() },
+    staffInvolvementDone = staffInvolvementDone,
+    prisonerInvolvementDone = prisonerInvolvementDone,
   )
 }

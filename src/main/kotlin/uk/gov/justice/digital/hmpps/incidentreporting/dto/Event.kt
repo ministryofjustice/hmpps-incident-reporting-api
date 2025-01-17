@@ -31,6 +31,7 @@ open class Event(
   val modifiedBy: String,
 ) {
   // TODO: `prisonId` can be removed once NOMIS reconciliation checks are updated to use `location`
+  @Suppress("unused")
   @get:Schema(description = "The location where incident took place, typically a NOMIS prison ID", deprecated = true, example = "MDI")
   @get:JsonProperty
   val prisonId: String

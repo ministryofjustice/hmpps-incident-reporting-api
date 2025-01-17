@@ -121,6 +121,7 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
           comment = comment,
         )
       }
+      report.staffInvolvementDone = true
       report.staffInvolved.map { it.toDto() }
     }
   }
