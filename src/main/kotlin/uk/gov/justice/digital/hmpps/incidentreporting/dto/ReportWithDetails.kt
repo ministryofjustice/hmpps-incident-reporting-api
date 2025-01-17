@@ -44,6 +44,11 @@ class ReportWithDetails(
   val prisonersInvolved: List<PrisonerInvolvement>,
   @Schema(description = "The corrections that were requested of this report")
   val correctionRequests: List<CorrectionRequest>,
+
+  @Schema(description = "Internal flag to indicate that involved staff were added, if any")
+  val staffInvolvementDone: Boolean,
+  @Schema(description = "Internal flag to indicate that involved prisoners were added, if any")
+  val prisonerInvolvementDone: Boolean,
 ) : ReportBasic(
   id = id,
   reportReference = reportReference,

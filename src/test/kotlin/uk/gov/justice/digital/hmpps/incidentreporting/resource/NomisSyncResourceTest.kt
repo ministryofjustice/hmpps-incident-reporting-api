@@ -715,6 +715,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "correctionRequestedAt": "2023-11-28T00:00:00"
                   }
                 ],
+                "staffInvolvementDone": true,
+                "prisonerInvolvementDone": true,
                 "reportedBy": "user2",
                 "reportedAt": "2023-12-05T12:34:56",
                 "status": "AWAITING_ANALYSIS",
@@ -1004,6 +1006,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "correctionRequestedAt": "2023-11-28T00:00:00"
                   }
                 ],
+                "staffInvolvementDone": true,
+                "prisonerInvolvementDone": true,
                 "reportedBy": "user2",
                 "reportedAt": "2023-12-05T12:34:56",
                 "status": "AWAITING_ANALYSIS",
@@ -1566,6 +1570,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "correctionRequestedAt": "2023-12-05T00:00:00"
                   }
                 ],
+                "staffInvolvementDone": true,
+                "prisonerInvolvementDone": true,
                 "reportedBy": "OF42",
                 "reportedAt": "2023-12-04T12:34:56",
                 "status": "IN_ANALYSIS",
