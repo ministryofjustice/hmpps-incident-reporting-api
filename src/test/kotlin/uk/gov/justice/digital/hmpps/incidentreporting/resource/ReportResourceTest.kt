@@ -1289,6 +1289,62 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         )
       }
 
+      @ParameterizedTest(name = "can update involvement flags: {0}")
+      @ValueSource(strings = ["staff", "prisoner", "both"])
+      fun `can update involvement flags`(flag: String) {
+        val newReportId = reportRepository.save(
+          buildReport(
+            reportReference = "11124149",
+            reportTime = now,
+          ).apply {
+            staffInvolvementDone = false
+            prisonerInvolvementDone = false
+          },
+        ).id!!
+
+        val updateReportRequest = UpdateReportRequest(
+          staffInvolvementDone = if (flag == "staff" || flag == "both") {
+            true
+          } else {
+            null
+          },
+          prisonerInvolvementDone = if (flag == "prisoner" || flag == "both") {
+            true
+          } else {
+            null
+          },
+        )
+        webTestClient.patch().uri("/incident-reports/$newReportId")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updateReportRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+
+        val updatedReport = reportRepository.findById(newReportId).get()
+        when (flag) {
+          "staff" -> {
+            assertThat(updatedReport.staffInvolvementDone).isTrue()
+            assertThat(updatedReport.prisonerInvolvementDone).isFalse()
+          }
+          "prisoner" -> {
+            assertThat(updatedReport.staffInvolvementDone).isFalse()
+            assertThat(updatedReport.prisonerInvolvementDone).isTrue()
+          }
+          "both" -> {
+            assertThat(updatedReport.staffInvolvementDone).isTrue()
+            assertThat(updatedReport.prisonerInvolvementDone).isTrue()
+          }
+        }
+
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "11124149",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
+      }
+
       @ParameterizedTest(name = "can propagate updates to parent event when requested: {0}")
       @ValueSource(booleans = [true, false])
       fun `can propagate updates to parent event when requested`(updateEvent: Boolean) {

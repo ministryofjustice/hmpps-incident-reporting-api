@@ -22,12 +22,18 @@ data class UpdateReportRequest(
   @field:Size(min = 1)
   val description: String? = null,
 
+  @Schema(description = "Internal flag which, if false, is used to indicate that addition of staff involvements is unfinished", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null")
+  val staffInvolvementDone: Boolean? = null,
+  @Schema(description = "Internal flag which, if false, is used to indicate that addition of prisoner involvements is unfinished", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null")
+  val prisonerInvolvementDone: Boolean? = null,
+
   @Schema(description = "Whether the parent event should also be updated", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "false", example = "true")
   val updateEvent: Boolean = false,
 ) {
   @JsonIgnore
   val isEmpty: Boolean =
-    incidentDateAndTime == null && location == null && title == null && description == null
+    incidentDateAndTime == null && location == null && title == null && description == null &&
+      staffInvolvementDone == null && prisonerInvolvementDone == null
 
   fun validate(now: LocalDateTime) {
     if (incidentDateAndTime != null && incidentDateAndTime > now) {
@@ -40,6 +46,9 @@ data class UpdateReportRequest(
     location?.let { report.location = it }
     title?.let { report.title = it }
     description?.let { report.description = it }
+    staffInvolvementDone?.let { report.staffInvolvementDone = it }
+    prisonerInvolvementDone?.let { report.prisonerInvolvementDone = it }
+
     report.modifiedIn = InformationSource.DPS
     report.modifiedBy = requestUsername
     report.modifiedAt = now
