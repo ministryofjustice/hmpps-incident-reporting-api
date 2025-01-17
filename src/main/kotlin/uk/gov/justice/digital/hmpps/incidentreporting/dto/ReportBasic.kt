@@ -33,7 +33,7 @@ open class ReportBasic(
   val reportedAt: LocalDateTime,
   @Schema(description = "The current status of this report", example = "DRAFT")
   val status: Status,
-  @Schema(description = "Optional user who this report is currently assigned to", example = "null")
+  @Schema(description = "Optional user who this report is currently assigned to (NB: this field will probably be removed)", example = "null", deprecated = true)
   val assignedTo: String?,
 
   @Schema(description = "When the report was first created", example = "2024-04-29T12:34:56.789012")
