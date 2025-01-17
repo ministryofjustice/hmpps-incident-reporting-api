@@ -2738,7 +2738,31 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "addStaffInvolvement.lastName: size must be between 1 and 255",
         ),
       ),
-    )
+    ) {
+      @Test
+      fun `automatically flags staff involvements as done`() {
+        val newReportId = reportRepository.save(
+          buildReport(
+            reportReference = "11124149",
+            reportTime = now,
+          ).apply {
+            staffInvolvementDone = false
+            prisonerInvolvementDone = false
+          },
+        ).id!!
+
+        webTestClient.post().uri("/incident-reports/$newReportId/$urlSuffix")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validRequest)
+          .exchange()
+          .expectStatus().isCreated
+
+        val updatedReport = reportRepository.findById(newReportId).get()
+        assertThat(updatedReport.staffInvolvementDone).isTrue()
+        assertThat(updatedReport.prisonerInvolvementDone).isFalse()
+      }
+    }
 
     @DisplayName("PATCH /incident-reports/{reportId}/staff-involved/{index}")
     @Nested
@@ -2796,7 +2820,31 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "addPrisonerInvolvement.firstName: size must be between 1 and 255",
         ),
       ),
-    )
+    ) {
+      @Test
+      fun `automatically flags staff involvements as done`() {
+        val newReportId = reportRepository.save(
+          buildReport(
+            reportReference = "11124149",
+            reportTime = now,
+          ).apply {
+            staffInvolvementDone = false
+            prisonerInvolvementDone = false
+          },
+        ).id!!
+
+        webTestClient.post().uri("/incident-reports/$newReportId/$urlSuffix")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validRequest)
+          .exchange()
+          .expectStatus().isCreated
+
+        val updatedReport = reportRepository.findById(newReportId).get()
+        assertThat(updatedReport.staffInvolvementDone).isFalse()
+        assertThat(updatedReport.prisonerInvolvementDone).isTrue()
+      }
+    }
 
     @DisplayName("PATCH /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested

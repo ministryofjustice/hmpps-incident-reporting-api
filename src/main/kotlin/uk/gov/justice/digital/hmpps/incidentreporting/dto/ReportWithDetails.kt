@@ -45,9 +45,9 @@ class ReportWithDetails(
   @Schema(description = "The corrections that were requested of this report")
   val correctionRequests: List<CorrectionRequest>,
 
-  @Schema(description = "Internal flag to indicate that involved staff were added, if any")
+  @Schema(description = "Internal flag which, if false, is used to indicate that addition of staff involvements is unfinished")
   val staffInvolvementDone: Boolean,
-  @Schema(description = "Internal flag to indicate that involved prisoners were added, if any")
+  @Schema(description = "Internal flag which, if false, is used to indicate that addition of prisoner involvements is unfinished")
   val prisonerInvolvementDone: Boolean,
 ) : ReportBasic(
   id = id,
