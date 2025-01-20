@@ -122,6 +122,7 @@ class ReportPrisonerInvolvementResource() : ReportRelatedObjectsResource<Prisone
           comment = comment,
         )
       }
+      report.prisonerInvolvementDone = true
       report.prisonersInvolved.map { it.toDto() }
     }
   }

@@ -596,6 +596,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
+              "staffInvolvementDone": true,
+              "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -769,6 +771,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
+              "staffInvolvementDone": true,
+              "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -946,6 +950,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
+              "staffInvolvementDone": false,
+              "prisonerInvolvementDone": false,
               "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -1012,6 +1018,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
+              "staffInvolvementDone": false,
+              "prisonerInvolvementDone": false,
               "reportedBy": "request-user",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -1276,6 +1284,62 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "11124143",
+          InformationSource.DPS,
+          WhatChanged.BASIC_REPORT,
+        )
+      }
+
+      @ParameterizedTest(name = "can update involvement flags: {0}")
+      @ValueSource(strings = ["staff", "prisoner", "both"])
+      fun `can update involvement flags`(flag: String) {
+        val newReportId = reportRepository.save(
+          buildReport(
+            reportReference = "11124149",
+            reportTime = now,
+          ).apply {
+            staffInvolvementDone = false
+            prisonerInvolvementDone = false
+          },
+        ).id!!
+
+        val updateReportRequest = UpdateReportRequest(
+          staffInvolvementDone = if (flag == "staff" || flag == "both") {
+            true
+          } else {
+            null
+          },
+          prisonerInvolvementDone = if (flag == "prisoner" || flag == "both") {
+            true
+          } else {
+            null
+          },
+        )
+        webTestClient.patch().uri("/incident-reports/$newReportId")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updateReportRequest.toJson())
+          .exchange()
+          .expectStatus().isOk
+
+        val updatedReport = reportRepository.findById(newReportId).get()
+        when (flag) {
+          "staff" -> {
+            assertThat(updatedReport.staffInvolvementDone).isTrue()
+            assertThat(updatedReport.prisonerInvolvementDone).isFalse()
+          }
+          "prisoner" -> {
+            assertThat(updatedReport.staffInvolvementDone).isFalse()
+            assertThat(updatedReport.prisonerInvolvementDone).isTrue()
+          }
+          "both" -> {
+            assertThat(updatedReport.staffInvolvementDone).isTrue()
+            assertThat(updatedReport.prisonerInvolvementDone).isTrue()
+          }
+        }
+
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "11124149",
           InformationSource.DPS,
           WhatChanged.BASIC_REPORT,
         )
@@ -2730,7 +2794,31 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "addStaffInvolvement.lastName: size must be between 1 and 255",
         ),
       ),
-    )
+    ) {
+      @Test
+      fun `automatically flags staff involvements as done`() {
+        val newReportId = reportRepository.save(
+          buildReport(
+            reportReference = "11124149",
+            reportTime = now,
+          ).apply {
+            staffInvolvementDone = false
+            prisonerInvolvementDone = false
+          },
+        ).id!!
+
+        webTestClient.post().uri("/incident-reports/$newReportId/$urlSuffix")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validRequest)
+          .exchange()
+          .expectStatus().isCreated
+
+        val updatedReport = reportRepository.findById(newReportId).get()
+        assertThat(updatedReport.staffInvolvementDone).isTrue()
+        assertThat(updatedReport.prisonerInvolvementDone).isFalse()
+      }
+    }
 
     @DisplayName("PATCH /incident-reports/{reportId}/staff-involved/{index}")
     @Nested
@@ -2788,7 +2876,31 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "addPrisonerInvolvement.firstName: size must be between 1 and 255",
         ),
       ),
-    )
+    ) {
+      @Test
+      fun `automatically flags staff involvements as done`() {
+        val newReportId = reportRepository.save(
+          buildReport(
+            reportReference = "11124149",
+            reportTime = now,
+          ).apply {
+            staffInvolvementDone = false
+            prisonerInvolvementDone = false
+          },
+        ).id!!
+
+        webTestClient.post().uri("/incident-reports/$newReportId/$urlSuffix")
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validRequest)
+          .exchange()
+          .expectStatus().isCreated
+
+        val updatedReport = reportRepository.findById(newReportId).get()
+        assertThat(updatedReport.staffInvolvementDone).isFalse()
+        assertThat(updatedReport.prisonerInvolvementDone).isTrue()
+      }
+    }
 
     @DisplayName("PATCH /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested

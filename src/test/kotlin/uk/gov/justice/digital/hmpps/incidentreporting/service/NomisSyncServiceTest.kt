@@ -288,6 +288,7 @@ class NomisSyncServiceTest {
     assertThat(response.recordedBy).isEqualTo(reportedBy)
     assertThat(response.recordedAt).isEqualTo(now)
 
+    assertThat(report.prisonerInvolvementDone).isTrue()
     assertThat(report.prisonersInvolved).hasSize(1)
     val prisonerInvolved = report.prisonersInvolved[0]
     assertThat(prisonerInvolved.prisonerNumber).isEqualTo("A1234AA")
@@ -296,6 +297,7 @@ class NomisSyncServiceTest {
     assertThat(prisonerInvolved.outcome).isEqualTo(PrisonerOutcome.SEEN_HEALTHCARE)
     assertThat(prisonerInvolved.comment).isEqualTo("First time self-harming")
 
+    assertThat(report.staffInvolvementDone).isTrue()
     assertThat(report.staffInvolved).hasSize(1)
     val staffInvolved = report.staffInvolved[0]
     assertThat(staffInvolved.staffUsername).isEqualTo("user3")

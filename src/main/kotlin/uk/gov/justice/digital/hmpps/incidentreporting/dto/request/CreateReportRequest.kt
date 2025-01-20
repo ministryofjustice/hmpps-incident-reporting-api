@@ -45,22 +45,24 @@ data class CreateReportRequest(
   fun createReport(reportReference: String, event: Event, requestUsername: String, now: LocalDateTime): Report {
     val status = Status.DRAFT
     val report = Report(
+      event = event,
       reportReference = reportReference,
       type = type,
+      status = status,
+      source = InformationSource.DPS,
       title = title,
       incidentDateAndTime = incidentDateAndTime,
       location = location,
       description = description,
+      staffInvolvementDone = false,
+      prisonerInvolvementDone = false,
       reportedBy = requestUsername,
       reportedAt = now,
-      status = status,
+      assignedTo = requestUsername,
       createdAt = now,
       modifiedAt = now,
       modifiedBy = requestUsername,
-      source = InformationSource.DPS,
       modifiedIn = InformationSource.DPS,
-      assignedTo = requestUsername,
-      event = event,
     )
     report.addStatusHistory(status, now, requestUsername)
     return report
