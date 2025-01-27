@@ -6,8 +6,8 @@ import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.1.2"
-  kotlin("plugin.jpa") version "2.0.21"
-  kotlin("plugin.spring") version "2.0.21"
+  kotlin("plugin.jpa") version "2.1.10"
+  kotlin("plugin.spring") version "2.1.10"
   idea
   id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
@@ -30,7 +30,7 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.5")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4")
 
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
