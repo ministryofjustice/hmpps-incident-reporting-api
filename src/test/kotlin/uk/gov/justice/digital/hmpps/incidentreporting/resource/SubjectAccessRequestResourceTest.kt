@@ -129,7 +129,11 @@ class SubjectAccessRequestResourceTest : SqsIntegrationTestBase() {
     ],
     delimiter = '|',
   )
-  fun `SAR endpoint for date range`(fromDate: String?, toDate: String?, expectReportReturned: Boolean) {
+  fun `SAR endpoint for date range`(
+    fromDate: String?,
+    toDate: String?,
+    expectReportReturned: Boolean,
+  ) {
     val url = buildString {
       append("/subject-access-request?prn=A0002AA")
       if (fromDate != null) {

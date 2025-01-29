@@ -12,6 +12,10 @@ data class StaffRoleConstantDescription(
   val description: String,
 
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
-  @Schema(description = "Machine-readable NOMIS identifiers of this value, which may be empty for newer staff roles", example = "[AI, INV]", deprecated = true)
+  @Schema(
+    description = "Machine-readable NOMIS identifiers of this value, which may be empty for newer staff roles",
+    example = "[AI, INV]",
+    deprecated = true,
+  )
   val nomisCodes: List<String>,
 )

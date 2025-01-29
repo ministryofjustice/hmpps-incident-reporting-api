@@ -115,7 +115,11 @@ class Report(
   var reportedBy: String,
   var reportedAt: LocalDateTime,
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH], optional = false)
+  @ManyToOne(
+    fetch = FetchType.LAZY,
+    cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH],
+    optional = false,
+  )
   var event: Event,
 
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -178,20 +182,32 @@ class Report(
     return "Report(id=$id, reportReference=$reportReference, type=$type, status=$status, location=$location)"
   }
 
-  fun changeType(newType: Type, changedAt: LocalDateTime, changedBy: String): Report {
+  fun changeType(
+    newType: Type,
+    changedAt: LocalDateTime,
+    changedBy: String,
+  ): Report {
     copyToHistory(changedAt, changedBy)
     questions.clear()
     type = newType
     return this
   }
 
-  fun changeStatus(newStatus: Status, changedAt: LocalDateTime, changedBy: String): Report {
+  fun changeStatus(
+    newStatus: Status,
+    changedAt: LocalDateTime,
+    changedBy: String,
+  ): Report {
     status = newStatus
     addStatusHistory(newStatus, changedAt, changedBy)
     return this
   }
 
-  fun addStatusHistory(status: Status, changedAt: LocalDateTime, changedBy: String): StatusHistory {
+  fun addStatusHistory(
+    status: Status,
+    changedAt: LocalDateTime,
+    changedBy: String,
+  ): StatusHistory {
     return StatusHistory(
       report = this,
       status = status,
@@ -200,9 +216,8 @@ class Report(
     ).also { historyOfStatuses.add(it) }
   }
 
-  fun findStaffInvolvedByIndex(index: Int): StaffInvolvement =
-    staffInvolved.elementAtOrNull(index - 1)
-      ?: throw ObjectAtIndexNotFoundException(StaffInvolvement::class, index)
+  fun findStaffInvolvedByIndex(index: Int): StaffInvolvement = staffInvolved.elementAtOrNull(index - 1)
+    ?: throw ObjectAtIndexNotFoundException(StaffInvolvement::class, index)
 
   fun updateStaffInvolved(nomisStaffParties: Collection<NomisStaffParty>) {
     this.staffInvolved.retainAll(
@@ -219,16 +234,15 @@ class Report(
     )
   }
 
-  fun createStaffInvolved(nomisStaffParty: NomisStaffParty): StaffInvolvement =
-    StaffInvolvement(
-      report = this,
-      sequence = nomisStaffParty.sequence,
-      staffUsername = nomisStaffParty.staff.username,
-      firstName = nomisStaffParty.staff.firstName,
-      lastName = nomisStaffParty.staff.lastName,
-      staffRole = StaffRole.fromNomisCode(nomisStaffParty.role.code),
-      comment = nomisStaffParty.comment,
-    )
+  fun createStaffInvolved(nomisStaffParty: NomisStaffParty): StaffInvolvement = StaffInvolvement(
+    report = this,
+    sequence = nomisStaffParty.sequence,
+    staffUsername = nomisStaffParty.staff.username,
+    firstName = nomisStaffParty.staff.firstName,
+    lastName = nomisStaffParty.staff.lastName,
+    staffRole = StaffRole.fromNomisCode(nomisStaffParty.role.code),
+    comment = nomisStaffParty.comment,
+  )
 
   fun addStaffInvolved(staffInvolvement: StaffInvolvement): StaffInvolvement {
     this.staffInvolved.add(staffInvolvement)
@@ -260,9 +274,8 @@ class Report(
     this.staffInvolved.remove(staffInvolved)
   }
 
-  fun findPrisonerInvolvedByIndex(index: Int): PrisonerInvolvement =
-    prisonersInvolved.elementAtOrNull(index - 1)
-      ?: throw ObjectAtIndexNotFoundException(PrisonerInvolvement::class, index)
+  fun findPrisonerInvolvedByIndex(index: Int): PrisonerInvolvement = prisonersInvolved.elementAtOrNull(index - 1)
+    ?: throw ObjectAtIndexNotFoundException(PrisonerInvolvement::class, index)
 
   fun updatePrisonerInvolved(nomisOffenderParties: Collection<NomisOffenderParty>) {
     val newInvolvements = nomisOffenderParties.map { nomisOffenderParty ->
@@ -280,17 +293,18 @@ class Report(
     this.prisonersInvolved.retainAll(newInvolvements)
   }
 
-  fun createPrisonerInvolved(nomisOffenderParty: NomisOffenderParty): PrisonerInvolvement =
-    PrisonerInvolvement(
-      report = this,
-      sequence = nomisOffenderParty.sequence,
-      prisonerNumber = nomisOffenderParty.offender.offenderNo,
-      firstName = nomisOffenderParty.offender.firstName,
-      lastName = nomisOffenderParty.offender.lastName,
-      prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
-      outcome = nomisOffenderParty.outcome?.let { prisonerOutcome -> PrisonerOutcome.fromNomisCode(prisonerOutcome.code) },
-      comment = nomisOffenderParty.comment,
-    )
+  fun createPrisonerInvolved(nomisOffenderParty: NomisOffenderParty): PrisonerInvolvement = PrisonerInvolvement(
+    report = this,
+    sequence = nomisOffenderParty.sequence,
+    prisonerNumber = nomisOffenderParty.offender.offenderNo,
+    firstName = nomisOffenderParty.offender.firstName,
+    lastName = nomisOffenderParty.offender.lastName,
+    prisonerRole = PrisonerRole.fromNomisCode(nomisOffenderParty.role.code),
+    outcome = nomisOffenderParty.outcome?.let { prisonerOutcome ->
+      PrisonerOutcome.fromNomisCode(prisonerOutcome.code)
+    },
+    comment = nomisOffenderParty.comment,
+  )
 
   fun addPrisonerInvolved(prisonerInvolvement: PrisonerInvolvement): PrisonerInvolvement {
     this.prisonersInvolved.add(prisonerInvolvement)
@@ -324,9 +338,8 @@ class Report(
     prisonersInvolved.remove(prisonerInvolved)
   }
 
-  fun findCorrectionRequestByIndex(index: Int): CorrectionRequest =
-    correctionRequests.elementAtOrNull(index - 1)
-      ?: throw ObjectAtIndexNotFoundException(CorrectionRequest::class, index)
+  fun findCorrectionRequestByIndex(index: Int): CorrectionRequest = correctionRequests.elementAtOrNull(index - 1)
+    ?: throw ObjectAtIndexNotFoundException(CorrectionRequest::class, index)
 
   fun updateCorrectionRequests(nomisRequirements: Collection<NomisRequirement>) {
     this.correctionRequests.retainAll(
@@ -341,14 +354,13 @@ class Report(
     )
   }
 
-  fun createCorrectionRequest(nomisRequirement: NomisRequirement): CorrectionRequest =
-    CorrectionRequest(
-      report = this,
-      sequence = nomisRequirement.sequence,
-      correctionRequestedBy = nomisRequirement.staff.username,
-      correctionRequestedAt = nomisRequirement.date.atStartOfDay(),
-      descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
-    )
+  fun createCorrectionRequest(nomisRequirement: NomisRequirement): CorrectionRequest = CorrectionRequest(
+    report = this,
+    sequence = nomisRequirement.sequence,
+    correctionRequestedBy = nomisRequirement.staff.username,
+    correctionRequestedAt = nomisRequirement.date.atStartOfDay(),
+    descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
+  )
 
   fun addCorrectionRequest(correctionRequest: CorrectionRequest): CorrectionRequest {
     this.correctionRequests.add(correctionRequest)
@@ -389,15 +401,14 @@ class Report(
     )
   }
 
-  private fun updateOrAddQuestion(nomisQuestion: NomisQuestion): Question =
-    findQuestion(
-      code = nomisQuestion.questionId.toString(),
-      sequence = nomisQuestion.sequence,
-    )?.apply {
-      question = nomisQuestion.question
-    } ?: addQuestion(nomisQuestion).also { newQuestion ->
-      questions.add(newQuestion)
-    }
+  private fun updateOrAddQuestion(nomisQuestion: NomisQuestion): Question = findQuestion(
+    code = nomisQuestion.questionId.toString(),
+    sequence = nomisQuestion.sequence,
+  )?.apply {
+    question = nomisQuestion.question
+  } ?: addQuestion(nomisQuestion).also { newQuestion ->
+    questions.add(newQuestion)
+  }
 
   fun addQuestion(
     code: String,
@@ -414,12 +425,11 @@ class Report(
     ).also { questions.add(it) }
   }
 
-  fun addQuestion(nomisQuestion: NomisQuestion): Question =
-    this.addQuestion(
-      code = nomisQuestion.questionId.toString(),
-      sequence = nomisQuestion.sequence,
-      question = nomisQuestion.question,
-    )
+  fun addQuestion(nomisQuestion: NomisQuestion): Question = this.addQuestion(
+    code = nomisQuestion.questionId.toString(),
+    sequence = nomisQuestion.sequence,
+    question = nomisQuestion.question,
+  )
 
   fun removeQuestion(question: Question) {
     questions.remove(question)
@@ -445,7 +455,11 @@ class Report(
     return history
   }
 
-  fun addHistory(type: Type, changedAt: LocalDateTime, changedBy: String): History {
+  fun addHistory(
+    type: Type,
+    changedAt: LocalDateTime,
+    changedBy: String,
+  ): History {
     return addHistory(
       History(
         report = this,
@@ -456,13 +470,12 @@ class Report(
     )
   }
 
-  fun createHistory(nomisHistory: NomisHistory) =
-    History(
-      report = this,
-      type = Type.fromNomisCode(nomisHistory.type),
-      changedAt = nomisHistory.incidentChangeDateTime ?: nomisHistory.createDateTime,
-      changedBy = nomisHistory.incidentChangeStaff.username,
-    )
+  fun createHistory(nomisHistory: NomisHistory) = History(
+    report = this,
+    type = Type.fromNomisCode(nomisHistory.type),
+    changedAt = nomisHistory.incidentChangeDateTime ?: nomisHistory.createDateTime,
+    changedBy = nomisHistory.incidentChangeStaff.username,
+  )
 
   fun updateHistory(nomisHistories: Collection<NomisHistory>) {
     this.history.retainAll(

@@ -12,6 +12,11 @@ data class PrisonerRoleConstantDescription(
   val description: String,
 
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
-  @Schema(description = "Machine-readable NOMIS identifier of this value, which may be null for newer prisoner roles", nullable = true, example = "IMPED", deprecated = true)
+  @Schema(
+    description = "Machine-readable NOMIS identifier of this value, which may be null for newer prisoner roles",
+    nullable = true,
+    example = "IMPED",
+    deprecated = true,
+  )
   val nomisCode: String?,
 )

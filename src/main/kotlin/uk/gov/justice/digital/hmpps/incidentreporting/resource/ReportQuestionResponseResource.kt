@@ -69,7 +69,11 @@ class ReportQuestionResponseResource(
     ],
   )
   fun getQuestionsAndResponses(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportId: UUID,
   ): List<Question> {
@@ -81,8 +85,10 @@ class ReportQuestionResponseResource(
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-    summary = "Add new questions with responses to the end of the current list or update them in place if question codes match",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
+    summary = "Add new questions with responses to the end of the current list " +
+      "or update them in place if question codes match",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -111,7 +117,11 @@ class ReportQuestionResponseResource(
     ],
   )
   fun addOrUpdateQuestionsWithResponses(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportId: UUID,
     @Parameter(
@@ -147,7 +157,8 @@ class ReportQuestionResponseResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Deletes questions (identified by code) from an incident report along with their responses",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -176,7 +187,11 @@ class ReportQuestionResponseResource(
     ],
   )
   fun deleteQuestionsAndResponses(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportId: UUID,
     @Parameter(

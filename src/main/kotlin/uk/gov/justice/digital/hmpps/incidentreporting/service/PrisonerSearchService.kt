@@ -48,5 +48,6 @@ class PrisonerSearchService(
   }
 }
 
-class PrisonersNotFoundException(val missingPrisonerNumbers: Set<String>) :
-  Exception("Prisoner numbers not found: ${missingPrisonerNumbers.joinToString()}")
+class PrisonersNotFoundException(
+  val missingPrisonerNumbers: Set<String>,
+) : Exception("Prisoner numbers not found: ${missingPrisonerNumbers.joinToString()}")

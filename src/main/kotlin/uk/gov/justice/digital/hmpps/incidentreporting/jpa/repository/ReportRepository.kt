@@ -13,7 +13,9 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.util.UUID
 
 @Repository
-interface ReportRepository : JpaRepository<Report, UUID>, JpaSpecificationExecutor<Report> {
+interface ReportRepository :
+  JpaRepository<Report, UUID>,
+  JpaSpecificationExecutor<Report> {
   @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyById(id: UUID): Report?
 

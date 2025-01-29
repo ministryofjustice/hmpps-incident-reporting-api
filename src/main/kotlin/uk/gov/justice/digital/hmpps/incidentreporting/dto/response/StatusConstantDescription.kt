@@ -12,6 +12,12 @@ data class StatusConstantDescription(
   val description: String,
 
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
-  @Schema(description = "Machine-readable NOMIS identifier of this value, which may be null for statuses that cannot be mapped", nullable = true, example = "INAN", deprecated = true)
+  @Schema(
+    description = "Machine-readable NOMIS identifier of this value, " +
+      "which may be null for statuses that cannot be mapped",
+    nullable = true,
+    example = "INAN",
+    deprecated = true,
+  )
   val nomisCode: String?,
 )

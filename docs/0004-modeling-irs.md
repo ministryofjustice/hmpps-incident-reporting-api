@@ -22,7 +22,6 @@ classDiagram
         LocalDateTime  correctionRequestedAt
         String  correctionRequestedBy
         String  descriptionOfChange
-        CorrectionReason  reason
         int  sequence
     }
     class Event {
@@ -31,9 +30,9 @@ classDiagram
         String  description
         LocalDateTime  eventDateAndTime
         String  eventReference
+        String  location
         LocalDateTime  modifiedAt
         String  modifiedBy
-        String  location
         String  title
     }
     class HistoricalQuestion {
@@ -85,11 +84,13 @@ classDiagram
         LocalDateTime  modifiedAt
         String  modifiedBy
         InformationSource  modifiedIn
+        boolean  prisonerInvolvementDone
         String  questionSetId
         String  reportReference
         LocalDateTime  reportedAt
         String  reportedBy
         InformationSource  source
+        boolean  staffInvolvementDone
         Status  status
         String  title
         Type  type
@@ -120,14 +121,14 @@ classDiagram
     }
 
 CorrectionRequest "0..*" <--> "1" Report
+HistoricalQuestion "1" <--> "1..*" HistoricalResponse
 HistoricalQuestion "0..*" <--> "1" History
-HistoricalResponse "0..*" <--> "1" HistoricalQuestion
-Question "1" <--> "0..*" Response
+PrisonerInvolvement "0..*" <--> "1" Report
+Question "0..*" <--> "1" Report
+Question "1" <--> "1..*" Response
 Report "1..*" <--> "1" Event
 Report "1" <--> "0..*" History
-Report "1" <--> "0..*" PrisonerInvolvement
-Report "1" <--> "0..*" Question
-StaffInvolvement "0..*" <--> "1" Report
+Report "1" <--> "0..*" StaffInvolvement
 StatusHistory "1..*" <--> "1" Report
 ```
 
@@ -138,7 +139,6 @@ classDiagram
     direction BT
     class correction_request {
         uuid report_id
-        varchar(60) reason
         text description_of_change
         timestamp correction_requested_at
         varchar(120) correction_requested_by
@@ -218,6 +218,8 @@ classDiagram
         timestamp created_at
         varchar(120) modified_by
         timestamp modified_at
+        boolean staff_involvement_done
+        boolean prisoner_involvement_done
         uuid id
     }
     class response {

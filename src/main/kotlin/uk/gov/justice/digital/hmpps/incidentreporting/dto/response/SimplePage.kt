@@ -44,4 +44,5 @@ data class SimplePage<T>(
     get() = sort.stream().map { "${it.property},${it.direction}" }.toList()
 }
 
-fun <T> Page<T>.toSimplePage(): SimplePage<T> = SimplePage(content, pageable.pageNumber, pageable.pageSize, totalElements, sort)
+fun <T> Page<T>.toSimplePage(): SimplePage<T> =
+  SimplePage(content, pageable.pageNumber, pageable.pageSize, totalElements, sort)

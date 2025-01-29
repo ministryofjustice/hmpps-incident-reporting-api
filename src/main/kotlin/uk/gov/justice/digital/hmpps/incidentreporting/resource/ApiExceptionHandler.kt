@@ -337,24 +337,37 @@ class ApiExceptionHandler {
   }
 }
 
-class EventNotFoundException(description: String) : Exception("There is no event found: $description") {
+class EventNotFoundException(
+  description: String,
+) : Exception("There is no event found: $description") {
   constructor(id: UUID) : this(id.toString())
 }
 
-class ReportNotFoundException(description: String) : Exception("There is no report found: $description") {
+class ReportNotFoundException(
+  description: String,
+) : Exception("There is no report found: $description") {
   constructor(id: UUID) : this(id.toString())
 }
 
-class ReportAlreadyExistsException(description: String) : Exception("Report already exists: $description") {
+class ReportAlreadyExistsException(
+  description: String,
+) : Exception("Report already exists: $description") {
   constructor(id: UUID) : this(id.toString())
 }
 
-class ReportModifiedInDpsException(description: String) : Exception("Report last modified in DPS: $description") {
+class ReportModifiedInDpsException(
+  description: String,
+) : Exception("Report last modified in DPS: $description") {
   constructor(id: UUID) : this(id.toString())
 }
 
-class ObjectAtIndexNotFoundException(type: KClass<*>, index: Int) : Exception("Object ${type.simpleName} at index $index not found")
+class ObjectAtIndexNotFoundException(
+  type: KClass<*>,
+  index: Int,
+) : Exception("Object ${type.simpleName} at index $index not found")
 
-class QuestionsNotFoundException(questionCodes: Set<String>) : Exception("Questions codes not found: ${questionCodes.sorted().joinToString()}")
+class QuestionsNotFoundException(
+  questionCodes: Set<String>,
+) : Exception("Questions codes not found: ${questionCodes.sorted().joinToString()}")
 
 class SubjectAccessRequestNoReports : Exception("No reports found for given SAR filters")

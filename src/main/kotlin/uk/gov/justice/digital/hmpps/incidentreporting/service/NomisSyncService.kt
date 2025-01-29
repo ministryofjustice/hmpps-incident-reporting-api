@@ -41,7 +41,9 @@ class NomisSyncService(
       createNewReport(syncRequest.incidentReport)
     }
 
-    log.info("Synchronised Incident Report: ${report.id} (created: ${syncRequest.id == null}, updated: ${syncRequest.id != null})")
+    log.info(
+      "Synchronised Incident Report: ${report.id} (created: ${syncRequest.id == null}, updated: ${syncRequest.id != null})",
+    )
     telemetryClient.trackEvent(
       "Synchronised Incident Report",
       report,

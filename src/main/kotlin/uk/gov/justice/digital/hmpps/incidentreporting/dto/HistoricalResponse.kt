@@ -5,7 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@Schema(description = "Previous response to a question making up a previous version of an incident report", accessMode = Schema.AccessMode.READ_ONLY)
+@Schema(
+  description = "Previous response to a question making up a previous version of an incident report",
+  accessMode = Schema.AccessMode.READ_ONLY,
+)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class HistoricalResponse(
   @Schema(description = "The response text as seen by downstream data consumers")

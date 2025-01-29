@@ -14,20 +14,44 @@ import java.time.LocalDateTime
 data class CreateReportRequest(
   @Schema(description = "Incident report type", requiredMode = Schema.RequiredMode.REQUIRED)
   val type: Type,
-  @Schema(description = "When the incident took place", requiredMode = Schema.RequiredMode.REQUIRED, example = "2024-04-29T12:34:56.789012")
+  @Schema(
+    description = "When the incident took place",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    example = "2024-04-29T12:34:56.789012",
+  )
   val incidentDateAndTime: LocalDateTime,
-  @Schema(description = "The location where incident took place, typically a NOMIS prison ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "MDI", minLength = 2, maxLength = 20)
+  @Schema(
+    description = "The location where incident took place, typically a NOMIS prison ID",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    example = "MDI",
+    minLength = 2,
+    maxLength = 20,
+  )
   @field:Size(min = 2, max = 20)
   val location: String,
-  @Schema(description = "Brief title describing the incident", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 5, maxLength = 255)
+  @Schema(
+    description = "Brief title describing the incident",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    minLength = 5,
+    maxLength = 255,
+  )
   @field:Size(min = 5, max = 255)
   val title: String,
   @Schema(description = "Longer summary of the incident", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
   @field:Size(min = 1)
   val description: String,
-  @Schema(description = "Whether to link to a new event", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "false")
+  @Schema(
+    description = "Whether to link to a new event",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    defaultValue = "false",
+  )
   val createNewEvent: Boolean = false,
-  @Schema(description = "Which existing event to link to", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null")
+  @Schema(
+    description = "Which existing event to link to",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    nullable = true,
+    defaultValue = "null",
+  )
   val linkedEventReference: String? = null,
 ) {
   fun validate(now: LocalDateTime) {
@@ -42,7 +66,12 @@ data class CreateReportRequest(
     }
   }
 
-  fun createReport(reportReference: String, event: Event, requestUsername: String, now: LocalDateTime): Report {
+  fun createReport(
+    reportReference: String,
+    event: Event,
+    requestUsername: String,
+    now: LocalDateTime,
+  ): Report {
     val status = Status.DRAFT
     val report = Report(
       event = event,
@@ -68,7 +97,11 @@ data class CreateReportRequest(
     return report
   }
 
-  fun createEvent(generatedEventReference: String, requestUsername: String, now: LocalDateTime): Event {
+  fun createEvent(
+    generatedEventReference: String,
+    requestUsername: String,
+    now: LocalDateTime,
+  ): Event {
     return Event(
       eventReference = generatedEventReference,
       eventDateAndTime = incidentDateAndTime,

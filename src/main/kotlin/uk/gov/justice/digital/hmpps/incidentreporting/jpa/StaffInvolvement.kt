@@ -64,7 +64,8 @@ class StaffInvolvement(
   }
 
   override fun toString(): String {
-    return "StaffInvolvement(id=$id, reportReference=${report.reportReference}, staffUsername=$staffUsername, staffRole=$staffRole, comment=$comment)"
+    return "StaffInvolvement(id=$id, reportReference=${report.reportReference}, " +
+      "staffUsername=$staffUsername, staffRole=$staffRole, comment=$comment)"
   }
 
   fun updateWith(request: UpdateStaffInvolvement) {

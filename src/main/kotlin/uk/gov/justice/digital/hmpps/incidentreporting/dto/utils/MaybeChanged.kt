@@ -9,13 +9,17 @@ sealed interface MaybeChanged<T> {
 
   fun alsoIfChanged(block: (T) -> Unit): MaybeChanged<T>
 
-  data class Unchanged<T>(override val value: T) : MaybeChanged<T> {
+  data class Unchanged<T>(
+    override val value: T,
+  ) : MaybeChanged<T> {
     override fun alsoIfChanged(block: (T) -> Unit): Unchanged<T> {
       return this
     }
   }
 
-  data class Changed<T>(override val value: T) : MaybeChanged<T> {
+  data class Changed<T>(
+    override val value: T,
+  ) : MaybeChanged<T> {
     override fun alsoIfChanged(block: (T) -> Unit): Changed<T> {
       block(value)
       return this

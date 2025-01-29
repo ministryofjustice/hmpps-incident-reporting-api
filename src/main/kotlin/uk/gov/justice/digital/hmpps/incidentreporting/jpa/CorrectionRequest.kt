@@ -56,10 +56,15 @@ class CorrectionRequest(
   }
 
   override fun toString(): String {
-    return "CorrectionRequest(id=$id, reportReference=${report.reportReference}, correctionRequestedAt=$correctionRequestedAt, descriptionOfChange=$descriptionOfChange)"
+    return "CorrectionRequest(id=$id, reportReference=${report.reportReference}, " +
+      "correctionRequestedAt=$correctionRequestedAt, descriptionOfChange=$descriptionOfChange)"
   }
 
-  fun updateWith(request: UpdateCorrectionRequest, requestUsername: String, now: LocalDateTime) {
+  fun updateWith(
+    request: UpdateCorrectionRequest,
+    requestUsername: String,
+    now: LocalDateTime,
+  ) {
     request.descriptionOfChange?.let { descriptionOfChange = it }
     correctionRequestedBy = requestUsername
     correctionRequestedAt = now

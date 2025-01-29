@@ -84,10 +84,7 @@ class Question(
     return "Question(id=$id, reportReference=${report.reportReference}, sequence=$sequence, code=$code)"
   }
 
-  fun reset(
-    question: String,
-    additionalInformation: String? = null,
-  ): Question {
+  fun reset(question: String, additionalInformation: String? = null): Question {
     this.question = question
     this.additionalInformation = additionalInformation
     this.responses.clear()
@@ -111,18 +108,17 @@ class Question(
     )
   }
 
-  fun createResponse(nomisResponse: NomisResponse, recordedAt: LocalDateTime): Response? =
-    nomisResponse.answer?.let {
-      Response(
-        question = this,
-        response = it,
-        sequence = nomisResponse.sequence,
-        responseDate = nomisResponse.responseDate,
-        additionalInformation = nomisResponse.comment,
-        recordedBy = nomisResponse.recordingStaff.username,
-        recordedAt = recordedAt,
-      )
-    }
+  fun createResponse(nomisResponse: NomisResponse, recordedAt: LocalDateTime): Response? = nomisResponse.answer?.let {
+    Response(
+      question = this,
+      response = it,
+      sequence = nomisResponse.sequence,
+      responseDate = nomisResponse.responseDate,
+      additionalInformation = nomisResponse.comment,
+      recordedBy = nomisResponse.recordingStaff.username,
+      recordedAt = recordedAt,
+    )
+  }
 
   fun addResponse(response: Response): Response {
     this.responses.add(response)

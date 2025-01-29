@@ -2212,7 +2212,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   }
 
   @Nested
-  abstract inner class RelatedObjects(val urlSuffix: String, val whatChanged: WhatChanged? = null) {
+  abstract inner class RelatedObjects(
+    val urlSuffix: String,
+    val whatChanged: WhatChanged? = null,
+  ) {
     protected lateinit var existingReportWithRelatedObjects: Report
     protected lateinit var urlWithRelatedObjects: String
     protected lateinit var urlWithoutRelatedObjects: String
@@ -2427,7 +2430,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isCreated
 
-          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference(
+            "11124147",
+          )!!.toDtoBasic()
           assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
           assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
         }
@@ -2759,7 +2764,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isOk
 
-          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          val updatedNomisReportWithRelatedObjects = reportRepository.findOneByReportReference(
+            "11124147",
+          )!!.toDtoBasic()
           assertThat(updatedNomisReportWithRelatedObjects.createdInNomis).isTrue()
           assertThat(updatedNomisReportWithRelatedObjects.lastModifiedInNomis).isFalse()
         }
@@ -2776,25 +2783,26 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("POST /incident-reports/{reportId}/staff-involved")
     @Nested
-    inner class AddObject : RelatedObjects.AddObject(
-      invalidRequests = listOf(
-        InvalidRequestTestCase(
-          "short staff username",
-          getResource("/related-objects/staff-involved/add-request-short-username.json"),
-          "addStaffInvolvement.staffUsername: size must be between 3 and 120",
+    inner class AddObject :
+      RelatedObjects.AddObject(
+        invalidRequests = listOf(
+          InvalidRequestTestCase(
+            "short staff username",
+            getResource("/related-objects/staff-involved/add-request-short-username.json"),
+            "addStaffInvolvement.staffUsername: size must be between 3 and 120",
+          ),
+          InvalidRequestTestCase(
+            "empty surname",
+            getResource("/related-objects/staff-involved/add-request-empty-surname.json"),
+            "addStaffInvolvement.lastName: size must be between 1 and 255",
+          ),
+          InvalidRequestTestCase(
+            "long surname",
+            getResource("/related-objects/staff-involved/add-request-long-surname.json"),
+            "addStaffInvolvement.lastName: size must be between 1 and 255",
+          ),
         ),
-        InvalidRequestTestCase(
-          "empty surname",
-          getResource("/related-objects/staff-involved/add-request-empty-surname.json"),
-          "addStaffInvolvement.lastName: size must be between 1 and 255",
-        ),
-        InvalidRequestTestCase(
-          "long surname",
-          getResource("/related-objects/staff-involved/add-request-long-surname.json"),
-          "addStaffInvolvement.lastName: size must be between 1 and 255",
-        ),
-      ),
-    ) {
+      ) {
       @Test
       fun `automatically flags staff involvements as done`() {
         val newReportId = reportRepository.save(
@@ -2822,32 +2830,33 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("PATCH /incident-reports/{reportId}/staff-involved/{index}")
     @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject(
-      invalidRequests = listOf(
-        InvalidRequestTestCase(
-          "short staff username",
-          getResource("/related-objects/staff-involved/update-request-short-username.json"),
-          "updateStaffInvolvement.staffUsername: size must be between 3 and 120",
+    inner class UpdateObject :
+      RelatedObjects.UpdateObject(
+        invalidRequests = listOf(
+          InvalidRequestTestCase(
+            "short staff username",
+            getResource("/related-objects/staff-involved/update-request-short-username.json"),
+            "updateStaffInvolvement.staffUsername: size must be between 3 and 120",
+          ),
+          InvalidRequestTestCase(
+            "empty name",
+            getResource("/related-objects/staff-involved/update-request-empty-name.json"),
+            "updateStaffInvolvement.firstName: size must be between 1 and 255",
+          ),
+          InvalidRequestTestCase(
+            "long name",
+            getResource("/related-objects/staff-involved/update-request-long-name.json"),
+            "updateStaffInvolvement.firstName: size must be between 1 and 255",
+          ),
         ),
-        InvalidRequestTestCase(
-          "empty name",
-          getResource("/related-objects/staff-involved/update-request-empty-name.json"),
-          "updateStaffInvolvement.firstName: size must be between 1 and 255",
+        nullablePropertyRequests = listOf(
+          NullablePropertyTestCase(
+            field = "comment",
+            validValue = "Different comment",
+            unchangedValue = "Comment #1",
+          ),
         ),
-        InvalidRequestTestCase(
-          "long name",
-          getResource("/related-objects/staff-involved/update-request-long-name.json"),
-          "updateStaffInvolvement.firstName: size must be between 1 and 255",
-        ),
-      ),
-      nullablePropertyRequests = listOf(
-        NullablePropertyTestCase(
-          field = "comment",
-          validValue = "Different comment",
-          unchangedValue = "Comment #1",
-        ),
-      ),
-    )
+      )
 
     @DisplayName("DELETE /incident-reports/{reportId}/staff-involved/{index}")
     @Nested
@@ -2863,20 +2872,21 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("POST /incident-reports/{reportId}/prisoners-involved")
     @Nested
-    inner class AddObject : RelatedObjects.AddObject(
-      invalidRequests = listOf(
-        InvalidRequestTestCase(
-          "empty name",
-          getResource("/related-objects/prisoners-involved/add-request-empty-name.json"),
-          "addPrisonerInvolvement.firstName: size must be between 1 and 255",
+    inner class AddObject :
+      RelatedObjects.AddObject(
+        invalidRequests = listOf(
+          InvalidRequestTestCase(
+            "empty name",
+            getResource("/related-objects/prisoners-involved/add-request-empty-name.json"),
+            "addPrisonerInvolvement.firstName: size must be between 1 and 255",
+          ),
+          InvalidRequestTestCase(
+            "long name",
+            getResource("/related-objects/prisoners-involved/add-request-long-name.json"),
+            "addPrisonerInvolvement.firstName: size must be between 1 and 255",
+          ),
         ),
-        InvalidRequestTestCase(
-          "long name",
-          getResource("/related-objects/prisoners-involved/add-request-long-name.json"),
-          "addPrisonerInvolvement.firstName: size must be between 1 and 255",
-        ),
-      ),
-    ) {
+      ) {
       @Test
       fun `automatically flags staff involvements as done`() {
         val newReportId = reportRepository.save(
@@ -2904,32 +2914,33 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("PATCH /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject(
-      invalidRequests = listOf(
-        InvalidRequestTestCase(
-          "empty surname",
-          getResource("/related-objects/prisoners-involved/update-request-empty-surname.json"),
-          "updatePrisonerInvolvement.lastName: size must be between 1 and 255",
+    inner class UpdateObject :
+      RelatedObjects.UpdateObject(
+        invalidRequests = listOf(
+          InvalidRequestTestCase(
+            "empty surname",
+            getResource("/related-objects/prisoners-involved/update-request-empty-surname.json"),
+            "updatePrisonerInvolvement.lastName: size must be between 1 and 255",
+          ),
+          InvalidRequestTestCase(
+            "long surname",
+            getResource("/related-objects/prisoners-involved/update-request-long-surname.json"),
+            "updatePrisonerInvolvement.lastName: size must be between 1 and 255",
+          ),
         ),
-        InvalidRequestTestCase(
-          "long surname",
-          getResource("/related-objects/prisoners-involved/update-request-long-surname.json"),
-          "updatePrisonerInvolvement.lastName: size must be between 1 and 255",
+        nullablePropertyRequests = listOf(
+          NullablePropertyTestCase(
+            field = "outcome",
+            validValue = "PLACED_ON_REPORT",
+            unchangedValue = "CHARGED_BY_POLICE",
+          ),
+          NullablePropertyTestCase(
+            field = "comment",
+            validValue = "Different comment",
+            unchangedValue = "Comment #1",
+          ),
         ),
-      ),
-      nullablePropertyRequests = listOf(
-        NullablePropertyTestCase(
-          field = "outcome",
-          validValue = "PLACED_ON_REPORT",
-          unchangedValue = "CHARGED_BY_POLICE",
-        ),
-        NullablePropertyTestCase(
-          field = "comment",
-          validValue = "Different comment",
-          unchangedValue = "Comment #1",
-        ),
-      ),
-    )
+      )
 
     @DisplayName("DELETE /incident-reports/{reportId}/prisoners-involved/{index}")
     @Nested
@@ -2945,27 +2956,29 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @DisplayName("POST /incident-reports/{reportId}/correction-requests")
     @Nested
-    inner class AddObject : RelatedObjects.AddObject(
-      invalidRequests = listOf(
-        InvalidRequestTestCase(
-          "empty description of change",
-          getResource("/related-objects/correction-requests/add-request-empty-description.json"),
-          "addCorrectionRequest.descriptionOfChange: size must be between 1 and",
+    inner class AddObject :
+      RelatedObjects.AddObject(
+        invalidRequests = listOf(
+          InvalidRequestTestCase(
+            "empty description of change",
+            getResource("/related-objects/correction-requests/add-request-empty-description.json"),
+            "addCorrectionRequest.descriptionOfChange: size must be between 1 and",
+          ),
         ),
-      ),
-    )
+      )
 
     @DisplayName("PATCH /incident-reports/{reportId}/correction-requests/{index}")
     @Nested
-    inner class UpdateObject : RelatedObjects.UpdateObject(
-      invalidRequests = listOf(
-        InvalidRequestTestCase(
-          "empty description of change",
-          getResource("/related-objects/correction-requests/update-request-empty-description.json"),
-          "updateCorrectionRequest.descriptionOfChange: size must be between 1 and",
+    inner class UpdateObject :
+      RelatedObjects.UpdateObject(
+        invalidRequests = listOf(
+          InvalidRequestTestCase(
+            "empty description of change",
+            getResource("/related-objects/correction-requests/update-request-empty-description.json"),
+            "updateCorrectionRequest.descriptionOfChange: size must be between 1 and",
+          ),
         ),
-      ),
-    )
+      )
 
     @DisplayName("DELETE /incident-reports/{reportId}/correction-requests/{index}")
     @Nested
@@ -3174,7 +3187,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isBadRequest
             .expectBody().jsonPath("developerMessage").value<String> {
-              assertThat(it).contains("addOrUpdateQuestionsWithResponses.requests[0].responses: size must be between 1 and")
+              assertThat(
+                it,
+              ).contains("addOrUpdateQuestionsWithResponses.requests[0].responses: size must be between 1 and")
             }
 
           assertThatNoDomainEventsWereSent()
@@ -3226,8 +3241,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         @Test
         fun `can add question with responses that have nullable fields`() {
-          val validRequestWithNulls = getResource("/questions-with-responses/add-request-with-responses-and-null-fields.json")
-          val expectedResponse = getResource("/questions-with-responses/add-response-with-responses-and-null-fields.json")
+          val validRequestWithNulls =
+            getResource("/questions-with-responses/add-request-with-responses-and-null-fields.json")
+          val expectedResponse =
+            getResource("/questions-with-responses/add-response-with-responses-and-null-fields.json")
           webTestClient.put().uri(urlWithQuestionsAndResponses)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
@@ -3268,7 +3285,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         @Test
         fun `can add multiple questions with responses in one go`() {
-          val validRequestWith3Questions = getResource("/questions-with-responses/add-request-3-questions-with-responses.json")
+          val validRequestWith3Questions =
+            getResource("/questions-with-responses/add-request-3-questions-with-responses.json")
           val expectedResponse = getResource("/questions-with-responses/add-response-3-questions-with-responses.json")
           webTestClient.put().uri(urlWithQuestionsAndResponses)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -3289,7 +3307,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         @Test
         fun `can add and update questions with one request containing several payloads`() {
-          val validAddAndUpdateRequest = getResource("/questions-with-responses/add-and-update-request-with-responses.json")
+          val validAddAndUpdateRequest =
+            getResource("/questions-with-responses/add-and-update-request-with-responses.json")
           val expectedResponse = getResource("/questions-with-responses/add-and-update-response-with-responses.json")
           webTestClient.put().uri(urlWithQuestionsAndResponses)
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -3327,7 +3346,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isOk
 
-          val updatedNomisReportWithQuestionsAndResponses = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          val updatedNomisReportWithQuestionsAndResponses = reportRepository.findOneByReportReference(
+            "11124147",
+          )!!.toDtoBasic()
           assertThat(updatedNomisReportWithQuestionsAndResponses.createdInNomis).isTrue()
           assertThat(updatedNomisReportWithQuestionsAndResponses.lastModifiedInNomis).isFalse()
         }
@@ -3426,7 +3447,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatNoDomainEventsWereSent()
 
-          val remainingQuestionCodes = reportRepository.findOneEagerlyById(existingReportWithQuestionsAndResponses.id!!)!!
+          val remainingQuestionCodes = reportRepository.findOneEagerlyById(
+            existingReportWithQuestionsAndResponses.id!!,
+          )!!
             .questions
             .map { it.code }
           assertThat(remainingQuestionCodes).isEqualTo(listOf("1", "2"))
@@ -3505,7 +3528,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               JsonCompareMode.LENIENT,
             )
 
-          val updatedNomisReportWithQuestionsAndResponses = reportRepository.findOneByReportReference("11124147")!!.toDtoBasic()
+          val updatedNomisReportWithQuestionsAndResponses = reportRepository.findOneByReportReference(
+            "11124147",
+          )!!.toDtoBasic()
           assertThat(updatedNomisReportWithQuestionsAndResponses.createdInNomis).isTrue()
           assertThat(updatedNomisReportWithQuestionsAndResponses.lastModifiedInNomis).isFalse()
         }
