@@ -5,7 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Schema(description = "Event linking multiple incident reports (including key report information)", accessMode = Schema.AccessMode.READ_ONLY)
+@Schema(
+  description = "Event linking multiple incident reports (including key report information)",
+  accessMode = Schema.AccessMode.READ_ONLY,
+)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class EventWithBasicReports(
   id: UUID,

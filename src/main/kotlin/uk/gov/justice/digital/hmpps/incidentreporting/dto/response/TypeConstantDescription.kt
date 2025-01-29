@@ -14,6 +14,11 @@ data class TypeConstantDescription(
   val active: Boolean = true,
 
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
-  @Schema(description = "Machine-readable NOMIS identifier of this value, which may be null for newer incident types", nullable = true, example = "DISORDER1", deprecated = true)
+  @Schema(
+    description = "Machine-readable NOMIS identifier of this value, which may be null for newer incident types",
+    nullable = true,
+    example = "DISORDER1",
+    deprecated = true,
+  )
   val nomisCode: String?,
 )

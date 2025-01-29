@@ -182,7 +182,12 @@ class PrisonerMergeTest {
           ),
         )
 
-      val reports = reportService.replacePrisonerNumberInDateRange("A0001AA", "A0001BB", now.minusDays(2), now.minusDays(2))
+      val reports = reportService.replacePrisonerNumberInDateRange(
+        "A0001AA",
+        "A0001BB",
+        now.minusDays(2),
+        now.minusDays(2),
+      )
       val reportIds = reports.map { it.reportReference }
       assertThat(reportIds)
         .isEqualTo(listOf("11124143"))

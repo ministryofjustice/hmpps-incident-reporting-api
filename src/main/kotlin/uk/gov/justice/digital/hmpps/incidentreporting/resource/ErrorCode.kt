@@ -6,7 +6,9 @@ package uk.gov.justice.digital.hmpps.incidentreporting.resource
  *
  * NB: Once defined, the values must not be changed
  */
-enum class ErrorCode(val errorCode: Int) {
+enum class ErrorCode(
+  val errorCode: Int,
+) {
   ValidationFailure(100),
   EventNotFound(201),
   ReportNotFound(301),

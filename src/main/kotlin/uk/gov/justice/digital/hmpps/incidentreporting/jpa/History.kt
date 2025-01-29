@@ -87,15 +87,14 @@ class History(
     )
   }
 
-  private fun updateOrAddQuestion(nomisQuestion: NomisHistoryQuestion): HistoricalQuestion =
-    findQuestion(
-      code = nomisQuestion.questionId.toString(),
-      sequence = nomisQuestion.sequence,
-    )?.apply {
-      question = nomisQuestion.question
-    } ?: addQuestion(nomisQuestion).also { newQuestion ->
-      questions.add(newQuestion)
-    }
+  private fun updateOrAddQuestion(nomisQuestion: NomisHistoryQuestion): HistoricalQuestion = findQuestion(
+    code = nomisQuestion.questionId.toString(),
+    sequence = nomisQuestion.sequence,
+  )?.apply {
+    question = nomisQuestion.question
+  } ?: addQuestion(nomisQuestion).also { newQuestion ->
+    questions.add(newQuestion)
+  }
 
   fun addQuestion(
     code: String,
@@ -112,12 +111,11 @@ class History(
     ).also { questions.add(it) }
   }
 
-  fun addQuestion(historyQuestion: NomisHistoryQuestion): HistoricalQuestion =
-    this.addQuestion(
-      code = historyQuestion.questionId.toString(),
-      sequence = historyQuestion.sequence,
-      question = historyQuestion.question,
-    )
+  fun addQuestion(historyQuestion: NomisHistoryQuestion): HistoricalQuestion = this.addQuestion(
+    code = historyQuestion.questionId.toString(),
+    sequence = historyQuestion.sequence,
+    question = historyQuestion.question,
+  )
 
   fun toDto() = HistoryDto(
     type = type,

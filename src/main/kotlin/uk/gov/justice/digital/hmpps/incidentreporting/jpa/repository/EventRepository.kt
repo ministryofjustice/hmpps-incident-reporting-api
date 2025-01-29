@@ -9,7 +9,9 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import java.util.UUID
 
 @Repository
-interface EventRepository : JpaRepository<Event, UUID>, JpaSpecificationExecutor<Event> {
+interface EventRepository :
+  JpaRepository<Event, UUID>,
+  JpaSpecificationExecutor<Event> {
   @EntityGraph(value = "Event.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyById(id: UUID): Event?
 

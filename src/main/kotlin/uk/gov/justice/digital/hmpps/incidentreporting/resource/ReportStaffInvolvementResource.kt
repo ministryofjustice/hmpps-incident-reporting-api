@@ -25,7 +25,8 @@ import java.util.UUID
 
 @RestController
 @Validated
-class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolvement, AddStaffInvolvement, UpdateStaffInvolvement>() {
+class ReportStaffInvolvementResource :
+  ReportRelatedObjectsResource<StaffInvolvement, AddStaffInvolvement, UpdateStaffInvolvement>() {
   @GetMapping("/staff-involved")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -56,7 +57,11 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   )
   @Transactional(readOnly = true)
   override fun listObjects(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportId: UUID,
   ): List<StaffInvolvement> {
@@ -69,7 +74,8 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Adds an involved member of staff to this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -99,7 +105,11 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   )
   @Transactional
   override fun addObject(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportId: UUID,
     @RequestBody
@@ -131,7 +141,8 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Update an involved member of staff in this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -161,10 +172,18 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   )
   @Transactional
   override fun updateObject(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportId: UUID,
-    @Schema(description = "The index of the object to update (starts from 1)", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The index of the object to update (starts from 1)",
+      example = "1",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     index: Int,
     @RequestBody
@@ -189,7 +208,8 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Remove an involved member of staff from this incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -214,10 +234,18 @@ class ReportStaffInvolvementResource : ReportRelatedObjectsResource<StaffInvolve
   )
   @Transactional
   override fun removeObject(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportId: UUID,
-    @Schema(description = "The index of the object to delete (starts from 1)", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The index of the object to delete (starts from 1)",
+      example = "1",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     index: Int,
   ): List<StaffInvolvement> {

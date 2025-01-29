@@ -18,34 +18,32 @@ abstract class EventBaseResource {
     informationSource: InformationSource,
     whatChanged: WhatChanged? = null,
     block: () -> T,
-  ): T =
-    block().also { report ->
-      eventPublishAndAuditService.publishEvent(
-        eventType = event,
-        additionalInformation = AdditionalInformation(
-          id = report.id,
-          reportReference = report.reportReference,
-          source = informationSource,
-          whatChanged = whatChanged,
-        ),
-        auditData = report,
-      )
-    }
+  ): T = block().also { report ->
+    eventPublishAndAuditService.publishEvent(
+      eventType = event,
+      additionalInformation = AdditionalInformation(
+        id = report.id,
+        reportReference = report.reportReference,
+        source = informationSource,
+        whatChanged = whatChanged,
+      ),
+      auditData = report,
+    )
+  }
 
   protected fun <T : ReportBasic> eventPublishAndAuditNomisEvent(
     event: ReportDomainEventType,
     whatChanged: WhatChanged? = null,
     block: () -> T,
-  ): T =
-    block().also { report ->
-      eventPublishAndAuditService.publishEvent(
-        eventType = event,
-        additionalInformation = AdditionalInformation(
-          id = report.id,
-          reportReference = report.reportReference,
-          source = InformationSource.NOMIS,
-          whatChanged = whatChanged,
-        ),
-      )
-    }
+  ): T = block().also { report ->
+    eventPublishAndAuditService.publishEvent(
+      eventType = event,
+      additionalInformation = AdditionalInformation(
+        id = report.id,
+        reportReference = report.reportReference,
+        source = InformationSource.NOMIS,
+        whatChanged = whatChanged,
+      ),
+    )
+  }
 }

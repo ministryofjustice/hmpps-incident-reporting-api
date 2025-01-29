@@ -290,7 +290,11 @@ class ReportResource(
     ],
   )
   fun getBasicReportById(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     id: UUID,
   ): ReportBasic {
@@ -327,7 +331,11 @@ class ReportResource(
     ],
   )
   fun getReportWithDetailsById(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     id: UUID,
   ): ReportWithDetails {
@@ -364,7 +372,11 @@ class ReportResource(
     ],
   )
   fun getBasicReportByReference(
-    @Schema(description = "The incident report reference", example = "\"11124143\"", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report reference",
+      example = "\"11124143\"",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportReference: String,
   ): ReportBasic {
@@ -401,7 +413,11 @@ class ReportResource(
     ],
   )
   fun getReportWithDetailsByReference(
-    @Schema(description = "The incident report reference", example = "\"11124143\"", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report reference",
+      example = "\"11124143\"",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     reportReference: String,
   ): ReportWithDetails {
@@ -414,7 +430,8 @@ class ReportResource(
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Creates a draft incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s creator.",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s creator.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -460,7 +477,8 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Updates key properties of an existing incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -489,7 +507,11 @@ class ReportResource(
     ],
   )
   fun updateReport(
-    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The internal ID of the report to update",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     id: UUID,
     @RequestBody
@@ -516,7 +538,8 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Changes the status of an existing incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -545,7 +568,11 @@ class ReportResource(
     ],
   )
   fun changeReportStatus(
-    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The internal ID of the report to update",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     id: UUID,
     @RequestBody
@@ -571,7 +598,8 @@ class ReportResource(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Changes the type of an existing incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. Authentication token must provide a username which is recorded as the report’s modifier.",
+    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
+      "Authentication token must provide a username which is recorded as the report’s modifier.",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -600,7 +628,11 @@ class ReportResource(
     ],
   )
   fun changeReportType(
-    @Schema(description = "The internal ID of the report to update", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The internal ID of the report to update",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     id: UUID,
     @RequestBody
@@ -656,7 +688,11 @@ class ReportResource(
     ],
   )
   fun deleteReport(
-    @Schema(description = "The incident report id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The incident report id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     id: UUID,
     @Schema(

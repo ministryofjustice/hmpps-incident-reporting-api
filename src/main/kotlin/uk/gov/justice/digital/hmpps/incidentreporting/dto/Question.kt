@@ -6,7 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 @Schema(description = "Question with responses making up an incident report", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class Question(
-  @Schema(description = "The question code; used as a unique identifier within one report and typically refers to a specific question for an incident type")
+  @Schema(
+    description = "The question code; used as a unique identifier within one report " +
+      "and typically refers to a specific question for an incident type",
+  )
   val code: String,
   @Schema(description = "The question text as seen by downstream data consumers")
   val question: String,

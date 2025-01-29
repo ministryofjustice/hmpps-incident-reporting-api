@@ -18,7 +18,11 @@ fun TelemetryClient.trackEvent(name: String, properties: Map<String, String>) {
   trackEvent(name, properties, null)
 }
 
-fun TelemetryClient.trackEvent(name: String, report: ReportBasic, extraProperties: Map<String, String>? = null) {
+fun TelemetryClient.trackEvent(
+  name: String,
+  report: ReportBasic,
+  extraProperties: Map<String, String>? = null,
+) {
   val properties = mutableMapOf(
     "id" to report.id.toString(),
     "reportReference" to report.reportReference,

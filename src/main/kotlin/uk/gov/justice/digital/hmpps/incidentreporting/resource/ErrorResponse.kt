@@ -11,9 +11,22 @@ data class ErrorResponse(
   val userMessage: String,
   @Schema(description = "More detailed error message", example = "Details, sometimes a stack trace")
   val developerMessage: String,
-  @Schema(description = "When present, uniquely identifies the type of error making it easier for clients to discriminate without relying on error description or HTTP status code; see ` uk.gov.justice.digital.hmpps.incidentreporting.resource.ErrorCode` enumeration in hmpps-incident-reporting-api", example = "101", nullable = true, defaultValue = "null")
+  @Schema(
+    description = "When present, uniquely identifies the type of error " +
+      "making it easier for clients to discriminate without relying on error description or HTTP status code; " +
+      "see ` uk.gov.justice.digital.hmpps.incidentreporting.resource.ErrorCode` enumeration " +
+      "in hmpps-incident-reporting-api",
+    example = "101",
+    nullable = true,
+    defaultValue = "null",
+  )
   val errorCode: Int? = null,
-  @Schema(description = "More information about the error", example = "[Rarely used, error-specific]", nullable = true, defaultValue = "null")
+  @Schema(
+    description = "More information about the error",
+    example = "[Rarely used, error-specific]",
+    nullable = true,
+    defaultValue = "null",
+  )
   val moreInfo: String? = null,
 ) {
   constructor(

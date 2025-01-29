@@ -17,7 +17,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 @DisplayName("Constants resource")
 class ConstantsResourceTest : SqsIntegrationTestBase() {
   @ParameterizedTest(name = "cannot access {0} constants without authorisation")
-  @ValueSource(strings = ["error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types"])
+  @ValueSource(
+    strings = [
+      "error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types",
+    ],
+  )
   fun `cannot access without authorisation`(endpoint: String) {
     webTestClient.get().uri("/constants/$endpoint")
       .exchange()
@@ -25,7 +29,11 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
   }
 
   @ParameterizedTest(name = "can access {0} constants without special roles")
-  @ValueSource(strings = ["error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types"])
+  @ValueSource(
+    strings = [
+      "error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types",
+    ],
+  )
   fun `can access without special roles`(endpoint: String) {
     webTestClient.get().uri("/constants/$endpoint")
       .headers(setAuthorisation(roles = emptyList(), scopes = listOf("read")))

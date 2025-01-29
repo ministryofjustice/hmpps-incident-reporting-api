@@ -68,7 +68,8 @@ class PrisonerInvolvement(
   }
 
   override fun toString(): String {
-    return "PrisonerInvolvement(id=$id, reportReference=${report.reportReference}, prisonerNumber=$prisonerNumber, prisonerRole=$prisonerRole, outcome=$outcome, comment=$comment)"
+    return "PrisonerInvolvement(id=$id, reportReference=${report.reportReference}, " +
+      "prisonerNumber=$prisonerNumber, prisonerRole=$prisonerRole, outcome=$outcome, comment=$comment)"
   }
 
   fun updateWith(request: UpdatePrisonerInvolvement) {

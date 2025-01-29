@@ -168,7 +168,11 @@ class EventResource(
     ],
   )
   fun getEventById(
-    @Schema(description = "The event id", example = "11111111-2222-3333-4444-555555555555", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+      description = "The event id",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     @PathVariable
     id: UUID,
   ): EventWithBasicReports {

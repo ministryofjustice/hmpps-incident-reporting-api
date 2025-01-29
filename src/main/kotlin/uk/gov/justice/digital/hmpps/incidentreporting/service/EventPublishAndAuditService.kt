@@ -30,10 +30,7 @@ class EventPublishAndAuditService(
     }
   }
 
-  private fun sendDomainEvent(
-    eventType: ReportDomainEventType,
-    additionalInformation: AdditionalInformation,
-  ) {
+  private fun sendDomainEvent(eventType: ReportDomainEventType, additionalInformation: AdditionalInformation) {
     snsService.publishDomainEvent(
       eventType = eventType,
       description = "${additionalInformation.id} ${eventType.description}",

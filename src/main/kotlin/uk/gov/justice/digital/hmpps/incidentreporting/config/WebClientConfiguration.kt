@@ -22,6 +22,13 @@ class WebClientConfiguration(
     builder.healthWebClient(prisonerSearchUri, healthTimeout)
 
   @Bean
-  fun prisonerSearchWebClient(authorizedClientManager: OAuth2AuthorizedClientManager, builder: WebClient.Builder): WebClient =
-    builder.authorisedWebClient(authorizedClientManager, registrationId = SYSTEM_USERNAME, url = prisonerSearchUri, healthTimeout)
+  fun prisonerSearchWebClient(
+    authorizedClientManager: OAuth2AuthorizedClientManager,
+    builder: WebClient.Builder,
+  ): WebClient = builder.authorisedWebClient(
+    authorizedClientManager,
+    registrationId = SYSTEM_USERNAME,
+    url = prisonerSearchUri,
+    healthTimeout,
+  )
 }

@@ -6,7 +6,13 @@ import jakarta.validation.constraints.Size
 
 @Schema(description = "Update a correction request in an incident report", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class UpdateCorrectionRequest(
-  @Schema(description = "The changes being requested", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true, defaultValue = "null", minLength = 1)
+  @Schema(
+    description = "The changes being requested",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    nullable = true,
+    defaultValue = "null",
+    minLength = 1,
+  )
   @field:Size(min = 1)
   val descriptionOfChange: String? = null,
 ) {

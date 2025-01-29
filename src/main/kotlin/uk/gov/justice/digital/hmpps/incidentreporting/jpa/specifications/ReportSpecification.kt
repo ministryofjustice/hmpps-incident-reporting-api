@@ -26,8 +26,7 @@ fun filterByIncidentDateFrom(date: LocalDate) =
 fun filterByIncidentDateUntil(date: LocalDate) =
   Report::incidentDateAndTime.buildSpecForLessThan(date.plusDays(1).atStartOfDay())
 
-fun filterByReportedDateFrom(date: LocalDate) =
-  Report::reportedAt.buildSpecForGreaterThanOrEqualTo(date.atStartOfDay())
+fun filterByReportedDateFrom(date: LocalDate) = Report::reportedAt.buildSpecForGreaterThanOrEqualTo(date.atStartOfDay())
 
 fun filterByReportedDateUntil(date: LocalDate) =
   Report::reportedAt.buildSpecForLessThan(date.plusDays(1).atStartOfDay())
@@ -38,4 +37,7 @@ fun filterByInvolvedStaff(staffUsername: String) =
   Report::staffInvolved.buildSpecForRelatedEntityPropertyEqualTo(StaffInvolvement::staffUsername, staffUsername)
 
 fun filterByInvolvedPrisoner(prisonerNumber: String) =
-  Report::prisonersInvolved.buildSpecForRelatedEntityPropertyEqualTo(PrisonerInvolvement::prisonerNumber, prisonerNumber)
+  Report::prisonersInvolved.buildSpecForRelatedEntityPropertyEqualTo(
+    PrisonerInvolvement::prisonerNumber,
+    prisonerNumber,
+  )

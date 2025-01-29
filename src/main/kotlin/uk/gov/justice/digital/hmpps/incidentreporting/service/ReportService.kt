@@ -237,7 +237,9 @@ class ReportService(
       }
 
       maybeChangedReport.alsoIfChanged { reportWithDetails ->
-        log.info("Changed incident report status to ${changeStatusRequest.newStatus} for reference=${reportWithDetails.reportReference} ID=$id")
+        log.info(
+          "Changed incident report status to ${changeStatusRequest.newStatus} for reference=${reportWithDetails.reportReference} ID=$id",
+        )
         telemetryClient.trackEvent(
           "Changed incident report status",
           reportWithDetails,
@@ -269,7 +271,9 @@ class ReportService(
       }
 
       maybeChangedReport.alsoIfChanged { reportWithDetails ->
-        log.info("Changed incident report type to ${changeTypeRequest.newType} for reference=${reportWithDetails.reportReference} ID=$id")
+        log.info(
+          "Changed incident report type to ${changeTypeRequest.newType} for reference=${reportWithDetails.reportReference} ID=$id",
+        )
         telemetryClient.trackEvent(
           "Changed incident report type",
           reportWithDetails,
@@ -338,7 +342,9 @@ class ReportService(
 
       val reportBasic = toDtoBasic()
 
-      log.info("Added $addedCount and updated $updatedCount question(s) with responses in report reference=$reportReference ID=$id")
+      log.info(
+        "Added $addedCount and updated $updatedCount question(s) with responses in report reference=$reportReference ID=$id",
+      )
       telemetryClient.trackEvent(
         "Added $addedCount and updated $updatedCount question(s) with responses",
         reportBasic,
