@@ -2,6 +2,15 @@ package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
 import jakarta.validation.ValidationException
 
+/**
+ * The outcome of a prisoner’s involvement in an incident.
+ *
+ * NB:
+ *   - new items should have a reasonably readable code
+ *   - items cannot be removed to preserve database integrity
+ *   - any additions, changes to order, codes or descriptions require a new migration of relevant constants DB table!
+ *   - code & description are expected to be 60 chars max
+ */
 enum class PrisonerOutcome(
   val description: String,
   val nomisCode: String,
