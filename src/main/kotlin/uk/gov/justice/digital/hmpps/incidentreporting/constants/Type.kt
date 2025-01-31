@@ -2,13 +2,17 @@ package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
 import jakarta.validation.ValidationException
 
-/*
-TODO: DRONE2 has just been added to start in Sept 2024,
-  but notably, DRONE1 is still active as well!
-  1) need to check in Sept what remains active
-  2) need to check start/end dates for all types in NOMIS db to ensure descriptions make sense. eg. DRONE vs DRONE1 vs DRONE2
-*/
+// TODO: need to check start/end dates for all types in NOMIS db to ensure descriptions make sense. eg. ASSAULT*
 
+/**
+ * The type of reportable incident.
+ *
+ * NB:
+ *   - new items should have a reasonably readable code
+ *   - items cannot be removed, only deactivated, to preserve database integrity
+ *   - any additions, changes to order, codes or descriptions require a new migration of relevant constants DB table!
+ *   - code & description are expected to be 60 chars max
+ */
 enum class Type(
   val description: String,
   val nomisType: String?,
@@ -25,7 +29,6 @@ enum class Type(
   DEATH_OTHER("Death (other)", "DEATH_NI"),
   DISORDER("Disorder", "DISORDER1"),
   DRONE_SIGHTING("Drone sighting", "DRONE2"),
-  OLD_DRONE_SIGHTING1("Drone sighting", "DRONE1"), // TODO: soon to be inactive
   ESCAPE_FROM_CUSTODY("Escape from custody", "ESCAPE_EST"),
   ESCAPE_FROM_ESCORT("Escape from escort", "ESCAPE_ESC"),
   FINDS("Finds", "FIND0422"),
@@ -50,6 +53,7 @@ enum class Type(
   OLD_CONCERTED_INDISCIPLINE("Concerted indiscipline", "CON_INDISC", active = false),
   OLD_DISORDER("Disorder", "DISORDER", active = false),
   OLD_DRONE_SIGHTING("Drone sighting", "DRONE", active = false),
+  OLD_DRONE_SIGHTING1("Drone sighting (from 2017)", "DRONE1", active = false),
   OLD_DRUGS("Drugs", "DRUGS", active = false),
   OLD_FINDS("Finds", "FINDS", active = false),
   OLD_FINDS1("Finds (from August 2015)", "FIND", active = false),
