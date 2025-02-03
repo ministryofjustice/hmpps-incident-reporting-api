@@ -27,7 +27,7 @@ class StaffInvolvement(
 
   val sequence: Int,
 
-  var staffUsername: String,
+  var staffUsername: String?,
   var firstName: String,
   var lastName: String,
 
@@ -69,7 +69,7 @@ class StaffInvolvement(
   }
 
   fun updateWith(request: UpdateStaffInvolvement) {
-    request.staffUsername?.let { staffUsername = it }
+    request.staffUsername?.let { staffUsername = it.getOrNull() }
     request.firstName?.let { firstName = it }
     request.lastName?.let { lastName = it }
     request.staffRole?.let { staffRole = it }

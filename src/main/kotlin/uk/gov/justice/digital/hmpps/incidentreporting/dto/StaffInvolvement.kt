@@ -10,8 +10,8 @@ data class StaffInvolvement(
   // TODO: sequences are only being exposed while we sort out sync problems: they do not need to remain in the api contract
   @Schema(description = "Sequence of the staff involvement for this report", deprecated = true)
   val sequence: Int,
-  @Schema(description = "Username")
-  val staffUsername: String,
+  @Schema(description = "Username, absent for manually-added staff or those without NOMIS/DPS accounts")
+  val staffUsername: String?,
   @Schema(description = "First name")
   var firstName: String,
   @Schema(description = "Surname")

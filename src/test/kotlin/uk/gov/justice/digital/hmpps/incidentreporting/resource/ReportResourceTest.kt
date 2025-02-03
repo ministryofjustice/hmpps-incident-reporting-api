@@ -487,7 +487,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -560,7 +560,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -662,7 +662,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -735,7 +735,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -918,7 +918,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "type": "SELF_HARM",
               "nomisType": "SELF_HARM",
@@ -985,7 +985,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "type": "SELF_HARM",
               "nomisType": "SELF_HARM",
@@ -1145,7 +1145,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -1188,7 +1188,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -1257,7 +1257,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -1428,7 +1428,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${nomisReport.id}",
               "description": "Updated description",
@@ -1537,7 +1537,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -1584,7 +1584,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
@@ -1649,7 +1649,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${nomisReport.id}",
               "status": "AWAITING_ANALYSIS",
@@ -2087,7 +2087,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${nomisReport.id}",
               "type": "FIRE",
@@ -2155,7 +2155,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "$reportId",
               "reportReference": "11124143"
@@ -2195,7 +2195,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "$reportId",
               "reportReference": "11124143"
@@ -2850,6 +2850,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           ),
         ),
         nullablePropertyRequests = listOf(
+          NullablePropertyTestCase(
+            field = "staffUsername",
+            validValue = "staff-7",
+            unchangedValue = "staff-1",
+          ),
           NullablePropertyTestCase(
             field = "comment",
             validValue = "Different comment",

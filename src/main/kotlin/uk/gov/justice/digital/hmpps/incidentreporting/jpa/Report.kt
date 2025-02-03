@@ -252,7 +252,7 @@ class Report(
   fun addStaffInvolved(
     sequence: Int,
     staffRole: StaffRole,
-    staffUsername: String,
+    staffUsername: String?,
     firstName: String,
     lastName: String,
     comment: String? = null,
