@@ -9,9 +9,15 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
   accessMode = Schema.AccessMode.WRITE_ONLY,
 )
 data class AddStaffInvolvement(
-  @Schema(description = "Username", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 3, maxLength = 120)
+  @Schema(
+    description = "Username, absent for manually-added staff or those without NOMIS/DPS accounts",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    nullable = true,
+    minLength = 3,
+    maxLength = 120,
+  )
   @field:Size(min = 3, max = 120)
-  val staffUsername: String,
+  val staffUsername: String? = null,
   @Schema(description = "First name", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1, maxLength = 255)
   @field:Size(min = 1, max = 255)
   val firstName: String,
