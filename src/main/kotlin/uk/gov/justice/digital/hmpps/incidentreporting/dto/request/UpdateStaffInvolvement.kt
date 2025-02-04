@@ -12,15 +12,17 @@ import java.util.Optional
 )
 data class UpdateStaffInvolvement(
   @Schema(
-    description = "Username",
+    description = "Username, absent for manually-added staff or those without NOMIS/DPS accounts" +
+      "– omit to preserve existing username, provide null to clear it",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
-    defaultValue = "null",
     minLength = 3,
     maxLength = 120,
   )
-  @field:Size(min = 3, max = 120)
-  val staffUsername: String? = null,
+  val staffUsername: Optional<
+    @Size(min = 3, max = 120)
+    String,
+    >? = null,
   @Schema(
     description = "First name",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
