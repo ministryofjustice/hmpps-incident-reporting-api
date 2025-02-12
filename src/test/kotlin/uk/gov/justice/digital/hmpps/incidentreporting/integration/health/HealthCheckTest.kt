@@ -6,6 +6,10 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 class HealthCheckTest : SqsIntegrationTestBase() {
   @Test
   fun `health page reports ok`() {
+    hmppsAuthMockServer.stubHealthPing(200)
+    prisonerSearchMockServer.stubHealthPing(200)
+    manageUsersMockServer.stubHealthPing(200)
+
     webTestClient.get()
       .uri("/health")
       .exchange()

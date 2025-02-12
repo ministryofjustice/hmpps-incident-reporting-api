@@ -28,21 +28,21 @@
           ]
         }
       ]
-//    },
-//    {
-//      "id": "caseloads",
-//      "type": "row-level",
-//      "action": ["location IN (${caseloads})"],
-//      "rule": [
-//        {
-//          "effect": "permit",
-//          "condition": [
-//            {
-//              "exists": ["${caseloads}"]
-//            }
-//          ]
-//        }
-//      ]
+    },
+    {
+      "id": "caseloads",
+      "type": "row-level",
+      "action": ["location IN (${caseloads})"],
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "exists": ["${caseloads}"]
+            }
+          ]
+        }
+      ]
     }
   ],
   "dataset": [

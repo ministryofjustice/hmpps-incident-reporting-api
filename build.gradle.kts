@@ -17,15 +17,15 @@ configurations {
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.2.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.2.1")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-validation")
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.3.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.3.1")
   implementation("io.opentelemetry:opentelemetry-api:1.47.0")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.12.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:7.7.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:7.8.1")
 
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
@@ -40,7 +40,7 @@ dependencies {
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
   testImplementation("javax.xml.bind:jaxb-api:2.3.1")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.2.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.2.1")
   testImplementation("org.wiremock:wiremock-standalone:3.11.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.2")
   testImplementation("org.mockito:mockito-inline:5.2.0")
