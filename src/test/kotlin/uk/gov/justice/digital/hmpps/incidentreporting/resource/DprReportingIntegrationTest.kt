@@ -47,6 +47,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         generatePrisonerInvolvement = 2,
       ),
     )
+
+    manageUsersMockServer.stubLookupUserCaseload("request-user", "LEI", listOf("MDI"))
   }
 
   @DisplayName("GET /definitions")
