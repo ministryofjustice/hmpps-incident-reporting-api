@@ -95,3 +95,14 @@ management:
     info:
       cache:
         time-to-live: 2000ms
+
+dpr:
+  lib:
+    user:
+      role: ROLE_VIEW_INCIDENT_REPORTS
+    definition:
+      locations: "reports/incident-report.json, reports/incident-count.json, reports/incident-with-people.json"
+    caseloads:
+      host: ${api.base.url.manage.users}
+      path: /users/me/caseloads
+
