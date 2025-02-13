@@ -98,8 +98,6 @@ management:
 
 dpr:
   lib:
-    user:
-      role: ROLE_VIEW_INCIDENT_REPORTS
     definition:
       locations: "reports/incident-report.json, reports/incident-count.json, reports/incident-with-people.json"
     caseloads:
