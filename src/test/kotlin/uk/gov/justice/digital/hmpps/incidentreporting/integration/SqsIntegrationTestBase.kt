@@ -5,6 +5,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.matches
 import org.awaitility.kotlin.untilCallTo
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +20,9 @@ import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.config.LocalStackTestcontainer
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.wiremock.HmppsAuthMockServer
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.wiremock.ManageUsersMockServer
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.wiremock.PrisonerSearchMockServer
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSDomainEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSMessage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
@@ -42,6 +47,37 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     fun localstackProperties(registry: DynamicPropertyRegistry) {
       localstackInstance?.let { LocalStackTestcontainer.setupProperties(localstackInstance, registry) }
     }
+
+    @JvmField
+    val hmppsAuthMockServer = HmppsAuthMockServer()
+
+    @JvmField
+    val prisonerSearchMockServer = PrisonerSearchMockServer()
+
+    @JvmField
+    val manageUsersMockServer = ManageUsersMockServer()
+
+    @BeforeAll
+    @JvmStatic
+    fun startMocks() {
+      hmppsAuthMockServer.start()
+      hmppsAuthMockServer.stubGrantToken()
+      prisonerSearchMockServer.start()
+      manageUsersMockServer.start()
+    }
+
+    @AfterAll
+    @JvmStatic
+    fun stopMocks() {
+      manageUsersMockServer.stop()
+      prisonerSearchMockServer.stop()
+      hmppsAuthMockServer.stop()
+    }
+  }
+
+  init {
+    // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
+    System.setProperty("http.keepAlive", "false")
   }
 
   @Autowired

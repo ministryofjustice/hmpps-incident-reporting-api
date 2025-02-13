@@ -5,7 +5,7 @@ import org.springframework.boot.runApplication
 
 const val SYSTEM_USERNAME = "INCIDENT_REPORTING_API"
 
-@SpringBootApplication()
+@SpringBootApplication
 class HmppsIncidentReportingApi
 
 fun main(args: Array<String>) {

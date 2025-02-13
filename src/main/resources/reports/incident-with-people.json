@@ -1,0 +1,417 @@
+{
+  "id": "incident-with-people",
+  "name": "Incident People reports",
+  "description": "List of incidents where a person is involved",
+  "metadata": {
+    "author": "Michael Willis",
+    "version": "1.0.0",
+    "owner": "Managing Safety"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "dataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+    "id": "role-based-policy",
+    "type": "access",
+    "rule": [
+      {
+        "effect": "permit",
+        "condition": []
+      }
+    ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "by-prisoner",
+      "name": "Report of prisoner involvement in an incident",
+      "datasource": "dataSource",
+      "query": "select r.report_reference, r.location,r.type, r.status, r.incident_date_and_time, r.reported_by, pi.first_name, pi.last_name, pi.prisoner_number, pi.comment from prisoner_involvement pi join report r on r.id = pi.report_id",
+      "schema": {
+        "field": [
+          {
+            "name": "report_reference",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 20,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 20,
+                "returnAsStaticOptions": true,
+                "dataset": "status",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "incident_date_and_time",
+            "type": "datetime"
+          },
+          {
+            "name": "reported_by",
+            "type": "string"
+          },
+          {
+            "name": "first_name",
+            "type": "string"
+          },
+          {
+            "name": "last_name",
+            "type": "string"
+          },
+          {
+            "name": "prisoner_number",
+            "type": "string"
+          },
+          {
+            "name": "comment",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "minimumLength": 1,
+                "returnAsStaticOptions": true,
+                "maximumOptions": 130
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "by-staff",
+      "name": "Report of staff involvement in an incident",
+      "datasource": "dataSource",
+      "query": "select r.report_reference, r.location,r.type, r.status, r.incident_date_and_time, r.reported_by, st.first_name, st.last_name, st.staff_username, st.comment from staff_involvement st join report r on r.id = st.report_id",
+      "schema": {
+        "field": [
+          {
+            "name": "report_reference",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 20,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 20,
+                "returnAsStaticOptions": true,
+                "dataset": "status",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "incident_date_and_time",
+            "type": "datetime"
+          },
+          {
+            "name": "reported_by",
+            "type": "string"
+          },
+          {
+            "name": "first_name",
+            "type": "string"
+          },
+          {
+            "name": "last_name",
+            "type": "string"
+          },
+          {
+            "name": "staff_username",
+            "type": "string"
+          },
+          {
+            "name": "comment",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "minimumLength": 1,
+                "returnAsStaticOptions": true,
+                "maximumOptions": 130
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "types",
+      "name": "Incident Types",
+      "datasource": "dataSource",
+      "query": "SELECT code, description FROM constant_type",
+      "schema": {
+        "field": [
+          {
+            "name": "code",
+            "display": "Type code",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "display": "Type description",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "status",
+      "name": "Incident Status",
+      "datasource": "dataSource",
+      "query": "SELECT code, description FROM constant_status",
+      "schema": {
+        "field": [
+          {
+            "name": "code",
+            "display": "Status code",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "display": "Status description",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "by-prisoner",
+      "name": "Prisoner involvement in incidents",
+      "description": "Details each prisoner and their involvement in an incident",
+      "version": "1.0.0",
+      "dataset": "$ref:by-prisoner",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:incident_date_and_time",
+            "display": "Date of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 50,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "$ref:prisoner_number",
+            "display": "Prisoner number",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "$ref:first_name",
+            "display": "First name",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:last_name",
+            "display": "Last Name",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:comment",
+            "display": "Extra information",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-prisoner"
+      }]
+    },
+    {
+      "id": "by-staff",
+      "name": "Staff involvement in incidents",
+      "description": "Details each staff and their involvement in an incident",
+      "version": "1.0.0",
+      "dataset": "$ref:by-staff",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:incident_date_and_time",
+            "display": "Date of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 50,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "$ref:staff_username",
+            "display": "Staff username",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "$ref:first_name",
+            "display": "First name",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:last_name",
+            "display": "Last Name",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:comment",
+            "display": "Extra information",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-staff"
+      }]
+    }
+  ]
+}

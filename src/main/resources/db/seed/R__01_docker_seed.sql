@@ -42,23 +42,23 @@ $$
         insert into prisoner_involvement (
             report_id,
             prisoner_number, prisoner_role, outcome,
-            comment
+            comment, first_name, last_name
         )
         values (
             v_report_id,
             'A1234AA', 'FIGHTER', 'PLACED_ON_REPORT',
-            'Adjudication was held'
+            'Adjudication was held', 'Travis', 'Bickle'
         );
 
         insert into staff_involvement (
             report_id,
             staff_username, staff_role,
-            comment
+            comment, first_name, last_name
         )
         values (
             v_report_id,
             'ITAG_USER', 'VICTIM',
-            'Staff had a black eye'
+            'Staff had a black eye', 'John', 'Doe'
         );
     end;
 $$

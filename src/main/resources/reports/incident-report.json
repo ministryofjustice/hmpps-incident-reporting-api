@@ -1,0 +1,291 @@
+{
+  "id": "incident-report",
+  "name": "Incident report summary",
+  "description": "List of all incidents filtered by dates, types, status and locations (INC0009)",
+  "metadata": {
+    "author": "Michael Willis",
+    "version": "1.0.0",
+    "owner": "Managing Safety"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "dataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+      "id": "role-based-policy",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": []
+        }
+      ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "summary",
+      "name": "Incident report summary",
+      "datasource": "dataSource",
+      "query": "SELECT id, report_reference, type, status, incident_date_and_time, reported_at, reported_by, title, description, location, modified_at FROM report where status != 'DUPLICATE'",
+      "schema": {
+        "field": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "report_reference",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 20,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 20,
+                "returnAsStaticOptions": true,
+                "dataset": "status",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "incident_date_and_time",
+            "type": "datetime"
+          },
+          {
+            "name": "reported_at",
+            "type": "datetime"
+          },
+          {
+            "name": "reported_by",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "minimumLength": 1,
+                "returnAsStaticOptions": true,
+                "maximumOptions": 130
+              }
+            }
+          },
+          {
+            "name": "modified_at",
+            "type": "datetime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "types",
+      "name": "Incident Types",
+      "datasource": "dataSource",
+      "query": "SELECT code, description FROM constant_type",
+      "schema": {
+        "field": [
+          {
+            "name": "code",
+            "display": "Type code",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "display": "Type description",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "status",
+      "name": "Incident Status",
+      "datasource": "dataSource",
+      "query": "SELECT code, description FROM constant_status",
+      "schema": {
+        "field": [
+          {
+            "name": "code",
+            "display": "Status code",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "display": "Status description",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "summary",
+      "name": "Incident Report Summary",
+      "description": "List of all incidents filtered by dates, types, status and locations",
+      "version": "1.0.0",
+      "dataset": "$ref:summary",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:id",
+            "display": "Internal ID",
+            "sortable": true,
+            "visible": "false",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:report_reference",
+            "display": "Report Reference",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 50,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:status",
+            "display": "Incident status",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 10,
+                "returnAsStaticOptions": true,
+                "dataset": "status",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:incident_date_and_time",
+            "display": "Incident occurrence time",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:reported_at",
+            "display": "Reported on",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:reported_by",
+            "display": "Reported by",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:title",
+            "display": "Incident title",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:description",
+            "display": "Incident description",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "$ref:modified_at",
+            "display": "Last Updated",
+            "filter": {
+              "type": "daterange"
+            },
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:summary"
+      }]
+    }
+  ]
+}
