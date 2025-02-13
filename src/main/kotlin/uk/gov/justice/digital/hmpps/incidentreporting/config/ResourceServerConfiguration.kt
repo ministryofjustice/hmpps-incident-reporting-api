@@ -1,18 +1,19 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.config.web.server.invoke
 import org.springframework.security.web.SecurityFilterChain
 import uk.gov.justice.hmpps.kotlin.auth.AuthAwareTokenConverter
 import uk.gov.justice.hmpps.kotlin.auth.dsl.ResourceServerConfigurationCustomizer
 
 @Configuration
-class ResourceServerConfiguration {
-
+class ResourceServerConfiguration(
+  @Value("\${dpr.endpoint.api.role}") private var dprEndpointApiRole: String,
+) {
   @Bean
   fun hmppsSecurityFilterChain(
     http: HttpSecurity,
@@ -31,13 +32,17 @@ class ResourceServerConfiguration {
           customizer.anyRequestRoleCustomizer.defaultRole
             ?.also { authorize(anyRequest, hasRole(it)) }
             ?: also {
-              authorize("/reports/**", hasRole("VIEW_INCIDENT_REPORTS"))
-              authorize("/definitions/**", hasRole("VIEW_INCIDENT_REPORTS"))
+              // TODO: Will remain whilst roles are not protected
+              authorize("/report/**", hasRole(dprEndpointApiRole))
+              authorize("/reports/**", hasRole(dprEndpointApiRole))
+              authorize("/definitions/**", hasRole(dprEndpointApiRole))
+              authorize("/statements/**", hasRole(dprEndpointApiRole))
               authorize(anyRequest, authenticated)
             }
         }
     }
     oauth2ResourceServer {
+      // TODO: will allow override of the DprAuthAwareTokenConverter
       jwt { jwtAuthenticationConverter = AuthAwareTokenConverter() }
     }
   }

@@ -103,4 +103,6 @@ dpr:
     caseloads:
       host: ${api.base.url.manage.users}
       path: /users/me/caseloads
-
+  endpoint:
+    api:
+      role: VIEW_INCIDENT_REPORTS
