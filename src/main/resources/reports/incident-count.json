@@ -31,16 +31,12 @@
       "id": "by-location-per-week",
       "name": "Count of incidents per location",
       "datasource": "dataSource",
-      "query": "SELECT date_trunc('week', incident_date_and_time) as start_date, location, type, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('week', incident_date_and_time), location, type",
+      "query": "SELECT cast(date_trunc('week', incident_date_and_time) as date) as start_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('week', r.incident_date_and_time), r.location, r.type, ct.description",
       "schema": {
         "field": [
           {
             "name": "start_date",
-            "type": "date",
-            "filter": {
-              "type": "daterange",
-              "default": "today(-3,months) - today()"
-            }
+            "type": "date"
           },
           {
             "name": "location",
@@ -69,6 +65,10 @@
             }
           },
           {
+            "name": "type_description",
+            "type": "string"
+          },
+          {
             "name": "num_of_incidents",
             "type": "long"
           }
@@ -79,15 +79,12 @@
       "id": "by-day",
       "name": "Count of incidents by day",
       "datasource": "dataSource",
-      "query": "SELECT date_trunc('day', incident_date_and_time) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('day', incident_date_and_time), location, type, status",
+      "query": "SELECT cast(date_trunc('day', incident_date_and_time) as date) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('day', incident_date_and_time), location, type, status",
       "schema": {
         "field": [
           {
             "name": "start_date",
-            "type": "date",
-            "filter": {
-              "type": "daterange"
-            }
+            "type": "date"
           },
           {
             "name": "location",
@@ -140,16 +137,12 @@
       "id": "by-week",
       "name": "Count of incidents by week",
       "datasource": "dataSource",
-      "query": "SELECT date_trunc('week', incident_date_and_time) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('week', incident_date_and_time), location, type, status",
+      "query": "SELECT cast(date_trunc('week', incident_date_and_time) as date) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('week', incident_date_and_time), location, type, status",
       "schema": {
         "field": [
           {
             "name": "start_date",
-            "type": "date",
-            "filter": {
-              "type": "daterange",
-              "default": "today(-3,months) - today()"
-            }
+            "type": "date"
           },
           {
             "name": "location",
@@ -202,16 +195,12 @@
       "id": "by-month",
       "name": "Count of incidents by month",
       "datasource": "dataSource",
-      "query": "SELECT date_trunc('month', incident_date_and_time) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('month', incident_date_and_time), location, type, status",
+      "query": "SELECT cast(date_trunc('month', incident_date_and_time) as date) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('month', incident_date_and_time), location, type, status",
       "schema": {
         "field": [
           {
             "name": "start_date",
-            "type": "date",
-            "filter": {
-              "type": "daterange",
-              "default": "today(-12,months) - today()"
-            }
+            "type": "date"
           },
           {
             "name": "location",
@@ -323,16 +312,13 @@
             "display": "Date of incident",
             "sortable": true,
             "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "daterange"
-            }
+            "defaultsort": true
           },
           {
             "name": "$ref:type",
             "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
+            "sortable": false,
+            "visible": "false",
             "defaultsort": true,
             "filter": {
               "type": "autocomplete",
@@ -344,6 +330,13 @@
                 "display": "description"
               }
             }
+          },
+          {
+            "name": "$ref:type_description",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
           },
           {
             "name": "$ref:location",
@@ -392,10 +385,7 @@
             "display": "Date of incident",
             "sortable": true,
             "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "daterange"
-            }
+            "defaultsort": true
           },
           {
             "name": "$ref:type",
@@ -478,10 +468,7 @@
             "display": "Beginning of week",
             "sortable": true,
             "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "daterange"
-            }
+            "defaultsort": true
           },
           {
             "name": "$ref:type",
@@ -564,10 +551,7 @@
             "display": "Beginning of month",
             "sortable": true,
             "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "daterange"
-            }
+            "defaultsort": true
           },
           {
             "name": "$ref:type",

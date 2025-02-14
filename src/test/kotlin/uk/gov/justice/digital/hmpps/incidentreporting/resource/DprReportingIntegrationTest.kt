@@ -63,7 +63,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
-        "VIEW_INCIDENT_REPORTS",
+        "INCIDENT_REPORTS__RO",
       )
     }
 
@@ -74,7 +74,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns the definitions of all the reports`() {
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
-        "VIEW_INCIDENT_REPORTS",
+        "INCIDENT_REPORTS__RO",
       )
     }
 
@@ -106,7 +106,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns the definition of the report`() {
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -405,7 +405,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
-        "VIEW_INCIDENT_REPORTS",
+        "INCIDENT_REPORTS__RO",
       )
     }
 
@@ -416,7 +416,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns a page of the report`() {
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -455,7 +455,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url + "/by-prisoner"),
-        "VIEW_INCIDENT_REPORTS",
+        "INCIDENT_REPORTS__RO",
       )
     }
 
@@ -466,7 +466,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns a page of the report for staff`() {
         webTestClient.get().uri(url + "/by-staff")
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -518,7 +518,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns a page of the report for prisoners`() {
         webTestClient.get().uri(url + "/by-prisoner")
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -569,7 +569,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url + "by-week"),
-        "VIEW_INCIDENT_REPORTS",
+        "INCIDENT_REPORTS__RO",
       )
     }
 
@@ -580,7 +580,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns a page of the report for a count by day`() {
         webTestClient.get().uri(url + "by-day")
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -603,7 +603,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns a page of the report for a count by week`() {
         webTestClient.get().uri(url + "by-week")
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -626,7 +626,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns a page of the report for a count by month`() {
         webTestClient.get().uri(url + "by-month")
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -649,7 +649,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns a page of the report for a count by location per week`() {
         webTestClient.get().uri(url + "by-location-per-week")
-          .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk

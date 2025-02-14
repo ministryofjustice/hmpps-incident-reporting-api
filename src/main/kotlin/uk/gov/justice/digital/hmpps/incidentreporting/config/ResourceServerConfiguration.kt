@@ -32,7 +32,7 @@ class ResourceServerConfiguration(
           customizer.anyRequestRoleCustomizer.defaultRole
             ?.also { authorize(anyRequest, hasRole(it)) }
             ?: also {
-              // TODO: Will remain whilst roles are not protected
+              // TODO: This has to be a user role - not ideal but will secure with this for now
               authorize("/report/**", hasRole(dprEndpointApiRole))
               authorize("/reports/**", hasRole(dprEndpointApiRole))
               authorize("/definitions/**", hasRole(dprEndpointApiRole))
