@@ -31,7 +31,7 @@
       "id": "by-prisoner",
       "name": "Report of prisoner involvement in an incident",
       "datasource": "dataSource",
-      "query": "select r.report_reference, r.location,r.type, r.status, r.incident_date_and_time, r.reported_by, pi.first_name, pi.last_name, pi.prisoner_number, pi.comment from prisoner_involvement pi join report r on r.id = pi.report_id",
+      "query": "select r.report_reference, r.location,r.type, ct.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(pi.first_name) as first_name, initcap(pi.last_name) as last_name, pi.prisoner_number, pi.comment\nfrom prisoner_involvement pi join report r on r.id = pi.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'",
       "schema": {
         "field": [
           {
@@ -53,6 +53,10 @@
             }
           },
           {
+            "name": "type_description",
+            "type": "string"
+          },
+          {
             "name": "status",
             "type": "string",
             "filter": {
@@ -65,6 +69,10 @@
                 "display": "description"
               }
             }
+          },
+          {
+            "name": "status_description",
+            "type": "string"
           },
           {
             "name": "incident_date_and_time",
@@ -109,7 +117,7 @@
       "id": "by-staff",
       "name": "Report of staff involvement in an incident",
       "datasource": "dataSource",
-      "query": "select r.report_reference, r.location,r.type, r.status, r.incident_date_and_time, r.reported_by, st.first_name, st.last_name, st.staff_username, st.comment from staff_involvement st join report r on r.id = st.report_id",
+      "query": "select r.report_reference, r.location,r.type, ct.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(st.first_name) as first_name, initcap(st.last_name) as last_name, st.staff_username, st.comment from staff_involvement st join report r on r.id = st.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'",
       "schema": {
         "field": [
           {
@@ -131,6 +139,10 @@
             }
           },
           {
+            "name": "type_description",
+            "type": "string"
+          },
+          {
             "name": "status",
             "type": "string",
             "filter": {
@@ -143,6 +155,10 @@
                 "display": "description"
               }
             }
+          },
+          {
+            "name": "status_description",
+            "type": "string"
           },
           {
             "name": "incident_date_and_time",
@@ -242,47 +258,10 @@
         "template": "list",
         "field": [
           {
-            "name": "$ref:incident_date_and_time",
-            "display": "Date of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "daterange",
-              "default": "today(-1,months) - today()"
-            }
-          },
-          {
-            "name": "$ref:type",
-            "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 50,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "text"
-            }
-          },
-          {
             "name": "$ref:prisoner_number",
             "display": "Prisoner number",
             "sortable": true,
+            "formula": "make_url('https://prisoner-${env}.digital.prison.service.justice.gov.uk/prisoner/${prisoner_number}',${prisoner_number},TRUE)",
             "visible": "true",
             "defaultsort": false,
             "filter": {
@@ -302,6 +281,78 @@
             "sortable": false,
             "visible": "true",
             "defaultsort": false
+          },
+          {
+            "name": "$ref:report_reference",
+            "display": "Incident number",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:incident_date_and_time",
+            "display": "Date of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true
+          },
+          {
+            "name": "$ref:type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "false",
+            "defaultsort": false,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 50,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:type_description",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:status",
+            "display": "Status",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 10,
+                "returnAsStaticOptions": true,
+                "dataset": "status",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:status_description",
+            "display": "Incident status",
+            "sortable": true,
+            "visible": "false",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
           },
           {
             "name": "$ref:comment",
@@ -336,44 +387,6 @@
         "template": "list",
         "field": [
           {
-            "name": "$ref:incident_date_and_time",
-            "display": "Date of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "daterange",
-              "default": "today(-1,months) - today()"
-            }
-          },
-          {
-            "name": "$ref:type",
-            "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 50,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "text"
-            }
-          },
-          {
             "name": "$ref:staff_username",
             "display": "Staff username",
             "sortable": true,
@@ -396,6 +409,78 @@
             "sortable": false,
             "visible": "true",
             "defaultsort": false
+          },
+          {
+            "name": "$ref:report_reference",
+            "display": "Incident number",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:incident_date_and_time",
+            "display": "Date of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true
+          },
+          {
+            "name": "$ref:type",
+            "display": "Incident type",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": true,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 50,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:type_description",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:status",
+            "display": "Status",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 10,
+                "returnAsStaticOptions": true,
+                "dataset": "status",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:status_description",
+            "display": "Incident status",
+            "sortable": true,
+            "visible": "false",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
           },
           {
             "name": "$ref:comment",

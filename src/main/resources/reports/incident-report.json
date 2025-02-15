@@ -31,7 +31,7 @@
       "id": "summary",
       "name": "Incident report summary",
       "datasource": "dataSource",
-      "query": "SELECT id, report_reference, type, status, incident_date_and_time, reported_at, reported_by, title, description, location, modified_at FROM report where status != 'DUPLICATE'",
+      "query": "SELECT id, report_reference, type, constant_type.description as type_description, status, public.constant_status.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, modified_at\nFROM report r join constant_status on r.status = constant_status.code join constant_type on r.type = constant_type.code\nWHERE status != 'DUPLICATE'",
       "schema": {
         "field": [
           {
@@ -55,6 +55,14 @@
                 "display": "description"
               }
             }
+          },
+          {
+            "name": "type_description",
+            "type": "string"
+          },
+          {
+            "name": "status_description",
+            "type": "string"
           },
           {
             "name": "status",
@@ -184,8 +192,8 @@
           {
             "name": "$ref:type",
             "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
+            "sortable": false,
+            "visible": "false",
             "defaultsort": false,
             "filter": {
               "type": "autocomplete",
@@ -199,10 +207,17 @@
             }
           },
           {
-            "name": "$ref:status",
-            "display": "Incident status",
+            "name": "$ref:type_description",
+            "display": "Incident type",
             "sortable": true,
             "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:status",
+            "display": "Status",
+            "sortable": false,
+            "visible": "false",
             "defaultsort": false,
             "filter": {
               "type": "autocomplete",
@@ -216,26 +231,27 @@
             }
           },
           {
-            "name": "$ref:incident_date_and_time",
-            "display": "Incident occurrence time",
-            "sortable": false,
+            "name": "$ref:status_description",
+            "display": "Incident status",
+            "sortable": true,
             "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "daterange",
-              "default": "today(-1,months) - today()"
-            }
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:incident_date_and_time",
+            "display": "Occurrence at",
+            "sortable": true,
+            "type": "datetime",
+            "visible": "true",
+            "defaultsort": false
           },
           {
             "name": "$ref:reported_at",
             "display": "Reported on",
             "sortable": true,
+            "type": "date",
             "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "daterange",
-              "default": "today(-1,months) - today()"
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:reported_by",
@@ -248,7 +264,7 @@
             "name": "$ref:title",
             "display": "Incident title",
             "sortable": false,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": false
           },
           {
@@ -271,9 +287,7 @@
           {
             "name": "$ref:modified_at",
             "display": "Last Updated",
-            "filter": {
-              "type": "daterange"
-            },
+            "type": "date",
             "sortable": true,
             "visible": "true",
             "defaultsort": true
