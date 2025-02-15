@@ -122,268 +122,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "name": "Incident Report Summary",
     "resourceName": "reports/incident-report/summary",
     "description": "List of all incidents filtered by dates, types, status and locations",
-    "specification": {
-      "template": "list",
-      "fields": [
-        {
-          "name": "id",
-          "display": "Internal ID",
-          "sortable": true,
-          "defaultsort": false,
-          "type": "string"
-        },
-        {
-          "name": "report_reference",
-          "display": "Report Reference"
-        },
-        {
-          "name": "type",
-          "display": "Incident type",
-          "filter": {
-            "type": "autocomplete",
-            "mandatory": false,
-            "pattern": null,
-            "staticOptions": [
-              {
-                "name": "ABSCONDER",
-                "display": "Absconder"
-              },
-              {
-                "name": "ASSAULT",
-                "display": "Assault"
-              },
-              {
-                "name": "ATTEMPTED_ESCAPE_FROM_CUSTODY",
-                "display": "Attempted escape from custody"
-              },
-              {
-                "name": "ATTEMPTED_ESCAPE_FROM_ESCORT",
-                "display": "Attempted escape from escort"
-              },
-              {
-                "name": "BOMB_THREAT",
-                "display": "Bomb threat"
-              },
-              {
-                "name": "BREACH_OF_SECURITY",
-                "display": "Breach of security"
-              },
-              {
-                "name": "DAMAGE",
-                "display": "Damage"
-              },
-              {
-                "name": "DEATH_IN_CUSTODY",
-                "display": "Death in custody"
-              },
-              {
-                "name": "DEATH_OTHER",
-                "display": "Death (other)"
-              },
-              {
-                "name": "DISORDER",
-                "display": "Disorder"
-              },
-              {
-                "name": "DRONE_SIGHTING",
-                "display": "Drone sighting"
-              },
-              {
-                "name": "ESCAPE_FROM_CUSTODY",
-                "display": "Escape from custody"
-              },
-              {
-                "name": "ESCAPE_FROM_ESCORT",
-                "display": "Escape from escort"
-              },
-              {
-                "name": "FINDS",
-                "display": "Finds"
-              },
-              {
-                "name": "FIRE",
-                "display": "Fire"
-              },
-              {
-                "name": "FOOD_REFUSAL",
-                "display": "Food refusal"
-              },
-              {
-                "name": "FULL_CLOSE_DOWN_SEARCH",
-                "display": "Full close down search"
-              },
-              {
-                "name": "KEY_LOCK_INCIDENT",
-                "display": "Key lock incident"
-              },
-              {
-                "name": "MISCELLANEOUS",
-                "display": "Miscellaneous"
-              },
-              {
-                "name": "OLD_ASSAULT",
-                "display": "Assault"
-              }
-            ]
-          },
-          "sortable": true,
-          "defaultsort": false,
-          "type": "string",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        },
-        {
-          "name": "status",
-          "display": "Incident status",
-          "wordWrap": null,
-          "filter": {
-            "type": "autocomplete",
-            "mandatory": false,
-            "pattern": null,
-            "staticOptions": [
-              {
-                "name": "AWAITING_ANALYSIS",
-                "display": "Awaiting analysis"
-              },
-              {
-                "name": "CLOSED",
-                "display": "Closed"
-              },
-              {
-                "name": "DRAFT",
-                "display": "Draft"
-              },
-              {
-                "name": "DUPLICATE",
-                "display": "Duplicate"
-              },
-              {
-                "name": "IN_ANALYSIS",
-                "display": "In analysis"
-              },
-              {
-                "name": "INCIDENT_UPDATED",
-                "display": "Incident updated"
-              },
-              {
-                "name": "INFORMATION_AMENDED",
-                "display": "Information amened"
-              },
-              {
-                "name": "INFORMATION_REQUIRED",
-                "display": "Information required"
-              },
-              {
-                "name": "POST_INCIDENT_UPDATE",
-                "display": "Post-incident update"
-              }
-            ]
-          },
-          "sortable": true,
-          "defaultsort": false,
-          "type": "string",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        },
-        {
-          "name": "incident_date_and_time",
-          "display": "Incident occurrence time",
-          "wordWrap": null,
-          "filter": {
-            "type": "daterange",
-            "mandatory": false
-          },
-          "sortable": false,
-          "defaultsort": false,
-          "type": "date",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        },
-        {
-          "name": "reported_at",
-          "display": "Reported on",
-          "wordWrap": null,
-          "filter": {
-            "type": "daterange",
-            "mandatory": false
-          },
-          "sortable": true,
-          "defaultsort": false,
-          "type": "date",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        },
-        {
-          "name": "reported_by",
-          "display": "Reported by",
-          "sortable": false,
-          "defaultsort": false,
-          "type": "string",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        },
-        {
-          "name": "title",
-          "display": "Incident title",
-          "sortable": false,
-          "defaultsort": false,
-          "type": "string",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        },
-        {
-          "name": "description",
-          "display": "Incident description",
-          "sortable": false,
-          "defaultsort": false,
-          "type": "string",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        },
-        {
-          "name": "location",
-          "display": "Location of incident",
-          "sortable": true,
-          "defaultsort": false,
-          "type": "string",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        },
-        {
-          "name": "modified_at",
-          "display": "Last Updated",
-          "wordWrap": null,
-          "filter": {
-            "type": "daterange",
-            "mandatory": false,
-            "interactive": false
-          },
-          "sortable": true,
-          "defaultsort": true,
-          "type": "date",
-          "mandatory": false,
-          "visible": true,
-          "calculated": false,
-          "header": false
-        }
-      ]
-    },
     "printable": true
   }
 }
@@ -535,7 +273,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "reported_by": "USER1",
     "first_name": "First 1",
     "last_name": "Last 1",
-    "prisoner_number": "A0001AA",
     "comment": "Comment #1"
   },
   {
@@ -547,7 +284,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "reported_by": "USER1",
     "first_name": "First 2",
     "last_name": "Last 2",
-    "prisoner_number": "A0002AA",
     "comment": "Comment #2"
   }
 ]
@@ -589,7 +325,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "start_date": "2023-12-05T00:00:00",
+    "start_date": "2023-12-05",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -612,7 +348,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "start_date": "2023-12-04T00:00:00",
+    "start_date": "2023-12-04",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -635,7 +371,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "start_date": "2023-12-01T00:00:00",
+    "start_date": "2023-12-01",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -658,7 +394,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "start_date": "2023-12-04T00:00:00",
+    "start_date": "2023-12-04",
     "location": "MDI",
     "type": "FINDS",
     "num_of_incidents": 1
