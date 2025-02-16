@@ -56,7 +56,55 @@
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 20,
+                "maximumOptions": 60,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "type_description",
+            "type": "string"
+          },
+          {
+            "name": "num_of_incidents",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "id": "by-location-per-month",
+      "name": "Count of incidents per location per month",
+      "datasource": "dataSource",
+      "query": "SELECT cast(date_trunc('month', incident_date_and_time) as date) as start_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('month', r.incident_date_and_time), r.location, r.type, ct.description",
+      "schema": {
+        "field": [
+          {
+            "name": "start_date",
+            "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "minimumLength": 1,
+                "returnAsStaticOptions": true,
+                "maximumOptions": 130
+              }
+            }
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -104,7 +152,7 @@
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 20,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -162,7 +210,7 @@
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 20,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -220,7 +268,7 @@
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 20,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -310,20 +358,21 @@
           {
             "name": "$ref:start_date",
             "display": "Date of incident",
+            "formula": "format_date(${start_date}, 'dd/MM/yyyy')",
             "sortable": true,
             "visible": "true",
             "defaultsort": true
           },
           {
             "name": "$ref:type",
-            "display": "Incident type",
+            "display": "Type code",
             "sortable": false,
             "visible": "false",
             "defaultsort": true,
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 50,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -350,7 +399,81 @@
           },
           {
             "name": "$ref:num_of_incidents",
-            "display": "Number of incidents",
+            "display": "Incidents/Week",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-location-per-week"
+      }]
+    },
+    {
+      "id": "by-location-per-month",
+      "name": "Count of incident reports by month and location",
+      "description": "Counts of incidents by type and location for each month",
+      "version": "1.0.0",
+      "dataset": "$ref:by-location-per-month",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:start_date",
+            "display": "Month of incident",
+            "formula": "format_date(${start_date}, 'MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true
+          },
+          {
+            "name": "$ref:type",
+            "display": "Type code",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": true,
+            "filter": {
+              "type": "autocomplete",
+              "dynamicoptions": {
+                "maximumOptions": 60,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:type_description",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "$ref:num_of_incidents",
+            "display": "Incidents/month",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -383,20 +506,21 @@
           {
             "name": "$ref:start_date",
             "display": "Date of incident",
+            "formula": "format_date(${start_date}, 'dd/MM/yyyy')",
             "sortable": true,
             "visible": "true",
             "defaultsort": true
           },
           {
             "name": "$ref:type",
-            "display": "Incident type",
+            "display": "Type code",
             "sortable": true,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": true,
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 50,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -433,7 +557,7 @@
           },
           {
             "name": "$ref:num_of_incidents",
-            "display": "Number of incidents",
+            "display": "Incidents/Day",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -466,6 +590,7 @@
           {
             "name": "$ref:start_date",
             "display": "Beginning of week",
+            "formula": "format_date(${start_date}, 'dd/MM/yyyy')",
             "sortable": true,
             "visible": "true",
             "defaultsort": true
@@ -516,7 +641,7 @@
           },
           {
             "name": "$ref:num_of_incidents",
-            "display": "Number of incidents",
+            "display": "Incidents/Week",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -548,7 +673,8 @@
         "field": [
           {
             "name": "$ref:start_date",
-            "display": "Beginning of month",
+            "display": "Month",
+            "formula": "format_date(${start_date}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
             "defaultsort": true
@@ -562,7 +688,7 @@
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 50,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -599,7 +725,7 @@
           },
           {
             "name": "$ref:num_of_incidents",
-            "display": "Number of incidents",
+            "display": "Incidents/Month",
             "sortable": true,
             "visible": "true",
             "defaultsort": false

@@ -44,7 +44,7 @@
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 20,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -130,7 +130,7 @@
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 20,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -261,7 +261,6 @@
             "name": "$ref:prisoner_number",
             "display": "Prisoner number",
             "sortable": true,
-            "formula": "make_url('https://prisoner-${env}.digital.prison.service.justice.gov.uk/prisoner/${prisoner_number}',${prisoner_number},TRUE)",
             "visible": "true",
             "defaultsort": false,
             "filter": {
@@ -269,16 +268,10 @@
             }
           },
           {
-            "name": "$ref:first_name",
-            "display": "First name",
-            "sortable": false,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:last_name",
-            "display": "Last Name",
-            "sortable": false,
+            "name": "name",
+            "formula": "${ref:last_name}, ${ref:first_name}",
+            "display": "Name",
+            "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
@@ -292,20 +285,21 @@
           {
             "name": "$ref:incident_date_and_time",
             "display": "Date of incident",
+            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy hh:mm')",
             "sortable": true,
             "visible": "true",
             "defaultsort": true
           },
           {
             "name": "$ref:type",
-            "display": "Incident type",
+            "display": "Type code",
             "sortable": true,
             "visible": "false",
             "defaultsort": false,
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 50,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -322,7 +316,7 @@
           },
           {
             "name": "$ref:status",
-            "display": "Status",
+            "display": "Status code",
             "sortable": false,
             "visible": "false",
             "defaultsort": false,
@@ -341,7 +335,7 @@
             "name": "$ref:status_description",
             "display": "Incident status",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
@@ -390,23 +384,17 @@
             "name": "$ref:staff_username",
             "display": "Staff username",
             "sortable": true,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": false,
             "filter": {
               "type": "text"
             }
           },
           {
-            "name": "$ref:first_name",
-            "display": "First name",
-            "sortable": false,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:last_name",
-            "display": "Last Name",
-            "sortable": false,
+            "name": "name",
+            "formula": "${ref:last_name}, ${ref:first_name}",
+            "display": "Name",
+            "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
@@ -419,6 +407,7 @@
           },
           {
             "name": "$ref:incident_date_and_time",
+            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy hh:mm')",
             "display": "Date of incident",
             "sortable": true,
             "visible": "true",
@@ -426,14 +415,14 @@
           },
           {
             "name": "$ref:type",
-            "display": "Incident type",
+            "display": "Type code",
             "sortable": false,
             "visible": "false",
             "defaultsort": true,
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 50,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -450,7 +439,7 @@
           },
           {
             "name": "$ref:status",
-            "display": "Status",
+            "display": "Status code",
             "sortable": false,
             "visible": "false",
             "defaultsort": false,

@@ -48,7 +48,7 @@
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 20,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -191,14 +191,14 @@
           },
           {
             "name": "$ref:type",
-            "display": "Incident type",
+            "display": "Type code",
             "sortable": false,
             "visible": "false",
             "defaultsort": false,
             "filter": {
               "type": "autocomplete",
               "dynamicoptions": {
-                "maximumOptions": 50,
+                "maximumOptions": 60,
                 "returnAsStaticOptions": true,
                 "dataset": "types",
                 "name": "code",
@@ -215,7 +215,7 @@
           },
           {
             "name": "$ref:status",
-            "display": "Status",
+            "display": "Status code",
             "sortable": false,
             "visible": "false",
             "defaultsort": false,
@@ -240,6 +240,7 @@
           {
             "name": "$ref:incident_date_and_time",
             "display": "Occurrence at",
+            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy hh:mm')",
             "sortable": true,
             "type": "datetime",
             "visible": "true",
@@ -247,10 +248,11 @@
           },
           {
             "name": "$ref:reported_at",
+            "formula": "format_date(${reported_at}, 'dd/MM/yyyy')",
             "display": "Reported on",
             "sortable": true,
             "type": "date",
-            "visible": "true",
+            "visible": "false",
             "defaultsort": false
           },
           {
@@ -287,9 +289,10 @@
           {
             "name": "$ref:modified_at",
             "display": "Last Updated",
+            "formula": "format_date(${modified_at}, 'dd/MM/yyyy hh:mm')",
             "type": "date",
             "sortable": true,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": true
           }
         ]
