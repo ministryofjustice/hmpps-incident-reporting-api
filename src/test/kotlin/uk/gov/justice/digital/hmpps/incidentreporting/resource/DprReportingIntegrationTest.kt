@@ -166,13 +166,13 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "report_reference": "11124143",
     "type": "FINDS",
     "status": "DRAFT",
-    "incident_date_and_time": "2023-12-05T11:34:56",
-    "reported_at": "2023-12-05T12:34:56",
+    "incident_date_and_time": "05/12/2023 11:34",
+    "reported_at": "05/12/2023",
     "reported_by": "USER1",
     "title": "Incident Report 11124143",
     "description": "A new incident created in the new service of type Finds",
     "location": "MDI",
-    "modified_at": "2023-12-05T12:34:56"
+    "modified_at": "05/12/2023 12:34"
   }
 ]
             """.trimIndent(),
@@ -217,10 +217,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
-    "incident_date_and_time": "2023-12-05T11:34:56",
+    "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 1",
-    "last_name": "Last 1",
+    "last_name": "Last 1, First 1",
     "staff_username": "staff-1",
     "comment": "Comment #1"
   },
@@ -229,10 +229,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
-    "incident_date_and_time": "2023-12-05T11:34:56",
+    "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 2",
-    "last_name": "Last 2",
+    "last_name": "Last 2, First 2",
     "staff_username": "staff-2",
     "comment": "Comment #2"
   },
@@ -241,10 +241,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
-    "incident_date_and_time": "2023-12-05T11:34:56",
+    "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 3",
-    "last_name": "Last 3",
+    "last_name": "Last 3, First 3",
     "staff_username": "staff-3",
     "comment": "Comment #3"
   }
@@ -269,10 +269,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
-    "incident_date_and_time": "2023-12-05T11:34:56",
+    "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 1",
-    "last_name": "Last 1",
+    "last_name": "Last 1, First 1",
     "comment": "Comment #1"
   },
   {
@@ -280,10 +280,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
-    "incident_date_and_time": "2023-12-05T11:34:56",
+    "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 2",
-    "last_name": "Last 2",
+    "last_name": "Last 2, First 2",
     "comment": "Comment #2"
   }
 ]
@@ -325,7 +325,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "start_date": "2023-12-05",
+    "start_date": "05/12/2023",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -348,7 +348,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "start_date": "2023-12-04",
+    "start_date": "04/12/2023",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -371,7 +371,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "start_date": "2023-12-01",
+    "start_date": "Dec-2023",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -394,7 +394,29 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "start_date": "2023-12-04",
+    "start_date": "04/12/2023",
+    "location": "MDI",
+    "type": "FINDS",
+    "num_of_incidents": 1
+  }
+]
+            """.trimIndent(),
+          )
+      }
+
+      @Test
+      fun `returns a page of the report for a count by location per month`() {
+        webTestClient.get().uri(url + "by-location-per-month")
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody()
+          .json(
+            """
+[
+  {
+    "start_date": "Dec-2023",
     "location": "MDI",
     "type": "FINDS",
     "num_of_incidents": 1
