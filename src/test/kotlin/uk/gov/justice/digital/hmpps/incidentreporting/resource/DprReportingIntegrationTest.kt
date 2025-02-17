@@ -220,7 +220,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 1",
-    "last_name": "Last 1",
+    "last_name": "Last 1, First 1",
     "staff_username": "staff-1",
     "comment": "Comment #1"
   },
@@ -232,7 +232,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 2",
-    "last_name": "Last 2",
+    "last_name": "Last 2, First 2",
     "staff_username": "staff-2",
     "comment": "Comment #2"
   },
@@ -244,7 +244,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 3",
-    "last_name": "Last 3",
+    "last_name": "Last 3, First 3",
     "staff_username": "staff-3",
     "comment": "Comment #3"
   }
@@ -272,7 +272,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 1",
-    "last_name": "Last 1",
+    "last_name": "Last 1, First 1",
     "comment": "Comment #1"
   },
   {
@@ -283,7 +283,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "incident_date_and_time": "05/12/2023 11:34",
     "reported_by": "USER1",
     "first_name": "First 2",
-    "last_name": "Last 2",
+    "last_name": "Last 2, First 2",
     "comment": "Comment #2"
   }
 ]
