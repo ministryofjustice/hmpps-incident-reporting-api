@@ -7,12 +7,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import uk.gov.justice.hmpps.kotlin.auth.AuthAwareTokenConverter
+import uk.gov.justice.digital.hmpps.digitalprisonreportinglib.security.CaseloadProvider
+import uk.gov.justice.digital.hmpps.digitalprisonreportinglib.security.DefaultDprAuthAwareTokenConverter
 import uk.gov.justice.hmpps.kotlin.auth.dsl.ResourceServerConfigurationCustomizer
 
 @Configuration
 class ResourceServerConfiguration(
-  @Value("\${dpr.endpoint.api.role}") private var dprEndpointApiRole: String,
+  @Value("\${dpr.endpoint.api.roles}") private val dprEndpointApiRoles: List<String>,
+  private val caseloadProvider: CaseloadProvider,
 ) {
   @Bean
   fun hmppsSecurityFilterChain(
@@ -32,18 +34,16 @@ class ResourceServerConfiguration(
           customizer.anyRequestRoleCustomizer.defaultRole
             ?.also { authorize(anyRequest, hasRole(it)) }
             ?: also {
-              // TODO: This has to be a user role - not ideal but will secure with this for now
-              authorize("/report/**", hasRole(dprEndpointApiRole))
-              authorize("/reports/**", hasRole(dprEndpointApiRole))
-              authorize("/definitions/**", hasRole(dprEndpointApiRole))
-              authorize("/statements/**", hasRole(dprEndpointApiRole))
+              authorize("/report/**", hasAnyRole(*dprEndpointApiRoles.toTypedArray()))
+              authorize("/reports/**", hasAnyRole(*dprEndpointApiRoles.toTypedArray()))
+              authorize("/definitions/**", hasAnyRole(*dprEndpointApiRoles.toTypedArray()))
+              authorize("/statements/**", hasAnyRole(*dprEndpointApiRoles.toTypedArray()))
               authorize(anyRequest, authenticated)
             }
         }
     }
     oauth2ResourceServer {
-      // TODO: will allow override of the DprAuthAwareTokenConverter
-      jwt { jwtAuthenticationConverter = AuthAwareTokenConverter() }
+      jwt { jwtAuthenticationConverter = DefaultDprAuthAwareTokenConverter(caseloadProvider) }
     }
   }
     .let { http.build() }

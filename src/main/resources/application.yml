@@ -105,4 +105,4 @@ dpr:
       path: /users/me/caseloads
   endpoint:
     api:
-      role: INCIDENT_REPORTS__RO
+      roles: INCIDENT_REPORTS__RO,INCIDENT_REPORTS__RW,INCIDENT_REPORTS__APPROVE,INCIDENT_REPORTS__PECS

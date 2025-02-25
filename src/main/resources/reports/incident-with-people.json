@@ -16,14 +16,38 @@
   ],
   "policy": [
     {
-    "id": "role-based-policy",
-    "type": "access",
-    "rule": [
-      {
-        "effect": "permit",
-        "condition": []
-      }
-    ]
+      "id": "access",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "match": [
+                "${role}",
+                "ROLE_INCIDENT_REPORTS__RO",
+                "ROLE_INCIDENT_REPORTS__RW",
+                "ROLE_INCIDENT_REPORTS__APPROVE"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "caseloads",
+      "type": "row-level",
+      "action": ["location IN (${caseloads})"],
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "exists": ["${caseloads}"]
+            }
+          ]
+        }
+      ]
     }
   ],
   "dataset": [
@@ -104,6 +128,7 @@
             "filter": {
               "type": "select",
               "staticoptions": [
+                {"name": "","display": "All"},
                 {"name": "ACI","display": "Altcourse (HMP)"},
                 {"name": "AGI","display": "Askham Grange (HMP & YOI)"},
                 {"name": "ASI","display": "Ashfield (HMP)"},
@@ -313,6 +338,7 @@
             "filter": {
               "type": "select",
               "staticoptions": [
+                {"name": "","display": "All"},
                 {"name": "ACI","display": "Altcourse (HMP)"},
                 {"name": "AGI","display": "Askham Grange (HMP & YOI)"},
                 {"name": "ASI","display": "Ashfield (HMP)"},
@@ -534,7 +560,11 @@
             "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy hh:mm')",
             "sortable": true,
             "visible": "true",
-            "defaultsort": true
+            "defaultsort": true,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,years) - today()"
+            }
           },
           {
             "name": "$ref:type",
@@ -657,7 +687,11 @@
             "display": "Date of incident",
             "sortable": true,
             "visible": "true",
-            "defaultsort": true
+            "defaultsort": true,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,years) - today()"
+            }
           },
           {
             "name": "$ref:type",
