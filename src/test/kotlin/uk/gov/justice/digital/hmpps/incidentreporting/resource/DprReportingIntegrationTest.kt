@@ -154,7 +154,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns a page of the report`() {
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RW"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
@@ -177,6 +177,19 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 ]
             """.trimIndent(),
           )
+      }
+
+      @Test
+      fun `returns no data when user does not have the caseload`() {
+        manageUsersMockServer.stubLookupUserCaseload("request-user", "BXI", listOf("BXI"))
+
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RW"), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody()
+          .jsonPath("$.length()").isEqualTo(0)
       }
     }
   }
