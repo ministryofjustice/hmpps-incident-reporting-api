@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.gradle.PortForwardRedisTask
 import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "7.1.2"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "7.1.3"
   kotlin("plugin.jpa") version "2.1.10"
   kotlin("plugin.spring") version "2.1.10"
   idea
@@ -17,15 +17,15 @@ configurations {
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.3.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.4.0-beta")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-validation")
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.3.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.3.2")
   implementation("io.opentelemetry:opentelemetry-api:1.47.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.2")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:7.10.3")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.3")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:7.10.5")
 
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
@@ -40,8 +40,8 @@ dependencies {
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
   testImplementation("javax.xml.bind:jaxb-api:2.3.1")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.3.0")
-  testImplementation("org.wiremock:wiremock-standalone:3.12.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.4.0-beta")
+  testImplementation("org.wiremock:wiremock-standalone:3.12.1")
   testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.swagger.parser.v3:swagger-parser:2.1.25")
