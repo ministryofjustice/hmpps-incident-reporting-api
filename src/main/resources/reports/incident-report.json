@@ -193,6 +193,7 @@
             "defaultsort": false,
             "filter": {
               "type": "multiselect",
+              "mandatory": false,
               "dynamicoptions": {
                 "maximumOptions": 60,
                 "returnAsStaticOptions": true,
@@ -217,6 +218,7 @@
             "defaultsort": false,
             "filter": {
               "type": "multiselect",
+              "mandatory": false,
               "dynamicoptions": {
                 "maximumOptions": 10,
                 "returnAsStaticOptions": true,
@@ -242,6 +244,7 @@
             "visible": "true",
             "defaultsort": false,
             "filter": {
+              "mandatory": false,
               "type": "daterange",
               "default": "today(-1,months) - today()",
               "defaultGranularity": "hourly"
@@ -275,7 +278,8 @@
             "display": "Incident description",
             "sortable": false,
             "visible": "true",
-            "defaultsort": false
+            "defaultsort": false,
+            "wordwrap": "break-words"
           },
           {
             "name": "$ref:location",
