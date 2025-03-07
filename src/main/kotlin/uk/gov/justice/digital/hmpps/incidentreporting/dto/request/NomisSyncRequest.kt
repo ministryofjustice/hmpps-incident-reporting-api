@@ -30,3 +30,37 @@ data class NomisSyncRequest(
     }
   }
 }
+
+@Schema(description = "Incident report created in NOMIS", accessMode = Schema.AccessMode.WRITE_ONLY)
+interface NomisSyncCreateRequest {
+  @get:Schema(
+    description = "Set to true for initial migration",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    defaultValue = "false",
+    example = "true",
+  )
+  val initialMigration: Boolean
+
+  @get:Schema(description = "Complete incident report payload", requiredMode = Schema.RequiredMode.REQUIRED)
+  val incidentReport: NomisReport
+}
+
+@Schema(description = "Incident report updated in NOMIS", accessMode = Schema.AccessMode.WRITE_ONLY)
+interface NomisSyncUpdateRequest {
+  @get:Schema(
+    description = "Incident report ID",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    example = "123e4567-e89b-12d3-a456-426614174000",
+  )
+  val id: UUID
+
+  @get:Schema(
+    description = "Omit or set to false for updates",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    defaultValue = "false",
+  )
+  val initialMigration: Boolean
+
+  @get:Schema(description = "Complete incident report payload", requiredMode = Schema.RequiredMode.REQUIRED)
+  val incidentReport: NomisReport
+}
