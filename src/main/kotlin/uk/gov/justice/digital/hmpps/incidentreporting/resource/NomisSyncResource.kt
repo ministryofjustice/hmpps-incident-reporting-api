@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncCreateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncUpdateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncReportId
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
 import io.swagger.v3.oas.annotations.parameters.RequestBody as RequestBodySchema
@@ -82,7 +80,7 @@ class NomisSyncResource(
         Content(
           schema = Schema(
             accessMode = Schema.AccessMode.WRITE_ONLY,
-            oneOf = [NomisSyncRequest::class, NomisSyncCreateRequest::class, NomisSyncUpdateRequest::class],
+            implementation = NomisSyncRequest::class,
           ),
         ),
       ],
