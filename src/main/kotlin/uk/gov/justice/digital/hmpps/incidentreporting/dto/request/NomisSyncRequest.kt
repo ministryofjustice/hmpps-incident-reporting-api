@@ -12,13 +12,11 @@ data class NomisSyncRequest(
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     example = "123e4567-e89b-12d3-a456-426614174000",
     nullable = true,
-    defaultValue = "null",
   )
   val id: UUID? = null,
   @get:Schema(
     description = "Set to true for initial migration, omit or set to false for updates",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-    allowableValues = ["true"],
     example = "true",
     defaultValue = "false",
   )
@@ -38,7 +36,6 @@ interface NomisSyncCreateRequest {
   @get:Schema(
     description = "Set to true for initial migration",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-    allowableValues = ["true", "false"],
     defaultValue = "false",
     example = "true",
   )
@@ -61,7 +58,6 @@ interface NomisSyncUpdateRequest {
     description = "Omit or set to false for updates",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     defaultValue = "false",
-    allowableValues = ["false"],
   )
   val initialMigration: Boolean
 
