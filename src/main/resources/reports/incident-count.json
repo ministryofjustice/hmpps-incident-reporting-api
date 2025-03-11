@@ -267,14 +267,6 @@
             }
           },
           {
-            "name": "location",
-            "type": "string",
-            "filter": {
-              "type" : "caseloads",
-              "mandatory": false
-            }
-          },
-          {
             "name": "type",
             "type": "string",
             "filter": {
@@ -410,7 +402,8 @@
             "visible": "true",
             "defaultsort": false,
             "filter": {
-              "type": "text"
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {
@@ -488,7 +481,8 @@
             "visible": "true",
             "defaultsort": false,
             "filter": {
-              "type": "text"
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {
@@ -576,7 +570,8 @@
             "visible": "true",
             "defaultsort": false,
             "filter": {
-              "type": "text"
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {
@@ -664,7 +659,8 @@
             "visible": "true",
             "defaultsort": false,
             "filter": {
-              "type": "text"
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {
@@ -752,7 +748,8 @@
             "visible": "true",
             "defaultsort": false,
             "filter": {
-              "type": "text"
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {

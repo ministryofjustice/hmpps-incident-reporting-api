@@ -365,7 +365,8 @@
             "visible": "true",
             "defaultsort": false,
             "filter": {
-              "type": "text"
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {
@@ -492,7 +493,8 @@
             "visible": "true",
             "defaultsort": false,
             "filter": {
-              "type": "text"
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {

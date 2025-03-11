@@ -246,8 +246,7 @@
             "filter": {
               "mandatory": false,
               "type": "daterange",
-              "default": "today(-1,months) - today()",
-              "defaultGranularity": "hourly"
+              "default": "today(-1,months) - today()"
             }
           },
           {
