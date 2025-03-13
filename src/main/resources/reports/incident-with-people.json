@@ -55,9 +55,13 @@
       "id": "by-prisoner",
       "name": "Report of prisoner involvement in an incident",
       "datasource": "dataSource",
-      "query": "select r.report_reference, r.location,r.type, ct.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(pi.first_name) as first_name, initcap(pi.last_name) as last_name, pi.prisoner_number, pi.comment\nfrom prisoner_involvement pi join report r on r.id = pi.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'",
+      "query": "select r.id, r.report_reference, r.location,r.type, ct.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(pi.first_name) as first_name, initcap(pi.last_name) as last_name, pi.prisoner_number, pi.comment\nfrom prisoner_involvement pi join report r on r.id = pi.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'",
       "schema": {
         "field": [
+          {
+            "name": "id",
+            "type": "string"
+          },
           {
             "name": "report_reference",
             "type": "string"
@@ -66,7 +70,7 @@
             "name": "type",
             "type": "string",
             "filter": {
-              "type": "autocomplete",
+              "type": "multiselect",
               "dynamicoptions": {
                 "maximumOptions": 60,
                 "returnAsStaticOptions": true,
@@ -84,7 +88,7 @@
             "name": "status",
             "type": "string",
             "filter": {
-              "type": "autocomplete",
+              "type": "multiselect",
               "dynamicoptions": {
                 "maximumOptions": 20,
                 "returnAsStaticOptions": true,
@@ -137,9 +141,13 @@
       "id": "by-staff",
       "name": "Report of staff involvement in an incident",
       "datasource": "dataSource",
-      "query": "select r.report_reference, r.location,r.type, ct.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(st.first_name) as first_name, initcap(st.last_name) as last_name, st.staff_username, st.comment from staff_involvement st join report r on r.id = st.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'",
+      "query": "select r.id, r.report_reference, r.location,r.type, ct.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(st.first_name) as first_name, initcap(st.last_name) as last_name, st.staff_username, st.comment from staff_involvement st join report r on r.id = st.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'",
       "schema": {
         "field": [
+          {
+            "name": "id",
+            "type": "string"
+          },
           {
             "name": "report_reference",
             "type": "string"
@@ -148,7 +156,7 @@
             "name": "type",
             "type": "string",
             "filter": {
-              "type": "autocomplete",
+              "type": "multiselect",
               "dynamicoptions": {
                 "maximumOptions": 60,
                 "returnAsStaticOptions": true,
@@ -166,7 +174,7 @@
             "name": "status",
             "type": "string",
             "filter": {
-              "type": "autocomplete",
+              "type": "multiselect",
               "dynamicoptions": {
                 "maximumOptions": 20,
                 "returnAsStaticOptions": true,
@@ -277,6 +285,7 @@
             "name": "$ref:prisoner_number",
             "display": "Prisoner number",
             "sortable": true,
+            "formula": "make_url('https://prisoner-${env}.digital.prison.service.justice.gov.uk/prisoner/${prisoner_number}',${prisoner_number},TRUE)",
             "visible": "true",
             "defaultsort": false,
             "filter": {
@@ -295,6 +304,7 @@
             "name": "$ref:report_reference",
             "display": "Incident number",
             "sortable": true,
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
             "visible": "true",
             "defaultsort": false
           },
@@ -315,17 +325,7 @@
             "display": "Type code",
             "sortable": true,
             "visible": "false",
-            "defaultsort": false,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:type_description",
@@ -339,17 +339,7 @@
             "display": "Status code",
             "sortable": false,
             "visible": "false",
-            "defaultsort": false,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 10,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:status_description",
@@ -422,6 +412,7 @@
           {
             "name": "$ref:report_reference",
             "display": "Incident number",
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -443,17 +434,7 @@
             "display": "Type code",
             "sortable": false,
             "visible": "false",
-            "defaultsort": true,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
+            "defaultsort": true
           },
           {
             "name": "$ref:type_description",
@@ -461,23 +442,6 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": false
-          },
-          {
-            "name": "$ref:status",
-            "display": "Status code",
-            "sortable": false,
-            "visible": "false",
-            "defaultsort": false,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 10,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
           },
           {
             "name": "$ref:status_description",

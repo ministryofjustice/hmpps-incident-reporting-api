@@ -163,7 +163,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "report_reference": "11124143",
     "type": "FINDS",
     "status": "DRAFT",
     "incident_date_and_time": "05/12/2023 11:34",
@@ -226,7 +225,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "report_reference": "11124143",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -238,7 +236,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "comment": "Comment #1"
   },
   {
-    "report_reference": "11124143",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -250,7 +247,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "comment": "Comment #2"
   },
   {
-    "report_reference": "11124143",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -278,7 +274,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
 [
   {
-    "report_reference": "11124143",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -289,7 +284,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "comment": "Comment #1"
   },
   {
-    "report_reference": "11124143",
     "location": "MDI",
     "type": "FINDS",
     "status": "DRAFT",
@@ -328,7 +322,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
       @Test
       fun `returns a page of the report for a count by day`() {
-        webTestClient.get().uri(url + "by-day")
+        webTestClient.get().uri(url + "by-location-per-day")
           .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -341,53 +335,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "start_date": "05/12/2023",
     "location": "MDI",
     "type": "FINDS",
-    "status": "DRAFT",
-    "num_of_incidents": 1
-  }
-]
-            """.trimIndent(),
-          )
-      }
-
-      @Test
-      fun `returns a page of the report for a count by week`() {
-        webTestClient.get().uri(url + "by-week")
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .json(
-            """
-[
-  {
-    "start_date": "04/12/2023",
-    "location": "MDI",
-    "type": "FINDS",
-    "status": "DRAFT",
-    "num_of_incidents": 1
-  }
-]
-            """.trimIndent(),
-          )
-      }
-
-      @Test
-      fun `returns a page of the report for a count by month`() {
-        webTestClient.get().uri(url + "by-month")
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .json(
-            """
-[
-  {
-    "start_date": "Dec-2023",
-    "location": "MDI",
-    "type": "FINDS",
-    "status": "DRAFT",
     "num_of_incidents": 1
   }
 ]

@@ -172,18 +172,23 @@
         "template": "list",
         "field": [
           {
-            "name": "$ref:id",
-            "display": "Internal ID",
-            "sortable": true,
-            "visible": "false",
-            "defaultsort": false
-          },
-          {
             "name": "$ref:report_reference",
             "display": "Report Reference",
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type" : "caseloads",
+              "mandatory": false
+            }
           },
           {
             "name": "$ref:type",
@@ -259,13 +264,6 @@
             "defaultsort": false
           },
           {
-            "name": "$ref:reported_by",
-            "display": "Reported by",
-            "sortable": false,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
             "name": "$ref:title",
             "display": "Incident title",
             "sortable": false,
@@ -281,15 +279,11 @@
             "wordwrap": "break-words"
           },
           {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
+            "name": "$ref:reported_by",
+            "display": "Reported by",
+            "sortable": false,
             "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type" : "caseloads",
-              "mandatory": false
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:modified_at",

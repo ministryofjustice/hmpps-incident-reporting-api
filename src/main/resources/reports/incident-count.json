@@ -52,8 +52,38 @@
   ],
   "dataset": [
     {
+      "id": "by-location-per-day",
+      "name": "Count of incidents per location per day",
+      "datasource": "dataSource",
+      "query": "SELECT cast(date_trunc('day', incident_date_and_time) as date) as start_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('day', r.incident_date_and_time), r.location, r.type, ct.description",
+      "schema": {
+        "field": [
+          {
+            "name": "start_date",
+            "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "type_description",
+            "type": "string"
+          },
+          {
+            "name": "num_of_incidents",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
       "id": "by-location-per-week",
-      "name": "Count of incidents per location",
+      "name": "Count of incidents per location per week",
       "datasource": "dataSource",
       "query": "SELECT cast(date_trunc('week', incident_date_and_time) as date) as start_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('week', r.incident_date_and_time), r.location, r.type, ct.description",
       "schema": {
@@ -64,25 +94,11 @@
           },
           {
             "name": "location",
-            "type": "string",
-            "filter": {
-              "type" : "caseloads",
-              "mandatory": false
-            }
+            "type": "string"
           },
           {
             "name": "type",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
+            "type": "string"
           },
           {
             "name": "type_description",
@@ -108,191 +124,15 @@
           },
           {
             "name": "location",
-            "type": "string",
-            "filter": {
-              "type" : "caseloads",
-              "mandatory": false
-            }
+            "type": "string"
           },
           {
             "name": "type",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
+            "type": "string"
           },
           {
             "name": "type_description",
             "type": "string"
-          },
-          {
-            "name": "num_of_incidents",
-            "type": "long"
-          }
-        ]
-      }
-    },
-    {
-      "id": "by-day",
-      "name": "Count of incidents by day",
-      "datasource": "dataSource",
-      "query": "SELECT cast(date_trunc('day', incident_date_and_time) as date) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('day', incident_date_and_time), location, type, status",
-      "schema": {
-        "field": [
-          {
-            "name": "start_date",
-            "type": "date"
-          },
-          {
-            "name": "location",
-            "type": "string",
-            "filter": {
-              "type" : "caseloads",
-              "mandatory": false
-            }
-          },
-          {
-            "name": "type",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "status",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 20,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "num_of_incidents",
-            "type": "long"
-          }
-        ]
-      }
-    },
-    {
-      "id": "by-week",
-      "name": "Count of incidents by week",
-      "datasource": "dataSource",
-      "query": "SELECT cast(date_trunc('week', incident_date_and_time) as date) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('week', incident_date_and_time), location, type, status",
-      "schema": {
-        "field": [
-          {
-            "name": "start_date",
-            "type": "date"
-          },
-          {
-            "name": "location",
-            "type": "string",
-            "filter": {
-              "type" : "caseloads",
-              "mandatory": false
-            }
-          },
-          {
-            "name": "type",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "status",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 20,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "num_of_incidents",
-            "type": "long"
-          }
-        ]
-      }
-    },
-    {
-      "id": "by-month",
-      "name": "Count of incidents by month",
-      "datasource": "dataSource",
-      "query": "SELECT cast(date_trunc('month', incident_date_and_time) as date) as start_date, location, type, status, count(*) num_of_incidents FROM report WHERE status != 'DUPLICATE' group by date_trunc('month', incident_date_and_time), location, type, status",
-      "schema": {
-        "field": [
-          {
-            "name": "start_date",
-            "type": "date"
-          },
-          {
-            "name": "location",
-            "type": "string",
-            "filter": {
-              "type" : "caseloads",
-              "mandatory": false
-            }
-          },
-          {
-            "name": "type",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "status",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 20,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
           },
           {
             "name": "num_of_incidents",
@@ -343,6 +183,85 @@
     }
   ],
   "report": [
+    {
+      "id": "by-location-per-day",
+      "name": "Count of incident reports by day and location",
+      "description": "Counts of incidents by type and location for each day",
+      "version": "1.0.0",
+      "dataset": "$ref:by-location-per-day",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:start_date",
+            "display": "Date of incident",
+            "formula": "format_date(${start_date}, 'dd/MM/yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:type",
+            "display": "Type code",
+            "sortable": true,
+            "visible": "false",
+            "defaultsort": true,
+            "filter": {
+              "type": "multiselect",
+              "dynamicoptions": {
+                "maximumOptions": 60,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:type_description",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
+            }
+          },
+          {
+            "name": "$ref:num_of_incidents",
+            "display": "Incidents/Day",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-location-per-day"
+      }]
+    },
     {
       "id": "by-location-per-week",
       "name": "Count of incident reports by week and location",
@@ -499,273 +418,6 @@
         "id": "summaryId",
         "template": "page-header",
         "dataset": "$ref:by-location-per-week"
-      }]
-    },
-    {
-      "id": "by-day",
-      "name": "Count of incident reports by day",
-      "description": "Counts of incidents by type, status and location for each day",
-      "version": "1.0.0",
-      "dataset": "$ref:by-day",
-      "policy": [],
-      "render": "HTML",
-      "feature": [
-        {
-          "type": "print"
-        }
-      ],
-      "specification": {
-        "template": "list",
-        "field": [
-          {
-            "name": "$ref:start_date",
-            "display": "Date of incident",
-            "formula": "format_date(${start_date}, 'dd/MM/yyyy')",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "daterange",
-              "default": "today(-1,months) - today()"
-            }
-          },
-          {
-            "name": "$ref:type",
-            "display": "Type code",
-            "sortable": true,
-            "visible": "false",
-            "defaultsort": true,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:status",
-            "display": "Incident status",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 10,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "caseloads",
-              "mandatory": false
-            }
-          },
-          {
-            "name": "$ref:num_of_incidents",
-            "display": "Incidents/Day",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          }
-        ]
-      },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-day"
-      }]
-    },
-    {
-      "id": "by-week",
-      "name": "Count of incident reports by week",
-      "description": "Counts of incidents by type, status and location for each week",
-      "version": "1.0.0",
-      "dataset": "$ref:by-week",
-      "policy": [],
-      "render": "HTML",
-      "feature": [
-        {
-          "type": "print"
-        }
-      ],
-      "specification": {
-        "template": "list",
-        "field": [
-          {
-            "name": "$ref:start_date",
-            "display": "Beginning of week",
-            "formula": "format_date(${start_date}, 'dd/MM/yyyy')",
-            "sortable": true,
-            "type": "date",
-            "visible": "true",
-            "filter": {
-              "type": "daterange",
-              "default": "today(-1,months) - today()"
-            }
-          },
-          {
-            "name": "$ref:type",
-            "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 50,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:status",
-            "display": "Incident status",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 10,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "caseloads",
-              "mandatory": false
-            }
-          },
-          {
-            "name": "$ref:num_of_incidents",
-            "display": "Incidents/Week",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          }
-        ]
-      },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-week"
-      }]
-    },
-    {
-      "id": "by-month",
-      "name": "Count of incident reports by month",
-      "description": "Counts of incidents by type, status and location for each month",
-      "version": "1.0.0",
-      "dataset": "$ref:by-month",
-      "policy": [],
-      "render": "HTML",
-      "feature": [
-        {
-          "type": "print"
-        }
-      ],
-      "specification": {
-        "template": "list",
-        "field": [
-          {
-            "name": "$ref:start_date",
-            "display": "Month",
-            "formula": "format_date(${start_date}, 'MMM-yyyy')",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "daterange",
-              "default": "today(-1,years) - today()"
-            }
-          },
-          {
-            "name": "$ref:type",
-            "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:status",
-            "display": "Incident status",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 10,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "caseloads",
-              "mandatory": false
-            }
-          },
-          {
-            "name": "$ref:num_of_incidents",
-            "display": "Incidents/Month",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          }
-        ]
-      },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-month"
       }]
     }
   ]
