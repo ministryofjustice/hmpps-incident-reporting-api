@@ -172,15 +172,9 @@
         "template": "list",
         "field": [
           {
-            "name": "$ref:id",
-            "display": "Internal ID",
-            "sortable": true,
-            "visible": "false",
-            "defaultsort": false
-          },
-          {
             "name": "$ref:report_reference",
             "display": "Report Reference",
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
