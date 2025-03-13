@@ -180,6 +180,17 @@
             "defaultsort": false
           },
           {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type" : "caseloads",
+              "mandatory": false
+            }
+          },
+          {
             "name": "$ref:type",
             "display": "Type code",
             "sortable": false,
@@ -253,13 +264,6 @@
             "defaultsort": false
           },
           {
-            "name": "$ref:reported_by",
-            "display": "Reported by",
-            "sortable": false,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
             "name": "$ref:title",
             "display": "Incident title",
             "sortable": false,
@@ -275,15 +279,11 @@
             "wordwrap": "break-words"
           },
           {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
+            "name": "$ref:reported_by",
+            "display": "Reported by",
+            "sortable": false,
             "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type" : "caseloads",
-              "mandatory": false
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:modified_at",

@@ -70,7 +70,7 @@
             "name": "type",
             "type": "string",
             "filter": {
-              "type": "autocomplete",
+              "type": "multiselect",
               "dynamicoptions": {
                 "maximumOptions": 60,
                 "returnAsStaticOptions": true,
@@ -88,7 +88,7 @@
             "name": "status",
             "type": "string",
             "filter": {
-              "type": "autocomplete",
+              "type": "multiselect",
               "dynamicoptions": {
                 "maximumOptions": 20,
                 "returnAsStaticOptions": true,
@@ -156,7 +156,7 @@
             "name": "type",
             "type": "string",
             "filter": {
-              "type": "autocomplete",
+              "type": "multiselect",
               "dynamicoptions": {
                 "maximumOptions": 60,
                 "returnAsStaticOptions": true,
@@ -174,7 +174,7 @@
             "name": "status",
             "type": "string",
             "filter": {
-              "type": "autocomplete",
+              "type": "multiselect",
               "dynamicoptions": {
                 "maximumOptions": 20,
                 "returnAsStaticOptions": true,
@@ -325,17 +325,7 @@
             "display": "Type code",
             "sortable": true,
             "visible": "false",
-            "defaultsort": false,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:type_description",
@@ -349,17 +339,7 @@
             "display": "Status code",
             "sortable": false,
             "visible": "false",
-            "defaultsort": false,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 10,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:status_description",
@@ -454,17 +434,7 @@
             "display": "Type code",
             "sortable": false,
             "visible": "false",
-            "defaultsort": true,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
+            "defaultsort": true
           },
           {
             "name": "$ref:type_description",
@@ -472,23 +442,6 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": false
-          },
-          {
-            "name": "$ref:status",
-            "display": "Status code",
-            "sortable": false,
-            "visible": "false",
-            "defaultsort": false,
-            "filter": {
-              "type": "autocomplete",
-              "dynamicoptions": {
-                "maximumOptions": 10,
-                "returnAsStaticOptions": true,
-                "dataset": "status",
-                "name": "code",
-                "display": "description"
-              }
-            }
           },
           {
             "name": "$ref:status_description",
