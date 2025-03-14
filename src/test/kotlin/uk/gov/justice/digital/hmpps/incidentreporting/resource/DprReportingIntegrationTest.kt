@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
@@ -25,6 +26,9 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     @Bean
     fun fixedClock(): Clock = clock
   }
+
+  @Value("\${dpr.lib.system.role}")
+  lateinit var systemRole: String
 
   @Autowired
   lateinit var reportRepository: ReportRepository
@@ -48,6 +52,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       ),
     )
 
+    manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("INCIDENT_REPORTS__RW"))
     manageUsersMockServer.stubLookupUserCaseload("request-user", "LEI", listOf("MDI"))
   }
 
@@ -63,7 +68,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.get().uri(url),
-        "INCIDENT_REPORTS__RO",
+        systemRole,
       )
     }
 
@@ -74,93 +79,118 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Test
       fun `returns the definitions of all the reports`() {
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
           .expectBody().jsonPath("$.length()").isEqualTo(3)
+          .jsonPath("$[0].authorised").isEqualTo("true")
       }
-    }
-  }
-
-  @DisplayName("GET /definitions/incident-report/summary")
-  @Nested
-  inner class GetDefinitionDetails {
-    private val url = "/definitions/incident-report/summary"
-
-    @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @DisplayName("by role and scope")
-      @TestFactory
-      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-        webTestClient.get().uri(url),
-        "INCIDENT_REPORTS__RO",
-      )
-    }
-
-    @DisplayName("works")
-    @Nested
-    inner class HappyPath {
 
       @Test
-      fun `returns the definition of the report`() {
+      fun `returns the not auth definitions of the reports`() {
+        manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("ANOTHER_USER_ROLE"))
+
         webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
+          .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .json(
-            """
+          .jsonPath("$.length()").isEqualTo(3)
+          .jsonPath("$[0].authorised").isEqualTo("false")
+      }
+    }
+
+    @DisplayName("GET /definitions/incident-report/summary")
+    @Nested
+    inner class GetDefinitionDetails {
+      private val url = "/definitions/incident-report/summary"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url),
+          systemRole,
+        )
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `report definition denied when user has incorrect role`() {
+          manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("ANOTHER_USER_ROLE"))
+
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isForbidden
+        }
+
+        @Test
+        fun `returns the definition of the report`() {
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              """
               {
-  "id": "incident-report",
-  "name": "Incident report summary",
-  "description": "List of all incidents filtered by dates, types, status and locations (INC0009)",
-  "variant": {
-    "id": "summary",
-    "name": "Incident Report Summary",
-    "resourceName": "reports/incident-report/summary",
-    "description": "List of all incidents filtered by dates, types, status and locations",
-    "printable": true
-  }
-}
-            """.trimIndent(),
-          )
+              "id": "incident-report",
+              "name": "Incident report summary",
+              "description": "List of all incidents filtered by dates, types, status and locations (INC0009)",
+              "variant": {
+                "id": "summary",
+                "name": "Incident Report Summary",
+                "resourceName": "reports/incident-report/summary",
+                "description": "List of all incidents filtered by dates, types, status and locations",
+                "printable": true
+              }
+            }
+              """.trimIndent(),
+            )
+        }
       }
     }
-  }
 
-  @DisplayName("GET /reports/incident-report/summary")
-  @Nested
-  inner class RunReportIncidentSummary {
-    private val url = "/reports/incident-report/summary"
-
-    @DisplayName("is secured")
+    @DisplayName("GET /reports/incident-report/summary")
     @Nested
-    inner class Security {
-      @DisplayName("by role and scope")
-      @TestFactory
-      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-        webTestClient.get().uri(url),
-        "INCIDENT_REPORTS__RO",
-      )
-    }
+    inner class RunReportIncidentSummary {
+      private val url = "/reports/incident-report/summary"
 
-    @DisplayName("works")
-    @Nested
-    inner class HappyPath {
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url),
+          systemRole,
+        )
+      }
 
-      @Test
-      fun `returns a page of the report`() {
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .json(
-            """
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns a page of the report`() {
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              """
 [
   {
     "type": "FINDS",
@@ -174,55 +204,66 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "modified_at": "05/12/2023 12:34"
   }
 ]
-            """.trimIndent(),
-          )
-      }
+              """.trimIndent(),
+            )
+        }
 
-      @Test
-      fun `returns no data when user does not have the caseload`() {
-        manageUsersMockServer.stubLookupUserCaseload("request-user", "BXI", listOf("BXI"))
+        @Test
+        fun `returns no data when user does not have the caseload`() {
+          manageUsersMockServer.stubLookupUserCaseload("request-user", "BXI", listOf("BXI"))
 
-        webTestClient.get().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .jsonPath("$.length()").isEqualTo(0)
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.length()").isEqualTo(0)
+        }
+
+        @Test
+        fun `returns 403 when user does not have the role`() {
+          manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("ANOTHER_USER_ROLE"))
+
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isForbidden
+        }
       }
     }
-  }
 
-  @DisplayName("GET /reports/incident-with-people")
-  @Nested
-  inner class RunReportIncidentWithPeopleByPeople {
-    private val url = "/reports/incident-with-people"
-
-    @DisplayName("is secured")
+    @DisplayName("GET /reports/incident-with-people")
     @Nested
-    inner class Security {
-      @DisplayName("by role and scope")
-      @TestFactory
-      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-        webTestClient.get().uri(url + "/by-prisoner"),
-        "INCIDENT_REPORTS__RO",
-      )
-    }
+    inner class RunReportIncidentWithPeopleByPeople {
+      private val url = "/reports/incident-with-people"
 
-    @DisplayName("works")
-    @Nested
-    inner class HappyPath {
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url + "/by-prisoner"),
+          systemRole,
+        )
+      }
 
-      @Test
-      fun `returns a page of the report for staff`() {
-        webTestClient.get().uri(url + "/by-staff")
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .json(
-            """
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns a page of the report for staff`() {
+          webTestClient.get().uri(url + "/by-staff")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              """
 [
   {
     "location": "MDI",
@@ -258,20 +299,20 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "comment": "Comment #3"
   }
 ]
-            """.trimIndent(),
-          )
-      }
+              """.trimIndent(),
+            )
+        }
 
-      @Test
-      fun `returns a page of the report for prisoners`() {
-        webTestClient.get().uri(url + "/by-prisoner")
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .json(
-            """
+        @Test
+        fun `returns a page of the report for prisoners`() {
+          webTestClient.get().uri(url + "/by-prisoner")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              """
 [
   {
     "location": "MDI",
@@ -294,86 +335,86 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "comment": "Comment #2"
   }
 ]
-            """.trimIndent(),
-          )
+              """.trimIndent(),
+            )
+        }
       }
     }
-  }
 
-  @DisplayName("GET /reports/incident-count")
-  @Nested
-  inner class RunReportCountByPeriod {
-    private val url = "/reports/incident-count/"
-
-    @DisplayName("is secured")
+    @DisplayName("GET /reports/incident-count")
     @Nested
-    inner class Security {
-      @DisplayName("by role and scope")
-      @TestFactory
-      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-        webTestClient.get().uri(url + "by-week"),
-        "INCIDENT_REPORTS__RO",
-      )
-    }
+    inner class RunReportCountByPeriod {
+      private val url = "/reports/incident-count/"
 
-    @DisplayName("works")
-    @Nested
-    inner class HappyPath {
-
-      @Test
-      fun `returns a page of the report for a count by day`() {
-        webTestClient.get().uri(url + "by-location-per-day")
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .json(
-            """
-[
-  {
-    "start_date": "05/12/2023",
-    "location": "MDI",
-    "type": "FINDS",
-    "num_of_incidents": 1
-  }
-]
-            """.trimIndent(),
-          )
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url + "by-week"),
+          systemRole,
+        )
       }
 
-      @Test
-      fun `returns a page of the report for a count by location per week`() {
-        webTestClient.get().uri(url + "by-location-per-week")
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .json(
-            """
-[
-  {
-    "start_date": "04/12/2023",
-    "location": "MDI",
-    "type": "FINDS",
-    "num_of_incidents": 1
-  }
-]
-            """.trimIndent(),
-          )
-      }
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
 
-      @Test
-      fun `returns a page of the report for a count by location per month`() {
-        webTestClient.get().uri(url + "by-location-per-month")
-          .headers(setAuthorisation(roles = listOf("ROLE_INCIDENT_REPORTS__RO"), scopes = listOf("read")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody()
-          .json(
-            """
+        @Test
+        fun `returns a page of the report for a count by day`() {
+          webTestClient.get().uri(url + "by-location-per-day")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              """
+              [
+                {
+                  "start_date": "05/12/2023",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "num_of_incidents": 1
+                }
+              ]
+              """.trimIndent(),
+            )
+        }
+
+        @Test
+        fun `returns a page of the report for a count by location per week`() {
+          webTestClient.get().uri(url + "by-location-per-week")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              """
+            [
+              {
+                "start_date": "04/12/2023",
+                "location": "MDI",
+                "type": "FINDS",
+                "num_of_incidents": 1
+              }
+            ]
+              """.trimIndent(),
+            )
+        }
+
+        @Test
+        fun `returns a page of the report for a count by location per month`() {
+          webTestClient.get().uri(url + "by-location-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              """
 [
   {
     "start_date": "Dec-2023",
@@ -382,8 +423,9 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "num_of_incidents": 1
   }
 ]
-            """.trimIndent(),
-          )
+              """.trimIndent(),
+            )
+        }
       }
     }
   }

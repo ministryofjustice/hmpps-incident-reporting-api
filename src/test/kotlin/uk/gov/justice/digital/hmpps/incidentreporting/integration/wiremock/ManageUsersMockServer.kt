@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.integration.wiremock
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 
 const val MANAGE_USERS_WIREMOCK_PORT = 8082
 
@@ -28,7 +29,7 @@ class ManageUsersMockServer : MockServer(MANAGE_USERS_WIREMOCK_PORT) {
                 }
     """.trimIndent()
     stubFor(
-      get("$urlPrefix/users/me/caseloads")
+      get("$urlPrefix/prisonusers/$username/caseloads")
         .willReturn(
           aResponse()
             .withHeader("Content-Type", "application/json")
@@ -36,4 +37,19 @@ class ManageUsersMockServer : MockServer(MANAGE_USERS_WIREMOCK_PORT) {
         ),
     )
   }
+
+  fun stubLookupUsersRoles(username: String = "request-user", roles: List<String> = emptyList()) {
+    stubFor(
+      get("$urlPrefix/users/$username/roles")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(roles.map { RolesResponse(it) }.toJson()).withStatus(200),
+        ),
+    )
+  }
+  private fun Any.toJson(): String = ObjectMapper().writeValueAsString(this)
+  data class RolesResponse(
+    val roleCode: String,
+  )
 }

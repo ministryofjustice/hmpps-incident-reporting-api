@@ -25,9 +25,9 @@
             {
               "match": [
                 "${role}",
-                "ROLE_INCIDENT_REPORTS__RO",
-                "ROLE_INCIDENT_REPORTS__RW",
-                "ROLE_INCIDENT_REPORTS__APPROVE"
+                "INCIDENT_REPORTS__RO",
+                "INCIDENT_REPORTS__RW",
+                "INCIDENT_REPORTS__APPROVE"
               ]
             }
           ]
