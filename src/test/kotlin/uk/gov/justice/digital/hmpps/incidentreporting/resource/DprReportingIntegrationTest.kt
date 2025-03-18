@@ -116,11 +116,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           webTestClient.get().uri(url),
           systemRole,
         )
-      }
-
-      @DisplayName("works")
-      @Nested
-      inner class HappyPath {
 
         @Test
         fun `report definition denied when user has incorrect role`() {
@@ -132,6 +127,11 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .exchange()
             .expectStatus().isForbidden
         }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
 
         @Test
         fun `returns the definition of the report`() {
@@ -175,6 +175,17 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           webTestClient.get().uri(url),
           systemRole,
         )
+
+        @Test
+        fun `returns 403 when user does not have the role`() {
+          manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("ANOTHER_USER_ROLE"))
+
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isForbidden
+        }
       }
 
       @DisplayName("works")
@@ -219,17 +230,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.length()").isEqualTo(0)
-        }
-
-        @Test
-        fun `returns 403 when user does not have the role`() {
-          manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("ANOTHER_USER_ROLE"))
-
-          webTestClient.get().uri(url)
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isForbidden
         }
       }
     }
