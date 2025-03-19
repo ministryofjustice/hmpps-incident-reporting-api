@@ -83,7 +83,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(3)
+          .expectBody().jsonPath("$.length()").isEqualTo(4)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -94,7 +94,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(3)
+          .expectBody().jsonPath("$.length()").isEqualTo(4)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -108,52 +108,53 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(3)
+          .jsonPath("$.length()").isEqualTo(4)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
+  }
 
-    @DisplayName("GET /definitions/incident-report/summary")
+  @DisplayName("GET /definitions/incident-report/summary")
+  @Nested
+  inner class GetDefinitionDetails {
+    private val url = "/definitions/incident-report/summary"
+
+    @DisplayName("is secured")
     @Nested
-    inner class GetDefinitionDetails {
-      private val url = "/definitions/incident-report/summary"
+    inner class Security {
+      @DisplayName("by role and scope")
+      @TestFactory
+      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        webTestClient.get().uri(url),
+        systemRole,
+      )
 
-      @DisplayName("is secured")
-      @Nested
-      inner class Security {
-        @DisplayName("by role and scope")
-        @TestFactory
-        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri(url),
-          systemRole,
-        )
+      @Test
+      fun `report definition denied when user has incorrect role`() {
+        manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("ANOTHER_USER_ROLE"))
 
-        @Test
-        fun `report definition denied when user has incorrect role`() {
-          manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("ANOTHER_USER_ROLE"))
-
-          webTestClient.get().uri(url)
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isForbidden
-        }
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isForbidden
       }
+    }
 
-      @DisplayName("works")
-      @Nested
-      inner class HappyPath {
+    @DisplayName("works")
+    @Nested
+    inner class HappyPath {
 
-        @Test
-        fun `returns the definition of the report`() {
-          webTestClient.get().uri(url)
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .json(
-              """
+      @Test
+      fun `returns the definition of the report`() {
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody()
+          .json(
+            """
               {
               "id": "incident-report",
               "name": "Incident report summary",
@@ -166,12 +167,15 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                 "printable": true
               }
             }
-              """.trimIndent(),
-            )
-        }
+            """.trimIndent(),
+          )
       }
     }
+  }
 
+  @DisplayName("GET /reports")
+  @Nested
+  inner class GetReports {
     @DisplayName("GET /reports/incident-report/summary")
     @Nested
     inner class RunReportIncidentSummary {
@@ -241,6 +245,83 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.length()").isEqualTo(0)
+        }
+      }
+    }
+
+    @DisplayName("GET /reports/incident-report-pecs/summary")
+    @Nested
+    inner class RunPecsReportIncidentSummary {
+      private val url = "/reports/incident-report-pecs/summary"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url),
+          systemRole,
+        )
+
+        @Test
+        fun `returns 403 when user does not have the role`() {
+          manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("INCIDENT_REPORTS__RW"))
+
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isForbidden
+        }
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns a page of the report if has PECS role`() {
+          manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("INCIDENT_REPORTS__PECS"))
+
+          val pecsReport = reportRepository.saveAndFlush(
+            buildReport(
+              reportReference = "11124141",
+              location = "NOU",
+              reportTime = now,
+              generateStaffInvolvement = 3,
+              generatePrisonerInvolvement = 2,
+            ),
+          )
+
+          webTestClient.get().uri(url)
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody().jsonPath("$.length()").isEqualTo(1)
+            .json(
+              """
+                [
+                  {
+                    "id": "${pecsReport.id}",
+                    "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${pecsReport.id}' target=\"_blank\">${pecsReport.reportReference}</a>",
+                    "type": "${pecsReport.type.name}",
+                    "type_description": "${pecsReport.type.description}",
+                    "status": "${pecsReport.status.name}",
+                    "status_description": "${pecsReport.status.description}",
+                    "incident_date_and_time": "05/12/2023 11:34",
+                    "reported_at": "05/12/2023",
+                    "reported_by": "USER1",
+                    "title": "${pecsReport.title}",
+                    "description": "${pecsReport.description}",
+                    "location": "${pecsReport.location}",
+                    "pecs_region": "National Operations Unit",
+                    "modified_at": "05/12/2023 12:34"
+                  }
+                ]
+              """.trimIndent(),
+            )
         }
       }
     }
@@ -387,7 +468,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "start_date": "05/12/2023",
                   "location": "MDI",
                   "type": "FINDS",
-                  "num_of_incidents": 1
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
                 }
               ]
               """.trimIndent(),
@@ -409,7 +490,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                 "start_date": "04/12/2023",
                 "location": "MDI",
                 "type": "FINDS",
-                "num_of_incidents": 1
+                "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
               }
             ]
               """.trimIndent(),
@@ -426,14 +507,14 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectBody()
             .json(
               """
-[
-  {
-    "start_date": "Dec-2023",
-    "location": "MDI",
-    "type": "FINDS",
-    "num_of_incidents": 1
-  }
-]
+              [
+                {
+                  "start_date": "Dec-2023",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
+                }
+              ]
               """.trimIndent(),
             )
         }
