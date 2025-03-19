@@ -88,6 +88,17 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
 
       @Test
+      fun `returns the definitions of all the reports but not authorises as no user in context`() {
+        webTestClient.get().uri(url)
+          .headers(setAuthorisation(user = null, roles = listOf(systemRole), scopes = listOf("read")))
+          .header("Content-Type", "application/json")
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().jsonPath("$.length()").isEqualTo(3)
+          .jsonPath("$[0].authorised").isEqualTo("false")
+      }
+
+      @Test
       fun `returns the not auth definitions of the reports`() {
         manageUsersMockServer.stubLookupUsersRoles("request-user", listOf("ANOTHER_USER_ROLE"))
 
