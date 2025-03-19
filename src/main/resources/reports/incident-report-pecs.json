@@ -1,0 +1,306 @@
+{
+  "id": "incident-report-pecs",
+  "name": "PECS Incident reports",
+  "description": "List of all PECS incidents filtered by dates, types, status and locations",
+  "metadata": {
+    "author": "Michael Willis",
+    "version": "1.0.0",
+    "owner": "Managing Safety"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "dataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+      "id": "access",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "match": [
+                "${role}",
+                "INCIDENT_REPORTS__PECS"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "summary",
+      "name": "PECS incident report summary",
+      "datasource": "dataSource",
+      "query": "SELECT id, report_reference, type, constant_type.description as type_description, status, public.constant_status.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, (case when location = 'NOU' then 'National Operations Unit' when location = 'G5' then 'Inter Prison Escorts' when location = 'NORTH' then 'PECS Gen4 - North' when location ='SOUTH' then 'PECS Gen4 - South' end) as pecs_region,  modified_at\nFROM report r join constant_status on r.status = constant_status.code join constant_type on r.type = constant_type.code\nWHERE status != 'DUPLICATE' AND location IN ('NOU', 'G5', 'NORTH', 'SOUTH')",
+      "schema": {
+        "field": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "report_reference",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "type_description",
+            "type": "string"
+          },
+          {
+            "name": "status_description",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": "string"
+          },
+          {
+            "name": "incident_date_and_time",
+            "type": "datetime"
+          },
+          {
+            "name": "pecs_region",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "type": "string",
+            "filter": {
+              "type": "multiselect",
+              "staticoptions": [
+                {"name": "NOU","display": "National Operations Unit"},
+                {"name": "G5","display": "Inter Prison Escorts"},
+                {"name": "NORTH","display": "PECS Gen4 - North"},
+                {"name": "SOUTH","display": "PECS Gen4 - South"}
+              ]
+            }
+          },
+          {
+            "name": "reported_at",
+            "type": "datetime"
+          },
+          {
+            "name": "reported_by",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "modified_at",
+            "type": "datetime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "types",
+      "name": "Incident Types",
+      "datasource": "dataSource",
+      "query": "SELECT code, description FROM constant_type",
+      "schema": {
+        "field": [
+          {
+            "name": "code",
+            "display": "Type code",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "display": "Type description",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "status",
+      "name": "Incident Status",
+      "datasource": "dataSource",
+      "query": "SELECT code, description FROM constant_status",
+      "schema": {
+        "field": [
+          {
+            "name": "code",
+            "display": "Status code",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "display": "Status description",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "summary",
+      "name": "PECS incident reports",
+      "description": "List of all PECS incidents filtered by dates, types, status and PECS areas",
+      "version": "1.0.0",
+      "dataset": "$ref:summary",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:report_reference",
+            "display": "Report Reference",
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:pecs_region",
+            "display": "PECS Region",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "PECS Code",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:type",
+            "display": "Type code",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "mandatory": false,
+              "dynamicoptions": {
+                "maximumOptions": 60,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:type_description",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:status",
+            "display": "Status code",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "mandatory": false,
+              "dynamicoptions": {
+                "maximumOptions": 10,
+                "returnAsStaticOptions": true,
+                "dataset": "status",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:status_description",
+            "display": "Incident status",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:incident_date_and_time",
+            "display": "Occurrence at",
+            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy hh:mm')",
+            "sortable": true,
+            "type": "datetime",
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "mandatory": false,
+              "type": "daterange",
+              "default": "today(-12,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:reported_at",
+            "formula": "format_date(${reported_at}, 'dd/MM/yyyy')",
+            "display": "Reported on",
+            "sortable": true,
+            "type": "date",
+            "visible": "false",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:title",
+            "display": "Incident title",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:description",
+            "display": "Incident description",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false,
+            "wordwrap": "break-words"
+          },
+          {
+            "name": "$ref:reported_by",
+            "display": "Reported by",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:modified_at",
+            "display": "Last Updated",
+            "formula": "format_date(${modified_at}, 'dd/MM/yyyy hh:mm')",
+            "type": "date",
+            "sortable": true,
+            "visible": "false",
+            "defaultsort": true
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:summary"
+      }]
+    }
+  ]
+}

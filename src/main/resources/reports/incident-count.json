@@ -55,11 +55,15 @@
       "id": "by-location-per-day",
       "name": "Count of incidents per location per day",
       "datasource": "dataSource",
-      "query": "SELECT cast(date_trunc('day', incident_date_and_time) as date) as start_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('day', r.incident_date_and_time), r.location, r.type, ct.description",
+      "query": "SELECT cast(date_trunc('day', incident_date_and_time) as date) as start_date, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as filter_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('day', r.incident_date_and_time), r.location, r.type, ct.description",
       "schema": {
         "field": [
           {
             "name": "start_date",
+            "type": "date"
+          },
+          {
+            "name": "filter_date",
             "type": "date"
           },
           {
@@ -85,11 +89,19 @@
       "id": "by-location-per-week",
       "name": "Count of incidents per location per week",
       "datasource": "dataSource",
-      "query": "SELECT cast(date_trunc('week', incident_date_and_time) as date) as start_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('week', r.incident_date_and_time), r.location, r.type, ct.description",
+      "query": "SELECT cast(date_trunc('week', incident_date_and_time) as date) as start_date, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('week', r.incident_date_and_time), r.location, r.type, ct.description",
       "schema": {
         "field": [
           {
             "name": "start_date",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
             "type": "date"
           },
           {
@@ -115,11 +127,19 @@
       "id": "by-location-per-month",
       "name": "Count of incidents per location per month",
       "datasource": "dataSource",
-      "query": "SELECT cast(date_trunc('month', incident_date_and_time) as date) as start_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('month', r.incident_date_and_time), r.location, r.type, ct.description",
+      "query": "SELECT cast(date_trunc('month', incident_date_and_time) as date) as start_date, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, location, r.type, ct.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code WHERE status != 'DUPLICATE'\ngroup by date_trunc('month', r.incident_date_and_time), r.location, r.type, ct.description",
       "schema": {
         "field": [
           {
             "name": "start_date",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
             "type": "date"
           },
           {
@@ -251,6 +271,7 @@
             "display": "Incidents/Day",
             "sortable": true,
             "visible": "true",
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports?fromDate=${filter_date}&toDate=${filter_date}&location=${location}&incidentType=${type}',${num_of_incidents},TRUE)",
             "defaultsort": false
           }
         ]
@@ -330,7 +351,8 @@
             "display": "Incidents/Week",
             "sortable": true,
             "visible": "true",
-            "defaultsort": false
+            "defaultsort": false,
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports?fromDate=${min_date}&toDate=${max_date}&location=${location}&incidentType=${type}',${num_of_incidents},TRUE)"
           }
         ]
       },
@@ -409,7 +431,8 @@
             "display": "Incidents/month",
             "sortable": true,
             "visible": "true",
-            "defaultsort": false
+            "defaultsort": false,
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports?fromDate=${min_date}&toDate=${max_date}&location=${location}&incidentType=${type}',${num_of_incidents},TRUE)"
           }
         ]
       },
