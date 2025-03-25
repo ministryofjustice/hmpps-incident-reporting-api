@@ -263,6 +263,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         ),
       )
     report.addStatusHistory(Status.DRAFT, now, "user5")
+    report.addStatusHistory(Status.AWAITING_ANALYSIS, now, "user1")
     report.addStaffInvolved(
       sequence = 0,
       staffUsername = "user1",
@@ -337,11 +338,11 @@ class ReportRepositoryTest : IntegrationTestBase() {
     assertThat(report.history.elementAt(2).questions).hasSize(3)
     assertThat(report.history.elementAt(2).questions.elementAt(1).responses).hasSize(2)
     assertThat(report.history.elementAt(2).questions.elementAt(1).responses.elementAt(1).response).isEqualTo("OTHER")
-    assertThat(report.historyOfStatuses).hasSize(1)
+    assertThat(report.historyOfStatuses).hasSize(2)
     assertThat(report.historyOfStatuses.elementAt(0).status).isEqualTo(Status.DRAFT)
+    assertThat(report.historyOfStatuses.elementAt(1).status).isEqualTo(Status.AWAITING_ANALYSIS)
     assertThat(report.staffInvolved).hasSize(1)
     assertThat(report.staffInvolved.elementAt(0).lastName).isEqualTo("Jones")
-    assertThat(report.prisonersInvolved).hasSize(1)
-    assertThat(report.prisonersInvolved.elementAt(0).lastName).isEqualTo("Smith")
+    assertThat(report.prisonersInvolved).isEmpty()
   }
 }

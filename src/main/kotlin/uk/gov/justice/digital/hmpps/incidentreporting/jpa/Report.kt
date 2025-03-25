@@ -187,9 +187,17 @@ class Report(
     changedAt: LocalDateTime,
     changedBy: String,
   ): Report {
-    copyToHistory(changedAt, changedBy)
-    questions.clear()
-    type = newType
+    if (type != newType) {
+      // archive existing questions and responses
+      copyToHistory(changedAt, changedBy)
+      // remove all questions and responses since new type will have a different set
+      questions.clear()
+      type = newType
+      // status is not changed, client applications should decide the new status
+      // remove all prisoner involvements because roles may not be allowed in new type
+      prisonersInvolved.clear()
+      // keep staff involvements because all roles are available in all types
+    }
     return this
   }
 
@@ -198,8 +206,10 @@ class Report(
     changedAt: LocalDateTime,
     changedBy: String,
   ): Report {
-    status = newStatus
-    addStatusHistory(newStatus, changedAt, changedBy)
+    if (status != newStatus) {
+      status = newStatus
+      addStatusHistory(newStatus, changedAt, changedBy)
+    }
     return this
   }
 
