@@ -5,9 +5,9 @@ import uk.gov.justice.digital.hmpps.gradle.PortForwardRedisTask
 import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "7.1.4"
-  kotlin("plugin.jpa") version "2.1.10"
-  kotlin("plugin.spring") version "2.1.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.0.0"
+  kotlin("plugin.jpa") version "2.1.20"
+  kotlin("plugin.spring") version "2.1.20"
   idea
   id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
@@ -17,21 +17,21 @@ configurations {
 }
 
 dependencies {
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.4.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.4.2")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-validation")
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.3.2")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.2")
   implementation("io.opentelemetry:opentelemetry-api:1.48.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.13.3")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:8.0.1")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.14.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:8.0.2")
 
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.5")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
@@ -40,7 +40,7 @@ dependencies {
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
   testImplementation("javax.xml.bind:jaxb-api:2.3.1")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.4.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.4.2")
   testImplementation("org.wiremock:wiremock-standalone:3.12.1")
   testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("org.mockito:mockito-inline:5.2.0")
@@ -49,6 +49,8 @@ dependencies {
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
   testImplementation("org.testcontainers:localstack:1.20.6")
   testImplementation("org.testcontainers:postgresql:1.20.6")
+
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
 }
 
 kotlin {
