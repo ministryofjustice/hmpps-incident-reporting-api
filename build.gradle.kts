@@ -49,6 +49,8 @@ dependencies {
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
   testImplementation("org.testcontainers:localstack:1.20.6")
   testImplementation("org.testcontainers:postgresql:1.20.6")
+
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
 }
 
 kotlin {
