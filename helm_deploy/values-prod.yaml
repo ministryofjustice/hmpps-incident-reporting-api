@@ -4,12 +4,12 @@ generic-service:
 
   resources:
     requests:
-      memory: 2G
-    limits:
       memory: 4G
+    limits:
+      memory: 6G
 
   env:
-    JAVA_OPTS: "-Xmx2048m"
+    JAVA_OPTS: "-Xmx3g"
     API_BASE_URL_OAUTH: https://sign-in.hmpps.service.justice.gov.uk/auth
     API_BASE_URL_PRISONER_SEARCH: https://prisoner-search.prison.service.justice.gov.uk
     API_BASE_URL_MANAGE_USERS: https://manage-users-api.hmpps.service.justice.gov.uk
