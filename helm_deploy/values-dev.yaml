@@ -12,7 +12,7 @@ generic-service:
   allowlist: null
 
   env:
-    SPRING_ACTIVE_PROFILES: replica
+    SPRING_PROFILES_ACTIVE: "logstash, replica"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
     API_BASE_URL_OAUTH: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
     API_BASE_URL_PRISONER_SEARCH: https://prisoner-search-dev.prison.service.justice.gov.uk
