@@ -1,0 +1,9 @@
+spring:
+  replica:
+    datasource:
+      url: 'jdbc:postgresql://${REPLICA_DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=verify-full'
+      username: ${DATABASE_USERNAME}
+      password: ${DATABASE_PASSWORD}
+      hikari:
+        pool-name: IRS-REPLICA-DB-CP
+        maximum-pool-size: 10
