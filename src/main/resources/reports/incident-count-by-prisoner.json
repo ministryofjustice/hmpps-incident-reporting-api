@@ -1,0 +1,197 @@
+{
+  "id": "prisoner-count",
+  "name": "Prisoner count reports",
+  "description": "Count of occurrences of incidents by prisoner and type",
+  "metadata": {
+    "author": "Michael Willis",
+    "version": "1.0.0",
+    "owner": "Managing Safety"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "replicaDataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+      "id": "access",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "match": [
+                "${role}",
+                "INCIDENT_REPORTS__RO",
+                "INCIDENT_REPORTS__RW",
+                "INCIDENT_REPORTS__APPROVE"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "per-type",
+      "name": "Count of prisoner incidents by type per month",
+      "datasource": "dataSource",
+      "query": "select\n    cast(date_trunc('month', incident_date_and_time) as date) as month_year,\n    to_char(min(incident_date_and_time), 'DD/MM/YYYY')        as min_date,\n    to_char(max(incident_date_and_time), 'DD/MM/YYYY')        as max_date,\n    pi.prisoner_number,\n       initcap(pi.first_name) as first_name,\n       initcap(pi.last_name)  as last_name,\n       r.type,\n       ct.description            type_description,\n       COUNT(*)               as num_of_incidents\nfrom prisoner_involvement pi\n         join report r on r.id = pi.report_id\n         join constant_type ct on r.type = ct.code\nWHERE status != 'DUPLICATE'\nGROUP BY date_trunc('month', r.incident_date_and_time), pi.prisoner_number, pi.last_name, pi.first_name, r.type, ct.description",
+      "schema": {
+        "field": [
+          {
+            "name": "month_year",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "type_description",
+            "type": "string"
+          },
+          {
+            "name": "first_name",
+            "type": "string"
+          },
+          {
+            "name": "last_name",
+            "type": "string"
+          },
+          {
+            "name": "prisoner_number",
+            "type": "string"
+          },
+          {
+            "name": "num_of_incidents",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "id": "types",
+      "name": "Incident Types",
+      "datasource": "dataSource",
+      "query": "SELECT code, description FROM constant_type",
+      "schema": {
+        "field": [
+          {
+            "name": "code",
+            "display": "Type code",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "display": "Type description",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "per-type",
+      "name": "Count of prisoner incidents by type per month",
+      "description": "Count each prisoner and their incidents by type per month",
+      "version": "1.0.0",
+      "dataset": "$ref:per-type",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:prisoner_number",
+            "display": "Prisoner number",
+            "sortable": true,
+            "formula": "make_url('https://prisoner-${env}.digital.prison.service.justice.gov.uk/prisoner/${prisoner_number}',${prisoner_number},TRUE)",
+            "visible": "true",
+            "defaultsort": true,
+            "filter": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "$ref:last_name",
+            "formula": "${last_name}, ${first_name}",
+            "display": "Name",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+
+          {
+            "name": "$ref:month_year",
+            "display": "Month",
+            "formula": "format_date(${month_year}, 'MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:type",
+            "display": "Type code",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": true,
+            "filter": {
+              "type": "multiselect",
+              "dynamicoptions": {
+                "maximumOptions": 60,
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:type_description",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_of_incidents",
+            "display": "Incidents/month",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports?searchID=${prisoner_number}&fromDate=${min_date}&toDate=${max_date}&incidentType=${type}',${num_of_incidents},TRUE)"
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:per-type"
+      }]
+    }
+  ]
+}
