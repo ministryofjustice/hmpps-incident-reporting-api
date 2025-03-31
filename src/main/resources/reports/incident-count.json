@@ -10,7 +10,7 @@
   "datasource": [
     {
       "id": "irs",
-      "name": "dataSource",
+      "name": "replicaDataSource",
       "connection": "postgres"
     }
   ],
