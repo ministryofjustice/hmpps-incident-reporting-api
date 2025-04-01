@@ -140,7 +140,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
         mapOf(
           "familyCode" to "ASSAULT",
           "code" to "OLD_ASSAULT2",
-          "description" to "Assault (from April 2017)",
+          "description" to "Assault",
           "active" to false,
           "nomisCode" to "ASSAULTS1",
         ),

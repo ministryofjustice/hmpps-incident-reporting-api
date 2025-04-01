@@ -225,7 +225,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "reported_at": "05/12/2023",
     "reported_by": "USER1",
     "title": "Incident Report 11124143",
-    "description": "A new incident created in the new service of type Finds",
+    "description": "A new incident created in the new service of type find of illicit items",
     "location": "MDI",
     "modified_at": "05/12/2023 12:34"
   }
@@ -560,7 +560,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "first_name": "First 2",
     "last_name": "Last 2, First 2",
     "type": "FINDS",
-    "type_description": "Finds",
+    "type_description": "Find of illicit items",
     "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
   },
   {
@@ -571,7 +571,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "first_name": "First 1",
     "last_name": "Last 1, First 1",
     "type": "FINDS",
-    "type_description": "Finds",
+    "type_description": "Find of illicit items",
     "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
   }
 ]

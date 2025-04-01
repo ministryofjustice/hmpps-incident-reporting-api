@@ -496,7 +496,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -570,7 +570,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "event": {
                 "id": "${existingReport.event.id}",
                 "eventReference": "11124143",
@@ -671,7 +671,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -745,7 +745,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "event": {
                 "id": "${existingReport.event.id}",
                 "eventReference": "11124143",
@@ -1154,7 +1154,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -1178,7 +1178,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           incidentDateAndTime = now.minusHours(2),
           location = "LEI",
           title = "Updated report 11124143",
-          description = "Updated incident report of type Finds",
+          description = "Updated incident report of type find of illicit items",
         )
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1197,7 +1197,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "LEI",
               "prisonId": "LEI",
               "title": "Updated report 11124143",
-              "description": "Updated incident report of type Finds",
+              "description": "Updated incident report of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -1227,7 +1227,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           incidentDateAndTime = if (fieldName == "incidentDateAndTime") now.minusHours(2) else null,
           location = if (fieldName == "location") "LEI" else null,
           title = if (fieldName == "title") "Updated report 11124143" else null,
-          description = if (fieldName == "description") "Updated incident report of type Finds" else null,
+          description = if (fieldName == "description") {
+            "Updated incident report of type find of illicit items"
+          } else {
+            null
+          },
         )
         val expectedIncidentDateAndTime = if (fieldName == "incidentDateAndTime") {
           "2023-12-05T10:34:56"
@@ -1245,9 +1249,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "Incident Report 11124143"
         }
         val expectedDescription = if (fieldName == "description") {
-          "Updated incident report of type Finds"
+          "Updated incident report of type find of illicit items"
         } else {
-          "A new incident created in the new service of type Finds"
+          "A new incident created in the new service of type find of illicit items"
         }
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1352,7 +1356,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           incidentDateAndTime = now.minusHours(2),
           location = "LEI",
           title = "Updated report 11124143",
-          description = "Updated incident report of type Finds",
+          description = "Updated incident report of type find of illicit items",
 
           updateEvent = updateEvent,
         )
@@ -1375,7 +1379,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "LEI",
               "prisonId": "LEI",
               "title": "Updated report 11124143",
-              "description": "Updated incident report of type Finds",
+              "description": "Updated incident report of type find of illicit items",
               "createdAt": "2023-12-05T12:34:56",
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user"
@@ -1547,7 +1551,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -1594,7 +1598,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
@@ -1798,7 +1802,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:31:56",
               "status": "AWAITING_ANALYSIS",
@@ -1894,7 +1898,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:31:56",
               "status": "AWAITING_ANALYSIS",
@@ -2022,7 +2026,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "location": "MDI",
               "prisonId": "MDI",
               "title": "Incident Report 11124146",
-              "description": "A new incident created in the new service of type Finds",
+              "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:31:56",
               "status": "AWAITING_ANALYSIS",

@@ -36,7 +36,7 @@ fun buildReport(
     status = status,
     type = type,
     title = "Incident Report $reportReference",
-    description = "A new incident created in the new service of type ${type.description}",
+    description = "A new incident created in the new service of type ${type.description.lowercase()}",
     reportedAt = reportTime,
     createdAt = reportTime,
     modifiedAt = reportTime,
