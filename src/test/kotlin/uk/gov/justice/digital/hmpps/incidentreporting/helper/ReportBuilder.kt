@@ -104,7 +104,7 @@ fun buildReport(
 
   (1..generateHistory).forEach { historyIndex ->
     val history = report.addHistory(
-      type = Type.entries.elementAtWrapped(historyIndex),
+      type = Type.entries.filter { it.active }.elementAtWrapped(historyIndex),
       changedAt = reportTime.minusMinutes((generateHistory - historyIndex).toLong()),
       changedBy = "some-past-user",
     )
