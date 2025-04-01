@@ -6,10 +6,11 @@ import jakarta.validation.ValidationException
  * The type of reportable incident.
  *
  * NB:
- *   - new items should use their family code and increment the suffix
- *   - items cannot be removed, only deactivated, to preserve database integrity
+ *   - new types should use their family code and increment the suffix
+ *   - existing types cannot be removed, only deactivated, to preserve database integrity
  *   - any additions, changes to order, codes or descriptions require a new migration of relevant constants DB table!
  *   - code is expected to be 60 chars max
+ *   - more than one active type can exist in a family
  */
 enum class Type(
   val typeFamily: TypeFamily,

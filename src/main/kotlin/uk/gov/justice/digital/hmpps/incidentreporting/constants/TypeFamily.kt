@@ -1,13 +1,14 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
 /**
- * Incident types are grouped into families
+ * Incident types are grouped into families and share a description.
  *
  * NB:
- *   - new items should have a reasonably readable code
- *   - items cannot be removed to preserve database integrity
+ *   - new families should have a reasonably readable code
+ *   - existing families cannot be removed to preserve database integrity
  *   - any additions, changes to order, codes or descriptions require a new migration of relevant constants DB table!
  *   - code & description are expected to be 60 chars max
+ *   - a family might not have any active types
  */
 enum class TypeFamily(
   val description: String,
