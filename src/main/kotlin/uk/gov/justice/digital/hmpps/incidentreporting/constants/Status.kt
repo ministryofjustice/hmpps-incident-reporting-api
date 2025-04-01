@@ -19,7 +19,7 @@ enum class Status(
   AWAITING_ANALYSIS("Awaiting analysis", "AWAN"),
   IN_ANALYSIS("In analysis", "INAN"),
   INFORMATION_REQUIRED("Information required", "INREQ"),
-  INFORMATION_AMENDED("Information amened", "INAME"),
+  INFORMATION_AMENDED("Information amended", "INAME"),
   CLOSED("Closed", "CLOSE"),
   POST_INCIDENT_UPDATE("Post-incident update", "PIU"),
   INCIDENT_UPDATED("Incident updated", "IUP"),

@@ -9,9 +9,9 @@
 
 create table constant_type_family
 (
-  code        varchar(60) primary key,
-  sequence    integer     not null,
-  description varchar(60) not null
+    code        varchar(60) primary key,
+    sequence    integer     not null,
+    description varchar(60) not null
 );
 
 insert into constant_type_family(sequence, code, description)
@@ -48,7 +48,7 @@ values (0, 'ABSCOND', 'Abscond'),
        (30, 'TOOL_LOSS', 'Tool or implement loss');
 
 alter table constant_type
-  add column family_code varchar(60);
+    add column family_code varchar(60);
 
 update constant_type
 set family_code='ABSCOND',
@@ -238,3 +238,7 @@ update constant_type
 set family_code='TEMPORARY_RELEASE_FAILURE',
     description='Temporary release failure'
 where code = 'OLD_TEMPORARY_RELEASE_FAILURE2';
+
+update constant_status
+set description='Information amended'
+where code = 'INFORMATION_AMENDED';
