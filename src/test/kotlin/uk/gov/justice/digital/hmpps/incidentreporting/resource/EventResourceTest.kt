@@ -436,7 +436,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "reports": [{
                 "id": "${existingReport.id}",
                 "reportReference": "11124143",
-                "type": "FINDS",
+                "type": "FIND_6",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "location": "MDI",
                 "prisonId": "MDI",
@@ -467,7 +467,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
           buildReport(
             reportReference = "11017203",
             reportTime = now.plusMinutes(10),
-            type = Type.MISCELLANEOUS,
+            type = Type.MISCELLANEOUS_1,
           ),
         )
         anotherReport.event = existingReport.event
@@ -493,7 +493,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 {
                   "id": "${existingReport.id}",
                   "reportReference": "11124143",
-                  "type": "FINDS",
+                  "type": "FIND_6",
                   "incidentDateAndTime": "2023-12-05T11:34:56",
                   "location": "MDI",
                   "prisonId": "MDI",
@@ -512,7 +512,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 {
                   "id": "${anotherReport.id}",
                   "reportReference": "11017203",
-                  "type": "MISCELLANEOUS",
+                  "type": "MISCELLANEOUS_1",
                   "incidentDateAndTime": "2023-12-05T11:44:56",
                   "location": "MDI",
                   "prisonId": "MDI",
@@ -605,7 +605,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "reports": [{
                 "id": "${existingReport.id}",
                 "reportReference": "11124143",
-                "type": "FINDS",
+                "type": "FIND_6",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "location": "MDI",
                 "prisonId": "MDI",
@@ -636,7 +636,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
           buildReport(
             reportReference = "11017203",
             reportTime = now.plusMinutes(10),
-            type = Type.MISCELLANEOUS,
+            type = Type.MISCELLANEOUS_1,
           ),
         )
         anotherReport.event = existingReport.event
@@ -662,7 +662,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 {
                   "id": "${existingReport.id}",
                   "reportReference": "11124143",
-                  "type": "FINDS",
+                  "type": "FIND_6",
                   "incidentDateAndTime": "2023-12-05T11:34:56",
                   "location": "MDI",
                   "prisonId": "MDI",
@@ -681,7 +681,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 {
                   "id": "${anotherReport.id}",
                   "reportReference": "11017203",
-                  "type": "MISCELLANEOUS",
+                  "type": "MISCELLANEOUS_1",
                   "incidentDateAndTime": "2023-12-05T11:44:56",
                   "location": "MDI",
                   "prisonId": "MDI",

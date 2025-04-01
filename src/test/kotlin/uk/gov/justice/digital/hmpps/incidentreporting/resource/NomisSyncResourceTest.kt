@@ -471,7 +471,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               """
               {
                 "reportReference": "112414666",
-                "type": "SELF_HARM",
+                "type": "SELF_HARM_1",
                 "nomisType": "SELF_HARM",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "location": "MDI",
@@ -584,7 +584,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ],
                 "history": [
                   {
-                    "type": "DAMAGE",
+                    "type": "DAMAGE_1",
                     "nomisType": "DAMAGE",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2",
@@ -762,7 +762,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               """
               {
                 "reportReference": "$newIncidentId",
-                "type": "ASSAULT",
+                "type": "ASSAULT_5",
                 "nomisType": "ASSAULTS3",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "location": "MDI",
@@ -875,7 +875,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ],
                 "history": [
                   {
-                    "type": "DAMAGE",
+                    "type": "DAMAGE_1",
                     "nomisType": "DAMAGE",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2",
@@ -1281,7 +1281,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               {
                 "id": "${existingNomisReport.id}",
                 "reportReference": "$NOMIS_INCIDENT_NUMBER",
-                "type": "ASSAULT",
+                "type": "ASSAULT_5",
                 "nomisType": "ASSAULTS3",
                 "incidentDateAndTime": "2023-11-25T12:34:56",
                 "location": "FBI",
@@ -1376,7 +1376,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ],
                 "history": [
                   {
-                    "type": "DAMAGE",
+                    "type": "DAMAGE_1",
                     "nomisType": "DAMAGE",
                     "changedAt": "2023-12-03T12:34:56",
                     "changedBy": "user2",
@@ -1448,7 +1448,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     ]
                   },
                   {
-                    "type": "BOMB_THREAT",
+                    "type": "BOMB_1",
                     "nomisType": "BOMB",
                     "changedAt": "2023-12-04T12:34:56",
                     "changedBy": "user2",

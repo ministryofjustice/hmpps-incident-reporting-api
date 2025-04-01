@@ -227,7 +227,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   location = if (index < 2) "LEI" else "MDI",
                   status = if (fromDps) Status.DRAFT else Status.AWAITING_ANALYSIS,
                   source = if (fromDps) InformationSource.DPS else InformationSource.NOMIS,
-                  type = if (index < 3) Type.FINDS else Type.FIRE,
+                  type = if (index < 3) Type.FIND_6 else Type.FIRE_1,
                   generateStaffInvolvement = index,
                   generatePrisonerInvolvement = index,
                 )
@@ -406,10 +406,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "source=NOMIS                                                | 2",
             "source=NOMIS&location=MDI                                   | 2",
             "source=DPS&location=MDI                                     | 1",
-            "type=ASSAULT                                                | 0",
-            "type=FIRE                                                   | 1",
-            "type=FIRE&location=LEI                                      | 0",
-            "type=FIRE&location=MDI                                      | 1",
+            "type=ASSAULT_5                                              | 0",
+            "type=FIRE_1                                                 | 1",
+            "type=FIRE_1&location=LEI                                    | 0",
+            "type=FIRE_1&location=MDI                                    | 1",
             "incidentDateFrom=2023-12-05                                 | 1",
             "incidentDateFrom=2023-12-04                                 | 2",
             "incidentDateFrom=2023-12-03                                 | 3",
@@ -491,7 +491,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
               "prisonId": "MDI",
@@ -564,7 +564,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
@@ -666,7 +666,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
               "prisonId": "MDI",
@@ -739,7 +739,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
@@ -800,7 +800,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       incidentDateAndTime = now.minusHours(1),
       title = "An incident occurred",
       description = "Longer explanation of incident",
-      type = Type.SELF_HARM,
+      type = Type.SELF_HARM_1,
       location = "MDI",
       createNewEvent = true,
     )
@@ -894,11 +894,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(createReportRequest.copy(type = Type.OLD_ASSAULT).toJson())
+          .bodyValue(createReportRequest.copy(type = Type.ASSAULT_1).toJson())
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
-            assertThat(it).contains("Inactive incident type OLD_ASSAULT")
+            assertThat(it).contains("Inactive incident type ASSAULT_1")
           }
 
         assertThatNoDomainEventsWereSent()
@@ -920,7 +920,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             // language=json
             """
             {
-              "type": "SELF_HARM",
+              "type": "SELF_HARM_1",
               "nomisType": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
@@ -987,7 +987,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             // language=json
             """
             {
-              "type": "SELF_HARM",
+              "type": "SELF_HARM_1",
               "nomisType": "SELF_HARM",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
@@ -1149,7 +1149,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
               "prisonId": "MDI",
@@ -1192,7 +1192,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "incidentDateAndTime": "2023-12-05T10:34:56",
               "location": "LEI",
               "prisonId": "LEI",
@@ -1265,7 +1265,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "incidentDateAndTime": "$expectedIncidentDateAndTime",
               "location": "$expectedLocation",
               "prisonId": "$expectedLocation",
@@ -1545,7 +1545,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
@@ -1592,7 +1592,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
-              "type": "FINDS",
+              "type": "FIND_6",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
@@ -1674,7 +1674,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     // language=json
     private val validPayload = """
-      {"newType": "FIRE"}
+      {"newType": "FIRE_1"}
     """
 
     @BeforeEach
@@ -1717,7 +1717,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue(
             // language=json
             """
-              {"type": "FIRE"}
+              {"type": "FIRE_1"}
             """,
           )
           .exchange()
@@ -1751,13 +1751,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue(
             // language=json
             """
-              {"newType": "OLD_ASSAULT3"}
+              {"newType": "ASSAULT_4"}
             """,
           )
           .exchange()
           .expectStatus().isBadRequest
           .expectBody().jsonPath("developerMessage").value<String> {
-            assertThat(it).contains("Inactive incident type OLD_ASSAULT3")
+            assertThat(it).contains("Inactive incident type ASSAULT_4")
           }
 
         assertThatNoDomainEventsWereSent()
@@ -1785,7 +1785,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           .bodyValue(
             // language=json
             """
-              {"newType": "FINDS"}
+              {"newType": "FIND_6"}
             """,
           )
           .exchange()
@@ -1796,7 +1796,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${reportWithQuestions.id}",
               "reportReference": "11124146",
-              "type": "FINDS",
+              "type": "FIND_6",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "location": "MDI",
@@ -1892,7 +1892,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${reportWithQuestions.id}",
               "reportReference": "11124146",
-              "type": "FIRE",
+              "type": "FIRE_1",
               "nomisType": "FIRE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "location": "MDI",
@@ -1911,7 +1911,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false,
               "history": [
                 {
-                  "type": "FINDS",
+                  "type": "FIND_6",
                   "nomisType": "FIND0422",
                   "changedAt": "2023-12-05T12:34:56",
                   "changedBy": "request-user",
@@ -2020,7 +2020,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "id": "${reportWithQuestionsAndHistory.id}",
               "reportReference": "11124146",
-              "type": "FIRE",
+              "type": "FIRE_1",
               "nomisType": "FIRE",
               "incidentDateAndTime": "2023-12-05T11:31:56",
               "location": "MDI",
@@ -2039,7 +2039,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "lastModifiedInNomis": false,
               "history": [
                 {
-                  "type": "ASSAULT",
+                  "type": "ASSAULT_5",
                   "nomisType": "ASSAULTS3",
                   "changedAt": "2023-12-05T12:31:56",
                   "changedBy": "some-past-user",
@@ -2061,7 +2061,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   ]
                 },
                 {
-                  "type": "FINDS",
+                  "type": "FIND_6",
                   "nomisType": "FIND0422",
                   "changedAt": "2023-12-05T12:34:56",
                   "changedBy": "request-user",
@@ -2136,7 +2136,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """
             {
               "id": "${nomisReport.id}",
-              "type": "FIRE",
+              "type": "FIRE_1",
               "createdInNomis": true,
               "lastModifiedInNomis": false
             }

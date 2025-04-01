@@ -16,7 +16,7 @@ fun buildReport(
   location: String = "MDI",
   source: InformationSource = InformationSource.DPS,
   status: Status = Status.DRAFT,
-  type: Type = Type.FINDS,
+  type: Type = Type.FIND_6,
   reportingUsername: String = "USER1",
   // all related entities apart from event are optionally generated:
   generateStaffInvolvement: Int = 0,

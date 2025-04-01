@@ -11,7 +11,8 @@ data class TypeConstantDescription(
   @Schema(description = "Machine-readable identifier of this incident type", example = "DISORDER")
   val code: String,
   @Schema(
-    description = "Human-readable description of this family of incident types (all incident types in one family share a description)",
+    description = "Human-readable description of this family of incident types " +
+      "(all incident types in one family share a description)",
     example = "Disorder",
   )
   val description: String,

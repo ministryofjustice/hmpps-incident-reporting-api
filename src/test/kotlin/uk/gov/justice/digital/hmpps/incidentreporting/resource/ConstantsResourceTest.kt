@@ -132,14 +132,14 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
       listOf(
         mapOf(
           "familyCode" to "DISORDER",
-          "code" to "DISORDER",
+          "code" to "DISORDER_2",
           "description" to "Disorder",
           "active" to true,
           "nomisCode" to "DISORDER1",
         ),
         mapOf(
           "familyCode" to "ASSAULT",
-          "code" to "OLD_ASSAULT2",
+          "code" to "ASSAULT_3",
           "description" to "Assault",
           "active" to false,
           "nomisCode" to "ASSAULTS1",

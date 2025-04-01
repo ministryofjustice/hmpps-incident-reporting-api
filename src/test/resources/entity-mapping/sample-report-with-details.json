@@ -1,6 +1,6 @@
 {
   "reportReference": "11124143",
-  "type": "FINDS",
+  "type": "FIND_6",
   "nomisType": "FIND0422",
   "incidentDateAndTime": "2023-12-05T11:34:56",
   "location": "MDI",
@@ -103,7 +103,7 @@
   ],
   "history": [
     {
-      "type": "ASSAULT",
+      "type": "ASSAULT_5",
       "nomisType": "ASSAULTS3",
       "changedAt": "2023-12-05T12:33:56",
       "changedBy": "some-past-user",
@@ -183,7 +183,7 @@
       ]
     },
     {
-      "type": "ATTEMPTED_ESCAPE_FROM_CUSTODY",
+      "type": "ATTEMPTED_ESCAPE_FROM_PRISON_1",
       "nomisType": "ATT_ESCAPE",
       "changedAt": "2023-12-05T12:34:56",
       "changedBy": "some-past-user",

@@ -158,7 +158,7 @@ class NomisSyncServiceTest {
     id = sampleReportId,
     reportReference = "112414323",
     incidentDateAndTime = whenIncidentHappened,
-    type = Type.SELF_HARM,
+    type = Type.SELF_HARM_1,
     title = "Cutting",
     description = "Offender was found in own cell with a razor",
     location = "MDI",
@@ -249,7 +249,7 @@ class NomisSyncServiceTest {
   private fun assertSampleReportConvertedToDto(report: ReportWithDetails) {
     assertThat(report.id).isEqualTo(sampleReportId)
     assertThat(report.reportReference).isEqualTo("112414323")
-    assertThat(report.type).isEqualTo(Type.SELF_HARM)
+    assertThat(report.type).isEqualTo(Type.SELF_HARM_1)
     assertThat(report.incidentDateAndTime).isEqualTo(whenIncidentHappened)
     assertThat(report.location).isEqualTo("MDI")
     assertThat(report.title).isEqualTo("Cutting")
@@ -407,7 +407,7 @@ class NomisSyncServiceTest {
       id = sampleReportId,
       reportReference = "112414323",
       incidentDateAndTime = whenIncidentHappened,
-      type = Type.SELF_HARM,
+      type = Type.SELF_HARM_1,
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
       location = "MDI",
