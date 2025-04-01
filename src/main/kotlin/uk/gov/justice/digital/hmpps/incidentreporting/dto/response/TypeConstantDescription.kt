@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 @Schema(description = "Report type constant", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class TypeConstantDescription(
+  @Schema(description = "Machine-readable identifier for this family of incident types", example = "DISORDER")
+  val familyCode: String,
   @Schema(description = "Machine-readable identifier of this value", example = "DISORDER")
   val code: String,
   @Schema(description = "Human-readable description of this value", example = "Disorder")

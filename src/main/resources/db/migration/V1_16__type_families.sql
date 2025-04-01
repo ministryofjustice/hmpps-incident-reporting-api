@@ -46,3 +46,148 @@ values (0, 'ABSCOND', 'Abscond'),
        (28, 'SELF_HARM', 'Self harm'),
        (29, 'TEMPORARY_RELEASE_FAILURE', 'Temporary release failure'),
        (30, 'TOOL_LOSS', 'Tool or implement loss');
+
+alter table constant_type
+  add column family_code varchar(60);
+
+update constant_type
+set family_code='ABSCOND'
+where code = 'ABSCONDER';
+update constant_type
+set family_code='ASSAULT'
+where code = 'ASSAULT';
+update constant_type
+set family_code='ATTEMPTED_ESCAPE_FROM_PRISON'
+where code = 'ATTEMPTED_ESCAPE_FROM_CUSTODY';
+update constant_type
+set family_code='ATTEMPTED_ESCAPE_FROM_ESCORT'
+where code = 'ATTEMPTED_ESCAPE_FROM_ESCORT';
+update constant_type
+set family_code='BOMB'
+where code = 'BOMB_THREAT';
+update constant_type
+set family_code='BREACH_OF_SECURITY'
+where code = 'BREACH_OF_SECURITY';
+update constant_type
+set family_code='DEATH_PRISONER'
+where code = 'DEATH_IN_CUSTODY';
+update constant_type
+set family_code='DEATH_OTHER'
+where code = 'DEATH_OTHER';
+update constant_type
+set family_code='DISORDER'
+where code = 'DISORDER';
+update constant_type
+set family_code='DRONE_SIGHTING'
+where code = 'DRONE_SIGHTING';
+update constant_type
+set family_code='ESCAPE_FROM_PRISON'
+where code = 'ESCAPE_FROM_CUSTODY';
+update constant_type
+set family_code='ESCAPE_FROM_ESCORT'
+where code = 'ESCAPE_FROM_ESCORT';
+update constant_type
+set family_code='FIND'
+where code = 'FINDS';
+update constant_type
+set family_code='FIRE'
+where code = 'FIRE';
+update constant_type
+set family_code='FOOD_REFUSAL'
+where code = 'FOOD_REFUSAL';
+update constant_type
+set family_code='CLOSE_DOWN_SEARCH'
+where code = 'FULL_CLOSE_DOWN_SEARCH';
+update constant_type
+set family_code='KEY_OR_LOCK'
+where code = 'KEY_LOCK_INCIDENT';
+update constant_type
+set family_code='MISCELLANEOUS'
+where code = 'MISCELLANEOUS';
+update constant_type
+set family_code='RADIO_COMPROMISE'
+where code = 'RADIO_COMPROMISE';
+update constant_type
+set family_code='RELEASE_IN_ERROR'
+where code = 'RELEASED_IN_ERROR';
+update constant_type
+set family_code='SELF_HARM'
+where code = 'SELF_HARM';
+update constant_type
+set family_code='TEMPORARY_RELEASE_FAILURE'
+where code = 'TEMPORARY_RELEASE_FAILURE';
+update constant_type
+set family_code='TOOL_LOSS'
+where code = 'TOOL_LOSS';
+update constant_type
+set family_code='DAMAGE'
+where code = 'DAMAGE';
+update constant_type
+set family_code='ASSAULT'
+where code = 'OLD_ASSAULT';
+update constant_type
+set family_code='ASSAULT'
+where code = 'OLD_ASSAULT1';
+update constant_type
+set family_code='ASSAULT'
+where code = 'OLD_ASSAULT2';
+update constant_type
+set family_code='ASSAULT'
+where code = 'OLD_ASSAULT3';
+update constant_type
+set family_code='BARRICADE'
+where code = 'OLD_BARRICADE';
+update constant_type
+set family_code='CONCERTED_INDISCIPLINE'
+where code = 'OLD_CONCERTED_INDISCIPLINE';
+update constant_type
+set family_code='DISORDER'
+where code = 'OLD_DISORDER';
+update constant_type
+set family_code='DRONE_SIGHTING'
+where code = 'OLD_DRONE_SIGHTING';
+update constant_type
+set family_code='DRONE_SIGHTING'
+where code = 'OLD_DRONE_SIGHTING1';
+update constant_type
+set family_code='DRUGS'
+where code = 'OLD_DRUGS';
+update constant_type
+set family_code='FIND'
+where code = 'OLD_FINDS';
+update constant_type
+set family_code='FIND'
+where code = 'OLD_FINDS1';
+update constant_type
+set family_code='FIND'
+where code = 'OLD_FINDS2';
+update constant_type
+set family_code='FIND'
+where code = 'OLD_FINDS3';
+update constant_type
+set family_code='FIND'
+where code = 'OLD_FINDS4';
+update constant_type
+set family_code='FIREARM'
+where code = 'OLD_FIREARM_ETC';
+update constant_type
+set family_code='HOSTAGE'
+where code = 'OLD_HOSTAGE';
+update constant_type
+set family_code='KEY_OR_LOCK'
+where code = 'OLD_KEY_LOCK_INCIDENT';
+update constant_type
+set family_code='MOBILE_PHONE'
+where code = 'OLD_MOBILES';
+update constant_type
+set family_code='INCIDENT_AT_HEIGHT'
+where code = 'OLD_ROOF_CLIMB';
+update constant_type
+set family_code='TEMPORARY_RELEASE_FAILURE'
+where code = 'OLD_TEMPORARY_RELEASE_FAILURE';
+update constant_type
+set family_code='TEMPORARY_RELEASE_FAILURE'
+where code = 'OLD_TEMPORARY_RELEASE_FAILURE1';
+update constant_type
+set family_code='TEMPORARY_RELEASE_FAILURE'
+where code = 'OLD_TEMPORARY_RELEASE_FAILURE2';

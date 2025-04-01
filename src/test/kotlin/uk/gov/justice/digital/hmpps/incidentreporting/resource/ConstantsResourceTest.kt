@@ -131,12 +131,14 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
       Type.entries.size,
       listOf(
         mapOf(
+          "familyCode" to "DISORDER",
           "code" to "DISORDER",
           "description" to "Disorder",
           "active" to true,
           "nomisCode" to "DISORDER1",
         ),
         mapOf(
+          "familyCode" to "ASSAULT",
           "code" to "OLD_ASSAULT2",
           "description" to "Assault (from April 2017)",
           "active" to false,

@@ -100,6 +100,7 @@ class ConstantsTableTest : IntegrationTestBase() {
   fun `type table`() {
     val expected = Type.entries.map {
       mapOf(
+        "family_code" to it.typeFamily.name,
         "code" to it.name,
         "description" to it.description,
         "active" to it.active,
@@ -108,7 +109,7 @@ class ConstantsTableTest : IntegrationTestBase() {
     val actual = listAllConstants(
       // language=postgresql
       """
-      SELECT code, description, active FROM constant_type
+      SELECT family_code, code, description, active FROM constant_type
       """,
     )
     assertThat(actual).isEqualTo(expected)

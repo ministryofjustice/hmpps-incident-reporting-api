@@ -145,7 +145,7 @@ class ConstantsResource {
   )
   fun types(): List<TypeConstantDescription> {
     return Type.entries.map {
-      TypeConstantDescription(it.name, it.description, it.active, it.nomisType)
+      TypeConstantDescription(it.typeFamily.name, it.name, it.description, it.active, it.nomisType)
     }
   }
 
