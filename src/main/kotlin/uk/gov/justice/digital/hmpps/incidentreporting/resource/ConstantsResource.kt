@@ -16,12 +16,14 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.TypeFamily
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerOutcomeConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerRoleConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.StaffRoleConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.StatusConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeFamilyConstantDescription
 
 @RestController
 @Validated
@@ -144,6 +146,23 @@ class ConstantsResource {
   fun types(): List<TypeConstantDescription> {
     return Type.entries.map {
       TypeConstantDescription(it.name, it.description, it.active, it.nomisType)
+    }
+  }
+
+  @GetMapping("/type-families")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "List codes and descriptions of incident types families",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns codes and descriptions",
+      ),
+    ],
+  )
+  fun typeFamilies(): List<TypeFamilyConstantDescription> {
+    return TypeFamily.entries.map {
+      TypeFamilyConstantDescription(it.name, it.description)
     }
   }
 }

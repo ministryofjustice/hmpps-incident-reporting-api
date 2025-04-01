@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.TypeFamily
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 
 @DisplayName("Compare the result of migrations to in-built constant enumerations")
@@ -108,6 +109,23 @@ class ConstantsTableTest : IntegrationTestBase() {
       // language=postgresql
       """
       SELECT code, description, active FROM constant_type
+      """,
+    )
+    assertThat(actual).isEqualTo(expected)
+  }
+
+  @Test
+  fun `type family table`() {
+    val expected = TypeFamily.entries.map {
+      mapOf(
+        "code" to it.name,
+        "description" to it.description,
+      )
+    }
+    val actual = listAllConstants(
+      // language=postgresql
+      """
+      SELECT code, description FROM constant_type_family
       """,
     )
     assertThat(actual).isEqualTo(expected)

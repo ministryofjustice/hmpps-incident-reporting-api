@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.TypeFamily
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 
 @DisplayName("Constants resource")
@@ -140,6 +141,20 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
           "description" to "Assault (from April 2017)",
           "active" to false,
           "nomisCode" to "ASSAULTS1",
+        ),
+      ),
+    ),
+    ConstantsTestCase(
+      "type-families",
+      TypeFamily.entries.size,
+      listOf(
+        mapOf(
+          "code" to "DISORDER",
+          "description" to "Disorder",
+        ),
+        mapOf(
+          "code" to "KEY_OR_LOCK",
+          "description" to "Key or lock compromise",
         ),
       ),
     ),
