@@ -83,7 +83,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(4)
+          .expectBody().jsonPath("$.length()").isEqualTo(5)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -94,7 +94,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(4)
+          .expectBody().jsonPath("$.length()").isEqualTo(5)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -108,7 +108,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(4)
+          .jsonPath("$.length()").isEqualTo(5)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -515,6 +515,66 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
                 }
               ]
+              """.trimIndent(),
+            )
+        }
+      }
+    }
+
+    @DisplayName("GET /reports/prisoner-count")
+    @Nested
+    inner class RunReportPrisonerCount {
+      private val url = "/reports/prisoner-count/"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url + "per-type"),
+          systemRole,
+        )
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns a page of the report for a count of prisoners`() {
+          webTestClient.get().uri(url + "/per-type")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              """
+[
+  {
+    "month_year": "Dec-2023",
+    "min_date": "05/12/2023",
+    "max_date": "05/12/2023",
+    "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0002AA' target=\"_blank\">A0002AA</a>",
+    "first_name": "First 2",
+    "last_name": "Last 2, First 2",
+    "type": "FINDS",
+    "type_description": "Finds",
+    "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&incidentType=FINDS' target=\"_blank\">1</a>"
+  },
+  {
+    "month_year": "Dec-2023",
+    "min_date": "05/12/2023",
+    "max_date": "05/12/2023",
+    "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
+    "first_name": "First 1",
+    "last_name": "Last 1, First 1",
+    "type": "FINDS",
+    "type_description": "Finds",
+    "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&incidentType=FINDS' target=\"_blank\">1</a>"
+  }
+]
               """.trimIndent(),
             )
         }
