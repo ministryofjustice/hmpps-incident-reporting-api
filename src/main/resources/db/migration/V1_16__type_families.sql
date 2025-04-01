@@ -288,6 +288,290 @@ set family_code='TEMPORARY_RELEASE_FAILURE',
     description='Temporary release failure'
 where code = 'OLD_TEMPORARY_RELEASE_FAILURE2';
 
+-- update all reports and histories with new codes
+update report
+set type='ABSCOND_1'
+where type = 'ABSCONDER';
+update report
+set type='ASSAULT_5'
+where type = 'ASSAULT';
+update report
+set type='ATTEMPTED_ESCAPE_FROM_PRISON_1'
+where type = 'ATTEMPTED_ESCAPE_FROM_CUSTODY';
+update report
+set type='ATTEMPTED_ESCAPE_FROM_ESCORT_1'
+where type = 'ATTEMPTED_ESCAPE_FROM_ESCORT';
+update report
+set type='BOMB_1'
+where type = 'BOMB_THREAT';
+update report
+set type='BREACH_OF_SECURITY_1'
+where type = 'BREACH_OF_SECURITY';
+update report
+set type='DEATH_PRISONER_1'
+where type = 'DEATH_IN_CUSTODY';
+update report
+set type='DEATH_OTHER_1'
+where type = 'DEATH_OTHER';
+update report
+set type='DISORDER_2'
+where type = 'DISORDER';
+update report
+set type='DRONE_SIGHTING_3'
+where type = 'DRONE_SIGHTING';
+update report
+set type='ESCAPE_FROM_PRISON_1'
+where type = 'ESCAPE_FROM_CUSTODY';
+update report
+set type='ESCAPE_FROM_ESCORT_1'
+where type = 'ESCAPE_FROM_ESCORT';
+update report
+set type='FIND_6'
+where type = 'FINDS';
+update report
+set type='FIRE_1'
+where type = 'FIRE';
+update report
+set type='FOOD_REFUSAL_1'
+where type = 'FOOD_REFUSAL';
+update report
+set type='CLOSE_DOWN_SEARCH_1'
+where type = 'FULL_CLOSE_DOWN_SEARCH';
+update report
+set type='KEY_OR_LOCK_2'
+where type = 'KEY_LOCK_INCIDENT';
+update report
+set type='MISCELLANEOUS_1'
+where type = 'MISCELLANEOUS';
+update report
+set type='RADIO_COMPROMISE_1'
+where type = 'RADIO_COMPROMISE';
+update report
+set type='RELEASE_IN_ERROR_1'
+where type = 'RELEASED_IN_ERROR';
+update report
+set type='SELF_HARM_1'
+where type = 'SELF_HARM';
+update report
+set type='TEMPORARY_RELEASE_FAILURE_4'
+where type = 'TEMPORARY_RELEASE_FAILURE';
+update report
+set type='TOOL_LOSS_1'
+where type = 'TOOL_LOSS';
+update report
+set type='DAMAGE_1'
+where type = 'DAMAGE';
+update report
+set type='ASSAULT_1'
+where type = 'OLD_ASSAULT';
+update report
+set type='ASSAULT_2'
+where type = 'OLD_ASSAULT1';
+update report
+set type='ASSAULT_3'
+where type = 'OLD_ASSAULT2';
+update report
+set type='ASSAULT_4'
+where type = 'OLD_ASSAULT3';
+update report
+set type='BARRICADE_1'
+where type = 'OLD_BARRICADE';
+update report
+set type='CONCERTED_INDISCIPLINE_1'
+where type = 'OLD_CONCERTED_INDISCIPLINE';
+update report
+set type='DISORDER_1'
+where type = 'OLD_DISORDER';
+update report
+set type='DRONE_SIGHTING_1'
+where type = 'OLD_DRONE_SIGHTING';
+update report
+set type='DRONE_SIGHTING_2'
+where type = 'OLD_DRONE_SIGHTING1';
+update report
+set type='DRUGS_1'
+where type = 'OLD_DRUGS';
+update report
+set type='FIND_1'
+where type = 'OLD_FINDS';
+update report
+set type='FIND_2'
+where type = 'OLD_FINDS1';
+update report
+set type='FIND_3'
+where type = 'OLD_FINDS2';
+update report
+set type='FIND_4'
+where type = 'OLD_FINDS3';
+update report
+set type='FIND_5'
+where type = 'OLD_FINDS4';
+update report
+set type='FIREARM_1'
+where type = 'OLD_FIREARM_ETC';
+update report
+set type='HOSTAGE_1'
+where type = 'OLD_HOSTAGE';
+update report
+set type='KEY_OR_LOCK_1'
+where type = 'OLD_KEY_LOCK_INCIDENT';
+update report
+set type='MOBILE_PHONE_1'
+where type = 'OLD_MOBILES';
+update report
+set type='INCIDENT_AT_HEIGHT_1'
+where type = 'OLD_ROOF_CLIMB';
+update report
+set type='TEMPORARY_RELEASE_FAILURE_1'
+where type = 'OLD_TEMPORARY_RELEASE_FAILURE';
+update report
+set type='TEMPORARY_RELEASE_FAILURE_2'
+where type = 'OLD_TEMPORARY_RELEASE_FAILURE1';
+update report
+set type='TEMPORARY_RELEASE_FAILURE_3'
+where type = 'OLD_TEMPORARY_RELEASE_FAILURE2';
+update history
+set type='ABSCOND_1'
+where type = 'ABSCONDER';
+update history
+set type='ASSAULT_5'
+where type = 'ASSAULT';
+update history
+set type='ATTEMPTED_ESCAPE_FROM_PRISON_1'
+where type = 'ATTEMPTED_ESCAPE_FROM_CUSTODY';
+update history
+set type='ATTEMPTED_ESCAPE_FROM_ESCORT_1'
+where type = 'ATTEMPTED_ESCAPE_FROM_ESCORT';
+update history
+set type='BOMB_1'
+where type = 'BOMB_THREAT';
+update history
+set type='BREACH_OF_SECURITY_1'
+where type = 'BREACH_OF_SECURITY';
+update history
+set type='DEATH_PRISONER_1'
+where type = 'DEATH_IN_CUSTODY';
+update history
+set type='DEATH_OTHER_1'
+where type = 'DEATH_OTHER';
+update history
+set type='DISORDER_2'
+where type = 'DISORDER';
+update history
+set type='DRONE_SIGHTING_3'
+where type = 'DRONE_SIGHTING';
+update history
+set type='ESCAPE_FROM_PRISON_1'
+where type = 'ESCAPE_FROM_CUSTODY';
+update history
+set type='ESCAPE_FROM_ESCORT_1'
+where type = 'ESCAPE_FROM_ESCORT';
+update history
+set type='FIND_6'
+where type = 'FINDS';
+update history
+set type='FIRE_1'
+where type = 'FIRE';
+update history
+set type='FOOD_REFUSAL_1'
+where type = 'FOOD_REFUSAL';
+update history
+set type='CLOSE_DOWN_SEARCH_1'
+where type = 'FULL_CLOSE_DOWN_SEARCH';
+update history
+set type='KEY_OR_LOCK_2'
+where type = 'KEY_LOCK_INCIDENT';
+update history
+set type='MISCELLANEOUS_1'
+where type = 'MISCELLANEOUS';
+update history
+set type='RADIO_COMPROMISE_1'
+where type = 'RADIO_COMPROMISE';
+update history
+set type='RELEASE_IN_ERROR_1'
+where type = 'RELEASED_IN_ERROR';
+update history
+set type='SELF_HARM_1'
+where type = 'SELF_HARM';
+update history
+set type='TEMPORARY_RELEASE_FAILURE_4'
+where type = 'TEMPORARY_RELEASE_FAILURE';
+update history
+set type='TOOL_LOSS_1'
+where type = 'TOOL_LOSS';
+update history
+set type='DAMAGE_1'
+where type = 'DAMAGE';
+update history
+set type='ASSAULT_1'
+where type = 'OLD_ASSAULT';
+update history
+set type='ASSAULT_2'
+where type = 'OLD_ASSAULT1';
+update history
+set type='ASSAULT_3'
+where type = 'OLD_ASSAULT2';
+update history
+set type='ASSAULT_4'
+where type = 'OLD_ASSAULT3';
+update history
+set type='BARRICADE_1'
+where type = 'OLD_BARRICADE';
+update history
+set type='CONCERTED_INDISCIPLINE_1'
+where type = 'OLD_CONCERTED_INDISCIPLINE';
+update history
+set type='DISORDER_1'
+where type = 'OLD_DISORDER';
+update history
+set type='DRONE_SIGHTING_1'
+where type = 'OLD_DRONE_SIGHTING';
+update history
+set type='DRONE_SIGHTING_2'
+where type = 'OLD_DRONE_SIGHTING1';
+update history
+set type='DRUGS_1'
+where type = 'OLD_DRUGS';
+update history
+set type='FIND_1'
+where type = 'OLD_FINDS';
+update history
+set type='FIND_2'
+where type = 'OLD_FINDS1';
+update history
+set type='FIND_3'
+where type = 'OLD_FINDS2';
+update history
+set type='FIND_4'
+where type = 'OLD_FINDS3';
+update history
+set type='FIND_5'
+where type = 'OLD_FINDS4';
+update history
+set type='FIREARM_1'
+where type = 'OLD_FIREARM_ETC';
+update history
+set type='HOSTAGE_1'
+where type = 'OLD_HOSTAGE';
+update history
+set type='KEY_OR_LOCK_1'
+where type = 'OLD_KEY_LOCK_INCIDENT';
+update history
+set type='MOBILE_PHONE_1'
+where type = 'OLD_MOBILES';
+update history
+set type='INCIDENT_AT_HEIGHT_1'
+where type = 'OLD_ROOF_CLIMB';
+update history
+set type='TEMPORARY_RELEASE_FAILURE_1'
+where type = 'OLD_TEMPORARY_RELEASE_FAILURE';
+update history
+set type='TEMPORARY_RELEASE_FAILURE_2'
+where type = 'OLD_TEMPORARY_RELEASE_FAILURE1';
+update history
+set type='TEMPORARY_RELEASE_FAILURE_3'
+where type = 'OLD_TEMPORARY_RELEASE_FAILURE2';
+
 update constant_status
 set description='Information amended'
 where code = 'INFORMATION_AMENDED';
