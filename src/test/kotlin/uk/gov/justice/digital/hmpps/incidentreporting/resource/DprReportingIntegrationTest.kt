@@ -561,7 +561,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "last_name": "Last 2, First 2",
     "type": "FINDS",
     "type_description": "Finds",
-    "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&incidentType=FINDS' target=\"_blank\">1</a>"
+    "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
   },
   {
     "month_year": "Dec-2023",
@@ -572,7 +572,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     "last_name": "Last 1, First 1",
     "type": "FINDS",
     "type_description": "Finds",
-    "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&incidentType=FINDS' target=\"_blank\">1</a>"
+    "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
   }
 ]
               """.trimIndent(),
