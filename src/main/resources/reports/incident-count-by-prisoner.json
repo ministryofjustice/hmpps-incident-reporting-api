@@ -33,6 +33,21 @@
           ]
         }
       ]
+    },
+    {
+      "id": "caseloads",
+      "type": "row-level",
+      "action": ["location IN (${caseloads})"],
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "exists": ["${caseloads}"]
+            }
+          ]
+        }
+      ]
     }
   ],
   "dataset": [
@@ -40,7 +55,7 @@
       "id": "per-type",
       "name": "Count of prisoner incidents by type per month",
       "datasource": "dataSource",
-      "query": "select\n    cast(date_trunc('month', incident_date_and_time) as date) as month_year,\n    to_char(min(incident_date_and_time), 'DD/MM/YYYY')        as min_date,\n    to_char(max(incident_date_and_time), 'DD/MM/YYYY')        as max_date,\n    pi.prisoner_number,\n       initcap(pi.first_name) as first_name,\n       initcap(pi.last_name)  as last_name,\n       r.type,\n       ct.description            type_description,\n       COUNT(*)               as num_of_incidents\nfrom prisoner_involvement pi\n         join report r on r.id = pi.report_id\n         join constant_type ct on r.type = ct.code\nWHERE status != 'DUPLICATE'\nGROUP BY date_trunc('month', r.incident_date_and_time), pi.prisoner_number, pi.last_name, pi.first_name, r.type, ct.description",
+      "query": "select cast(date_trunc('month', incident_date_and_time) as date) as month_year,\n       to_char(min(incident_date_and_time), 'DD/MM/YYYY')        as min_date,\n       to_char(max(incident_date_and_time), 'DD/MM/YYYY')        as max_date,\n       pi.prisoner_number,\n       initcap(pi.first_name)                                    as first_name,\n       initcap(pi.last_name)                                     as last_name,\n       r.type,\n       ct.description                                               type_description,\n       r.location,\n       COUNT(*)                                                  as num_of_incidents\nfrom prisoner_involvement pi\n         join report r on r.id = pi.report_id\n         join constant_type ct on r.type = ct.code\nWHERE status != 'DUPLICATE'\nGROUP BY date_trunc('month', r.incident_date_and_time), pi.prisoner_number, pi.last_name, pi.first_name, r.type,\n         ct.description, r.location",
       "schema": {
         "field": [
           {
@@ -73,6 +88,10 @@
           },
           {
             "name": "prisoner_number",
+            "type": "string"
+          },
+          {
+            "name": "location",
             "type": "string"
           },
           {
@@ -175,6 +194,17 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
+            }
           },
           {
             "name": "$ref:num_of_incidents",
