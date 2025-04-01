@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
+import uk.gov.justice.digital.hmpps.incidentreporting.helper.elementAtWrapped
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
@@ -36,19 +39,29 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
   @Autowired
   lateinit var eventRepository: EventRepository
 
-  lateinit var existingReport: Report
+  lateinit var existingReport1: Report
+  lateinit var existingReport2: Report
 
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
     eventRepository.deleteAll()
 
-    existingReport = reportRepository.save(
+    existingReport1 = reportRepository.save(
       buildReport(
         reportReference = "11124143",
         reportTime = now,
         generateStaffInvolvement = 3,
         generatePrisonerInvolvement = 2,
+      ),
+    )
+
+    existingReport2 = reportRepository.save(
+      buildReport(
+        reportReference = "11124199",
+        reportTime = now,
+        generateStaffInvolvement = 1,
+        generatePrisonerInvolvement = 1,
       ),
     )
 
@@ -154,8 +167,9 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody()
           .json(
+            // language=json
             """
-              {
+            {
               "id": "incident-report",
               "name": "Incident report summary",
               "description": "List of all incidents filtered by dates, types, status and locations (INC0009)",
@@ -167,7 +181,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                 "printable": true
               }
             }
-            """.trimIndent(),
+            """,
           )
       }
     }
@@ -216,21 +230,37 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
-[
-  {
-    "type": "FINDS",
-    "status": "DRAFT",
-    "incident_date_and_time": "05/12/2023 11:34",
-    "reported_at": "05/12/2023",
-    "reported_by": "USER1",
-    "title": "Incident Report 11124143",
-    "description": "A new incident created in the new service of type find of illicit items",
-    "location": "MDI",
-    "modified_at": "05/12/2023 12:34"
-  }
-]
-              """.trimIndent(),
+              [
+                {
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_at": "05/12/2023",
+                  "reported_by": "USER1",
+                  "title": "Incident Report 11124143",
+                  "description": "A new incident created in the new service of type find of illicit items",
+                  "location": "MDI",
+                  "modified_at": "05/12/2023 12:34"
+                },
+                {
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_at": "05/12/2023",
+                  "reported_by": "USER1",
+                  "title": "Incident Report 11124199",
+                  "description": "A new incident created in the new service of type find of illicit items",
+                  "location": "MDI",
+                  "modified_at": "05/12/2023 12:34"
+                }
+              ]
+              """,
             )
         }
 
@@ -301,26 +331,27 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk()
             .expectBody().jsonPath("$.length()").isEqualTo(1)
             .json(
+              // language=json
               """
-                [
-                  {
-                    "id": "${pecsReport.id}",
-                    "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${pecsReport.id}' target=\"_blank\">${pecsReport.reportReference}</a>",
-                    "type": "${pecsReport.type.name}",
-                    "type_description": "${pecsReport.type.description}",
-                    "status": "${pecsReport.status.name}",
-                    "status_description": "${pecsReport.status.description}",
-                    "incident_date_and_time": "05/12/2023 11:34",
-                    "reported_at": "05/12/2023",
-                    "reported_by": "USER1",
-                    "title": "${pecsReport.title}",
-                    "description": "${pecsReport.description}",
-                    "location": "${pecsReport.location}",
-                    "pecs_region": "National Operations Unit",
-                    "modified_at": "05/12/2023 12:34"
-                  }
-                ]
-              """.trimIndent(),
+              [
+                {
+                  "id": "${pecsReport.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${pecsReport.id}' target=\"_blank\">${pecsReport.reportReference}</a>",
+                  "type": "${pecsReport.type.name}",
+                  "type_description": "${pecsReport.type.description}",
+                  "status": "${pecsReport.status.name}",
+                  "status_description": "${pecsReport.status.description}",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_at": "05/12/2023",
+                  "reported_by": "USER1",
+                  "title": "${pecsReport.title}",
+                  "description": "${pecsReport.description}",
+                  "location": "${pecsReport.location}",
+                  "pecs_region": "National Operations Unit",
+                  "modified_at": "05/12/2023 12:34"
+                }
+              ]
+              """,
             )
         }
       }
@@ -355,43 +386,71 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
-[
-  {
-    "location": "MDI",
-    "type": "FINDS",
-    "status": "DRAFT",
-    "incident_date_and_time": "05/12/2023 11:34",
-    "reported_by": "USER1",
-    "first_name": "First 1",
-    "last_name": "Last 1, First 1",
-    "staff_username": "staff-1",
-    "comment": "Comment #1"
-  },
-  {
-    "location": "MDI",
-    "type": "FINDS",
-    "status": "DRAFT",
-    "incident_date_and_time": "05/12/2023 11:34",
-    "reported_by": "USER1",
-    "first_name": "First 2",
-    "last_name": "Last 2, First 2",
-    "staff_username": "staff-2",
-    "comment": "Comment #2"
-  },
-  {
-    "location": "MDI",
-    "type": "FINDS",
-    "status": "DRAFT",
-    "incident_date_and_time": "05/12/2023 11:34",
-    "reported_by": "USER1",
-    "first_name": "First 3",
-    "last_name": "Last 3, First 3",
-    "staff_username": "staff-3",
-    "comment": "Comment #3"
-  }
-]
-              """.trimIndent(),
+              [
+                {
+                  "id": "${existingReport1.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_by": "USER1",
+                  "first_name": "First 1",
+                  "last_name": "Last 1, First 1",
+                  "staff_username": "staff-1",
+                  "comment": "Comment #1"
+                },
+                {
+                  "id": "${existingReport1.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_by": "USER1",
+                  "first_name": "First 2",
+                  "last_name": "Last 2, First 2",
+                  "staff_username": "staff-2",
+                  "comment": "Comment #2"
+                },
+                {
+                  "id": "${existingReport1.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_by": "USER1",
+                  "first_name": "First 3",
+                  "last_name": "Last 3, First 3",
+                  "staff_username": "staff-3",
+                  "comment": "Comment #3"
+                },
+                {
+                  "id": "${existingReport2.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport2.id}' target=\"_blank\">11124199</a>",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_by": "USER1",
+                  "first_name": "First 1",
+                  "last_name": "Last 1, First 1",
+                  "staff_username": "staff-1",
+                  "comment": "Comment #1"
+                }
+              ]
+              """,
             )
         }
 
@@ -404,30 +463,56 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
-[
-  {
-    "location": "MDI",
-    "type": "FINDS",
-    "status": "DRAFT",
-    "incident_date_and_time": "05/12/2023 11:34",
-    "reported_by": "USER1",
-    "first_name": "First 1",
-    "last_name": "Last 1, First 1",
-    "comment": "Comment #1"
-  },
-  {
-    "location": "MDI",
-    "type": "FINDS",
-    "status": "DRAFT",
-    "incident_date_and_time": "05/12/2023 11:34",
-    "reported_by": "USER1",
-    "first_name": "First 2",
-    "last_name": "Last 2, First 2",
-    "comment": "Comment #2"
-  }
-]
-              """.trimIndent(),
+              [
+                {
+                  "id": "${existingReport1.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_by": "USER1",
+                  "first_name": "First 1",
+                  "last_name": "Last 1, First 1",
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
+                  "comment": "Comment #1"
+                },
+                {
+                  "id": "${existingReport1.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_by": "USER1",
+                  "first_name": "First 2",
+                  "last_name": "Last 2, First 2",
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0002AA' target=\"_blank\">A0002AA</a>",
+                  "comment": "Comment #2"
+                },
+                {
+                  "id": "${existingReport2.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport2.id}' target=\"_blank\">11124199</a>",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_by": "USER1",
+                  "first_name": "First 1",
+                  "last_name": "Last 1, First 1",
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
+                  "comment": "Comment #1"
+                }
+              ]
+              """,
             )
         }
       }
@@ -462,16 +547,19 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
               [
                 {
                   "start_date": "05/12/2023",
+                  "filter_date": "05/12/2023",
                   "location": "MDI",
                   "type": "FINDS",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
+                  "type_description": "Find of illicit items",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">2</a>"
                 }
               ]
-              """.trimIndent(),
+              """,
             )
         }
 
@@ -484,16 +572,20 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
-            [
-              {
-                "start_date": "04/12/2023",
-                "location": "MDI",
-                "type": "FINDS",
-                "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
-              }
-            ]
-              """.trimIndent(),
+              [
+                {
+                  "start_date": "04/12/2023",
+                  "min_date": "05/12/2023",
+                  "max_date": "05/12/2023",
+                  "location": "MDI",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">2</a>"
+                }
+              ]
+              """,
             )
         }
 
@@ -506,16 +598,20 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
               [
                 {
                   "start_date": "Dec-2023",
+                  "min_date": "05/12/2023",
+                  "max_date": "05/12/2023",
                   "location": "MDI",
                   "type": "FINDS",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
+                  "type_description": "Find of illicit items",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">2</a>"
                 }
               ]
-              """.trimIndent(),
+              """,
             )
         }
       }
@@ -543,6 +639,19 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
         @Test
         fun `returns a page of the report for a count of prisoners`() {
+          // Add a duplicate prisoner (A0002AA) to the report
+          val prisonerIndex = 3
+          existingReport1.addPrisonerInvolved(
+            sequence = prisonerIndex - 1,
+            prisonerNumber = "A%04dAA".format(2),
+            firstName = "First 2",
+            lastName = "Last 2",
+            prisonerRole = PrisonerRole.entries.elementAtWrapped(prisonerIndex),
+            outcome = PrisonerOutcome.entries.elementAtWrapped(prisonerIndex),
+            comment = "Comment #$prisonerIndex",
+          )
+          reportRepository.save(existingReport1)
+
           webTestClient.get().uri(url + "/per-type")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
@@ -550,32 +659,35 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
-[
-  {
-    "month_year": "Dec-2023",
-    "min_date": "05/12/2023",
-    "max_date": "05/12/2023",
-    "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0002AA' target=\"_blank\">A0002AA</a>",
-    "first_name": "First 2",
-    "last_name": "Last 2, First 2",
-    "type": "FINDS",
-    "type_description": "Find of illicit items",
-    "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
-  },
-  {
-    "month_year": "Dec-2023",
-    "min_date": "05/12/2023",
-    "max_date": "05/12/2023",
-    "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
-    "first_name": "First 1",
-    "last_name": "Last 1, First 1",
-    "type": "FINDS",
-    "type_description": "Find of illicit items",
-    "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
-  }
-]
-              """.trimIndent(),
+              [
+                {
+                  "month_year": "Dec-2023",
+                  "min_date": "05/12/2023",
+                  "max_date": "05/12/2023",
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0002AA' target=\"_blank\">A0002AA</a>",
+                  "first_name": "First 2",
+                  "last_name": "Last 2, First 2",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "location": "MDI",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
+                },
+                {
+                  "month_year": "Dec-2023",
+                  "min_date": "05/12/2023",
+                  "max_date": "05/12/2023",
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
+                  "first_name": "First 1",
+                  "last_name": "Last 1, First 1",
+                  "type": "FINDS",
+                  "type_description": "Find of illicit items",
+                  "location": "MDI",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">2</a>"
+                }
+              ]
+              """,
             )
         }
       }
