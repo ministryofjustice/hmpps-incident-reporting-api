@@ -81,7 +81,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         filterByLocations("MDI"),
         filterBySource(InformationSource.DPS),
         filterByStatuses(Status.DRAFT),
-        filterByType(Type.FINDS),
+        filterByType(Type.FIND_6),
         filterByIncidentDateFrom(today.minusDays(2)),
         filterByIncidentDateUntil(today),
         filterByReportedDateFrom(today.minusDays(2)),
@@ -100,7 +100,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         filterByLocations("LEI"),
         filterBySource(InformationSource.NOMIS),
         filterByStatuses(Status.AWAITING_ANALYSIS),
-        filterByType(Type.FOOD_REFUSAL),
+        filterByType(Type.FOOD_REFUSAL_1),
         filterByIncidentDateFrom(today),
         filterByIncidentDateUntil(today.minusDays(2)),
         filterByReportedDateFrom(today),
@@ -126,7 +126,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
             location = "MDI",
             source = InformationSource.DPS,
             status = Status.AWAITING_ANALYSIS,
-            type = Type.ASSAULT,
+            type = Type.ASSAULT_5,
           ),
           buildReport(
             reportReference = "12346",
@@ -134,7 +134,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
             location = "LEI",
             source = InformationSource.DPS,
             status = Status.AWAITING_ANALYSIS,
-            type = Type.FINDS,
+            type = Type.FIND_6,
           ),
           buildReport(
             reportReference = "11124143",
@@ -142,7 +142,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
             location = "MDI",
             source = InformationSource.NOMIS,
             status = Status.DRAFT,
-            type = Type.FINDS,
+            type = Type.FIND_6,
           ),
         ),
       ).map { it.id!! }
@@ -191,27 +191,27 @@ class ReportRepositoryTest : IntegrationTestBase() {
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
-          .and(filterByType(Type.FINDS)),
+          .and(filterByType(Type.FIND_6)),
         listOf(report2Id),
       )
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterByLocations("LEI"))
           .and(filterBySource(InformationSource.DPS))
-          .and(filterByType(Type.FINDS)),
+          .and(filterByType(Type.FIND_6)),
         listOf(report2Id),
       )
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
           .and(filterByLocations("MDI"))
-          .and(filterByType(Type.FINDS)),
+          .and(filterByType(Type.FIND_6)),
         emptyList(),
       )
       assertSpecificationReturnsReports(
         filterByIncidentDateFrom(today.minusDays(3))
           .and(filterByIncidentDateUntil(today.minusDays(3)))
-          .and(filterByType(Type.ASSAULT)),
+          .and(filterByType(Type.ASSAULT_5)),
         listOf(report1Id),
       )
       assertSpecificationReturnsReports(
@@ -240,7 +240,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
           reportReference = reportRepository.generateReportReference(),
           incidentDateAndTime = hourAgo,
           status = Status.AWAITING_ANALYSIS,
-          type = Type.SELF_HARM,
+          type = Type.SELF_HARM_1,
           title = "A summary",
           description = "An incident occurred",
           reportedBy = "user1",
@@ -298,13 +298,13 @@ class ReportRepositoryTest : IntegrationTestBase() {
       .addResponse("HEAD", null, 0, "Head", "user1", now)
       .addResponse("ARM", null, 1, "Arm", "user1", now)
 
-    report.addHistory(Type.FINDS, halfHourAgo, "user2")
+    report.addHistory(Type.FIND_6, halfHourAgo, "user2")
       .addQuestion("FINDS-Q1", "Finds question 1", 1)
       .addResponse("response1", 0, null, "Some information 1", "user1", halfHourAgo)
       .addResponse("response2", 1, null, "Some information 2", "user1", halfHourAgo)
       .addResponse("response3", 2, null, "Some information 3", "user1", halfHourAgo)
 
-    report.addHistory(Type.ASSAULT, quarterHourAgo, "user1")
+    report.addHistory(Type.ASSAULT_5, quarterHourAgo, "user1")
       .addQuestion("ASSAULT-Q1", "Assault question 1", 1)
       .addResponse("response4", 0, null, "Some information 4", "user1", quarterHourAgo)
       .addResponse("response5", 1, null, "Some information 5", "user1", quarterHourAgo)
@@ -315,7 +315,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
 
     report = reportRepository.findOneEagerlyByReportReference(report.reportReference)
       ?: throw EntityNotFoundException()
-    report.changeType(Type.ASSAULT, now, "user5")
+    report.changeType(Type.ASSAULT_5, now, "user5")
 
     report.addQuestion("SOME_QUESTION", "Another question?", 4)
       .addResponse("YES", null, 0, "Yes", "user1", now)
@@ -330,7 +330,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     report = reportRepository.findOneEagerlyByReportReference(report.reportReference)
       ?: throw EntityNotFoundException()
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
-    assertThat(report.type).isEqualTo(Type.ASSAULT)
+    assertThat(report.type).isEqualTo(Type.ASSAULT_5)
     assertThat(report.questions).hasSize(1)
     assertThat(report.questions.elementAt(0).code).isEqualTo("SOME_QUESTION")
     assertThat(report.questions.elementAt(0).responses).hasSize(4)

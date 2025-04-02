@@ -16,7 +16,7 @@ fun buildReport(
   location: String = "MDI",
   source: InformationSource = InformationSource.DPS,
   status: Status = Status.DRAFT,
-  type: Type = Type.FINDS,
+  type: Type = Type.FIND_6,
   reportingUsername: String = "USER1",
   // all related entities apart from event are optionally generated:
   generateStaffInvolvement: Int = 0,
@@ -36,7 +36,7 @@ fun buildReport(
     status = status,
     type = type,
     title = "Incident Report $reportReference",
-    description = "A new incident created in the new service of type ${type.description}",
+    description = "A new incident created in the new service of type ${type.description.lowercase()}",
     reportedAt = reportTime,
     createdAt = reportTime,
     modifiedAt = reportTime,
@@ -104,7 +104,7 @@ fun buildReport(
 
   (1..generateHistory).forEach { historyIndex ->
     val history = report.addHistory(
-      type = Type.entries.elementAtWrapped(historyIndex),
+      type = Type.entries.filter { it.active }.elementAtWrapped(historyIndex),
       changedAt = reportTime.minusMinutes((generateHistory - historyIndex).toLong()),
       changedBy = "some-past-user",
     )

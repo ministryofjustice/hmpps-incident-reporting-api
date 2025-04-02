@@ -167,8 +167,9 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody()
           .json(
+            // language=json
             """
-              {
+            {
               "id": "incident-report",
               "name": "Incident report summary",
               "description": "List of all incidents filtered by dates, types, status and locations (INC0009)",
@@ -180,7 +181,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                 "printable": true
               }
             }
-            """.trimIndent(),
+            """,
           )
       }
     }
@@ -229,36 +230,37 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
               [
                 {
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
                   "reported_at": "05/12/2023",
                   "reported_by": "USER1",
                   "title": "Incident Report 11124143",
-                  "description": "A new incident created in the new service of type Finds",
+                  "description": "A new incident created in the new service of type find of illicit items",
                   "location": "MDI",
                   "modified_at": "05/12/2023 12:34"
                 },
                 {
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
                   "reported_at": "05/12/2023",
                   "reported_by": "USER1",
                   "title": "Incident Report 11124199",
-                  "description": "A new incident created in the new service of type Finds",
+                  "description": "A new incident created in the new service of type find of illicit items",
                   "location": "MDI",
                   "modified_at": "05/12/2023 12:34"
                 }
               ]
-              """.trimIndent(),
+              """,
             )
         }
 
@@ -329,26 +331,27 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk()
             .expectBody().jsonPath("$.length()").isEqualTo(1)
             .json(
+              // language=json
               """
-                [
-                  {
-                    "id": "${pecsReport.id}",
-                    "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${pecsReport.id}' target=\"_blank\">${pecsReport.reportReference}</a>",
-                    "type": "${pecsReport.type.name}",
-                    "type_description": "${pecsReport.type.description}",
-                    "status": "${pecsReport.status.name}",
-                    "status_description": "${pecsReport.status.description}",
-                    "incident_date_and_time": "05/12/2023 11:34",
-                    "reported_at": "05/12/2023",
-                    "reported_by": "USER1",
-                    "title": "${pecsReport.title}",
-                    "description": "${pecsReport.description}",
-                    "location": "${pecsReport.location}",
-                    "pecs_region": "National Operations Unit",
-                    "modified_at": "05/12/2023 12:34"
-                  }
-                ]
-              """.trimIndent(),
+              [
+                {
+                  "id": "${pecsReport.id}",
+                  "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${pecsReport.id}' target=\"_blank\">${pecsReport.reportReference}</a>",
+                  "type": "${pecsReport.type.name}",
+                  "type_description": "${pecsReport.type.description}",
+                  "status": "${pecsReport.status.name}",
+                  "status_description": "${pecsReport.status.description}",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "reported_at": "05/12/2023",
+                  "reported_by": "USER1",
+                  "title": "${pecsReport.title}",
+                  "description": "${pecsReport.description}",
+                  "location": "${pecsReport.location}",
+                  "pecs_region": "National Operations Unit",
+                  "modified_at": "05/12/2023 12:34"
+                }
+              ]
+              """,
             )
         }
       }
@@ -383,14 +386,15 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
               [
                 {
                   "id": "${existingReport1.id}",
                   "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
@@ -404,8 +408,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "id": "${existingReport1.id}",
                   "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
@@ -419,8 +423,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "id": "${existingReport1.id}",
                   "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
@@ -434,8 +438,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "id": "${existingReport2.id}",
                   "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport2.id}' target=\"_blank\">11124199</a>",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
@@ -446,7 +450,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "comment": "Comment #1"
                 }
               ]
-              """.trimIndent(),
+              """,
             )
         }
 
@@ -459,14 +463,15 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
               [
                 {
                   "id": "${existingReport1.id}",
                   "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
@@ -480,8 +485,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "id": "${existingReport1.id}",
                   "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport1.id}' target=\"_blank\">11124143</a>",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
@@ -495,8 +500,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "id": "${existingReport2.id}",
                   "report_reference": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports/${existingReport2.id}' target=\"_blank\">11124199</a>",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "status": "DRAFT",
                   "status_description": "Draft",
                   "incident_date_and_time": "05/12/2023 11:34",
@@ -507,7 +512,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "comment": "Comment #1"
                 }
               ]
-              """.trimIndent(),
+              """,
             )
         }
       }
@@ -542,18 +547,19 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
               [
                 {
                   "start_date": "05/12/2023",
                   "filter_date": "05/12/2023",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">2</a>"
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND_6' target=\"_blank\">2</a>"
                 }
               ]
-              """.trimIndent(),
+              """,
             )
         }
 
@@ -566,6 +572,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
               [
                 {
@@ -573,12 +580,12 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "min_date": "05/12/2023",
                   "max_date": "05/12/2023",
                   "location": "MDI",
-                  "type": "FINDS",
-                  "type_description": "Finds",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">2</a>"
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND_6' target=\"_blank\">2</a>"
                 }
               ]
-              """.trimIndent(),
+              """,
             )
         }
 
@@ -591,19 +598,20 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
-          [
-            {
-              "start_date": "Dec-2023",
-              "min_date": "05/12/2023",
-              "max_date": "05/12/2023",
-              "location": "MDI",
-              "type": "FINDS",
-              "type_description": "Finds",
-              "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">2</a>"
-            }
-          ]
-              """.trimIndent(),
+              [
+                {
+                  "start_date": "Dec-2023",
+                  "min_date": "05/12/2023",
+                  "max_date": "05/12/2023",
+                  "location": "MDI",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND_6' target=\"_blank\">2</a>"
+                }
+              ]
+              """,
             )
         }
       }
@@ -651,6 +659,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             .expectStatus().isOk
             .expectBody()
             .json(
+              // language=json
               """
               [
                 {
@@ -660,10 +669,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0002AA' target=\"_blank\">A0002AA</a>",
                   "first_name": "First 2",
                   "last_name": "Last 2, First 2",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "location": "MDI",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">1</a>"
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND_6' target=\"_blank\">1</a>"
                 },
                 {
                   "month_year": "Dec-2023",
@@ -672,13 +681,13 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
                   "first_name": "First 1",
                   "last_name": "Last 1, First 1",
-                  "type": "FINDS",
-                  "type_description": "Finds",
+                  "type": "FIND_6",
+                  "type_description": "Find of illicit items",
                   "location": "MDI",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FINDS' target=\"_blank\">2</a>"
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND_6' target=\"_blank\">2</a>"
                 }
               ]
-              """.trimIndent(),
+              """,
             )
         }
       }

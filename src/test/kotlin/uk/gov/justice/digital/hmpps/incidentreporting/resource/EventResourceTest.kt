@@ -424,7 +424,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.event.id}",
               "eventReference": "11124143",
@@ -436,12 +436,12 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "reports": [{
                 "id": "${existingReport.id}",
                 "reportReference": "11124143",
-                "type": "FINDS",
+                "type": "FIND_6",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "location": "MDI",
                 "prisonId": "MDI",
                 "title": "Incident Report 11124143",
-                "description": "A new incident created in the new service of type Finds",
+                "description": "A new incident created in the new service of type find of illicit items",
                 "reportedBy": "USER1",
                 "reportedAt": "2023-12-05T12:34:56",
                 "status": "DRAFT",
@@ -467,7 +467,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
           buildReport(
             reportReference = "11017203",
             reportTime = now.plusMinutes(10),
-            type = Type.MISCELLANEOUS,
+            type = Type.MISCELLANEOUS_1,
           ),
         )
         anotherReport.event = existingReport.event
@@ -480,7 +480,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.event.id}",
               "eventReference": "11124143",
@@ -493,12 +493,12 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 {
                   "id": "${existingReport.id}",
                   "reportReference": "11124143",
-                  "type": "FINDS",
+                  "type": "FIND_6",
                   "incidentDateAndTime": "2023-12-05T11:34:56",
                   "location": "MDI",
                   "prisonId": "MDI",
                   "title": "Incident Report 11124143",
-                  "description": "A new incident created in the new service of type Finds",
+                  "description": "A new incident created in the new service of type find of illicit items",
                   "reportedBy": "USER1",
                   "reportedAt": "2023-12-05T12:34:56",
                   "status": "DRAFT",
@@ -512,12 +512,12 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 {
                   "id": "${anotherReport.id}",
                   "reportReference": "11017203",
-                  "type": "MISCELLANEOUS",
+                  "type": "MISCELLANEOUS_1",
                   "incidentDateAndTime": "2023-12-05T11:44:56",
                   "location": "MDI",
                   "prisonId": "MDI",
                   "title": "Incident Report 11017203",
-                  "description": "A new incident created in the new service of type Miscellaneous",
+                  "description": "A new incident created in the new service of type miscellaneous",
                   "reportedBy": "USER1",
                   "reportedAt": "2023-12-05T12:44:56",
                   "status": "DRAFT",
@@ -593,7 +593,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.event.id}",
               "eventReference": "11124143",
@@ -605,12 +605,12 @@ class EventResourceTest : SqsIntegrationTestBase() {
               "reports": [{
                 "id": "${existingReport.id}",
                 "reportReference": "11124143",
-                "type": "FINDS",
+                "type": "FIND_6",
                 "incidentDateAndTime": "2023-12-05T11:34:56",
                 "location": "MDI",
                 "prisonId": "MDI",
                 "title": "Incident Report 11124143",
-                "description": "A new incident created in the new service of type Finds",
+                "description": "A new incident created in the new service of type find of illicit items",
                 "reportedBy": "USER1",
                 "reportedAt": "2023-12-05T12:34:56",
                 "status": "DRAFT",
@@ -636,7 +636,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
           buildReport(
             reportReference = "11017203",
             reportTime = now.plusMinutes(10),
-            type = Type.MISCELLANEOUS,
+            type = Type.MISCELLANEOUS_1,
           ),
         )
         anotherReport.event = existingReport.event
@@ -649,7 +649,7 @@ class EventResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().json(
             // language=json
-            """ 
+            """
             {
               "id": "${existingReport.event.id}",
               "eventReference": "11124143",
@@ -662,12 +662,12 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 {
                   "id": "${existingReport.id}",
                   "reportReference": "11124143",
-                  "type": "FINDS",
+                  "type": "FIND_6",
                   "incidentDateAndTime": "2023-12-05T11:34:56",
                   "location": "MDI",
                   "prisonId": "MDI",
                   "title": "Incident Report 11124143",
-                  "description": "A new incident created in the new service of type Finds",
+                  "description": "A new incident created in the new service of type find of illicit items",
                   "reportedBy": "USER1",
                   "reportedAt": "2023-12-05T12:34:56",
                   "status": "DRAFT",
@@ -681,12 +681,12 @@ class EventResourceTest : SqsIntegrationTestBase() {
                 {
                   "id": "${anotherReport.id}",
                   "reportReference": "11017203",
-                  "type": "MISCELLANEOUS",
+                  "type": "MISCELLANEOUS_1",
                   "incidentDateAndTime": "2023-12-05T11:44:56",
                   "location": "MDI",
                   "prisonId": "MDI",
                   "title": "Incident Report 11017203",
-                  "description": "A new incident created in the new service of type Miscellaneous",
+                  "description": "A new incident created in the new service of type miscellaneous",
                   "reportedBy": "USER1",
                   "reportedAt": "2023-12-05T12:44:56",
                   "status": "DRAFT",
