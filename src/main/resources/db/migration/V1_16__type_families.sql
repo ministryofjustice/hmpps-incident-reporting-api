@@ -9,9 +9,9 @@
 
 create table constant_type_family
 (
-    code        varchar(60) primary key,
-    sequence    integer     not null,
-    description varchar(60) not null
+  code        varchar(60) primary key,
+  sequence    integer     not null,
+  description varchar(60) not null
 );
 
 -- add new type families
@@ -49,7 +49,7 @@ values (0, 'ABSCOND', 'Abscond'),
        (30, 'TOOL_LOSS', 'Tool or implement loss');
 
 alter table constant_type
-    add column family_code varchar(60);
+  add column family_code varchar(60);
 
 -- put types into families and rename codes to match
 update constant_type
@@ -618,6 +618,9 @@ where type = 'OLD_TEMPORARY_RELEASE_FAILURE1';
 update history
 set type='TEMPORARY_RELEASE_FAILURE_3'
 where type = 'OLD_TEMPORARY_RELEASE_FAILURE2';
+
+alter table constant_type
+  alter column family_code set not null;
 
 update constant_status
 set description='Information amended'
