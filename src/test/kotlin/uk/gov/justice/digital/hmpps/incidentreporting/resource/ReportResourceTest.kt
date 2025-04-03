@@ -408,6 +408,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "source=DPS&location=MDI                                     | 1",
             "type=ASSAULT_5                                              | 0",
             "type=FIRE_1                                                 | 1",
+            "type=FIND_6,FIRE_1                                          | 5",
+            "type=FIND_6&type=FIRE_1                                     | 5",
             "type=FIRE_1&location=LEI                                    | 0",
             "type=FIRE_1&location=MDI                                    | 1",
             "incidentDateFrom=2023-12-05                                 | 1",

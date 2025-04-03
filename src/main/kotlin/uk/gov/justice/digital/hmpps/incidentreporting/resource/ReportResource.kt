@@ -155,16 +155,20 @@ class ReportResource(
     )
     @RequestParam(required = false)
     status: List<Status>? = null,
-    @Schema(
-      description = "Filter by given incident type",
-      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-      nullable = true,
-      defaultValue = "null",
-      example = "DAMAGE",
-      implementation = Type::class,
+    @Parameter(
+      description = "Filter by given incident types (not type families)",
+      example = "[DAMAGE_1]",
+      array = ArraySchema(
+        schema = Schema(implementation = Type::class),
+        arraySchema = Schema(
+          requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+          nullable = true,
+          defaultValue = "null",
+        ),
+      ),
     )
     @RequestParam(required = false)
-    type: Type? = null,
+    type: List<Type>? = null,
     @Schema(
       description = "Filter for incidents occurring since this date (inclusive)",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -248,7 +252,7 @@ class ReportResource(
       locations = locations,
       source = source,
       statuses = status ?: emptyList(),
-      type = type,
+      types = type ?: emptyList(),
       incidentDateFrom = incidentDateFrom,
       incidentDateUntil = incidentDateUntil,
       reportedDateFrom = reportedDateFrom,
