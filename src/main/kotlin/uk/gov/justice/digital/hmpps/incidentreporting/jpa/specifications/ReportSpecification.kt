@@ -18,7 +18,8 @@ fun filterBySource(informationSource: InformationSource) = Report::source.buildS
 fun filterByStatuses(statuses: Collection<Status>) = Report::status.buildSpecForIn(statuses)
 fun filterByStatuses(vararg statuses: Status) = filterByStatuses(statuses.toList())
 
-fun filterByType(type: Type) = Report::type.buildSpecForEqualTo(type)
+fun filterByTypes(types: Collection<Type>) = Report::type.buildSpecForIn(types)
+fun filterByTypes(vararg types: Type) = filterByTypes(types.toList())
 
 fun filterByIncidentDateFrom(date: LocalDate) =
   Report::incidentDateAndTime.buildSpecForGreaterThanOrEqualTo(date.atStartOfDay())

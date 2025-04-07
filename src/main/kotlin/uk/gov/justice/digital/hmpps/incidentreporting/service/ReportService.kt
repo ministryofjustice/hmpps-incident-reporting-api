@@ -40,7 +40,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatuses
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByTypes
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundException
 import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.time.Clock
@@ -70,7 +70,7 @@ class ReportService(
     locations: List<String> = emptyList(),
     source: InformationSource? = null,
     statuses: List<Status> = emptyList(),
-    type: Type? = null,
+    types: List<Type> = emptyList(),
     incidentDateFrom: LocalDate? = null,
     incidentDateUntil: LocalDate? = null,
     reportedDateFrom: LocalDate? = null,
@@ -90,7 +90,9 @@ class ReportService(
         if (statuses.isNotEmpty()) {
           add(filterByStatuses(statuses))
         }
-        type?.let { add(filterByType(type)) }
+        if (types.isNotEmpty()) {
+          add(filterByTypes(types))
+        }
         incidentDateFrom?.let { add(filterByIncidentDateFrom(incidentDateFrom)) }
         incidentDateUntil?.let { add(filterByIncidentDateUntil(incidentDateUntil)) }
         reportedDateFrom?.let { add(filterByReportedDateFrom(reportedDateFrom)) }

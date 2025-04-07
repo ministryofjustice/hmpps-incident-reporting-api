@@ -33,7 +33,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatuses
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByType
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByTypes
 import java.util.UUID
 
 @DisplayName("Report repository")
@@ -81,7 +81,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         filterByLocations("MDI"),
         filterBySource(InformationSource.DPS),
         filterByStatuses(Status.DRAFT),
-        filterByType(Type.FIND_6),
+        filterByTypes(Type.FIND_6),
         filterByIncidentDateFrom(today.minusDays(2)),
         filterByIncidentDateUntil(today),
         filterByReportedDateFrom(today.minusDays(2)),
@@ -100,7 +100,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         filterByLocations("LEI"),
         filterBySource(InformationSource.NOMIS),
         filterByStatuses(Status.AWAITING_ANALYSIS),
-        filterByType(Type.FOOD_REFUSAL_1),
+        filterByTypes(Type.FOOD_REFUSAL_1),
         filterByIncidentDateFrom(today),
         filterByIncidentDateUntil(today.minusDays(2)),
         filterByReportedDateFrom(today),
@@ -191,27 +191,27 @@ class ReportRepositoryTest : IntegrationTestBase() {
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
-          .and(filterByType(Type.FIND_6)),
+          .and(filterByTypes(Type.FIND_6)),
         listOf(report2Id),
       )
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterByLocations("LEI"))
           .and(filterBySource(InformationSource.DPS))
-          .and(filterByType(Type.FIND_6)),
+          .and(filterByTypes(Type.FIND_6)),
         listOf(report2Id),
       )
       assertSpecificationReturnsReports(
         filterByStatuses(Status.AWAITING_ANALYSIS)
           .and(filterBySource(InformationSource.DPS))
           .and(filterByLocations("MDI"))
-          .and(filterByType(Type.FIND_6)),
+          .and(filterByTypes(Type.FIND_6)),
         emptyList(),
       )
       assertSpecificationReturnsReports(
         filterByIncidentDateFrom(today.minusDays(3))
           .and(filterByIncidentDateUntil(today.minusDays(3)))
-          .and(filterByType(Type.ASSAULT_5)),
+          .and(filterByTypes(Type.ASSAULT_5)),
         listOf(report1Id),
       )
       assertSpecificationReturnsReports(
