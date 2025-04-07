@@ -212,7 +212,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": false,
-            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports?searchID=${prisoner_number}&fromDate=${min_date}&toDate=${max_date}&location=${location}&incidentType=${type}',${num_of_incidents},TRUE)"
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports?searchID=${prisoner_number}&fromDate=${min_date}&toDate=${max_date}&location=${location}&typeFamily=${type}',${num_of_incidents},TRUE)"
           }
         ]
       },

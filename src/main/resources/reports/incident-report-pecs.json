@@ -242,7 +242,7 @@
           {
             "name": "$ref:incident_date_and_time",
             "display": "Occurrence at",
-            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy hh:mm')",
+            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy HH:mm')",
             "sortable": true,
             "type": "datetime",
             "visible": "true",
@@ -287,7 +287,7 @@
           {
             "name": "$ref:modified_at",
             "display": "Last Updated",
-            "formula": "format_date(${modified_at}, 'dd/MM/yyyy hh:mm')",
+            "formula": "format_date(${modified_at}, 'dd/MM/yyyy HH:mm')",
             "type": "date",
             "sortable": true,
             "visible": "false",
