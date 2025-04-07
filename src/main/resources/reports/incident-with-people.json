@@ -311,7 +311,7 @@
           {
             "name": "$ref:incident_date_and_time",
             "display": "Date of incident",
-            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy hh:mm')",
+            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy HH:mm')",
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
@@ -419,7 +419,7 @@
           },
           {
             "name": "$ref:incident_date_and_time",
-            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy hh:mm')",
+            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy HH:mm')",
             "display": "Date of incident",
             "sortable": true,
             "visible": "true",

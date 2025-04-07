@@ -556,7 +556,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "location": "MDI",
                   "type": "FIND",
                   "type_description": "Find of illicit items",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND' target=\"_blank\">2</a>"
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&typeFamily=FIND' target=\"_blank\">2</a>"
                 }
               ]
               """,
@@ -582,7 +582,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "location": "MDI",
                   "type": "FIND",
                   "type_description": "Find of illicit items",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND' target=\"_blank\">2</a>"
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&typeFamily=FIND' target=\"_blank\">2</a>"
                 }
               ]
               """,
@@ -608,7 +608,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "location": "MDI",
                   "type": "FIND",
                   "type_description": "Find of illicit items",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND' target=\"_blank\">2</a>"
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?fromDate=05/12/2023&toDate=05/12/2023&location=MDI&typeFamily=FIND' target=\"_blank\">2</a>"
                 }
               ]
               """,
@@ -672,7 +672,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "type": "FIND",
                   "type_description": "Find of illicit items",
                   "location": "MDI",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND' target=\"_blank\">1</a>"
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0002AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&typeFamily=FIND' target=\"_blank\">1</a>"
                 },
                 {
                   "month_year": "Dec-2023",
@@ -684,7 +684,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "type": "FIND",
                   "type_description": "Find of illicit items",
                   "location": "MDI",
-                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&incidentType=FIND' target=\"_blank\">2</a>"
+                  "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&typeFamily=FIND' target=\"_blank\">2</a>"
                 }
               ]
               """,
