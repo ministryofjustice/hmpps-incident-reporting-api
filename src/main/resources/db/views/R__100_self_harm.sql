@@ -1,3 +1,5 @@
+drop materialized view if exists self_harm_summary;
+
 CREATE MATERIALIZED VIEW self_harm_summary
 AS
 select r.id as report_id,

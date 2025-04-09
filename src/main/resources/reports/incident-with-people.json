@@ -568,7 +568,7 @@
       "summary": [{
         "id": "summaryId",
         "template": "page-header",
-        "dataset": "$ref:by-prisoner"
+        "dataset": "$ref:self-harm"
       }]
     },
     {
