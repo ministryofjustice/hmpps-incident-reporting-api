@@ -22,7 +22,7 @@ enum class TypeFamily(
   BREACH_OF_SECURITY("Breach or attempted breach of security"),
   CLOSE_DOWN_SEARCH("Close down search"),
   CONCERTED_INDISCIPLINE("Incident involving 2 or more prisioners acting together"),
-  DAMAGE("Deliberate damage to prison property"),
+  DAMAGE("Deliberate damage"),
   DEATH_PRISONER("Death of prisoner"),
   DEATH_OTHER("Death of other person"),
   DISORDER("Disorder"),
