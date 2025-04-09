@@ -141,7 +141,7 @@
       "id": "self-harm",
       "name": "Deliberate Self Harm Report",
       "datasource": "dataSource",
-      "query": "select r.id,\n       shs.prisoner_number,\n       shs.last_name,\n       shs.first_name,\n       r.report_reference,\n       shs.location,\n       shs.incident_date_and_time,\n       r.title,\n       r.description,\n       shs.category,\n       shs.materials_used,\n       shs.other_method,\n       shs.q1_location,\n       shs.additional_comment\nfrom public.self_harm_summary shs\n         join report r on r.id = shs.report_id",
+      "query": "select r.id,\n       shs.prisoner_number,\n       initcap(shs.last_name) as last_name,\n       initcap(shs.first_name) as first_name,\n       r.report_reference,\n       shs.location,\n       shs.incident_date_and_time,\n       r.title,\n       r.description,\n       shs.category,\n       initcap(shs.materials_used) as materials_used,\n       initcap(shs.other_method) as other_method,\n       initcap(shs.q1_location) as q1_location,\n       initcap(shs.additional_comment) as additional_comment\nfrom public.self_harm_summary shs\n         join report r on r.id = shs.report_id",
       "schema": {
         "field": [
           {
@@ -503,14 +503,9 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": false,
-            "defaultValue": "LEI",
             "filter": {
-              "type": "autocomplete",
-              "defaultValue": "LEI",
-              "staticoptions": [
-                {"name": "MDI","display": "Moorland"},
-                {"name": "LEI","display": "Leeds"}
-              ]
+              "type": "caseloads",
+              ",mandatory": false
             }
           },
           {

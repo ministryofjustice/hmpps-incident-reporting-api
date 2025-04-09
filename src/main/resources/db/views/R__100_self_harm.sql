@@ -27,7 +27,7 @@ select r.id as report_id,
                            when q.question = 'DID SELF HARM INVOLVE SELF POISONING/ OVERDOSE/SWALLOWING OBJECTS' then 'Poisoning / Overdose / Swallowing'
                            when q.question = 'DID SELF HARM METHOD INVOLVE BURNING' then 'Burning'
                            else 'Other' end,
-                       ',')
+                       ', ')
         from question q
                  join response res on res.question_id = q.id
         where q.report_id = r.id
@@ -39,7 +39,7 @@ select r.id as report_id,
           and res.response = 'YES')
            as category,
 
-       (select string_agg(res.response,',')
+       (select string_agg(res.response,', ')
         from question q
                  join response res on res.question_id = q.id
         where q.report_id = r.id
@@ -49,11 +49,11 @@ select r.id as report_id,
                              'TYPE OF BURNING'))
 
            as materials_used,
-       (select res.response
+       (select string_agg(res.response, ', ')
         from question q
                  join response res on res.question_id = q.id
         where q.report_id = r.id
-          and q.question = 'WHAT OTHER METHOD OF SELF HARM WAS INVOLVED' limit 1)
+          and q.question = 'WHAT OTHER METHOD OF SELF HARM WAS INVOLVED')
            as other_method
 from report r
        join prisoner_involvement pi on r.id = pi.report_id and pi.prisoner_role = 'PERPETRATOR'
