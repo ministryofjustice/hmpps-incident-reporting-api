@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
+import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -10,8 +11,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.elementAtWrapped
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
@@ -35,6 +38,12 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var reportRepository: ReportRepository
+
+  @Autowired
+  lateinit var transactionTemplate: TransactionTemplate
+
+  @Autowired
+  lateinit var entityManager: EntityManager
 
   @Autowired
   lateinit var eventRepository: EventRepository
@@ -365,10 +374,17 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @DisplayName("is secured")
       @Nested
       inner class Security {
-        @DisplayName("by role and scope")
+        @DisplayName("by prisoner role and scope")
         @TestFactory
-        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun prisonerEndpointRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri(url + "/by-prisoner"),
+          systemRole,
+        )
+
+        @DisplayName("by staff role and scope")
+        @TestFactory
+        fun staffEndpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri(url + "/by-staff"),
           systemRole,
         )
       }
@@ -510,6 +526,82 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "last_name": "Last 1, First 1",
                   "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
                   "comment": "Comment #1"
+                }
+              ]
+              """,
+            )
+        }
+
+        @Test
+        fun `returns a page of the report for self harm`() {
+          val selfHarm = buildReport(
+            reportReference = "222000",
+            reportTime = now,
+            location = "MDI",
+            type = Type.SELF_HARM_1,
+            generatePrisonerInvolvement = 1,
+          )
+          selfHarm.prisonersInvolved.first().prisonerRole = PrisonerRole.PERPETRATOR
+
+          selfHarm.addQuestion(
+            code = "1",
+            question = "WHERE DID THE INCIDENT TAKE PLACE",
+            1,
+          ).addResponse(
+            response = "CELL",
+            additionalInformation = "H1",
+            sequence = 0,
+            recordedBy = "staff-1",
+            recordedAt = now,
+          )
+          selfHarm.addQuestion(
+            code = "1",
+            question = "DID SELF HARM METHOD INVOLVE CUTTING",
+            2,
+          ).addResponse(response = "YES", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+          selfHarm.addQuestion(
+            code = "1",
+            question = "TYPE OF IMPLEMENT USED",
+            3,
+          ).addResponse(response = "Knife", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+          selfHarm.addQuestion(
+            code = "1",
+            question = "WHAT OTHER METHOD OF SELF HARM WAS INVOLVED",
+            4,
+          ).addResponse(response = "Mirror", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+
+          reportRepository.saveAndFlush(selfHarm)
+
+          transactionTemplate.execute(
+            { transactionStatus ->
+              entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW self_harm_summary").executeUpdate()
+              transactionStatus.flush()
+              null
+            },
+          )
+          webTestClient.get().uri(url + "/self-harm")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              // language=json
+              """
+              [
+                {
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
+                  "last_name": "Last 1, First 1",
+                  "first_name": "First 1",
+                  "location": "MDI",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "title": "Incident Report 222000",
+                  "description": "A new incident created in the new service of type self harm",
+                  "category": "Cutting",
+                  "materials_used": "Knife",
+                  "other_method": "Mirror",
+                  "q1_location": "Cell",
+                  "additional_comment": "H1"
                 }
               ]
               """,
