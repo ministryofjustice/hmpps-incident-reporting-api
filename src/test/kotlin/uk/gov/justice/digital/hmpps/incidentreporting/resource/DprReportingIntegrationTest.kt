@@ -377,14 +377,14 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         @DisplayName("by prisoner role and scope")
         @TestFactory
         fun prisonerEndpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri(url + "/by-prisoner"),
+          webTestClient.get().uri("$url/by-prisoner"),
           systemRole,
         )
 
         @DisplayName("by staff role and scope")
         @TestFactory
         fun staffEndpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri(url + "/by-staff"),
+          webTestClient.get().uri("$url/by-staff"),
           systemRole,
         )
       }
@@ -395,7 +395,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
         @Test
         fun `returns a page of the report for staff`() {
-          webTestClient.get().uri(url + "/by-staff")
+          webTestClient.get().uri("$url/by-staff")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -472,7 +472,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
         @Test
         fun `returns a page of the report for prisoners`() {
-          webTestClient.get().uri(url + "/by-prisoner")
+          webTestClient.get().uri("$url/by-prisoner")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -572,14 +572,12 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
           reportRepository.saveAndFlush(selfHarm)
 
-          transactionTemplate.execute(
-            { transactionStatus ->
-              entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW self_harm_summary").executeUpdate()
-              transactionStatus.flush()
-              null
-            },
-          )
-          webTestClient.get().uri(url + "/self-harm")
+          webTestClient.put().uri("/refresh-views")
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+
+          webTestClient.get().uri("$url/self-harm")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -744,7 +742,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           )
           reportRepository.save(existingReport1)
 
-          webTestClient.get().uri(url + "/per-type")
+          webTestClient.get().uri("$url/per-type")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()

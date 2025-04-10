@@ -103,3 +103,5 @@ dpr:
       locations: "reports/incident-report.json, reports/incident-report-pecs.json, reports/incident-count.json, reports/incident-with-people.json, reports/incident-count-by-prisoner.json"
     system:
       role: DPR_API_ACCESS
+  report:
+    views: self_harm_summary
