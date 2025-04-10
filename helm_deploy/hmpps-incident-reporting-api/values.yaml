@@ -25,7 +25,10 @@ generic-service:
           deny all;
           return 401;
         }
-
+        location /refresh-views {
+          deny all;
+          return 401;
+        }
   env:
     JAVA_OPTS: "-Xmx768m"
     SERVER_PORT: "8080"

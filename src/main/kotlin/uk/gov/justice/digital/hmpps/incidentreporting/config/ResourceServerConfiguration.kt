@@ -21,6 +21,7 @@ class ResourceServerConfiguration {
     unauthorizedRequestPaths {
       addPaths = setOf(
         "/queue-admin/retry-all-dlqs",
+        "/refresh-views",
       )
     }
   }

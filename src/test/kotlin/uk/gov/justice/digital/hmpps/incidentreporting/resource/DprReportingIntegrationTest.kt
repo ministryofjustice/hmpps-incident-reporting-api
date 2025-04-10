@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.elementAtWrapped
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
@@ -365,10 +366,17 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @DisplayName("is secured")
       @Nested
       inner class Security {
-        @DisplayName("by role and scope")
+        @DisplayName("by prisoner role and scope")
         @TestFactory
-        fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri(url + "/by-prisoner"),
+        fun prisonerEndpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-prisoner"),
+          systemRole,
+        )
+
+        @DisplayName("by staff role and scope")
+        @TestFactory
+        fun staffEndpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-staff"),
           systemRole,
         )
       }
@@ -379,7 +387,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
         @Test
         fun `returns a page of the report for staff`() {
-          webTestClient.get().uri(url + "/by-staff")
+          webTestClient.get().uri("$url/by-staff")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -456,7 +464,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
         @Test
         fun `returns a page of the report for prisoners`() {
-          webTestClient.get().uri(url + "/by-prisoner")
+          webTestClient.get().uri("$url/by-prisoner")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -510,6 +518,80 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "last_name": "Last 1, First 1",
                   "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
                   "comment": "Comment #1"
+                }
+              ]
+              """,
+            )
+        }
+
+        @Test
+        fun `returns a page of the report for self harm`() {
+          val selfHarm = buildReport(
+            reportReference = "222000",
+            reportTime = now,
+            location = "MDI",
+            type = Type.SELF_HARM_1,
+            generatePrisonerInvolvement = 1,
+          )
+          selfHarm.prisonersInvolved.first().prisonerRole = PrisonerRole.PERPETRATOR
+
+          selfHarm.addQuestion(
+            code = "1",
+            question = "WHERE DID THE INCIDENT TAKE PLACE",
+            1,
+          ).addResponse(
+            response = "CELL",
+            additionalInformation = "H1",
+            sequence = 0,
+            recordedBy = "staff-1",
+            recordedAt = now,
+          )
+          selfHarm.addQuestion(
+            code = "1",
+            question = "DID SELF HARM METHOD INVOLVE CUTTING",
+            2,
+          ).addResponse(response = "YES", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+          selfHarm.addQuestion(
+            code = "1",
+            question = "TYPE OF IMPLEMENT USED",
+            3,
+          ).addResponse(response = "Knife", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+          selfHarm.addQuestion(
+            code = "1",
+            question = "WHAT OTHER METHOD OF SELF HARM WAS INVOLVED",
+            4,
+          ).addResponse(response = "Mirror", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+
+          reportRepository.saveAndFlush(selfHarm)
+
+          webTestClient.put().uri("/refresh-views")
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+
+          webTestClient.get().uri("$url/self-harm")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              // language=json
+              """
+              [
+                {
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
+                  "last_name": "Last 1, First 1",
+                  "first_name": "First 1",
+                  "location": "MDI",
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "title": "Incident Report 222000",
+                  "description": "A new incident created in the new service of type self harm",
+                  "category": "Cutting",
+                  "materials_used": "Knife",
+                  "other_method": "Mirror",
+                  "q1_location": "Cell",
+                  "additional_comment": "H1"
                 }
               ]
               """,
@@ -652,7 +734,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           )
           reportRepository.save(existingReport1)
 
-          webTestClient.get().uri(url + "/per-type")
+          webTestClient.get().uri("$url/per-type")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()

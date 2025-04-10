@@ -138,6 +138,88 @@
       }
     },
     {
+      "id": "self-harm",
+      "name": "Deliberate Self Harm Report",
+      "datasource": "dataSource",
+      "query": "select r.id,\n       shs.prisoner_number,\n       initcap(shs.last_name) as last_name,\n       initcap(shs.first_name) as first_name,\n       r.report_reference,\n       shs.location,\n       shs.incident_date_and_time,\n       r.title,\n       r.description,\n       shs.category,\n       initcap(shs.materials_used) as materials_used,\n       initcap(shs.other_method) as other_method,\n       initcap(shs.q1_location) as q1_location,\n       initcap(shs.additional_comment) as additional_comment\nfrom public.self_harm_summary shs\n         join report r on r.id = shs.report_id",
+      "schema": {
+        "field": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "prisoner_number",
+            "type": "string"
+          },
+          {
+            "name": "last_name",
+            "type": "string"
+          },
+          {
+            "name": "first_name",
+            "type": "string"
+          },
+          {
+            "name": "report_reference",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "incident_date_and_time",
+            "type": "datetime"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "q1_location",
+            "type": "string"
+          },
+          {
+            "name": "additional_comment",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "filter": {
+              "type": "multiselect",
+              "staticoptions": [
+                {"name": "Cutting","display": "Cutting"},
+                {"name": "Hanging","display": "Hanging"},
+                {"name": "Self Strangulation","display": "Self Strangulation"},
+                {"name": "Poisoning / Overdose / Swallowing","display": "Poisoning / Overdose / Swallowing"},
+                {"name": "Burning","display": "Burning"},
+                {"name": "Other","display": "Other"},
+                {"name": "Unknown","display": "Unknown"}
+              ]
+            }
+          },
+          {
+            "name": "materials_used",
+            "type": "string"
+          },
+          {
+            "name": "other_method",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "id": "by-staff",
       "name": "Report of staff involvement in an incident",
       "datasource": "dataSource",
@@ -373,6 +455,120 @@
         "id": "summaryId",
         "template": "page-header",
         "dataset": "$ref:by-prisoner"
+      }]
+    },
+    {
+      "id": "self-harm",
+      "name": "Deliberate Self Harm Report",
+      "description": "Deliberate Self Harm Report",
+      "version": "1.0.0",
+      "dataset": "$ref:self-harm",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:prisoner_number",
+            "display": "Prisoner number",
+            "sortable": true,
+            "formula": "make_url('https://prisoner-${env}.digital.prison.service.justice.gov.uk/prisoner/${prisoner_number}',${prisoner_number},TRUE)",
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:last_name",
+            "formula": "${last_name}, ${first_name}",
+            "display": "Name",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:report_reference",
+            "display": "Incident number",
+            "sortable": true,
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location code",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              ",mandatory": false
+            }
+          },
+          {
+            "name": "$ref:incident_date_and_time",
+            "display": "Incident date",
+            "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy HH:mm')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "filter": {
+              "type": "daterange",
+              "default": "today(-1,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:title",
+            "display": "Title",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:category",
+            "display": "Category",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:other_method",
+            "display": "Other method",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:materials_used",
+            "display": "Materials used",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:q1_location",
+            "display": "Location",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:additional_comment",
+            "display": "Additional comment",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:self-harm"
       }]
     },
     {

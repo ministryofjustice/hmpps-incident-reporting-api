@@ -52,6 +52,7 @@ spring:
 
   flyway:
     enabled: true
+    locations: classpath:db/migration,classpath:db/views
 
   datasource:
     url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=verify-full'
@@ -102,3 +103,5 @@ dpr:
       locations: "reports/incident-report.json, reports/incident-report-pecs.json, reports/incident-count.json, reports/incident-with-people.json, reports/incident-count-by-prisoner.json"
     system:
       role: DPR_API_ACCESS
+  report:
+    views: self_harm_summary
