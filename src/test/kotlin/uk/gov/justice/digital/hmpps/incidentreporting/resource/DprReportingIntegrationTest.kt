@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.resource
 
-import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
-import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
@@ -38,12 +36,6 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var reportRepository: ReportRepository
-
-  @Autowired
-  lateinit var transactionTemplate: TransactionTemplate
-
-  @Autowired
-  lateinit var entityManager: EntityManager
 
   @Autowired
   lateinit var eventRepository: EventRepository
