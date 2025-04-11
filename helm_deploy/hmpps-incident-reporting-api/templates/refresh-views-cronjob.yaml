@@ -3,7 +3,12 @@ kind: CronJob
 metadata:
   name: hmpps-incident-reporting-api-refresh-views
 spec:
+  {{- if (eq .Values.environment.name "prod") }}
   schedule: "00 03 * * *"
+  {{- end }}
+  {{- if (not eq .Values.environment.name "prod") }}
+  schedule: "30 08 * * *"
+  {{- end }}
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 5
   startingDeadlineSeconds: 600
