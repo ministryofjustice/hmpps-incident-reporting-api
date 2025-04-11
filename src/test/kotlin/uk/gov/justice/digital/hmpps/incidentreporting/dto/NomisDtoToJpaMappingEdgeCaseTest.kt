@@ -28,7 +28,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     title = "TITLE",
     description = "DESCRIPTION",
     prison = NomisCode("MDI", "Moorland (HMP)"),
-    status = NomisStatus("AWAN", "Awaiting review"),
+    status = NomisStatus("AWAN", "Awaiting Analysis"),
     type = "FINDS1",
     lockedResponse = false,
     incidentDateTime = now.minusDays(1),

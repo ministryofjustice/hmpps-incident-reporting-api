@@ -70,7 +70,7 @@ class NomisSyncServiceTest {
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
       prison = NomisCode("MDI", "Moorland (HMP)"),
-      status = NomisStatus("AWAN", "Awaiting review"),
+      status = NomisStatus("AWAN", "Awaiting Analysis"),
       type = "SELF_HARM",
       lockedResponse = false,
       incidentDateTime = whenIncidentHappened,
