@@ -1,7 +1,7 @@
 {
-  "id": "incident-report",
-  "name": "Incident report summary",
-  "description": "List of all incidents filtered by dates, types, status and locations (INC0009)",
+  "id": "incident-type-detail",
+  "name": "Incident details for specific types",
+  "description": "Reports on specific incident types such as self harm, assault and finds",
   "metadata": {
     "author": "Michael Willis",
     "version": "1.0.0",
@@ -52,26 +52,18 @@
   ],
   "dataset": [
     {
-      "id": "summary",
-      "name": "Incident report summary",
+      "id": "serious-sexual-assault",
+      "name": "INC0020 Serious and Sexual Assault Incident Detail",
       "datasource": "replicaDataSource",
-      "query": "SELECT id, report_reference, ctf.code as type, ctf.description as type_description, status, constant_status.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, modified_at\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status != 'DUPLICATE'",
+      "query": "select report_id,\n       report_reference,\n       incident_date_and_time,\n       title,\n       description,\n       status,\n       status_description,\n       location,\n       prisoner_number,\n  prisoner_role,\n       prisoner_role_description,\n       initcap(last_name) as last_name,\n       initcap(first_name) as first_name\nfrom serious_sexual_assault_summary",
       "schema": {
         "field": [
           {
-            "name": "id",
+            "name": "report_id",
             "type": "string"
           },
           {
             "name": "report_reference",
-            "type": "string"
-          },
-          {
-            "name": "type",
-            "type": "string"
-          },
-          {
-            "name": "type_description",
             "type": "string"
           },
           {
@@ -91,11 +83,23 @@
             "type": "string"
           },
           {
-            "name": "reported_at",
-            "type": "datetime"
+            "name": "prisoner_number",
+            "type": "string"
           },
           {
-            "name": "reported_by",
+            "name": "prisoner_role",
+            "type": "string"
+          },
+          {
+            "name": "prisoner_role_description",
+            "type": "string"
+          },
+          {
+            "name": "last_name",
+            "type": "string"
+          },
+          {
+            "name": "first_name",
             "type": "string"
           },
           {
@@ -104,30 +108,6 @@
           },
           {
             "name": "description",
-            "type": "string"
-          },
-          {
-            "name": "modified_at",
-            "type": "datetime"
-          }
-        ]
-      }
-    },
-    {
-      "id": "types",
-      "name": "Incident Types",
-      "datasource": "replicaDataSource",
-      "query": "SELECT code, description FROM constant_type_family",
-      "schema": {
-        "field": [
-          {
-            "name": "code",
-            "display": "Type code",
-            "type": "string"
-          },
-          {
-            "name": "description",
-            "display": "Type description",
             "type": "string"
           }
         ]
@@ -152,16 +132,38 @@
           }
         ]
       }
+    },
+    {
+      "id": "prisoner_role",
+      "name": "Prisoner Role",
+      "datasource": "replicaDataSource",
+      "query": "SELECT code, description FROM constant_prisoner_role",
+      "schema": {
+        "field": [
+          {
+            "name": "code",
+            "display": "Role code",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "display": "Role Description",
+            "type": "string"
+          }
+        ]
+      }
     }
+
   ],
   "report": [
     {
-      "id": "summary",
-      "name": "Incident Report Summary",
-      "description": "List of all incidents filtered by dates, types, status and locations",
+      "id": "serious-sexual-assault",
+      "name": "INC0020 Serious and Sexual Assault Incident Detail",
+      "description": "Detail for serious and sexual assault incidents",
       "version": "1.0.0",
-      "dataset": "$ref:summary",
-      "policy": [],
+      "dataset": "$ref:serious-sexual-assault",
+      "policy": [
+      ],
       "render": "HTML",
       "feature": [
         {
@@ -172,16 +174,32 @@
         "template": "list",
         "field": [
           {
+            "name": "$ref:prisoner_number",
+            "display": "Prisoner number",
+            "sortable": true,
+            "formula": "make_url('https://prisoner-${env}.digital.prison.service.justice.gov.uk/prisoner/${prisoner_number}',${prisoner_number},TRUE)",
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:last_name",
+            "formula": "${last_name}, ${first_name}",
+            "display": "Name",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
             "name": "$ref:report_reference",
             "display": "Report Reference",
-            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${report_id}',${report_reference},TRUE)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:location",
-            "display": "Location of incident",
+            "display": "Location",
             "sortable": true,
             "visible": "true",
             "defaultsort": false,
@@ -189,31 +207,6 @@
               "type" : "caseloads",
               "mandatory": false
             }
-          },
-          {
-            "name": "$ref:type",
-            "display": "Type code",
-            "sortable": false,
-            "visible": "false",
-            "defaultsort": false,
-            "filter": {
-              "type": "multiselect",
-              "mandatory": false,
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:type_description",
-            "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
           },
           {
             "name": "$ref:status",
@@ -242,12 +235,12 @@
           },
           {
             "name": "$ref:incident_date_and_time",
-            "display": "Occurrence at",
+            "display": "Incident date",
             "formula": "format_date(${incident_date_and_time}, 'dd/MM/yyyy HH:mm')",
             "sortable": true,
             "type": "datetime",
             "visible": "true",
-            "defaultsort": false,
+            "defaultsort": true,
             "filter": {
               "mandatory": false,
               "type": "daterange",
@@ -255,12 +248,28 @@
             }
           },
           {
-            "name": "$ref:reported_at",
-            "formula": "format_date(${reported_at}, 'dd/MM/yyyy')",
-            "display": "Reported on",
-            "sortable": true,
-            "type": "date",
+            "name": "$ref:prisoner_role",
+            "display": "Participation code",
+            "sortable": false,
             "visible": "false",
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "mandatory": false,
+              "dynamicoptions": {
+                "maximumOptions": 20,
+                "returnAsStaticOptions": true,
+                "dataset": "prisoner_role",
+                "name": "code",
+                "display": "description"
+              }
+            }
+          },
+          {
+            "name": "$ref:prisoner_role_description",
+            "display": "Participation",
+            "sortable": true,
+            "visible": "true",
             "defaultsort": false
           },
           {
@@ -272,27 +281,11 @@
           },
           {
             "name": "$ref:description",
-            "display": "Incident description",
+            "display": "Incident details",
             "sortable": false,
             "visible": "true",
             "defaultsort": false,
             "wordwrap": "break-words"
-          },
-          {
-            "name": "$ref:reported_by",
-            "display": "Reported by",
-            "sortable": false,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:modified_at",
-            "display": "Last Updated",
-            "formula": "format_date(${modified_at}, 'dd/MM/yyyy HH:mm')",
-            "type": "date",
-            "sortable": true,
-            "visible": "false",
-            "defaultsort": true
           }
         ]
       },
@@ -300,7 +293,7 @@
       "summary": [{
         "id": "summaryId",
         "template": "page-header",
-        "dataset": "$ref:summary"
+        "dataset": "$ref:serious-sexual-assault"
       }]
     }
   ]

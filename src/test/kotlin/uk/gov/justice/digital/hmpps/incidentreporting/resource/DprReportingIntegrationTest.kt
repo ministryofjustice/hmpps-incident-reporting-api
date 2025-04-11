@@ -97,7 +97,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(5)
+          .expectBody().jsonPath("$.length()").isEqualTo(6)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -108,7 +108,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(5)
+          .expectBody().jsonPath("$.length()").isEqualTo(6)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -122,7 +122,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(5)
+          .jsonPath("$.length()").isEqualTo(6)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -767,6 +767,94 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "type_description": "Find of illicit items",
                   "location": "MDI",
                   "num_of_incidents": "<a href='https://incident-reporting.hmpps.service.justice.gov.uk/reports?searchID=A0001AA&fromDate=05/12/2023&toDate=05/12/2023&location=MDI&typeFamily=FIND' target=\"_blank\">2</a>"
+                }
+              ]
+              """,
+            )
+        }
+      }
+    }
+
+    @DisplayName("GET /reports/incident-type-detail")
+    @Nested
+    inner class RunReportIncidentTypeDetail {
+      private val url = "/reports/incident-type-detail"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope")
+        @TestFactory
+        fun prisonerEndpointRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/serious-sexual-assault"),
+          systemRole,
+        )
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns a page of the report for self harm`() {
+          val violence = buildReport(
+            reportReference = "222001",
+            reportTime = now,
+            location = "MDI",
+            type = Type.ASSAULT_5,
+            generatePrisonerInvolvement = 2,
+          )
+          violence.prisonersInvolved.first().prisonerRole = PrisonerRole.FIGHTER
+          violence.prisonersInvolved.last().prisonerRole = PrisonerRole.VICTIM
+
+          violence.addQuestion(
+            code = "1",
+            question = "WAS A SERIOUS INJURY SUSTAINED",
+            1,
+          ).addResponse(response = "YES", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+
+          reportRepository.saveAndFlush(violence)
+
+          webTestClient.put().uri("/refresh-views")
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+
+          webTestClient.get().uri("$url/serious-sexual-assault")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+              // language=json
+              """
+              [
+                {
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "title": "Incident Report 222001",
+                  "description": "A new incident created in the new service of type assault",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "location": "MDI",
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0001AA' target=\"_blank\">A0001AA</a>",
+                  "prisoner_role": "FIGHTER",
+                  "prisoner_role_description": "Fighter",
+                  "last_name": "Last 1, First 1",
+                  "first_name": "First 1"
+                },
+                {
+                  "incident_date_and_time": "05/12/2023 11:34",
+                  "title": "Incident Report 222001",
+                  "description": "A new incident created in the new service of type assault",
+                  "status": "DRAFT",
+                  "status_description": "Draft",
+                  "location": "MDI",
+                  "prisoner_number": "<a href='https://prisoner.digital.prison.service.justice.gov.uk/prisoner/A0002AA' target=\"_blank\">A0002AA</a>",
+                  "prisoner_role": "VICTIM",
+                  "prisoner_role_description": "Victim",
+                  "last_name": "Last 2, First 2",
+                  "first_name": "First 2"
                 }
               ]
               """,

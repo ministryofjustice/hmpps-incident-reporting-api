@@ -100,8 +100,8 @@ management:
 dpr:
   lib:
     definition:
-      locations: "reports/incident-report.json, reports/incident-report-pecs.json, reports/incident-count.json, reports/incident-with-people.json, reports/incident-count-by-prisoner.json"
+      locations: "reports/incident-report.json, reports/incident-report-pecs.json, reports/incident-count.json, reports/incident-with-people.json, reports/incident-count-by-prisoner.json, reports/incident-type-detail.json"
     system:
       role: DPR_API_ACCESS
   report:
-    views: self_harm_summary
+    views: self_harm_summary,serious_sexual_assault_summary
