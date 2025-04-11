@@ -54,7 +54,7 @@
     {
       "id": "per-type",
       "name": "Count of prisoner incidents by type per month",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "select cast(date_trunc('month', incident_date_and_time) as date) as month_year,\n       to_char(min(incident_date_and_time), 'DD/MM/YYYY')        as min_date,\n       to_char(max(incident_date_and_time), 'DD/MM/YYYY')        as max_date,\n       pi.prisoner_number,\n       initcap(pi.first_name)                                    as first_name,\n       initcap(pi.last_name)                                     as last_name,\n       ctf.code as type,\n       ctf.description                                               type_description,\n       r.location,\n       COUNT(distinct r.id)                               as num_of_incidents\nfrom prisoner_involvement pi\n         join report r on r.id = pi.report_id\n         join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status != 'DUPLICATE'\nGROUP BY date_trunc('month', r.incident_date_and_time), pi.prisoner_number, pi.last_name, pi.first_name, ctf.code,\n         ctf.description, r.location",
       "schema": {
         "field": [
@@ -104,7 +104,7 @@
     {
       "id": "types",
       "name": "Incident Types",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "SELECT code, description FROM constant_type_family",
       "schema": {
         "field": [

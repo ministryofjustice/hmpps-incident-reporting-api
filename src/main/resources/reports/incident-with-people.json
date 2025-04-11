@@ -54,7 +54,7 @@
     {
       "id": "by-prisoner",
       "name": "Report of prisoner involvement in an incident",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "select r.id, r.report_reference, r.location,ctf.code as type, ct.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(pi.first_name) as first_name, initcap(pi.last_name) as last_name, pi.prisoner_number, pi.comment\nfrom prisoner_involvement pi join report r on r.id = pi.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code WHERE status != 'DUPLICATE'",
       "schema": {
         "field": [
@@ -140,7 +140,7 @@
     {
       "id": "self-harm",
       "name": "Deliberate Self Harm Report",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "select r.id,\n       shs.prisoner_number,\n       initcap(shs.last_name) as last_name,\n       initcap(shs.first_name) as first_name,\n       r.report_reference,\n       shs.location,\n       shs.incident_date_and_time,\n       r.title,\n       r.description,\n       shs.category,\n       initcap(shs.materials_used) as materials_used,\n       initcap(shs.other_method) as other_method,\n       initcap(shs.q1_location) as q1_location,\n       initcap(shs.additional_comment) as additional_comment\nfrom public.self_harm_summary shs\n         join report r on r.id = shs.report_id",
       "schema": {
         "field": [
@@ -222,7 +222,7 @@
     {
       "id": "by-staff",
       "name": "Report of staff involvement in an incident",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "select r.id, r.report_reference, r.location, ctf.code as type, ctf.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(st.first_name) as first_name, initcap(st.last_name) as last_name, st.staff_username, st.comment from staff_involvement st join report r on r.id = st.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code WHERE status != 'DUPLICATE'",
       "schema": {
         "field": [
@@ -308,7 +308,7 @@
     {
       "id": "types",
       "name": "Incident Types",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "SELECT code, description FROM constant_type_family",
       "schema": {
         "field": [
@@ -328,8 +328,8 @@
     {
       "id": "status",
       "name": "Incident Status",
-      "datasource": "dataSource",
-      "query": "SELECT code, description FROM constant_status",
+      "datasource": "replicaDataSource",
+      "query": "SELECT code, description FROM constant_status where code != 'DUPLICATE'",
       "schema": {
         "field": [
           {

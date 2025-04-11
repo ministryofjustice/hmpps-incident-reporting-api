@@ -54,7 +54,7 @@
     {
       "id": "by-location-per-day",
       "name": "Count of incidents per location per day",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "SELECT cast(date_trunc('day', incident_date_and_time) as date) as start_date, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as filter_date, location, ctf.code as type, ctf.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code WHERE status != 'DUPLICATE'\ngroup by date_trunc('day', r.incident_date_and_time), r.location, ctf.code, ctf.description",
       "schema": {
         "field": [
@@ -88,7 +88,7 @@
     {
       "id": "by-location-per-week",
       "name": "Count of incidents per location per week",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "SELECT cast(date_trunc('week', incident_date_and_time) as date) as start_date, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, location, ctf.code as type, ctf.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code WHERE status != 'DUPLICATE'\ngroup by date_trunc('week', r.incident_date_and_time), r.location, ctf.code, ctf.description",
       "schema": {
         "field": [
@@ -126,7 +126,7 @@
     {
       "id": "by-location-per-month",
       "name": "Count of incidents per location per month",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "SELECT cast(date_trunc('month', incident_date_and_time) as date) as start_date, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, location, ctf.code as type, ctf.description as type_description, count(*) num_of_incidents\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code WHERE status != 'DUPLICATE'\ngroup by date_trunc('month', r.incident_date_and_time), r.location, ctf.code, ctf.description",
       "schema": {
         "field": [
@@ -164,7 +164,7 @@
     {
       "id": "types",
       "name": "Incident Types",
-      "datasource": "dataSource",
+      "datasource": "replicaDataSource",
       "query": "SELECT code, description FROM constant_type_family",
       "schema": {
         "field": [
@@ -184,8 +184,8 @@
     {
       "id": "status",
       "name": "Incident Status",
-      "datasource": "dataSource",
-      "query": "SELECT code, description FROM constant_status",
+      "datasource": "replicaDataSource",
+      "query": "SELECT code, description FROM constant_status where code != 'DUPLICATE'",
       "schema": {
         "field": [
           {
