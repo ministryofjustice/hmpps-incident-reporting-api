@@ -9,7 +9,7 @@
   },
   "status": {
     "code": "AWAN",
-    "description": "Awaiting Analysis",
+    "description": "Awaiting review",
     "listSequence": 1,
     "standardUser": true,
     "enhancedUser": true
