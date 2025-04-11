@@ -70,7 +70,7 @@ class NomisSyncServiceTest {
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
       prison = NomisCode("MDI", "Moorland (HMP)"),
-      status = NomisStatus("AWAN", "Awaiting Analysis"),
+      status = NomisStatus("AWAN", "Awaiting review"),
       type = "SELF_HARM",
       lockedResponse = false,
       incidentDateTime = whenIncidentHappened,
@@ -175,7 +175,7 @@ class NomisSyncServiceTest {
     ),
     reportedBy = reportedBy,
     reportedAt = now,
-    status = Status.AWAITING_ANALYSIS,
+    status = Status.AWAITING_REVIEW,
     assignedTo = reportedBy,
     source = InformationSource.NOMIS,
     modifiedIn = InformationSource.NOMIS,
@@ -265,7 +265,7 @@ class NomisSyncServiceTest {
     assertThat(report.event.modifiedAt.toString()).isEqualTo("2023-12-05T17:34:56")
     assertThat(report.reportedBy).isEqualTo(reportedBy)
     assertThat(report.reportedAt).isEqualTo(now)
-    assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
+    assertThat(report.status).isEqualTo(Status.AWAITING_REVIEW)
     assertThat(report.assignedTo).isEqualTo(reportedBy)
     assertThat(report.createdAt).isEqualTo(now.plusHours(2))
     assertThat(report.modifiedAt).isEqualTo(now.plusHours(5))
@@ -426,7 +426,7 @@ class NomisSyncServiceTest {
       ),
       reportedBy = reportedBy,
       reportedAt = now,
-      status = Status.AWAITING_ANALYSIS,
+      status = Status.AWAITING_REVIEW,
       assignedTo = reportedBy,
       source = InformationSource.NOMIS,
       modifiedIn = InformationSource.DPS,
