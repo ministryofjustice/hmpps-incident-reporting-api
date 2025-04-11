@@ -28,7 +28,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     title = "TITLE",
     description = "DESCRIPTION",
     prison = NomisCode("MDI", "Moorland (HMP)"),
-    status = NomisStatus("AWAN", "Awaiting Analysis"),
+    status = NomisStatus("AWAN", "Awaiting review"),
     type = "FINDS1",
     lockedResponse = false,
     incidentDateTime = now.minusDays(1),
@@ -68,7 +68,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(reportEntity.correctionRequests).isEmpty()
       assertThat(reportEntity.historyOfStatuses).hasSize(1)
       assertThat(reportEntity.historyOfStatuses).allSatisfy { status ->
-        assertThat(status.status).isEqualTo(Status.AWAITING_ANALYSIS)
+        assertThat(status.status).isEqualTo(Status.AWAITING_REVIEW)
       }
 
       val eventEntity = reportEntity.event
@@ -191,7 +191,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.historyOfStatuses.map { it.toDto() })
         .containsExactly(
           StatusHistory(Status.DRAFT, yesterday, "old-user"),
-          StatusHistory(Status.AWAITING_ANALYSIS, now, "user1"),
+          StatusHistory(Status.AWAITING_REVIEW, now, "user1"),
         )
 
       val anotherReportDto = minimalReportDto.copy(description = "Status is unchanged")
@@ -203,7 +203,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.historyOfStatuses.map { it.toDto() })
         .containsExactly(
           StatusHistory(Status.DRAFT, yesterday, "old-user"),
-          StatusHistory(Status.AWAITING_ANALYSIS, now, "user1"),
+          StatusHistory(Status.AWAITING_REVIEW, now, "user1"),
         )
     }
   }
