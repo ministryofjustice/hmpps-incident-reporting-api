@@ -6,7 +6,7 @@ spec:
   {{- if (eq .Values.environment.name "prod") }}
   schedule: "00 03 * * *"
   {{- else }}
-  schedule: "30 08 * * *"
+  schedule: "30 07 * * 1-5"
   {{- end }}
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 5
