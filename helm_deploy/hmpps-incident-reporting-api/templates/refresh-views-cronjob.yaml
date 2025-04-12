@@ -5,8 +5,7 @@ metadata:
 spec:
   {{- if (eq .Values.environment.name "prod") }}
   schedule: "00 03 * * *"
-  {{- end }}
-  {{- if (not eq .Values.environment.name "prod") }}
+  {{- else }}
   schedule: "30 08 * * *"
   {{- end }}
   concurrencyPolicy: Forbid
