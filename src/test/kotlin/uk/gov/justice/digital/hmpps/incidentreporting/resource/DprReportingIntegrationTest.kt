@@ -796,7 +796,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       inner class HappyPath {
 
         @Test
-        fun `returns a page of the report for self harm`() {
+        fun `returns a page of the report for serious assault`() {
           val violence = buildReport(
             reportReference = "222001",
             reportTime = now,
