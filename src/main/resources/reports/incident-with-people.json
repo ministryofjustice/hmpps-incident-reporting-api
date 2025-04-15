@@ -141,11 +141,11 @@
       "id": "self-harm",
       "name": "Deliberate Self Harm Report",
       "datasource": "replicaDataSource",
-      "query": "select report_id,\n       prisoner_number,\n       initcap(last_name) as last_name,\n       initcap(first_name) as first_name,\n       report_reference,\n       location,\n       incident_date_and_time,\n       title,\n       description,\n       category,\n       initcap(materials_used) as materials_used,\n       initcap(other_method) as other_method,\n       initcap(q1_location) as q1_location,\n       initcap(additional_comment) as additional_comment\nfrom self_harm_summary",
+      "query": "select report_id,\n       prisoner_number,\n       initcap(last_name) as last_name,\n       initcap(first_name) as first_name,\n       report_reference,\n       location,\n       incident_date_and_time,\n       title,\n       description,\n       category,\n       initcap(materials_used) as materials_used,\n       initcap(other_method) as other_method,\n       initcap(q1_location) as q1_location,\n       initcap(additional_comment) as additional_comment\nfrom self_harm_summary_view",
       "schema": {
         "field": [
           {
-            "name": "id",
+            "name": "report_id",
             "type": "string"
           },
           {
@@ -493,7 +493,7 @@
             "name": "$ref:report_reference",
             "display": "Incident number",
             "sortable": true,
-            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
+            "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${report_id}',${report_reference},TRUE)",
             "visible": "true",
             "defaultsort": false
           },
