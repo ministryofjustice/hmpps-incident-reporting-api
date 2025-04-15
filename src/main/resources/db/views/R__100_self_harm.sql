@@ -1,10 +1,14 @@
 drop materialized view if exists self_harm_summary;
+drop materialized view if exists self_harm_summary_view;
 
-CREATE MATERIALIZED VIEW self_harm_summary
+CREATE MATERIALIZED VIEW self_harm_summary_view
 AS
 select r.id      as report_id,
+       r.report_reference,
        r.location,
        r.incident_date_and_time,
+       r.title,
+       r.description,
        pi.id     as prisoner_involvement_id,
        pi.prisoner_number,
        pi.last_name,

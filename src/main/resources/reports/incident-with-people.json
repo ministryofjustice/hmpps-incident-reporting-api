@@ -141,7 +141,7 @@
       "id": "self-harm",
       "name": "Deliberate Self Harm Report",
       "datasource": "replicaDataSource",
-      "query": "select r.id,\n       shs.prisoner_number,\n       initcap(shs.last_name) as last_name,\n       initcap(shs.first_name) as first_name,\n       r.report_reference,\n       shs.location,\n       shs.incident_date_and_time,\n       r.title,\n       r.description,\n       shs.category,\n       initcap(shs.materials_used) as materials_used,\n       initcap(shs.other_method) as other_method,\n       initcap(shs.q1_location) as q1_location,\n       initcap(shs.additional_comment) as additional_comment\nfrom public.self_harm_summary shs\n         join report r on r.id = shs.report_id",
+      "query": "select report_id,\n       prisoner_number,\n       initcap(last_name) as last_name,\n       initcap(first_name) as first_name,\n       report_reference,\n       location,\n       incident_date_and_time,\n       title,\n       description,\n       category,\n       initcap(materials_used) as materials_used,\n       initcap(other_method) as other_method,\n       initcap(q1_location) as q1_location,\n       initcap(additional_comment) as additional_comment\nfrom self_harm_summary",
       "schema": {
         "field": [
           {
@@ -521,13 +521,6 @@
             }
           },
           {
-            "name": "$ref:title",
-            "display": "Title",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
             "name": "$ref:category",
             "display": "Category",
             "sortable": true,
@@ -662,6 +655,20 @@
             "display": "Extra information",
             "sortable": false,
             "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:title",
+            "display": "Incident title",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:description",
+            "display": "Incident details",
+            "sortable": false,
+            "visible": "false",
             "defaultsort": false
           }
         ]
