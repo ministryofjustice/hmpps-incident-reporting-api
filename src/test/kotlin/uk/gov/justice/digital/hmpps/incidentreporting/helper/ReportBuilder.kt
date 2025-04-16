@@ -80,6 +80,7 @@ fun buildReport(
       correctionRequestedAt = reportTime,
       correctionRequestedBy = "qa",
       descriptionOfChange = "Fix request #$correctionIndex",
+      location = "MDI",
     )
   }
 
