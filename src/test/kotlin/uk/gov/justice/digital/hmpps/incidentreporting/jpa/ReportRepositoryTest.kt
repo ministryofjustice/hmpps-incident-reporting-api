@@ -323,6 +323,9 @@ class ReportRepositoryTest : IntegrationTestBase() {
       .addResponse("MAYBE", null, 2, "Maybe", "user1", now)
       .addResponse("OTHER", null, 3, "Other", "user1", now)
 
+    report.appendToDescription("SOME_USER_1", now, "The prisoner was admitted to hospital")
+    report.appendToDescription("SOME_USER_2", now, "The prisoner was discharged from hospital")
+
     TestTransaction.flagForCommit()
     TestTransaction.end()
     TestTransaction.start()
@@ -331,6 +334,12 @@ class ReportRepositoryTest : IntegrationTestBase() {
       ?: throw EntityNotFoundException()
     assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
     assertThat(report.type).isEqualTo(Type.ASSAULT_5)
+    assertThat(report.description).isEqualTo("An incident occurred")
+    assertThat(report.descriptionAddendums).hasSize(2)
+    assertThat(report.descriptionAddendums.elementAt(0).createdBy).isEqualTo("SOME_USER_1")
+    assertThat(report.descriptionAddendums.elementAt(0).text).isEqualTo("The prisoner was admitted to hospital")
+    assertThat(report.descriptionAddendums.elementAt(1).createdBy).isEqualTo("SOME_USER_2")
+    assertThat(report.descriptionAddendums.elementAt(1).text).isEqualTo("The prisoner was discharged from hospital")
     assertThat(report.questions).hasSize(1)
     assertThat(report.questions.elementAt(0).code).isEqualTo("SOME_QUESTION")
     assertThat(report.questions.elementAt(0).responses).hasSize(4)
