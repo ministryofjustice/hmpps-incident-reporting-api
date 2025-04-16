@@ -67,6 +67,7 @@ class CorrectionRequest(
     now: LocalDateTime,
   ) {
     request.descriptionOfChange?.let { descriptionOfChange = it }
+    request.location?.let { location = it }
     correctionRequestedBy = requestUsername
     correctionRequestedAt = now
   }

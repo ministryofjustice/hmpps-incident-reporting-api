@@ -3,12 +3,14 @@
     "descriptionOfChange": "Description needs to mention prisoner numbers",
     "correctionRequestedBy": "request-user",
     "correctionRequestedAt": "2023-12-05T12:34:56",
+    "location": "MDI",
     "sequence": 0
   },
   {
     "descriptionOfChange": "Fix request #2",
     "correctionRequestedBy": "qa",
     "correctionRequestedAt": "2023-12-05T12:34:56",
+    "location": "MDI",
     "sequence": 1
   }
 ]

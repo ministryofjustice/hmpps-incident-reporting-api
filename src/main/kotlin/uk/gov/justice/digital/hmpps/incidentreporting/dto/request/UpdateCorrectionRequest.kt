@@ -15,6 +15,14 @@ data class UpdateCorrectionRequest(
   )
   @field:Size(min = 1)
   val descriptionOfChange: String? = null,
+  @Schema(
+    description = "The location where the staff member is raising the correction",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    nullable = true,
+    defaultValue = "null",
+    minLength = 3,
+  )
+  val location: String? = null,
 ) {
   @JsonIgnore
   val isEmpty: Boolean =
