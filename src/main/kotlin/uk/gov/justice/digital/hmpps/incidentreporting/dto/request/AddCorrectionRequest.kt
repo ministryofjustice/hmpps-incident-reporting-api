@@ -8,4 +8,10 @@ data class AddCorrectionRequest(
   @Schema(description = "The changes being requested", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
   @field:Size(min = 1)
   val descriptionOfChange: String,
+  @Schema(
+    description = "The location where the staff member is raising the correction",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    minLength = 3,
+  )
+  val location: String? = null,
 )

@@ -27,6 +27,7 @@ class CorrectionRequest(
   var descriptionOfChange: String,
   var correctionRequestedBy: String,
   var correctionRequestedAt: LocalDateTime,
+  var location: String? = null,
 ) : Comparable<CorrectionRequest> {
 
   companion object {
@@ -66,6 +67,7 @@ class CorrectionRequest(
     now: LocalDateTime,
   ) {
     request.descriptionOfChange?.let { descriptionOfChange = it }
+    request.location?.let { location = it }
     correctionRequestedBy = requestUsername
     correctionRequestedAt = now
   }
@@ -75,5 +77,6 @@ class CorrectionRequest(
     descriptionOfChange = descriptionOfChange,
     correctionRequestedBy = correctionRequestedBy,
     correctionRequestedAt = correctionRequestedAt,
+    location = location,
   )
 }

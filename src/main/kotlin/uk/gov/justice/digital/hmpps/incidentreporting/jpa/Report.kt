@@ -359,6 +359,7 @@ class Report(
           correctionRequestedBy = newCorrection.correctionRequestedBy
           correctionRequestedAt = newCorrection.correctionRequestedAt
           descriptionOfChange = newCorrection.descriptionOfChange
+          location = newCorrection.location
         } ?: addCorrectionRequest(newCorrection)
       }.toSet(),
     )
@@ -370,6 +371,7 @@ class Report(
     correctionRequestedBy = nomisRequirement.staff.username,
     correctionRequestedAt = nomisRequirement.date.atStartOfDay(),
     descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
+    location = nomisRequirement.prisonId,
   )
 
   fun addCorrectionRequest(correctionRequest: CorrectionRequest): CorrectionRequest {
@@ -382,6 +384,7 @@ class Report(
     correctionRequestedBy: String,
     correctionRequestedAt: LocalDateTime,
     descriptionOfChange: String,
+    location: String? = null,
   ): CorrectionRequest {
     return addCorrectionRequest(
       CorrectionRequest(
@@ -390,6 +393,7 @@ class Report(
         correctionRequestedBy = correctionRequestedBy,
         correctionRequestedAt = correctionRequestedAt,
         descriptionOfChange = descriptionOfChange,
+        location = location,
       ),
     )
   }
