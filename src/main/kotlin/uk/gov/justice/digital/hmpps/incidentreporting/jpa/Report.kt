@@ -370,6 +370,7 @@ class Report(
     correctionRequestedBy = nomisRequirement.staff.username,
     correctionRequestedAt = nomisRequirement.date.atStartOfDay(),
     descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
+    location = nomisRequirement.prisonId,
   )
 
   fun addCorrectionRequest(correctionRequest: CorrectionRequest): CorrectionRequest {
