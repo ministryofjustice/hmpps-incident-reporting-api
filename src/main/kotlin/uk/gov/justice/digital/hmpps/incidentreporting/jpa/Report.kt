@@ -359,6 +359,7 @@ class Report(
           correctionRequestedBy = newCorrection.correctionRequestedBy
           correctionRequestedAt = newCorrection.correctionRequestedAt
           descriptionOfChange = newCorrection.descriptionOfChange
+          location = newCorrection.location
         } ?: addCorrectionRequest(newCorrection)
       }.toSet(),
     )
@@ -383,6 +384,7 @@ class Report(
     correctionRequestedBy: String,
     correctionRequestedAt: LocalDateTime,
     descriptionOfChange: String,
+    location: String? = null,
   ): CorrectionRequest {
     return addCorrectionRequest(
       CorrectionRequest(
@@ -391,6 +393,7 @@ class Report(
         correctionRequestedBy = correctionRequestedBy,
         correctionRequestedAt = correctionRequestedAt,
         descriptionOfChange = descriptionOfChange,
+        location = location,
       ),
     )
   }

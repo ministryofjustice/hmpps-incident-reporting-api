@@ -129,6 +129,7 @@ class ReportCorrectionRequestResource :
           descriptionOfChange = descriptionOfChange,
           correctionRequestedBy = authenticationHolder.username ?: SYSTEM_USERNAME,
           correctionRequestedAt = LocalDateTime.now(clock),
+          location = location,
         )
       }
       report.correctionRequests.map { it.toDto() }
