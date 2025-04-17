@@ -18,7 +18,8 @@ class ReportWithDetails(
   location: String,
   title: String,
   description: String,
-  descriptionAddendums: List<DescriptionAddendum>,
+  @Schema(description = "Addendums to the description")
+  val descriptionAddendums: List<DescriptionAddendum>,
   reportedBy: String,
   reportedAt: LocalDateTime,
   status: Status,
