@@ -19,6 +19,7 @@ fun buildReport(
   type: Type = Type.FIND_6,
   reportingUsername: String = "USER1",
   // all related entities apart from event are optionally generated:
+  generateDescriptionAddendums: Int = 0,
   generateStaffInvolvement: Int = 0,
   generatePrisonerInvolvement: Int = 0,
   generateCorrections: Int = 0,
@@ -53,6 +54,13 @@ fun buildReport(
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)
 
+  (1..generateDescriptionAddendums).forEach { addendumIndex ->
+    report.appendToDescription(
+      createdBy = "staff-$addendumIndex",
+      createdAt = reportTime,
+      text = "Addendum #$addendumIndex",
+    )
+  }
   (1..generateStaffInvolvement).forEach { staffIndex ->
     report.addStaffInvolved(
       sequence = staffIndex - 1,

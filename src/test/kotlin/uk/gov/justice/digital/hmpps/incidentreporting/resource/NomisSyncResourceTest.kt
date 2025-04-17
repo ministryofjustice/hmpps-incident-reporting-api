@@ -1290,6 +1290,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "FBI",
                 "title": "Updated title",
                 "description": "Updated details",
+                "descriptionAddendums": [],
                 "event": {
                   "id": "${existingNomisReport.event.id}",
                   "eventReference": "$NOMIS_INCIDENT_NUMBER",
