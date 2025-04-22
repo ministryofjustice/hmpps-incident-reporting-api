@@ -45,6 +45,7 @@ import java.util.UUID
     NamedEntityGraph(
       name = "Report.eager",
       attributeNodes = [
+        NamedAttributeNode("descriptionAddendums"),
         NamedAttributeNode("event"),
         NamedAttributeNode("staffInvolved"),
         NamedAttributeNode("prisonersInvolved"),
@@ -111,6 +112,9 @@ class Report(
 
   var title: String,
   var description: String,
+  @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+  @SortNatural
+  val descriptionAddendums: SortedSet<DescriptionAddendum> = sortedSetOf(),
 
   var reportedBy: String,
   var reportedAt: LocalDateTime,
@@ -211,6 +215,23 @@ class Report(
       addStatusHistory(newStatus, changedAt, changedBy)
     }
     return this
+  }
+
+  fun appendToDescription(
+    createdBy: String,
+    firstName: String,
+    lastName: String,
+    createdAt: LocalDateTime,
+    text: String,
+  ): DescriptionAddendum {
+    return DescriptionAddendum(
+      report = this,
+      createdBy = createdBy,
+      firstName = firstName,
+      lastName = lastName,
+      createdAt = createdAt,
+      text = text,
+    ).also { descriptionAddendums.add(it) }
   }
 
   fun addStatusHistory(
@@ -607,6 +628,7 @@ class Report(
     type = type,
     title = title,
     description = description,
+    descriptionAddendums = descriptionAddendums.map { it.toDto() },
     reportedBy = reportedBy,
     reportedAt = reportedAt,
     status = status,

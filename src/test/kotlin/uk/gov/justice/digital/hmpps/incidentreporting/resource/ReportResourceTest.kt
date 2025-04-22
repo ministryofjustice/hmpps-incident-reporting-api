@@ -75,6 +75,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       buildReport(
         reportReference = "11124143",
         reportTime = now,
+        generateDescriptionAddendums = 2,
       ),
     )
   }
@@ -573,6 +574,22 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
+              "descriptionAddendums": [
+                {
+                  "createdBy": "staff-1",
+                  "firstName": "First 1",
+                  "lastName": "Last 1",
+                  "createdAt": "2023-12-05T12:34:56",
+                  "text": "Addendum #1"
+                },
+                {
+                  "createdBy": "staff-2",
+                  "firstName": "First 2",
+                  "lastName": "Last 2",
+                  "createdAt": "2023-12-05T12:34:56",
+                  "text": "Addendum #2"
+                }
+              ],
               "event": {
                 "id": "${existingReport.event.id}",
                 "eventReference": "11124143",
@@ -748,6 +765,22 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
+              "descriptionAddendums": [
+                {
+                  "createdBy": "staff-1",
+                  "firstName": "First 1",
+                  "lastName": "Last 1",
+                  "createdAt": "2023-12-05T12:34:56",
+                  "text": "Addendum #1"
+                },
+                {
+                  "createdBy": "staff-2",
+                  "firstName": "First 2",
+                  "lastName": "Last 2",
+                  "createdAt": "2023-12-05T12:34:56",
+                  "text": "Addendum #2"
+                }
+              ],
               "event": {
                 "id": "${existingReport.event.id}",
                 "eventReference": "11124143",
