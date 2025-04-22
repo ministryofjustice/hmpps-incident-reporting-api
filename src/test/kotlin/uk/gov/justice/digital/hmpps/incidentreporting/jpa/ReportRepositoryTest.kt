@@ -328,14 +328,14 @@ class ReportRepositoryTest : IntegrationTestBase() {
       "John",
       "Doe",
       now,
-      "The prisoner was admitted to hospital"
+      "The prisoner was admitted to hospital",
     )
     report.appendToDescription(
       "SOME_USER_2",
       "Jane",
       "Doe",
       now,
-      "The prisoner was discharged from hospital"
+      "The prisoner was discharged from hospital",
     )
 
     TestTransaction.flagForCommit()
