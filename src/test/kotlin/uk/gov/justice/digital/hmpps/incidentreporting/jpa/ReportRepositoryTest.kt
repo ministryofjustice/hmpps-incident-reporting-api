@@ -323,8 +323,20 @@ class ReportRepositoryTest : IntegrationTestBase() {
       .addResponse("MAYBE", null, 2, "Maybe", "user1", now)
       .addResponse("OTHER", null, 3, "Other", "user1", now)
 
-    report.appendToDescription("SOME_USER_1", now, "The prisoner was admitted to hospital")
-    report.appendToDescription("SOME_USER_2", now, "The prisoner was discharged from hospital")
+    report.appendToDescription(
+      "SOME_USER_1",
+      "John",
+      "Doe",
+      now,
+      "The prisoner was admitted to hospital"
+    )
+    report.appendToDescription(
+      "SOME_USER_2",
+      "Jane",
+      "Doe",
+      now,
+      "The prisoner was discharged from hospital"
+    )
 
     TestTransaction.flagForCommit()
     TestTransaction.end()

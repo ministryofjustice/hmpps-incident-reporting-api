@@ -57,6 +57,8 @@ fun buildReport(
   (1..generateDescriptionAddendums).forEach { addendumIndex ->
     report.appendToDescription(
       createdBy = "staff-$addendumIndex",
+      firstName = "First $addendumIndex",
+      lastName = "Last $addendumIndex",
       createdAt = reportTime,
       text = "Addendum #$addendumIndex",
     )

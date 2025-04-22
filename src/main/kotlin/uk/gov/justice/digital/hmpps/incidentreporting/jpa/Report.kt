@@ -219,12 +219,16 @@ class Report(
 
   fun appendToDescription(
     createdBy: String,
+    firstName: String,
+    lastName: String,
     createdAt: LocalDateTime,
     text: String,
   ): DescriptionAddendum {
     return DescriptionAddendum(
       report = this,
       createdBy = createdBy,
+      firstName = firstName,
+      lastName = lastName,
       createdAt = createdAt,
       text = text,
     ).also { descriptionAddendums.add(it) }

@@ -22,6 +22,8 @@ class DescriptionAddendum(
   val report: Report,
 
   val createdBy: String,
+  val firstName: String,
+  val lastName: String,
   val createdAt: LocalDateTime,
   val text: String,
 ) : Comparable<DescriptionAddendum> {
@@ -31,6 +33,8 @@ class DescriptionAddendum(
       { it.report }
       .thenBy { it.createdAt }
       .thenBy { it.createdBy }
+      .thenBy { it.firstName }
+      .thenBy { it.lastName }
       .thenBy { it.text }
   }
 
@@ -45,6 +49,8 @@ class DescriptionAddendum(
     if (report != other.report) return false
     if (createdAt != other.createdAt) return false
     if (createdBy != other.createdBy) return false
+    if (firstName != other.firstName) return false
+    if (lastName != other.lastName) return false
     if (text != other.text) return false
 
     return true
@@ -52,17 +58,20 @@ class DescriptionAddendum(
 
   override fun hashCode(): Int {
     var result = report.hashCode()
-    result = 31 * result + createdAt.hashCode() + createdBy.hashCode() + text.hashCode()
+    result = 31 * result + createdAt.hashCode() + createdBy.hashCode()
+    result = 31 * result + firstName.hashCode() + lastName.hashCode() + text.hashCode()
     return result
   }
 
   override fun toString(): String {
     return "DescriptionAddendum(id=$id, report=${report.reportReference}, " +
-      "createdBy=$createdBy, createdAt=$createdAt, text=$text)"
+      "createdBy=$firstName $lastName, createdAt=$createdAt, text=$text)"
   }
 
   fun toDto() = DescriptionAddendumDto(
     createdBy = createdBy,
+    firstName = firstName,
+    lastName = lastName,
     createdAt = createdAt,
     text = text,
   )

@@ -6,7 +6,9 @@ CREATE TABLE description_addendum
     CONSTRAINT description_addendum_report_fk REFERENCES report (id) ON DELETE CASCADE,
   "text"     TEXT         NOT NULL,
   created_at TIMESTAMP    NOT NULL,
-  created_by VARCHAR(120) NOT NULL
+  created_by VARCHAR(120) NOT NULL,
+  first_name VARCHAR(255) NOT NULL,
+  last_name  VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX description_addendum_report_id_fk_idx on description_addendum (report_id);
