@@ -323,14 +323,14 @@ class ReportRepositoryTest : IntegrationTestBase() {
       .addResponse("MAYBE", null, 2, "Maybe", "user1", now)
       .addResponse("OTHER", null, 3, "Other", "user1", now)
 
-    report.appendToDescription(
+    report.addDescriptionAddendum(
       "SOME_USER_1",
       "John",
       "Doe",
       now,
       "The prisoner was admitted to hospital",
     )
-    report.appendToDescription(
+    report.addDescriptionAddendum(
       "SOME_USER_2",
       "Jane",
       "Doe",
