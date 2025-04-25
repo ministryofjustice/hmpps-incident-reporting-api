@@ -219,7 +219,7 @@ class ReportService(
 
   @Transactional
   fun addDescriptionAddendum(id: UUID, descriptionAddendum: DescriptionAddendum): ReportWithDetails? {
-    return reportRepository.findById(id).getOrNull()?.let { reportEntity ->
+    return reportRepository.findOneEagerlyById(id)?.let { reportEntity ->
       reportEntity.addDescriptionAddendum(
         createdBy = descriptionAddendum.createdBy,
         firstName = descriptionAddendum.firstName,
