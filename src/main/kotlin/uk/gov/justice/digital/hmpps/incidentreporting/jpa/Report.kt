@@ -15,6 +15,7 @@ import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
+import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
@@ -571,7 +572,7 @@ class Report(
     this.title = upsert.title ?: NO_DETAILS_GIVEN
     this.event.title = title
 
-    this.description = upsert.description ?: NO_DETAILS_GIVEN
+    this.description = upsert.getBaseDescription() ?: NO_DETAILS_GIVEN
     this.event.description = description
 
     this.reportedBy = upsert.reportingStaff.username
@@ -599,6 +600,8 @@ class Report(
     updateCorrectionRequests(upsert.requirements)
     updateQuestionAndResponses(upsert.questions)
     updateHistory(upsert.history)
+    this.descriptionAddendums.clear()
+    addAddendum(upsert.getAddendums())
   }
 
   fun toDtoBasic() = ReportBasic(
@@ -648,4 +651,15 @@ class Report(
     staffInvolvementDone = staffInvolvementDone,
     prisonerInvolvementDone = prisonerInvolvementDone,
   )
+
+  fun addAddendum(addendums: List<NomisReport.NomisAddendum>) {
+    addendums.forEach { addendum -> descriptionAddendums.add(DescriptionAddendum(
+      text = addendum.text,
+      firstName = addendum.firstName,
+      lastName = addendum.lastName,
+      createdAt = addendum.createdAt,
+      createdBy = SYSTEM_USERNAME,
+      report = this
+    )) }
+  }
 }

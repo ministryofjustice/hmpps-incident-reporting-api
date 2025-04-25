@@ -2,8 +2,10 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatterBuilder
 
 @Schema(description = "NOMIS Incident Report Details")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -62,4 +64,46 @@ data class NomisReport(
 
   @Schema(description = "Historical questionnaire details for the incident")
   val history: List<NomisHistory>,
-)
+
+) {
+  fun getAddendums(): List<NomisAddendum> {
+    val addendums = mutableListOf<NomisAddendum>()
+    description?.let {
+      val entries = it.split("User:".toRegex())
+
+      if (entries.size > 1) {
+        val additionalEntries = entries.drop(1)
+
+        val dateTimePattern = Regex("\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}")
+
+        val builder = DateTimeFormatterBuilder()
+        builder.parseCaseInsensitive()
+        builder.appendPattern("dd-MMM-yyyy HH:mm")
+        val dateTimeFormat = builder.toFormatter()
+
+        for (entry in additionalEntries) {
+          val fullName = entry.split(" Date:".toRegex())[0]
+          val firstName = fullName.split(",")[1]
+          val lastName = fullName.split(",")[0]
+
+
+          val addText = entry.split(" Date:\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}".toRegex())[1]
+          val dateTimeString = dateTimePattern.find(entry)?.value ?: RuntimeException("Date not found")
+
+          val createdAt = LocalDateTime.parse(dateTimeString.toString(), dateTimeFormat)
+
+          addendums.add(NomisAddendum(firstName=firstName, lastName=lastName, createdAt =  createdAt, text = addText))
+        }
+      }
+    }
+    return addendums
+  }
+  fun getBaseDescription(): String? = description?.let { it.split("User:".toRegex())[0] }
+
+  data class NomisAddendum(
+    val firstName: String,
+    val lastName: String,
+    val createdAt: LocalDateTime,
+    val text: String
+  )
+}

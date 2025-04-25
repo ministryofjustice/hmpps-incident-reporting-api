@@ -85,7 +85,7 @@ class Event(
         incidentDateAndTime = nomisReport.incidentDateTime,
         location = nomisReport.prison.code,
         title = nomisReport.title ?: NO_DETAILS_GIVEN,
-        description = nomisReport.description ?: NO_DETAILS_GIVEN,
+        description = nomisReport.getBaseDescription() ?: NO_DETAILS_GIVEN,
         reportedBy = nomisReport.reportingStaff.username,
         reportedAt = nomisReport.reportedDateTime,
         status = status,
@@ -98,6 +98,7 @@ class Event(
         assignedTo = nomisReport.reportingStaff.username,
         event = event,
       )
+      report.addAddendum(nomisReport.getAddendums())
       report.addStatusHistory(status, nomisReport.reportedDateTime, nomisReport.reportingStaff.username)
 
       report.updateStaffInvolved(nomisReport.staffParties)
