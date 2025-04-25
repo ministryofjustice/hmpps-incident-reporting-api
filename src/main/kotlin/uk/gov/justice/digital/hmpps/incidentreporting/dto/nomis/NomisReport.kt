@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -66,10 +67,11 @@ data class NomisReport(
   val history: List<NomisHistory>,
 
 ) {
-  fun getAddendums(): List<NomisAddendum> {
-    val addendums = mutableListOf<NomisAddendum>()
+  fun getDescriptionParts(): Pair<String?, List<DescriptionAddendum>> {
+    val addendums = mutableListOf<DescriptionAddendum>()
     description?.let {
       val entries = it.split("User:".toRegex())
+      val baseDescription = entries[0]
 
       if (entries.size > 1) {
         val additionalEntries = entries.drop(1)
@@ -86,24 +88,26 @@ data class NomisReport(
           val firstName = fullName.split(",")[1]
           val lastName = fullName.split(",")[0]
 
-
           val addText = entry.split(" Date:\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}".toRegex())[1]
           val dateTimeString = dateTimePattern.find(entry)?.value ?: RuntimeException("Date not found")
 
           val createdAt = LocalDateTime.parse(dateTimeString.toString(), dateTimeFormat)
 
-          addendums.add(NomisAddendum(firstName=firstName, lastName=lastName, createdAt =  createdAt, text = addText))
+          addendums.add(
+            DescriptionAddendum(
+              createdBy = SYSTEM_USERNAME,
+              firstName = firstName,
+              lastName = lastName,
+              createdAt = createdAt,
+              text = addText,
+            ),
+          )
         }
+        return Pair(baseDescription, addendums)
+      } else {
+        return Pair(baseDescription, emptyList())
       }
     }
-    return addendums
+    return Pair(null, emptyList())
   }
-  fun getBaseDescription(): String? = description?.let { it.split("User:".toRegex())[0] }
-
-  data class NomisAddendum(
-    val firstName: String,
-    val lastName: String,
-    val createdAt: LocalDateTime,
-    val text: String
-  )
 }

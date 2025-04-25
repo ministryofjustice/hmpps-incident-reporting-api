@@ -572,7 +572,8 @@ class Report(
     this.title = upsert.title ?: NO_DETAILS_GIVEN
     this.event.title = title
 
-    this.description = upsert.getBaseDescription() ?: NO_DETAILS_GIVEN
+    val (upsertDescription, upsertAddendums) = upsert.getDescriptionParts()
+    this.description = upsertDescription ?: NO_DETAILS_GIVEN
     this.event.description = description
 
     this.reportedBy = upsert.reportingStaff.username
@@ -601,7 +602,17 @@ class Report(
     updateQuestionAndResponses(upsert.questions)
     updateHistory(upsert.history)
     this.descriptionAddendums.clear()
-    addAddendum(upsert.getAddendums())
+    // TODO: Implement retain logic like for other related objects?
+    upsertAddendums.forEach { addendum ->
+      // TODO: Renamed to `addDescriptionAddendum()`
+      appendToDescription(
+        createdBy = SYSTEM_USERNAME,
+        text = addendum.text,
+        firstName = addendum.firstName,
+        lastName = addendum.lastName,
+        createdAt = addendum.createdAt,
+      )
+    }
   }
 
   fun toDtoBasic() = ReportBasic(
@@ -651,15 +662,4 @@ class Report(
     staffInvolvementDone = staffInvolvementDone,
     prisonerInvolvementDone = prisonerInvolvementDone,
   )
-
-  fun addAddendum(addendums: List<NomisReport.NomisAddendum>) {
-    addendums.forEach { addendum -> descriptionAddendums.add(DescriptionAddendum(
-      text = addendum.text,
-      firstName = addendum.firstName,
-      lastName = addendum.lastName,
-      createdAt = addendum.createdAt,
-      createdBy = SYSTEM_USERNAME,
-      report = this
-    )) }
-  }
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.NamedEntityGraphs
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import org.hibernate.Hibernate
+import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
@@ -79,13 +80,14 @@ class Event(
         modifiedBy = nomisReport.lastModifiedBy ?: nomisReport.createdBy,
       )
       val status = Status.fromNomisCode(nomisReport.status.code)
+      val (upsertDescription, upsertAddendums) = nomisReport.getDescriptionParts()
       val report = Report(
         reportReference = "${nomisReport.incidentId}",
         type = Type.fromNomisCode(nomisReport.type),
         incidentDateAndTime = nomisReport.incidentDateTime,
         location = nomisReport.prison.code,
         title = nomisReport.title ?: NO_DETAILS_GIVEN,
-        description = nomisReport.getBaseDescription() ?: NO_DETAILS_GIVEN,
+        description = upsertDescription ?: NO_DETAILS_GIVEN,
         reportedBy = nomisReport.reportingStaff.username,
         reportedAt = nomisReport.reportedDateTime,
         status = status,
@@ -98,7 +100,16 @@ class Event(
         assignedTo = nomisReport.reportingStaff.username,
         event = event,
       )
-      report.addAddendum(nomisReport.getAddendums())
+      // TODO: Implement retain logic like for other related objects?
+      upsertAddendums.forEach { addendum ->
+        report.appendToDescription(
+          createdBy = SYSTEM_USERNAME,
+          firstName = addendum.firstName,
+          lastName = addendum.lastName,
+          createdAt = addendum.createdAt,
+          text = addendum.text,
+        )
+      }
       report.addStatusHistory(status, nomisReport.reportedDateTime, nomisReport.reportingStaff.username)
 
       report.updateStaffInvolved(nomisReport.staffParties)
