@@ -9,8 +9,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 
-private val TIME_PATTERN_REGEX = Regex("\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}")
-private val DATE_REGEX = " Date:\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}".toRegex()
+private const val DATETIME_PATTERN = "\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}"
+private val DATETIME_PATTERN_REGEX = DATETIME_PATTERN.toRegex()
+private val DATE_REGEX = " Date:$DATETIME_PATTERN".toRegex()
 
 @Schema(description = "NOMIS Incident Report Details")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -87,7 +88,7 @@ data class NomisReport(
           val lastName = fullName.split(",")[0]
 
           val addText = entry.split(DATE_REGEX)[1]
-          val dateTimeString = TIME_PATTERN_REGEX.find(entry)?.value ?: RuntimeException("Date not found")
+          val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value ?: RuntimeException("Date not found")
 
           val createdAt = LocalDateTime.parse(dateTimeString.toString(), dateTimeFormatter)
 
