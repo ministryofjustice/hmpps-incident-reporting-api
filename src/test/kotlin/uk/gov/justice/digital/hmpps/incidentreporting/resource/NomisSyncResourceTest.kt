@@ -745,7 +745,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           initialMigration = true,
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = 112414666,
-            description = "A New Incident From NOMISUser:STARK,TONY Date:07-JUN-2024 12:13Some extra informationUser:BANNER,BRUCE Date:10-JUN-2024 14:53Even more information",
+            description = "A New Incident From NOMIS" +
+              "User:STARK,TONY Date:07-JUN-2024 12:13Some extra information" +
+              "User:BANNER,BRUCE Date:10-JUN-2024 14:53Even more information",
           ),
         )
         webTestClient.post().uri("/sync/upsert")
