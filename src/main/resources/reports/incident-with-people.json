@@ -223,7 +223,7 @@
       "id": "by-staff",
       "name": "Report of staff involvement in an incident",
       "datasource": "replicaDataSource",
-      "query": "select r.id, r.report_reference, r.location, ctf.code as type, ctf.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(st.first_name) as first_name, initcap(st.last_name) as last_name, st.staff_username, st.comment from staff_involvement st join report r on r.id = st.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code WHERE status != 'DUPLICATE'",
+      "query": "select r.id, r.report_reference, r.location, ctf.code as type, ctf.description type_description, r.status, cs.description status_description, r.incident_date_and_time, r.reported_by, initcap(st.first_name) as first_name, initcap(st.last_name) as last_name, st.staff_username, st.comment, r.title, r.description from staff_involvement st join report r on r.id = st.report_id\njoin constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code WHERE status != 'DUPLICATE'",
       "schema": {
         "field": [
           {
@@ -301,6 +301,14 @@
               "type" : "caseloads",
               "mandatory": false
             }
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
           }
         ]
       }
