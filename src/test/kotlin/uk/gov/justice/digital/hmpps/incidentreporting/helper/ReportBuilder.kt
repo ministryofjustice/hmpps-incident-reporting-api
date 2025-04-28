@@ -55,7 +55,7 @@ fun buildReport(
   report.addStatusHistory(report.status, reportTime, reportingUsername)
 
   (1..generateDescriptionAddendums).forEach { addendumIndex ->
-    report.appendToDescription(
+    report.addDescriptionAddendum(
       createdBy = "staff-$addendumIndex",
       firstName = "First $addendumIndex",
       lastName = "Last $addendumIndex",

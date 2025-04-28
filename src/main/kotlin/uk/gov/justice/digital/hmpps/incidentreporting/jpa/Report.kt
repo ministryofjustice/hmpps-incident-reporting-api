@@ -218,7 +218,7 @@ class Report(
     return this
   }
 
-  fun appendToDescription(
+  fun addDescriptionAddendum(
     createdBy: String,
     firstName: String,
     lastName: String,

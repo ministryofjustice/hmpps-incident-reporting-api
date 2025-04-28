@@ -76,6 +76,8 @@ enum class WhatChanged {
   /** Report status changed */
   STATUS,
 
+  /** Added description addendum */
+  DESCRIPTION_ADDENDUMS,
   /** Added, updated or deleted an involved prisoner */
   PRISONERS_INVOLVED,
   /** Added, updated or deleted an involved member of staff */
