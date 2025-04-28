@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
@@ -214,6 +215,36 @@ class ReportService(
         )
       }
     }.getOrNull()
+  }
+
+  @Transactional
+  fun addDescriptionAddendum(id: UUID, descriptionAddendum: DescriptionAddendum): ReportWithDetails? {
+    return reportRepository.findOneEagerlyById(id)?.let { reportEntity ->
+      reportEntity.addDescriptionAddendum(
+        createdBy = descriptionAddendum.createdBy,
+        firstName = descriptionAddendum.firstName,
+        lastName = descriptionAddendum.lastName,
+        createdAt = descriptionAddendum.createdAt,
+        text = descriptionAddendum.text,
+      )
+
+      val now = LocalDateTime.now(clock)
+      val user = authenticationHolder.username ?: SYSTEM_USERNAME
+      reportEntity.modifiedIn = InformationSource.DPS
+      reportEntity.modifiedAt = now
+      reportEntity.modifiedBy = user
+
+      val reportWithDetails = reportEntity.toDtoWithDetails()
+      log.info(
+        "Appended to incident report description for reference=${reportWithDetails.reportReference} ID=$id",
+      )
+      telemetryClient.trackEvent(
+        "Appended to incident report description",
+        reportWithDetails,
+      )
+
+      reportWithDetails
+    }
   }
 
   @Transactional
