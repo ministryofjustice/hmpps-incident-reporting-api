@@ -478,6 +478,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "A New Incident From NOMIS",
+                "descriptionAddendums": [],
                 "event": {
                   "eventReference": "112414666",
                   "eventDateAndTime": "2023-12-05T11:34:56",
@@ -1078,6 +1079,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "New NOMIS incident",
+                "descriptionAddendums": [],
                 "event": {
                   "eventReference": "$newIncidentId",
                   "eventDateAndTime": "2023-12-05T11:34:56",
@@ -1342,7 +1344,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = NOMIS_INCIDENT_NUMBER,
             title = "Updated title",
-            description = "Updated details",
+            description = "Original descriptionUser:STARK,TONY Date:07-JUN-2024 12:13Some updated details",
             reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
             reportedDateTime = now.minusDays(1),
             createDateTime = now.minusDays(1),
@@ -1596,8 +1598,16 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "location": "FBI",
                 "prisonId": "FBI",
                 "title": "Updated title",
-                "description": "Updated details",
-                "descriptionAddendums": [],
+                "description": "Original description",
+                "descriptionAddendums": [
+                  {
+                    "createdBy": "INCIDENT_REPORTING_API",
+                    "createdAt": "2024-06-07T12:13:00",
+                    "firstName": "TONY",
+                    "lastName": "STARK",
+                    "text": "Some updated details"
+                  }
+                ],
                 "event": {
                   "id": "${existingNomisReport.event.id}",
                   "eventReference": "$NOMIS_INCIDENT_NUMBER",
@@ -1605,7 +1615,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "location": "FBI",
                   "prisonId": "FBI",
                   "title": "Updated title",
-                  "description": "Updated details",
+                  "description": "Original description",
                   "createdAt": "2023-12-04T12:34:56",
                   "modifiedAt": "2023-12-05T12:29:56",
                   "modifiedBy": "updater"

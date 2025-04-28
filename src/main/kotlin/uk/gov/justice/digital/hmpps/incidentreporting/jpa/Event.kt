@@ -102,7 +102,7 @@ class Event(
       )
       // TODO: Implement retain logic like for other related objects?
       upsertAddendums.forEach { addendum ->
-        report.appendToDescription(
+        report.addDescriptionAddendum(
           createdBy = SYSTEM_USERNAME,
           firstName = addendum.firstName,
           lastName = addendum.lastName,

@@ -604,8 +604,7 @@ class Report(
     this.descriptionAddendums.clear()
     // TODO: Implement retain logic like for other related objects?
     upsertAddendums.forEach { addendum ->
-      // TODO: Renamed to `addDescriptionAddendum()`
-      appendToDescription(
+      addDescriptionAddendum(
         createdBy = SYSTEM_USERNAME,
         text = addendum.text,
         firstName = addendum.firstName,
