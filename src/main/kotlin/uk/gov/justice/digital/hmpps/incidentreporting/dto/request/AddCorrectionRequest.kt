@@ -11,7 +11,11 @@ data class AddCorrectionRequest(
   @Schema(
     description = "The location where the staff member is raising the correction",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-    minLength = 3,
+    nullable = true,
+    defaultValue = "null",
+    minLength = 2,
+    maxLength = 20,
   )
+  @field:Size(min = 2, max = 20)
   val location: String? = null,
 )
