@@ -11,7 +11,6 @@ import jakarta.persistence.NamedEntityGraphs
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OrderBy
 import org.hibernate.Hibernate
-import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
@@ -100,18 +99,9 @@ class Event(
         assignedTo = nomisReport.reportingStaff.username,
         event = event,
       )
-      // TODO: Implement retain logic like for other related objects?
-      upsertAddendums.forEach { addendum ->
-        report.addDescriptionAddendum(
-          createdBy = SYSTEM_USERNAME,
-          firstName = addendum.firstName,
-          lastName = addendum.lastName,
-          createdAt = addendum.createdAt,
-          text = addendum.text,
-        )
-      }
       report.addStatusHistory(status, nomisReport.reportedDateTime, nomisReport.reportingStaff.username)
 
+      report.updateDescriptionAddendums(upsertAddendums)
       report.updateStaffInvolved(nomisReport.staffParties)
       report.updatePrisonerInvolved(nomisReport.offenderParties)
       report.updateCorrectionRequests(nomisReport.requirements)
