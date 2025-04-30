@@ -707,15 +707,15 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "correctionRequests": [
                   {
                     "descriptionOfChange": "Change 1",
+                    "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T00:00:00",
-                    "location": "MDI"
+                    "correctionRequestedAt": "2023-12-05T00:00:00"
                   },
                   {
                     "descriptionOfChange": "Change 2",
+                    "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T00:00:00",
-                    "location": "MDI"
+                    "correctionRequestedAt": "2023-11-28T00:00:00"
                   }
                 ],
                 "staffInvolvementDone": true,
@@ -1310,11 +1310,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "correctionRequests": [
                   {
                     "descriptionOfChange": "Change 1",
+                    "location": "MDI",
                     "correctionRequestedBy": "user2",
                     "correctionRequestedAt": "2023-12-05T00:00:00"
                   },
                   {
                     "descriptionOfChange": "Change 2",
+                    "location": "MDI",
                     "correctionRequestedBy": "user2",
                     "correctionRequestedAt": "2023-11-28T00:00:00"
                   }
@@ -1882,16 +1884,16 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "sequence": 0,
                     "descriptionOfChange": "Could you update the title please",
+                    "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T00:00:00",
-                    "location": "MDI"
+                    "correctionRequestedAt": "2023-11-28T00:00:00"
                   },
                   {
                     "sequence": 1,
                     "descriptionOfChange": "Also the description",
+                    "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T00:00:00",
-                    "location": "MDI"
+                    "correctionRequestedAt": "2023-12-05T00:00:00"
                   }
                 ],
                 "staffInvolvementDone": true,

@@ -10,6 +10,7 @@ import org.hibernate.Hibernate
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
+import kotlin.jvm.optionals.getOrNull
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.CorrectionRequest as CorrectionRequestDto
 
 @Entity
@@ -58,7 +59,8 @@ class CorrectionRequest(
 
   override fun toString(): String {
     return "CorrectionRequest(id=$id, reportReference=${report.reportReference}, " +
-      "correctionRequestedAt=$correctionRequestedAt, descriptionOfChange=$descriptionOfChange)"
+      "descriptionOfChange=$descriptionOfChange, location=$location, " +
+      "correctionRequestedBy=$correctionRequestedBy, correctionRequestedAt=$correctionRequestedAt)"
   }
 
   fun updateWith(
@@ -67,7 +69,7 @@ class CorrectionRequest(
     now: LocalDateTime,
   ) {
     request.descriptionOfChange?.let { descriptionOfChange = it }
-    request.location?.let { location = it }
+    request.location?.let { location = it.getOrNull() }
     correctionRequestedBy = requestUsername
     correctionRequestedAt = now
   }

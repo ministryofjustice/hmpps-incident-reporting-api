@@ -3269,6 +3269,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             getResource("/related-objects/correction-requests/add-request-empty-description.json"),
             "addCorrectionRequest.descriptionOfChange: size must be between 1 and",
           ),
+          InvalidRequestTestCase(
+            "short location of change",
+            getResource("/related-objects/correction-requests/add-request-short-location.json"),
+            "addCorrectionRequest.location: size must be between 2 and 20",
+          ),
+          InvalidRequestTestCase(
+            "long location of change",
+            getResource("/related-objects/correction-requests/add-request-long-location.json"),
+            "addCorrectionRequest.location: size must be between 2 and 20",
+          ),
         ),
       )
 
@@ -3281,6 +3291,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "empty description of change",
             getResource("/related-objects/correction-requests/update-request-empty-description.json"),
             "updateCorrectionRequest.descriptionOfChange: size must be between 1 and",
+          ),
+          InvalidRequestTestCase(
+            "short location of change",
+            getResource("/related-objects/correction-requests/update-request-short-location.json"),
+            "updateCorrectionRequest.location: size must be between 2 and 20",
+          ),
+          InvalidRequestTestCase(
+            "long location of change",
+            getResource("/related-objects/correction-requests/update-request-long-location.json"),
+            "updateCorrectionRequest.location: size must be between 2 and 20",
           ),
         ),
       )
