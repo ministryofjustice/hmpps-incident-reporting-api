@@ -79,13 +79,14 @@ class Event(
         modifiedBy = nomisReport.lastModifiedBy ?: nomisReport.createdBy,
       )
       val status = Status.fromNomisCode(nomisReport.status.code)
+      val (upsertDescription, upsertAddendums) = nomisReport.getDescriptionParts()
       val report = Report(
         reportReference = "${nomisReport.incidentId}",
         type = Type.fromNomisCode(nomisReport.type),
         incidentDateAndTime = nomisReport.incidentDateTime,
         location = nomisReport.prison.code,
         title = nomisReport.title ?: NO_DETAILS_GIVEN,
-        description = nomisReport.description ?: NO_DETAILS_GIVEN,
+        description = upsertDescription ?: NO_DETAILS_GIVEN,
         reportedBy = nomisReport.reportingStaff.username,
         reportedAt = nomisReport.reportedDateTime,
         status = status,
@@ -100,6 +101,7 @@ class Event(
       )
       report.addStatusHistory(status, nomisReport.reportedDateTime, nomisReport.reportingStaff.username)
 
+      report.updateDescriptionAddendums(upsertAddendums)
       report.updateStaffInvolved(nomisReport.staffParties)
       report.updatePrisonerInvolved(nomisReport.offenderParties)
       report.updateCorrectionRequests(nomisReport.requirements)

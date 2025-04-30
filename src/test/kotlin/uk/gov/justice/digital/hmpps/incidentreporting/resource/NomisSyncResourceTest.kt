@@ -75,6 +75,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         reportReference = "$NOMIS_INCIDENT_NUMBER",
         reportTime = now,
         source = InformationSource.NOMIS,
+        generateDescriptionAddendums = 1,
       ),
     )
   }
@@ -478,6 +479,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "A New Incident From NOMIS",
+                "descriptionAddendums": [],
                 "event": {
                   "eventReference": "112414666",
                   "eventDateAndTime": "2023-12-05T11:34:56",
@@ -739,6 +741,315 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
+      fun `can migrate an incident report with appended description`() {
+        val updatedSyncRequest = syncRequest.copy(
+          initialMigration = true,
+          incidentReport = syncRequest.incidentReport.copy(
+            incidentId = 112414666,
+            description = "A New Incident From NOMIS" +
+              "User:STARK,TONY Date:07-JUN-2024 12:13Some extra information" +
+              "User:BANNER,BRUCE Date:10-JUN-2024 14:53Even more information",
+          ),
+        )
+        webTestClient.post().uri("/sync/upsert")
+          .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(updatedSyncRequest.toJson())
+          .exchange()
+          .expectStatus().isCreated
+          .expectBody().jsonPath("id").value<String> {
+            val reportId = UUID.fromString(it)
+            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
+            val reportJson = report.toJson()
+            JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
+              // language=json
+              """
+              {
+                "reportReference": "112414666",
+                "type": "SELF_HARM_1",
+                "nomisType": "SELF_HARM",
+                "incidentDateAndTime": "2023-12-05T11:34:56",
+                "location": "MDI",
+                "prisonId": "MDI",
+                "title": "An incident occurred updated",
+                "description": "A New Incident From NOMIS",
+                "descriptionAddendums": [
+                  {
+                    "createdBy": "INCIDENT_REPORTING_API",
+                    "createdAt": "2024-06-07T12:13:00",
+                    "firstName": "TONY",
+                    "lastName": "STARK",
+                    "text": "Some extra information"
+                  },
+                  {
+                    "createdBy": "INCIDENT_REPORTING_API",
+                    "createdAt": "2024-06-10T14:53:00",
+                    "firstName": "BRUCE",
+                    "lastName": "BANNER",
+                    "text": "Even more information"
+                  }
+                ],
+                "event": {
+                  "eventReference": "112414666",
+                  "eventDateAndTime": "2023-12-05T11:34:56",
+                  "location": "MDI",
+                  "prisonId": "MDI",
+                  "title": "An incident occurred updated",
+                  "description": "A New Incident From NOMISUser:STARK,TONY Date:07-JUN-2024 12:13Some extra informationUser:BANNER,BRUCE Date:10-JUN-2024 14:53Even more information",
+                  "createdAt": "2023-12-05T14:34:56",
+                  "modifiedAt": "2023-12-05T17:34:56",
+                  "modifiedBy": "another-user"
+                },
+                "questions": [
+                  {
+                    "code": "4",
+                    "question": "Question 1",
+                    "additionalInformation": null,
+                    "responses": [
+                      {
+                        "response": "Answer 1",
+                        "responseDate": "2023-12-03",
+                        "additionalInformation": "comment 1",
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 3",
+                        "responseDate": "2023-12-02",
+                        "additionalInformation": null,
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      }
+                    ]
+                  },
+                  {
+                    "code": "5",
+                    "question": "Question 2",
+                    "additionalInformation": null,
+                    "responses": [
+                      {
+                        "response": "Answer 1",
+                        "responseDate": "2023-12-04",
+                        "additionalInformation": "comment 1",
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 3",
+                        "responseDate": "2023-11-25",
+                        "additionalInformation": null,
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 4",
+                        "responseDate": null,
+                        "additionalInformation": null,
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      }
+                    ]
+                  },
+                  {
+                    "code": "6",
+                    "question": "Question 3",
+                    "additionalInformation": null,
+                    "responses": [
+                      {
+                        "response": "Answer 1",
+                        "responseDate": "2023-12-05",
+                        "additionalInformation": "comment 1",
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 2",
+                        "responseDate": null,
+                        "additionalInformation": "comment 2",
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      },
+                      {
+                        "response": "Answer 3",
+                        "responseDate": "2023-11-28",
+                        "additionalInformation": null,
+                        "recordedBy": "user2",
+                        "recordedAt": "2023-12-05T12:34:56"
+                      }
+                    ]
+                  }
+                ],
+                "history": [
+                  {
+                    "type": "DAMAGE_1",
+                    "nomisType": "DAMAGE",
+                    "changedAt": "2023-12-05T12:34:56",
+                    "changedBy": "user2",
+                    "questions": [
+                      {
+                        "code": "1",
+                        "question": "Old question 1",
+                        "additionalInformation": null,
+                        "responses": [
+                          {
+                            "response": "Old answer 1",
+                            "responseDate": "2023-12-05",
+                            "additionalInformation": "comment 1",
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          },
+                          {
+                            "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": "comment 2",
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          },
+                          {
+                            "response": "Old answer 3",
+                            "responseDate": "2023-11-28",
+                            "additionalInformation": null,
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          }
+                        ]
+                      },
+                      {
+                        "code": "2",
+                        "question": "Old question 2",
+                        "additionalInformation": null,
+                        "responses": [
+                          {
+                            "response": "Old answer 1",
+                            "responseDate": "2023-12-04",
+                            "additionalInformation": "comment 1",
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          },
+                          {
+                            "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": "comment 2",
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          },
+                          {
+                            "response": "Old answer 3",
+                            "responseDate": "2023-11-27",
+                            "additionalInformation": null,
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          }
+                        ]
+                      },
+                      {
+                        "code": "3",
+                        "question": "Old question 3",
+                        "additionalInformation": null,
+                        "responses": [
+                          {
+                            "response": "Old answer 1",
+                            "responseDate": null,
+                            "additionalInformation": null,
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          },
+                          {
+                            "response": "Old answer 2",
+                            "responseDate": null,
+                            "additionalInformation": null,
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          },
+                          {
+                            "response": "Old answer 3",
+                            "responseDate": null,
+                            "additionalInformation": null,
+                            "recordedBy": "user2",
+                            "recordedAt": "2023-12-05T12:34:56"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "historyOfStatuses": [
+                  {
+                    "status": "AWAITING_ANALYSIS",
+                    "nomisStatus": "AWAN",
+                    "changedAt": "2023-12-05T12:34:56",
+                    "changedBy": "user2"
+                  }
+                ],
+                "staffInvolved": [
+                  {
+                    "staffUsername": "user2",
+                    "firstName": "John",
+                    "lastName": "Smith",
+                    "staffRole": "PRESENT_AT_SCENE",
+                    "comment": "REPORTER"
+                  }
+                ],
+                "prisonersInvolved": [
+                  {
+                    "prisonerNumber": "A1234AA",
+                    "firstName": "Trevor",
+                    "lastName": "Smith",
+                    "prisonerRole": "PERPETRATOR",
+                    "outcome": "ACCT",
+                    "comment": "Comment"
+                  }
+                ],
+                "correctionRequests": [
+                  {
+                    "descriptionOfChange": "Change 1",
+                    "correctionRequestedBy": "user2",
+                    "correctionRequestedAt": "2023-12-05T00:00:00",
+                    "location": "MDI"
+                  },
+                  {
+                    "descriptionOfChange": "Change 2",
+                    "correctionRequestedBy": "user2",
+                    "correctionRequestedAt": "2023-11-28T00:00:00",
+                    "location": "MDI"
+                  }
+                ],
+                "staffInvolvementDone": true,
+                "prisonerInvolvementDone": true,
+                "reportedBy": "user2",
+                "reportedAt": "2023-12-05T12:34:56",
+                "status": "AWAITING_ANALYSIS",
+                "nomisStatus": "AWAN",
+                "assignedTo": "user2",
+                "createdAt": "2023-12-05T14:34:56",
+                "modifiedAt": "2023-12-05T17:34:56",
+                "modifiedBy": "another-user",
+                "createdInNomis": true,
+                "lastModifiedInNomis": true
+              }
+              """,
+              reportJson,
+            )
+          }
+
+        assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
+      }
+
+      @Test
       fun `can sync a new incident report after migration created in NOMIS`() {
         val newIncidentId = NOMIS_INCIDENT_NUMBER + 1
         val newIncident = syncRequest.copy(
@@ -771,6 +1082,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonId": "MDI",
                 "title": "An incident occurred updated",
                 "description": "New NOMIS incident",
+                "descriptionAddendums": [],
                 "event": {
                   "eventReference": "$newIncidentId",
                   "eventDateAndTime": "2023-12-05T11:34:56",
@@ -1037,7 +1349,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = NOMIS_INCIDENT_NUMBER,
             title = "Updated title",
-            description = "Updated details",
+            description = "Original description" +
+              "User:STARK,TONY Date:07-JUN-2024 12:13Some updated details" +
+              "User:Last 1,First 1 Date:05-DEC-2023 12:34Addendum #1",
             reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
             reportedDateTime = now.minusDays(1),
             createDateTime = now.minusDays(1),
@@ -1291,8 +1605,23 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "location": "FBI",
                 "prisonId": "FBI",
                 "title": "Updated title",
-                "description": "Updated details",
-                "descriptionAddendums": [],
+                "description": "Original description",
+                "descriptionAddendums": [
+                  {
+                    "createdBy": "INCIDENT_REPORTING_API",
+                    "createdAt": "2023-12-05T12:34:00",
+                    "firstName": "First 1",
+                    "lastName": "Last 1",
+                    "text": "Addendum #1"
+                  },
+                  {
+                    "createdBy": "INCIDENT_REPORTING_API",
+                    "createdAt": "2024-06-07T12:13:00",
+                    "firstName": "TONY",
+                    "lastName": "STARK",
+                    "text": "Some updated details"
+                  }
+                ],
                 "event": {
                   "id": "${existingNomisReport.event.id}",
                   "eventReference": "$NOMIS_INCIDENT_NUMBER",
@@ -1300,7 +1629,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   "location": "FBI",
                   "prisonId": "FBI",
                   "title": "Updated title",
-                  "description": "Updated details",
+                  "description": "Original description",
                   "createdAt": "2023-12-04T12:34:56",
                   "modifiedAt": "2023-12-05T12:29:56",
                   "modifiedBy": "updater"

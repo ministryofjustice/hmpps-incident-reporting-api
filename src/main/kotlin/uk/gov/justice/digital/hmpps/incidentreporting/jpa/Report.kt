@@ -38,6 +38,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.util.SortedSet
 import java.util.UUID
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum as DescriptionAddendumDto
 
 @Entity
 @NamedEntityGraphs(
@@ -249,6 +250,30 @@ class Report(
 
   fun findStaffInvolvedByIndex(index: Int): StaffInvolvement = staffInvolved.elementAtOrNull(index - 1)
     ?: throw ObjectAtIndexNotFoundException(StaffInvolvement::class, index)
+
+  fun updateDescriptionAddendums(upsertAddendums: Collection<DescriptionAddendumDto>) {
+    val newAddendums = upsertAddendums.map { upsertAddendum ->
+      val jpaAddendum = createDescriptionAddendum(upsertAddendum)
+
+      this.descriptionAddendums.find { it == jpaAddendum } ?: run {
+        this.descriptionAddendums.add(jpaAddendum)
+        jpaAddendum
+      }
+    }.toSet()
+
+    this.descriptionAddendums.retainAll(newAddendums)
+  }
+
+  fun createDescriptionAddendum(upsertAddendum: DescriptionAddendumDto): DescriptionAddendum {
+    return DescriptionAddendum(
+      report = this,
+      createdAt = upsertAddendum.createdAt,
+      createdBy = upsertAddendum.createdBy,
+      firstName = upsertAddendum.firstName,
+      lastName = upsertAddendum.lastName,
+      text = upsertAddendum.text,
+    )
+  }
 
   fun updateStaffInvolved(nomisStaffParties: Collection<NomisStaffParty>) {
     this.staffInvolved.retainAll(
@@ -571,7 +596,8 @@ class Report(
     this.title = upsert.title ?: NO_DETAILS_GIVEN
     this.event.title = title
 
-    this.description = upsert.description ?: NO_DETAILS_GIVEN
+    val (upsertDescription, upsertAddendums) = upsert.getDescriptionParts()
+    this.description = upsertDescription ?: NO_DETAILS_GIVEN
     this.event.description = description
 
     this.reportedBy = upsert.reportingStaff.username
@@ -594,6 +620,7 @@ class Report(
     this.modifiedBy = updatedBy
     this.event.modifiedBy = updatedBy
 
+    updateDescriptionAddendums(upsertAddendums)
     updateStaffInvolved(upsert.staffParties)
     updatePrisonerInvolved(upsert.offenderParties)
     updateCorrectionRequests(upsert.requirements)

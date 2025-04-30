@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 fun buildReport(
   reportReference: String,
@@ -59,7 +60,8 @@ fun buildReport(
       createdBy = "staff-$addendumIndex",
       firstName = "First $addendumIndex",
       lastName = "Last $addendumIndex",
-      createdAt = reportTime,
+      // Round to seconds to account for NOMIS description format granularity
+      createdAt = reportTime.truncatedTo(ChronoUnit.MINUTES),
       text = "Addendum #$addendumIndex",
     )
   }
