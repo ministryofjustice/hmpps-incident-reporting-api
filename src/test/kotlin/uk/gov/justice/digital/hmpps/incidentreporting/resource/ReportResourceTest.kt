@@ -579,14 +579,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "createdBy": "staff-1",
                   "firstName": "First 1",
                   "lastName": "Last 1",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "text": "Addendum #1"
                 },
                 {
                   "createdBy": "staff-2",
                   "firstName": "First 2",
                   "lastName": "Last 2",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "text": "Addendum #2"
                 }
               ],
@@ -770,14 +770,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "createdBy": "staff-1",
                   "firstName": "First 1",
                   "lastName": "Last 1",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "text": "Addendum #1"
                 },
                 {
                   "createdBy": "staff-2",
                   "firstName": "First 2",
                   "lastName": "Last 2",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "text": "Addendum #2"
                 }
               ],
@@ -1612,14 +1612,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [
                 {
                   "createdBy": "staff-1",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "firstName": "First 1",
                   "lastName": "Last 1",
                   "text": "Addendum #1"
                 },
                 {
                   "createdBy": "staff-2",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "firstName": "First 2",
                   "lastName": "Last 2",
                   "text": "Addendum #2"
@@ -1672,7 +1672,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [
                 {
                   "createdBy": "staff-1",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "firstName": "First 1",
                   "lastName": "Last 1",
                   "text":"Addendum #1"
