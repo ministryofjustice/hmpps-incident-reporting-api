@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Size
+import java.util.Optional
 
 @Schema(description = "Update a correction request in an incident report", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class UpdateCorrectionRequest(
@@ -19,12 +20,16 @@ data class UpdateCorrectionRequest(
     description = "The location where the staff member is raising the correction",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
-    defaultValue = "null",
-    minLength = 3,
+    minLength = 2,
+    maxLength = 20,
   )
-  val location: String? = null,
+  val location: Optional<
+    @Size(min = 2, max = 20)
+    String,
+    >? = null,
 ) {
   @JsonIgnore
   val isEmpty: Boolean =
-    descriptionOfChange == null
+    descriptionOfChange == null &&
+      location == null
 }
