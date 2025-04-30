@@ -76,7 +76,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         reportTime = now,
         source = InformationSource.NOMIS,
         generateDescriptionAddendums = 1,
-      )
+      ),
     )
   }
 
@@ -1349,7 +1349,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           incidentReport = syncRequest.incidentReport.copy(
             incidentId = NOMIS_INCIDENT_NUMBER,
             title = "Updated title",
-            description = "Original descriptionUser:STARK,TONY Date:07-JUN-2024 12:13Some updated detailsUser:Last 1,First 1 Date:05-DEC-2023 12:34Addendum #1",
+            description = "Original description" +
+              "User:STARK,TONY Date:07-JUN-2024 12:13Some updated details" +
+              "User:Last 1,First 1 Date:05-DEC-2023 12:34Addendum #1",
             reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
             reportedDateTime = now.minusDays(1),
             createDateTime = now.minusDays(1),

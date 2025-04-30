@@ -15,7 +15,6 @@ import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
-import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.NO_DETAILS_GIVEN
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
@@ -39,6 +38,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.util.SortedSet
 import java.util.UUID
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum as DescriptionAddendumDto
 
 @Entity
 @NamedEntityGraphs(
@@ -250,6 +250,30 @@ class Report(
 
   fun findStaffInvolvedByIndex(index: Int): StaffInvolvement = staffInvolved.elementAtOrNull(index - 1)
     ?: throw ObjectAtIndexNotFoundException(StaffInvolvement::class, index)
+
+  fun updateDescriptionAddendums(upsertAddendums: Collection<DescriptionAddendumDto>) {
+    val newAddendums = upsertAddendums.map { upsertAddendum ->
+      val jpaAddendum = createDescriptionAddendum(upsertAddendum)
+
+      this.descriptionAddendums.find { it == jpaAddendum } ?: run {
+        this.descriptionAddendums.add(jpaAddendum)
+        jpaAddendum
+      }
+    }.toSet()
+
+    this.descriptionAddendums.retainAll(newAddendums)
+  }
+
+  fun createDescriptionAddendum(upsertAddendum: DescriptionAddendumDto): DescriptionAddendum {
+    return DescriptionAddendum(
+      report = this,
+      createdAt = upsertAddendum.createdAt,
+      createdBy = upsertAddendum.createdBy,
+      firstName = upsertAddendum.firstName,
+      lastName = upsertAddendum.lastName,
+      text = upsertAddendum.text,
+    )
+  }
 
   fun updateStaffInvolved(nomisStaffParties: Collection<NomisStaffParty>) {
     this.staffInvolved.retainAll(
@@ -596,22 +620,12 @@ class Report(
     this.modifiedBy = updatedBy
     this.event.modifiedBy = updatedBy
 
+    updateDescriptionAddendums(upsertAddendums)
     updateStaffInvolved(upsert.staffParties)
     updatePrisonerInvolved(upsert.offenderParties)
     updateCorrectionRequests(upsert.requirements)
     updateQuestionAndResponses(upsert.questions)
     updateHistory(upsert.history)
-    this.descriptionAddendums.clear()
-    // TODO: Implement retain logic like for other related objects?
-    upsertAddendums.forEach { addendum ->
-      addDescriptionAddendum(
-        createdBy = SYSTEM_USERNAME,
-        text = addendum.text,
-        firstName = addendum.firstName,
-        lastName = addendum.lastName,
-        createdAt = addendum.createdAt,
-      )
-    }
   }
 
   fun toDtoBasic() = ReportBasic(
