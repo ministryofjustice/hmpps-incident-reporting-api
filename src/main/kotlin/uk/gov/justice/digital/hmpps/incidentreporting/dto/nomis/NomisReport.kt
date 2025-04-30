@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
+import java.lang.IndexOutOfBoundsException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
+import jakarta.validation.ValidationException
 
 private const val DATETIME_PATTERN = "\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}"
 private val DATETIME_PATTERN_REGEX = DATETIME_PATTERN.toRegex()
@@ -82,15 +84,35 @@ data class NomisReport(
       if (entries.size > 1) {
         val additionalEntries = entries.drop(1)
         val dateTimeFormatter = dateTimeFormatter()
+        var firstName: String?
+        var lastName: String?
+        var addText: String?
         for (entry in additionalEntries) {
-          val fullName = entry.split(" Date:".toRegex())[0]
-          val firstName = fullName.split(",")[1]
-          val lastName = fullName.split(",")[0]
+          val dateSplit = entry.split(" Date:")
+          if (dateSplit.size > 1) {
+            val fullName = dateSplit[0]
+            val names = fullName.split(",")
+            if (names.size > 1) {
+              firstName = names[1]
+              lastName = names[0]
+            } else {
+              throw ValidationException("Name cannot be split in addendum: $entry")
+            }
+          } else {
+            throw ValidationException("Addendum does not contain 'Date:' pattern so cannot be processed: $entry")
+          }
 
-          val addText = entry.split(DATE_REGEX)[1]
-          val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value ?: RuntimeException("Date not found")
+          val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value ?: throw ValidationException(
+            "Date cannot be found in description addendum: $entry"
+          )
+          val testExtraction = entry.split(DATE_REGEX)
+          if (testExtraction.size > 1) {
+            addText = testExtraction[1]
+          } else {
+            throw ValidationException("Text cannot be extracted from addendum: $entry")
+          }
 
-          val createdAt = LocalDateTime.parse(dateTimeString.toString(), dateTimeFormatter)
+          val createdAt = LocalDateTime.parse(dateTimeString, dateTimeFormatter)
 
           addendums.add(
             DescriptionAddendum(
