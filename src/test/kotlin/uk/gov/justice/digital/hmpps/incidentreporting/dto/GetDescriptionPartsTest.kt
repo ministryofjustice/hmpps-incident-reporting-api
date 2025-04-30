@@ -21,8 +21,10 @@ class GetDescriptionPartsTest {
   inner class HappyPath {
     @Test
     fun `valid description entry split into base description and an addendum`() {
-      val minimalReportDto = createBasicReport("Original description" +
-        "User:STARK,TONY Date:07-JUN-2024 12:13Some updated details")
+      val minimalReportDto = createBasicReport(
+        "Original description" +
+          "User:STARK,TONY Date:07-JUN-2024 12:13Some updated details",
+      )
 
       val result = minimalReportDto.getDescriptionParts()
 
@@ -35,8 +37,8 @@ class GetDescriptionPartsTest {
             lastName = "STARK",
             createdAt = LocalDateTime.parse("2024-06-07T12:13"),
             text = "Some updated details",
-          )
-        )
+          ),
+        ),
       )
 
       assertThat(result).isEqualTo(expected)
@@ -48,7 +50,7 @@ class GetDescriptionPartsTest {
         "Original description" +
           "User:STARK,TONY Date:07-JUN-2024 12:13Some updated details" +
           "User:ROGERS,STEVE Date:08-JUN-2024 15:58Second lot of updated details" +
-          "User:BANNER,BRUCE Date:11-JUN-2024 08:42Third lot of updated details"
+          "User:BANNER,BRUCE Date:11-JUN-2024 08:42Third lot of updated details",
       )
 
       val result = minimalReportDto.getDescriptionParts()
@@ -76,8 +78,8 @@ class GetDescriptionPartsTest {
             lastName = "BANNER",
             createdAt = LocalDateTime.parse("2024-06-11T08:42"),
             text = "Third lot of updated details",
-          )
-        )
+          ),
+        ),
       )
 
       assertThat(result).isEqualTo(expected)
@@ -93,8 +95,8 @@ class GetDescriptionPartsTest {
 
       assertThat(result).isEqualTo(expected)
     }
-
   }
+
   @Test
   fun `exception thrown when no valid date found in addendum`() {
     val testDescription = "Original description" +
@@ -103,8 +105,10 @@ class GetDescriptionPartsTest {
 
     assertThatThrownBy { minimalReportDto.getDescriptionParts() }
       .isInstanceOf(ValidationException::class.java)
-      .hasMessage("Date cannot be found in description addendum: " +
-        "STARK,TONY Date:Some updated details")
+      .hasMessage(
+        "Date cannot be found in description addendum: " +
+          "STARK,TONY Date:Some updated details",
+      )
   }
 
   @Test
@@ -115,8 +119,10 @@ class GetDescriptionPartsTest {
 
     assertThatThrownBy { minimalReportDto.getDescriptionParts() }
       .isInstanceOf(ValidationException::class.java)
-      .hasMessage("Addendum does not contain 'Date:' pattern so cannot be processed: " +
-        "STARK,TONYSome updated details")
+      .hasMessage(
+        "Addendum does not contain 'Date:' pattern so cannot be processed: " +
+          "STARK,TONYSome updated details",
+      )
   }
 
   @Test
@@ -127,8 +133,10 @@ class GetDescriptionPartsTest {
 
     assertThatThrownBy { minimalReportDto.getDescriptionParts() }
       .isInstanceOf(ValidationException::class.java)
-      .hasMessage("Name cannot be split in addendum: " +
-        "STARK TONY Date:07-JUN-2024 12:13Some updated details")
+      .hasMessage(
+        "Name cannot be split in addendum: " +
+          "STARK TONY Date:07-JUN-2024 12:13Some updated details",
+      )
   }
 
   @Test
@@ -139,8 +147,10 @@ class GetDescriptionPartsTest {
 
     assertThatThrownBy { minimalReportDto.getDescriptionParts() }
       .isInstanceOf(ValidationException::class.java)
-      .hasMessage("Text cannot be extracted from addendum: " +
-        "STARK,TONY Date: 07-JUN-2024 12:13Some updated details")
+      .hasMessage(
+        "Text cannot be extracted from addendum: " +
+          "STARK,TONY Date: 07-JUN-2024 12:13Some updated details",
+      )
   }
 
   private fun createBasicReport(description: String) = NomisReport(

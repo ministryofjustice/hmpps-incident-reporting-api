@@ -2,14 +2,13 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.ValidationException
 import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
-import java.lang.IndexOutOfBoundsException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
-import jakarta.validation.ValidationException
 
 private const val DATETIME_PATTERN = "\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}"
 private val DATETIME_PATTERN_REGEX = DATETIME_PATTERN.toRegex()
@@ -103,7 +102,7 @@ data class NomisReport(
           }
 
           val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value ?: throw ValidationException(
-            "Date cannot be found in description addendum: $entry"
+            "Date cannot be found in description addendum: $entry",
           )
           val testExtraction = entry.split(DATE_REGEX)
           if (testExtraction.size > 1) {
