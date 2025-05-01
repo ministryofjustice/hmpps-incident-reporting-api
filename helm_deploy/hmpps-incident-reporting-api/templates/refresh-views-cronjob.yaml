@@ -1,3 +1,4 @@
+{{- if or (eq .Values.environment.name "prod") (eq .Values.environment.name "dev") }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -6,7 +7,7 @@ spec:
   {{- if (eq .Values.environment.name "prod") }}
   schedule: "00 03 * * *"
   {{- else }}
-  schedule: "30 07 * * 1-5"
+  schedule: "00 19 * * 1-5"
   {{- end }}
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 5
@@ -33,3 +34,4 @@ spec:
                 seccompProfile:
                   type: RuntimeDefault
           restartPolicy: Never
+{{- end }}

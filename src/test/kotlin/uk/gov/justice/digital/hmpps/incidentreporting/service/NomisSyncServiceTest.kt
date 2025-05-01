@@ -209,6 +209,7 @@ class NomisSyncServiceTest {
       correctionRequestedBy = "checking-user",
       correctionRequestedAt = now,
       descriptionOfChange = "Title should include prisoner number",
+      location = "MDI",
     )
   }
 
@@ -310,6 +311,7 @@ class NomisSyncServiceTest {
     assertThat(correctionRequest.correctionRequestedBy).isEqualTo("checking-user")
     assertThat(correctionRequest.correctionRequestedAt.toLocalDate()).isEqualTo(today)
     assertThat(correctionRequest.descriptionOfChange).isEqualTo("Title should include prisoner number")
+    assertThat(correctionRequest.location).isEqualTo("MDI")
   }
 
   @ParameterizedTest(name = "can sync a new report when initial migration = {0}")

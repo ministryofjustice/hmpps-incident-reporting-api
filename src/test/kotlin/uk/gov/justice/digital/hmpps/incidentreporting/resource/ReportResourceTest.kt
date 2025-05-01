@@ -579,14 +579,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "createdBy": "staff-1",
                   "firstName": "First 1",
                   "lastName": "Last 1",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "text": "Addendum #1"
                 },
                 {
                   "createdBy": "staff-2",
                   "firstName": "First 2",
                   "lastName": "Last 2",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "text": "Addendum #2"
                 }
               ],
@@ -770,14 +770,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "createdBy": "staff-1",
                   "firstName": "First 1",
                   "lastName": "Last 1",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "text": "Addendum #1"
                 },
                 {
                   "createdBy": "staff-2",
                   "firstName": "First 2",
                   "lastName": "Last 2",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "text": "Addendum #2"
                 }
               ],
@@ -1612,14 +1612,14 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [
                 {
                   "createdBy": "staff-1",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "firstName": "First 1",
                   "lastName": "Last 1",
                   "text": "Addendum #1"
                 },
                 {
                   "createdBy": "staff-2",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "firstName": "First 2",
                   "lastName": "Last 2",
                   "text": "Addendum #2"
@@ -1672,7 +1672,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [
                 {
                   "createdBy": "staff-1",
-                  "createdAt": "2023-12-05T12:34:56",
+                  "createdAt": "2023-12-05T12:34:00",
                   "firstName": "First 1",
                   "lastName": "Last 1",
                   "text":"Addendum #1"
@@ -3269,6 +3269,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             getResource("/related-objects/correction-requests/add-request-empty-description.json"),
             "addCorrectionRequest.descriptionOfChange: size must be between 1 and",
           ),
+          InvalidRequestTestCase(
+            "short location of change",
+            getResource("/related-objects/correction-requests/add-request-short-location.json"),
+            "addCorrectionRequest.location: size must be between 2 and 20",
+          ),
+          InvalidRequestTestCase(
+            "long location of change",
+            getResource("/related-objects/correction-requests/add-request-long-location.json"),
+            "addCorrectionRequest.location: size must be between 2 and 20",
+          ),
         ),
       )
 
@@ -3281,6 +3291,16 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "empty description of change",
             getResource("/related-objects/correction-requests/update-request-empty-description.json"),
             "updateCorrectionRequest.descriptionOfChange: size must be between 1 and",
+          ),
+          InvalidRequestTestCase(
+            "short location of change",
+            getResource("/related-objects/correction-requests/update-request-short-location.json"),
+            "updateCorrectionRequest.location: size must be between 2 and 20",
+          ),
+          InvalidRequestTestCase(
+            "long location of change",
+            getResource("/related-objects/correction-requests/update-request-long-location.json"),
+            "updateCorrectionRequest.location: size must be between 2 and 20",
           ),
         ),
       )
