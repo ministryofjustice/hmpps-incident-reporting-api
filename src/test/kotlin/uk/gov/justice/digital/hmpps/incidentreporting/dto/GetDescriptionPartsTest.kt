@@ -106,7 +106,7 @@ class GetDescriptionPartsTest {
     assertThatThrownBy { minimalReportDto.getDescriptionParts() }
       .isInstanceOf(ValidationException::class.java)
       .hasMessage(
-        "Date cannot be found in description addendum: " +
+        "Validation issue: " +
           "STARK,TONY Date:Some updated details",
       )
   }
@@ -120,7 +120,7 @@ class GetDescriptionPartsTest {
     assertThatThrownBy { minimalReportDto.getDescriptionParts() }
       .isInstanceOf(ValidationException::class.java)
       .hasMessage(
-        "Addendum does not contain 'Date:' pattern so cannot be processed: " +
+        "Validation issue: " +
           "STARK,TONYSome updated details",
       )
   }
@@ -134,7 +134,7 @@ class GetDescriptionPartsTest {
     assertThatThrownBy { minimalReportDto.getDescriptionParts() }
       .isInstanceOf(ValidationException::class.java)
       .hasMessage(
-        "Name cannot be split in addendum: " +
+        "Validation issue: " +
           "STARK TONY Date:07-JUN-2024 12:13Some updated details",
       )
   }
@@ -148,7 +148,7 @@ class GetDescriptionPartsTest {
     assertThatThrownBy { minimalReportDto.getDescriptionParts() }
       .isInstanceOf(ValidationException::class.java)
       .hasMessage(
-        "Text cannot be extracted from addendum: " +
+        "Validation issue: " +
           "STARK,TONY Date: 07-JUN-2024 12:13Some updated details",
       )
   }

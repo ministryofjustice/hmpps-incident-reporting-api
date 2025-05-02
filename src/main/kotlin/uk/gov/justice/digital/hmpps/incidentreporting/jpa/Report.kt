@@ -252,16 +252,23 @@ class Report(
     ?: throw ObjectAtIndexNotFoundException(StaffInvolvement::class, index)
 
   fun updateDescriptionAddendums(upsertAddendums: Collection<DescriptionAddendumDto>) {
-    val newAddendums = upsertAddendums.map { upsertAddendum ->
-      val jpaAddendum = createDescriptionAddendum(upsertAddendum)
+    this.descriptionAddendums.retainAll(
+      upsertAddendums.map { upsertAddendum ->
+        val newAddendum = createDescriptionAddendum(upsertAddendum)
+        this.descriptionAddendums.find { it == newAddendum }?. apply {
+          createdAt = newAddendum.createdAt
+          createdBy = newAddendum.createdBy
+          firstName = newAddendum.firstName
+          lastName = newAddendum.lastName
+          text = newAddendum.text
+        } ?: addDescriptionAddendum(newAddendum)
+      }.toSet(),
+    )
+  }
 
-      this.descriptionAddendums.find { it == jpaAddendum } ?: run {
-        this.descriptionAddendums.add(jpaAddendum)
-        jpaAddendum
-      }
-    }.toSet()
-
-    this.descriptionAddendums.retainAll(newAddendums)
+  fun addDescriptionAddendum(addendum: DescriptionAddendum): DescriptionAddendum {
+    this.descriptionAddendums.add(addendum)
+    return addendum
   }
 
   fun createDescriptionAddendum(upsertAddendum: DescriptionAddendumDto): DescriptionAddendum {

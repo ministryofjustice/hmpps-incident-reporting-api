@@ -21,11 +21,11 @@ class DescriptionAddendum(
   @ManyToOne(fetch = FetchType.LAZY)
   val report: Report,
 
-  val createdBy: String,
-  val firstName: String,
-  val lastName: String,
-  val createdAt: LocalDateTime,
-  val text: String,
+  var createdBy: String,
+  var firstName: String,
+  var lastName: String,
+  var createdAt: LocalDateTime,
+  var text: String,
 ) : Comparable<DescriptionAddendum> {
 
   companion object {
