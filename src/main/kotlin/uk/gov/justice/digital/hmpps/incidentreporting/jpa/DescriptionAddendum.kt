@@ -21,6 +21,8 @@ class DescriptionAddendum(
   @ManyToOne(fetch = FetchType.LAZY)
   val report: Report,
 
+  val sequence: Int,
+
   var createdBy: String,
   var firstName: String,
   var lastName: String,
@@ -31,11 +33,7 @@ class DescriptionAddendum(
   companion object {
     private val COMPARATOR = compareBy<DescriptionAddendum>
       { it.report }
-      .thenBy { it.createdAt }
-      .thenBy { it.createdBy }
-      .thenBy { it.firstName }
-      .thenBy { it.lastName }
-      .thenBy { it.text }
+      .thenBy { it.sequence }
   }
 
   override fun compareTo(other: DescriptionAddendum) = COMPARATOR.compare(this, other)
@@ -47,19 +45,14 @@ class DescriptionAddendum(
     other as DescriptionAddendum
 
     if (report != other.report) return false
-    if (createdAt != other.createdAt) return false
-    if (createdBy != other.createdBy) return false
-    if (firstName != other.firstName) return false
-    if (lastName != other.lastName) return false
-    if (text != other.text) return false
+    if (sequence != other.sequence) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = report.hashCode()
-    result = 31 * result + createdAt.hashCode() + createdBy.hashCode()
-    result = 31 * result + firstName.hashCode() + lastName.hashCode() + text.hashCode()
+    result = 31 * result + sequence.hashCode()
     return result
   }
 
@@ -69,6 +62,7 @@ class DescriptionAddendum(
   }
 
   fun toDto() = DescriptionAddendumDto(
+    sequence = sequence,
     createdBy = createdBy,
     firstName = firstName,
     lastName = lastName,

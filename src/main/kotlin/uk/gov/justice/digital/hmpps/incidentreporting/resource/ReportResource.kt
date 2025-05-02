@@ -32,12 +32,12 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.DescriptionAddendumRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
@@ -582,7 +582,7 @@ class ReportResource(
     id: UUID,
     @RequestBody
     @Valid
-    request: DescriptionAddendum,
+    request: DescriptionAddendumRequest,
   ): ReportWithDetails {
     val report = reportService.addDescriptionAddendum(id, request) ?: throw ReportNotFoundException(id)
 

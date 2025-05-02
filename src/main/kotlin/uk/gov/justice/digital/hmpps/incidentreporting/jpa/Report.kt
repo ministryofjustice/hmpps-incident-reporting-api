@@ -232,6 +232,7 @@ class Report(
       lastName = lastName,
       createdAt = createdAt,
       text = text,
+      sequence = this.descriptionAddendums.size,
     ).also { descriptionAddendums.add(it) }
   }
 
@@ -279,6 +280,7 @@ class Report(
       firstName = upsertAddendum.firstName,
       lastName = upsertAddendum.lastName,
       text = upsertAddendum.text,
+      sequence = upsertAddendum.sequence,
     )
   }
 

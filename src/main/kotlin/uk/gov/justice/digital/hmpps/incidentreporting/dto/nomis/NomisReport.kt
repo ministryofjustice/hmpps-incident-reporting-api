@@ -89,7 +89,7 @@ data class NomisReport(
 
     return Pair(
       baseDescription,
-      additionalEntries.map { entry ->
+      additionalEntries.mapIndexed { index, entry ->
 
         val (fullName, addText) = entry.split(DATE_REGEX, limit = 2).takeIf { it.size == 2 }
           ?: throw ValidationException("Validation issue: $entry")
@@ -103,6 +103,7 @@ data class NomisReport(
         val createdAt = LocalDateTime.parse(dateTimeString, DATE_FORMATTER)
 
         DescriptionAddendum(
+          sequence = index,
           createdBy = SYSTEM_USERNAME,
           firstName = firstName,
           lastName = lastName,

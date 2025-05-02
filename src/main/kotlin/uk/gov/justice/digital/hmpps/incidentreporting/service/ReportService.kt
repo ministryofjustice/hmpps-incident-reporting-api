@@ -15,7 +15,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
@@ -23,6 +22,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddOrUpdateQue
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.DescriptionAddendumRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
@@ -218,14 +218,14 @@ class ReportService(
   }
 
   @Transactional
-  fun addDescriptionAddendum(id: UUID, descriptionAddendum: DescriptionAddendum): ReportWithDetails? {
+  fun addDescriptionAddendum(id: UUID, request: DescriptionAddendumRequest): ReportWithDetails? {
     return reportRepository.findOneEagerlyById(id)?.let { reportEntity ->
       reportEntity.addDescriptionAddendum(
-        createdBy = descriptionAddendum.createdBy,
-        firstName = descriptionAddendum.firstName,
-        lastName = descriptionAddendum.lastName,
-        createdAt = descriptionAddendum.createdAt,
-        text = descriptionAddendum.text,
+        createdBy = request.createdBy,
+        firstName = request.firstName,
+        lastName = request.lastName,
+        createdAt = request.createdAt,
+        text = request.text,
       )
 
       val now = LocalDateTime.now(clock)

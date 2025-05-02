@@ -37,6 +37,7 @@ class GetDescriptionPartsTest {
             lastName = "STARK",
             createdAt = LocalDateTime.parse("2024-06-07T12:13"),
             text = "Some updated details",
+            sequence = 0,
           ),
         ),
       )
@@ -64,6 +65,7 @@ class GetDescriptionPartsTest {
             lastName = "STARK",
             createdAt = LocalDateTime.parse("2024-06-07T12:13"),
             text = "Some updated details",
+            sequence = 0,
           ),
           DescriptionAddendum(
             createdBy = "INCIDENT_REPORTING_API",
@@ -71,6 +73,7 @@ class GetDescriptionPartsTest {
             lastName = "ROGERS",
             createdAt = LocalDateTime.parse("2024-06-08T15:58"),
             text = "Second lot of updated details",
+            sequence = 1,
           ),
           DescriptionAddendum(
             createdBy = "INCIDENT_REPORTING_API",
@@ -78,6 +81,7 @@ class GetDescriptionPartsTest {
             lastName = "BANNER",
             createdAt = LocalDateTime.parse("2024-06-11T08:42"),
             text = "Third lot of updated details",
+            sequence = 2,
           ),
         ),
       )
