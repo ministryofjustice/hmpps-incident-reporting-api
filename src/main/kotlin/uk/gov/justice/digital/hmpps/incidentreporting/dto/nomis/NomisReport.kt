@@ -7,12 +7,16 @@ import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 
 private const val DATETIME_PATTERN = "\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}"
 private val DATETIME_PATTERN_REGEX = DATETIME_PATTERN.toRegex()
+private val USER_REGEX = "User:".toRegex()
 private val DATE_REGEX = " Date:$DATETIME_PATTERN".toRegex()
+private val DATE_FORMATTER = DateTimeFormatterBuilder()
+  .parseCaseInsensitive()
+  .appendPattern("dd-MMM-yyyy HH:mm")
+  .toFormatter()
 
 @Schema(description = "NOMIS Incident Report Details")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -74,68 +78,38 @@ data class NomisReport(
 
 ) {
   fun getDescriptionParts(): Pair<String?, List<DescriptionAddendum>> {
-    val addendums = mutableListOf<DescriptionAddendum>()
+    if (description == null) return Pair(null, emptyList())
 
-    description?.let {
-      val entries = it.split("User:".toRegex())
-      val baseDescription = entries[0]
+    val entries = description.split(USER_REGEX)
+    val baseDescription = entries[0]
 
-      if (entries.size > 1) {
-        val additionalEntries = entries.drop(1)
-        val dateTimeFormatter = dateTimeFormatter()
-        var firstName: String?
-        var lastName: String?
-        var addText: String?
-        for (entry in additionalEntries) {
-          val dateSplit = entry.split(" Date:")
-          if (dateSplit.size > 1) {
-            val fullName = dateSplit[0]
-            val names = fullName.split(",")
-            if (names.size > 1) {
-              firstName = names[1]
-              lastName = names[0]
-            } else {
-              throw ValidationException("Name cannot be split in addendum: $entry")
-            }
-          } else {
-            throw ValidationException("Addendum does not contain 'Date:' pattern so cannot be processed: $entry")
-          }
+    if (entries.size == 1) return Pair(baseDescription, emptyList())
 
-          val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value ?: throw ValidationException(
-            "Date cannot be found in description addendum: $entry",
-          )
-          val testExtraction = entry.split(DATE_REGEX)
-          if (testExtraction.size > 1) {
-            addText = testExtraction[1]
-          } else {
-            throw ValidationException("Text cannot be extracted from addendum: $entry")
-          }
+    val additionalEntries = entries.drop(1)
 
-          val createdAt = LocalDateTime.parse(dateTimeString, dateTimeFormatter)
+    return Pair(
+      baseDescription,
+      additionalEntries.map { entry ->
 
-          addendums.add(
-            DescriptionAddendum(
-              createdBy = SYSTEM_USERNAME,
-              firstName = firstName,
-              lastName = lastName,
-              createdAt = createdAt,
-              text = addText,
-            ),
-          )
-        }
-        return Pair(baseDescription, addendums)
-      } else {
-        return Pair(baseDescription, emptyList())
-      }
-    }
-    return Pair(null, emptyList())
-  }
+        val (fullName, addText) = entry.split(DATE_REGEX, limit = 2).takeIf { it.size == 2 }
+          ?: throw ValidationException("Validation issue: $entry")
 
-  private fun dateTimeFormatter(): DateTimeFormatter {
-    val builder = DateTimeFormatterBuilder()
-    builder.parseCaseInsensitive()
-    builder.appendPattern("dd-MMM-yyyy HH:mm")
-    val dateTimeFormat = builder.toFormatter()
-    return dateTimeFormat
+        val (lastName, firstName) = fullName.split(",", limit = 2).takeIf { it.size == 2 }
+          ?: throw ValidationException("Validation issue: $entry")
+
+        val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value
+          ?: throw ValidationException("Validation issue: $entry")
+
+        val createdAt = LocalDateTime.parse(dateTimeString, DATE_FORMATTER)
+
+        DescriptionAddendum(
+          createdBy = SYSTEM_USERNAME,
+          firstName = firstName,
+          lastName = lastName,
+          createdAt = createdAt,
+          text = addText,
+        )
+      },
+    )
   }
 }
