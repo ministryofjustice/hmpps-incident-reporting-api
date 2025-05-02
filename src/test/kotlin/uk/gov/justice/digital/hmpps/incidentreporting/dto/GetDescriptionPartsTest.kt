@@ -99,65 +99,77 @@ class GetDescriptionPartsTest {
 
       assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `can accept null description`() {
+      val nomisReport = createBasicReport(null)
+      val (description, addenda) = nomisReport.getDescriptionParts()
+      assertThat(description).isNull()
+      assertThat(addenda).isEmpty()
+    }
   }
 
-  @Test
-  fun `exception thrown when no valid date found in addendum`() {
-    val testDescription = "Original description" +
-      "User:STARK,TONY Date:Some updated details"
-    val minimalReportDto = createBasicReport(testDescription)
+  @DisplayName("handles errors")
+  @Nested
+  inner class Errors {
+    @Test
+    fun `exception thrown when no valid date found in addendum`() {
+      val testDescription = "Original description" +
+        "User:STARK,TONY Date:Some updated details"
+      val minimalReportDto = createBasicReport(testDescription)
 
-    assertThatThrownBy { minimalReportDto.getDescriptionParts() }
-      .isInstanceOf(ValidationException::class.java)
-      .hasMessage(
-        "Validation issue: " +
-          "STARK,TONY Date:Some updated details",
-      )
+      assertThatThrownBy { minimalReportDto.getDescriptionParts() }
+        .isInstanceOf(ValidationException::class.java)
+        .hasMessage(
+          "Validation issue: " +
+            "STARK,TONY Date:Some updated details",
+        )
+    }
+
+    @Test
+    fun `exception thrown when addendums does not contain expected pattern`() {
+      val testDescription = "Original description" +
+        "User:STARK,TONYSome updated details"
+      val minimalReportDto = createBasicReport(testDescription)
+
+      assertThatThrownBy { minimalReportDto.getDescriptionParts() }
+        .isInstanceOf(ValidationException::class.java)
+        .hasMessage(
+          "Validation issue: " +
+            "STARK,TONYSome updated details",
+        )
+    }
+
+    @Test
+    fun `exception thrown when name cannot be extracted from addendum`() {
+      val testDescription = "Original description" +
+        "User:STARK TONY Date:07-JUN-2024 12:13Some updated details"
+      val minimalReportDto = createBasicReport(testDescription)
+
+      assertThatThrownBy { minimalReportDto.getDescriptionParts() }
+        .isInstanceOf(ValidationException::class.java)
+        .hasMessage(
+          "Validation issue: " +
+            "STARK TONY Date:07-JUN-2024 12:13Some updated details",
+        )
+    }
+
+    @Test
+    fun `exception thrown when text cannot be extracted from addendum`() {
+      val testDescription = "Original description" +
+        "User:STARK,TONY Date: 07-JUN-2024 12:13Some updated details"
+      val minimalReportDto = createBasicReport(testDescription)
+
+      assertThatThrownBy { minimalReportDto.getDescriptionParts() }
+        .isInstanceOf(ValidationException::class.java)
+        .hasMessage(
+          "Validation issue: " +
+            "STARK,TONY Date: 07-JUN-2024 12:13Some updated details",
+        )
+    }
   }
 
-  @Test
-  fun `exception thrown when addendums does not contain expected pattern`() {
-    val testDescription = "Original description" +
-      "User:STARK,TONYSome updated details"
-    val minimalReportDto = createBasicReport(testDescription)
-
-    assertThatThrownBy { minimalReportDto.getDescriptionParts() }
-      .isInstanceOf(ValidationException::class.java)
-      .hasMessage(
-        "Validation issue: " +
-          "STARK,TONYSome updated details",
-      )
-  }
-
-  @Test
-  fun `exception thrown when name cannot be extracted from addendum`() {
-    val testDescription = "Original description" +
-      "User:STARK TONY Date:07-JUN-2024 12:13Some updated details"
-    val minimalReportDto = createBasicReport(testDescription)
-
-    assertThatThrownBy { minimalReportDto.getDescriptionParts() }
-      .isInstanceOf(ValidationException::class.java)
-      .hasMessage(
-        "Validation issue: " +
-          "STARK TONY Date:07-JUN-2024 12:13Some updated details",
-      )
-  }
-
-  @Test
-  fun `exception thrown when text cannot be extracted from addendum`() {
-    val testDescription = "Original description" +
-      "User:STARK,TONY Date: 07-JUN-2024 12:13Some updated details"
-    val minimalReportDto = createBasicReport(testDescription)
-
-    assertThatThrownBy { minimalReportDto.getDescriptionParts() }
-      .isInstanceOf(ValidationException::class.java)
-      .hasMessage(
-        "Validation issue: " +
-          "STARK,TONY Date: 07-JUN-2024 12:13Some updated details",
-      )
-  }
-
-  private fun createBasicReport(description: String) = NomisReport(
+  private fun createBasicReport(description: String?) = NomisReport(
     incidentId = 112414323,
     questionnaireId = 2124,
     title = "TITLE",

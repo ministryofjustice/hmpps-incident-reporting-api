@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatterBuilder
 
 private const val DATETIME_PATTERN = "\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}"
 private val DATETIME_PATTERN_REGEX = DATETIME_PATTERN.toRegex()
-private val USER_REGEX = "User:".toRegex()
 private val DATE_REGEX = " Date:$DATETIME_PATTERN".toRegex()
 private val DATE_FORMATTER = DateTimeFormatterBuilder()
   .parseCaseInsensitive()
@@ -75,12 +74,11 @@ data class NomisReport(
 
   @Schema(description = "Historical questionnaire details for the incident")
   val history: List<NomisHistory>,
-
 ) {
   fun getDescriptionParts(): Pair<String?, List<DescriptionAddendum>> {
     if (description == null) return Pair(null, emptyList())
 
-    val entries = description.split(USER_REGEX)
+    val entries = description.split("User:")
     val baseDescription = entries[0]
 
     if (entries.size == 1) return Pair(baseDescription, emptyList())
