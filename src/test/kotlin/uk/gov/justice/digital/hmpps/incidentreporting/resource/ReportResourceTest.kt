@@ -576,6 +576,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [
                 {
+                  "sequence": 0,
                   "createdBy": "staff-1",
                   "firstName": "First 1",
                   "lastName": "Last 1",
@@ -583,6 +584,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "text": "Addendum #1"
                 },
                 {
+                  "sequence": 1,
                   "createdBy": "staff-2",
                   "firstName": "First 2",
                   "lastName": "Last 2",
@@ -767,6 +769,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [
                 {
+                  "sequence": 0,
                   "createdBy": "staff-1",
                   "firstName": "First 1",
                   "lastName": "Last 1",
@@ -774,6 +777,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "text": "Addendum #1"
                 },
                 {
+                  "sequence": 1,
                   "createdBy": "staff-2",
                   "firstName": "First 2",
                   "lastName": "Last 2",

@@ -75,7 +75,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         reportReference = "$NOMIS_INCIDENT_NUMBER",
         reportTime = now,
         source = InformationSource.NOMIS,
-        generateDescriptionAddendums = 1,
+        generateDescriptionAddendums = 2,
       ),
     )
   }
@@ -1350,8 +1350,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             incidentId = NOMIS_INCIDENT_NUMBER,
             title = "Updated title",
             description = "Original description" +
-              "User:STARK,TONY Date:07-JUN-2024 12:13Some updated details" +
-              "User:Last 1,First 1 Date:05-DEC-2023 12:34Addendum #1",
+              "User:Last 1,First 1 Date:05-DEC-2023 12:34Addendum #1" +
+              "User:STARK,TONY Date:07-JUN-2024 12:13Some updated details",
             reportingStaff = NomisStaff("OF42", 42, "Oscar", "Foxtrot"),
             reportedDateTime = now.minusDays(1),
             createDateTime = now.minusDays(1),
@@ -1608,6 +1608,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "description": "Original description",
                 "descriptionAddendums": [
                   {
+                    "sequence": 0,
                     "createdBy": "INCIDENT_REPORTING_API",
                     "createdAt": "2023-12-05T12:34:00",
                     "firstName": "First 1",
@@ -1615,6 +1616,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "text": "Addendum #1"
                   },
                   {
+                    "sequence": 1,
                     "createdBy": "INCIDENT_REPORTING_API",
                     "createdAt": "2024-06-07T12:13:00",
                     "firstName": "TONY",
