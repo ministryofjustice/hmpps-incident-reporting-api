@@ -55,7 +55,7 @@
       "id": "serious-sexual-assault",
       "name": "INC0020 Serious and Sexual Assault Incident Detail",
       "datasource": "replicaDataSource",
-      "query": "select report_id,\n       report_reference,\n       incident_date_and_time,\n       title,\n       description,\n       status,\n       status_description,\n       location,\n       prisoner_number,\n  prisoner_role,\n       prisoner_role_description,\n       initcap(last_name) as last_name,\n       initcap(first_name) as first_name\nfrom serious_sexual_assault_summary_view",
+      "query": "select report_id,\n       report_reference,\n       incident_date_and_time,\n       title,\n       description,\n       status,\n       status_description,\n       location,\n       prisoner_number,\n  prisoner_role,\n       prisoner_role_description,\n       initcap(last_name) as last_name,\n       initcap(first_name) as first_name\nfrom report.serious_sexual_assault_summary_view",
       "schema": {
         "field": [
           {
