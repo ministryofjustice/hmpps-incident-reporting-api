@@ -1,8 +1,6 @@
-drop materialized view if exists serious_sexual_assault_summary;
+drop materialized view if exists report.serious_sexual_assault_summary_view;
 
-drop materialized view if exists serious_sexual_assault_summary_view;
-
-create materialized view serious_sexual_assault_summary_view as
+create materialized view report.serious_sexual_assault_summary_view as
 select distinct r.id as report_id,
                 r.report_reference,
                 r.incident_date_and_time,
@@ -69,4 +67,4 @@ where status != 'DUPLICATE'
                                             'TEMPORARY/PERMANENT BLINDNESS')))));
 
 create index if not exists serious_sexual_assault_summary_view_idx
-  on serious_sexual_assault_summary_view (report_id, incident_date_and_time, location);
+  on report.serious_sexual_assault_summary_view (report_id, incident_date_and_time, location);

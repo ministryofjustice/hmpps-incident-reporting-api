@@ -27,7 +27,7 @@ class RefreshViewsService(
   fun refreshViews() {
     materializedViews.forEach { materializedView ->
       log.info("Refreshing materialized view $materializedView")
-      entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW $materializedView").executeUpdate()
+      entityManager.createNativeQuery("REFRESH MATERIALIZED VIEW report.$materializedView").executeUpdate()
       log.info("Materialized view $materializedView refreshed")
     }
   }
