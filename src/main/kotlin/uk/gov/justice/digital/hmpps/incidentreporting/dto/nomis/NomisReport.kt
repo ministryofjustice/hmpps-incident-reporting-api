@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.ValidationException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import java.time.LocalDate
@@ -75,40 +77,47 @@ data class NomisReport(
   @Schema(description = "Historical questionnaire details for the incident")
   val history: List<NomisHistory>,
 ) {
+
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
+
   fun getDescriptionParts(): Pair<String?, List<DescriptionAddendum>> {
-    if (description == null) return Pair(null, emptyList())
+    try {
+      if (description == null) return Pair(null, emptyList())
 
-    val entries = description.split("User:")
-    val baseDescription = entries[0]
+      val entries = description.split("User:")
+      val baseDescription = entries[0]
 
-    if (entries.size == 1) return Pair(baseDescription, emptyList())
+      if (entries.size == 1) return Pair(baseDescription, emptyList())
+      val additionalEntries = entries.drop(1)
 
-    val additionalEntries = entries.drop(1)
+      return Pair(baseDescription, additionalEntries.mapIndexed { index, entry -> buildAddendum(entry, index) })
+    } catch (e: ValidationException) {
+      log.warn("Validation issue with incident details, skipping split out of appended information: $description", e)
+      return Pair(description, emptyList())
+    }
+  }
 
-    return Pair(
-      baseDescription,
-      additionalEntries.mapIndexed { index, entry ->
+  private fun buildAddendum(entry: String, index: Int): DescriptionAddendum {
+    val (fullName, addText) = entry.split(DATE_REGEX, limit = 2).takeIf { it.size == 2 }
+      ?: throw ValidationException("Validation issue, date pattern not found: $entry")
 
-        val (fullName, addText) = entry.split(DATE_REGEX, limit = 2).takeIf { it.size == 2 }
-          ?: throw ValidationException("Validation issue: $entry")
+    val (lastName, firstName) = fullName.split(",", limit = 2).takeIf { it.size == 2 }
+      ?: throw ValidationException("Validation issue, first and last name not found in format expected: $entry")
 
-        val (lastName, firstName) = fullName.split(",", limit = 2).takeIf { it.size == 2 }
-          ?: throw ValidationException("Validation issue: $entry")
+    val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value
+      ?: throw ValidationException("Validation issue, date is not in format expected: $entry")
 
-        val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value
-          ?: throw ValidationException("Validation issue: $entry")
+    val createdAt = LocalDateTime.parse(dateTimeString, DATE_FORMATTER)
 
-        val createdAt = LocalDateTime.parse(dateTimeString, DATE_FORMATTER)
-
-        DescriptionAddendum(
-          sequence = index,
-          createdBy = SYSTEM_USERNAME,
-          firstName = firstName,
-          lastName = lastName,
-          createdAt = createdAt,
-          text = addText,
-        )
-      },
+    return DescriptionAddendum(
+      sequence = index,
+      createdBy = SYSTEM_USERNAME,
+      firstName = firstName,
+      lastName = lastName,
+      createdAt = createdAt,
+      text = addText,
     )
   }
 }

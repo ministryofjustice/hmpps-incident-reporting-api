@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto
 
-import jakarta.validation.ValidationException
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -118,12 +116,11 @@ class GetDescriptionPartsTest {
         "User:STARK,TONY Date:Some updated details"
       val minimalReportDto = createBasicReport(testDescription)
 
-      assertThatThrownBy { minimalReportDto.getDescriptionParts() }
-        .isInstanceOf(ValidationException::class.java)
-        .hasMessage(
-          "Validation issue: " +
-            "STARK,TONY Date:Some updated details",
-        )
+      val result = minimalReportDto.getDescriptionParts()
+
+      val expected: Pair<String?, List<DescriptionAddendum>> = Pair(testDescription, emptyList())
+
+      assertThat(result).isEqualTo(expected)
     }
 
     @Test
@@ -132,12 +129,11 @@ class GetDescriptionPartsTest {
         "User:STARK,TONYSome updated details"
       val minimalReportDto = createBasicReport(testDescription)
 
-      assertThatThrownBy { minimalReportDto.getDescriptionParts() }
-        .isInstanceOf(ValidationException::class.java)
-        .hasMessage(
-          "Validation issue: " +
-            "STARK,TONYSome updated details",
-        )
+      val result = minimalReportDto.getDescriptionParts()
+
+      val expected: Pair<String?, List<DescriptionAddendum>> = Pair(testDescription, emptyList())
+
+      assertThat(result).isEqualTo(expected)
     }
 
     @Test
@@ -146,12 +142,11 @@ class GetDescriptionPartsTest {
         "User:STARK TONY Date:07-JUN-2024 12:13Some updated details"
       val minimalReportDto = createBasicReport(testDescription)
 
-      assertThatThrownBy { minimalReportDto.getDescriptionParts() }
-        .isInstanceOf(ValidationException::class.java)
-        .hasMessage(
-          "Validation issue: " +
-            "STARK TONY Date:07-JUN-2024 12:13Some updated details",
-        )
+      val result = minimalReportDto.getDescriptionParts()
+
+      val expected: Pair<String?, List<DescriptionAddendum>> = Pair(testDescription, emptyList())
+
+      assertThat(result).isEqualTo(expected)
     }
 
     @Test
@@ -160,12 +155,11 @@ class GetDescriptionPartsTest {
         "User:STARK,TONY Date: 07-JUN-2024 12:13Some updated details"
       val minimalReportDto = createBasicReport(testDescription)
 
-      assertThatThrownBy { minimalReportDto.getDescriptionParts() }
-        .isInstanceOf(ValidationException::class.java)
-        .hasMessage(
-          "Validation issue: " +
-            "STARK,TONY Date: 07-JUN-2024 12:13Some updated details",
-        )
+      val result = minimalReportDto.getDescriptionParts()
+
+      val expected: Pair<String?, List<DescriptionAddendum>> = Pair(testDescription, emptyList())
+
+      assertThat(result).isEqualTo(expected)
     }
   }
 
