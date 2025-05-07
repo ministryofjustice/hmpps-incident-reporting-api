@@ -10,14 +10,19 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatterBuilder
+import java.time.format.DateTimeParseException
 
-private const val DATETIME_PATTERN = "\\d{2}-[A-Z]{3}-\\d{4} \\d{2}:\\d{2}"
+private const val DATETIME_PATTERN = "\\d{1,2}[-/](?:[A-Z]{3}|\\d{2})[-/]\\d{4} \\d{2}:\\d{2}"
+
 private val DATETIME_PATTERN_REGEX = DATETIME_PATTERN.toRegex()
 private val DATE_REGEX = " Date:$DATETIME_PATTERN".toRegex()
-private val DATE_FORMATTER = DateTimeFormatterBuilder()
-  .parseCaseInsensitive()
-  .appendPattern("dd-MMM-yyyy HH:mm")
-  .toFormatter()
+
+private val DATE_FORMATTER_1 = DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(
+  "dd-MMM-yyyy HH:mm",
+).toFormatter()
+private val DATE_FORMATTER_2 = DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(
+  "dd/MM/yyyy HH:mm",
+).toFormatter()
 
 @Schema(description = "NOMIS Incident Report Details")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -94,7 +99,7 @@ data class NomisReport(
 
       return Pair(baseDescription, additionalEntries.mapIndexed { index, entry -> buildAddendum(entry, index) })
     } catch (e: ValidationException) {
-      log.warn("Validation issue with incident details, skipping split out of appended information: $description", e)
+      log.error("Validation issue with incident details, skipping split out of appended information: $description", e)
       return Pair(description, emptyList())
     }
   }
@@ -109,7 +114,11 @@ data class NomisReport(
     val dateTimeString = DATETIME_PATTERN_REGEX.find(entry)?.value
       ?: throw ValidationException("Validation issue, date is not in format expected: $entry")
 
-    val createdAt = LocalDateTime.parse(dateTimeString, DATE_FORMATTER)
+    val createdAt = try {
+      LocalDateTime.parse(dateTimeString, DATE_FORMATTER_1)
+    } catch (e: DateTimeParseException) {
+      LocalDateTime.parse(dateTimeString, DATE_FORMATTER_2)
+    }
 
     return DescriptionAddendum(
       sequence = index,
