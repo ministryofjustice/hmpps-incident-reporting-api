@@ -1528,28 +1528,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         assertThatNoDomainEventsWereSent()
       }
-
-      @Test
-      fun `cannot add description addendum without createdAt field`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(
-            // language=json
-            """
-              {
-                "createdBy": "USER_1",
-                "firstName": "John",
-                "lastName": "Doe",
-                "text": "Prisoner was released from hospital"
-              }
-            """,
-          )
-          .exchange()
-          .expectStatus().isBadRequest
-
-        assertThatNoDomainEventsWereSent()
-      }
     }
 
     @DisplayName("works")
@@ -1670,6 +1648,83 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           nomisReport.reportReference,
+          InformationSource.DPS,
+          WhatChanged.DESCRIPTION_ADDENDUMS,
+        )
+      }
+
+      @Test
+      fun `can add description addendum without createdAt field`() {
+        webTestClient.post().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(
+            // language=json
+            """
+          {
+            "createdBy": "USER_2",
+            "firstName": "Fred",
+            "lastName": "Doe",
+            "text": "Prisoner was released from healthcare"
+          }
+          """,
+          )
+          .exchange()
+          .expectStatus().isCreated
+          .expectBody().json(
+            // language=json
+            """
+            {
+              "id": "${existingReport.id}",
+              "reportReference": "11124149",
+              "type": "FIND_6",
+              "nomisType": "FIND0422",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
+              "prisonId": "MDI",
+              "title": "Incident Report 11124149",
+              "description": "A new incident created in the new service of type find of illicit items",
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "DRAFT",
+              "nomisStatus": null,
+              "assignedTo": "USER1",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "request-user",
+              "createdInNomis": false,
+              "lastModifiedInNomis": false,
+              "descriptionAddendums": [
+                {
+                  "createdBy": "staff-1",
+                  "createdAt": "2023-12-05T12:34:00",
+                  "firstName": "First 1",
+                  "lastName": "Last 1",
+                  "text": "Addendum #1"
+                },
+                {
+                  "createdBy": "staff-2",
+                  "createdAt": "2023-12-05T12:34:00",
+                  "firstName": "First 2",
+                  "lastName": "Last 2",
+                  "text": "Addendum #2"
+                },
+                {
+                  "createdBy": "USER_2",
+                  "createdAt": "2023-12-05T12:34:56",
+                  "firstName": "Fred",
+                  "lastName": "Doe",
+                  "text": "Prisoner was released from healthcare"
+                }
+              ]
+            }
+            """,
+            JsonCompareMode.LENIENT,
+          )
+
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "11124149",
           InformationSource.DPS,
           WhatChanged.DESCRIPTION_ADDENDUMS,
         )

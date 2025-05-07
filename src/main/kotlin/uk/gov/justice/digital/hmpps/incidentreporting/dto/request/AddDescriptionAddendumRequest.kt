@@ -17,8 +17,13 @@ class AddDescriptionAddendumRequest(
   )
   @field:Size(min = 3, max = 120)
   val createdBy: String,
-  @Schema(description = "When addendum was added", example = "2024-04-29T12:34:56.789012")
-  val createdAt: LocalDateTime,
+  @Schema(
+    description = "When addendum was added, defaults to now",
+    example = "2024-04-29T12:34:56.789012",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    nullable = true,
+  )
+  val createdAt: LocalDateTime? = null,
   @Schema(
     description = "First name of person that added this addendum",
     example = "John",

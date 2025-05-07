@@ -219,17 +219,18 @@ class ReportService(
 
   @Transactional
   fun addDescriptionAddendum(id: UUID, request: AddDescriptionAddendumRequest): ReportWithDetails? {
+    val now = LocalDateTime.now(clock)
+    val user = authenticationHolder.username ?: SYSTEM_USERNAME
+
     return reportRepository.findOneEagerlyById(id)?.let { reportEntity ->
       reportEntity.addDescriptionAddendum(
         createdBy = request.createdBy,
         firstName = request.firstName,
         lastName = request.lastName,
-        createdAt = request.createdAt,
+        createdAt = request.createdAt ?: now,
         text = request.text,
       )
 
-      val now = LocalDateTime.now(clock)
-      val user = authenticationHolder.username ?: SYSTEM_USERNAME
       reportEntity.modifiedIn = InformationSource.DPS
       reportEntity.modifiedAt = now
       reportEntity.modifiedBy = user
