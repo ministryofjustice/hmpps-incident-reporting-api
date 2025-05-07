@@ -18,7 +18,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddDescriptionAddendumRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddOrUpdateQuestionWithResponses
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
@@ -215,37 +214,6 @@ class ReportService(
         )
       }
     }.getOrNull()
-  }
-
-  @Transactional
-  fun addDescriptionAddendum(id: UUID, request: AddDescriptionAddendumRequest): ReportWithDetails? {
-    val now = LocalDateTime.now(clock)
-    val user = authenticationHolder.username ?: SYSTEM_USERNAME
-
-    return reportRepository.findOneEagerlyById(id)?.let { reportEntity ->
-      reportEntity.addDescriptionAddendum(
-        createdBy = request.createdBy,
-        firstName = request.firstName,
-        lastName = request.lastName,
-        createdAt = request.createdAt ?: now,
-        text = request.text,
-      )
-
-      reportEntity.modifiedIn = InformationSource.DPS
-      reportEntity.modifiedAt = now
-      reportEntity.modifiedBy = user
-
-      val reportWithDetails = reportEntity.toDtoWithDetails()
-      log.info(
-        "Appended to incident report description for reference=${reportWithDetails.reportReference} ID=$id",
-      )
-      telemetryClient.trackEvent(
-        "Appended to incident report description",
-        reportWithDetails,
-      )
-
-      reportWithDetails
-    }
   }
 
   @Transactional

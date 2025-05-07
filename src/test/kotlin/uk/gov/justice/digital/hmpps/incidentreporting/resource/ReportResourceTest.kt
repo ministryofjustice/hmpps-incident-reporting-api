@@ -1452,286 +1452,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
-  @DisplayName("POST /incident-reports/{id}/description-addendums")
-  @Nested
-  inner class AddDescriptionAddendum {
-    private lateinit var url: String
-
-    // language=json
-    private val validPayload = """
-      {
-        "createdAt": "2023-12-05T21:00:00",
-        "createdBy": "USER_1",
-        "firstName": "John",
-        "lastName": "Doe",
-        "text": "Prisoner was released from hospital"
-      }
-    """
-
-    @BeforeEach
-    fun setUp() {
-      existingReport = reportRepository.save(
-        buildReport(
-          reportReference = "11124149",
-          reportTime = now,
-          generateDescriptionAddendums = 2,
-        ),
-      )
-      url = "/incident-reports/${existingReport.id}/description-addendums"
-    }
-
-    @DisplayName("is secured")
-    @Nested
-    inner class Security {
-      @DisplayName("by role and scope")
-      @TestFactory
-      fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-        webTestClient.post().uri(url).bodyValue(validPayload),
-        "MAINTAIN_INCIDENT_REPORTS",
-        "write",
-      )
-    }
-
-    @DisplayName("validates requests")
-    @Nested
-    inner class Validation {
-      @Test
-      fun `cannot add description addendum to a missing report`() {
-        webTestClient.post().uri("/incident-reports/11111111-2222-3333-4444-555555555555/description-addendums")
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(validPayload)
-          .exchange()
-          .expectStatus().isNotFound
-
-        assertThatNoDomainEventsWereSent()
-      }
-
-      @Test
-      fun `cannot add description addendum without createdBy field`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(
-            // language=json
-            """
-              {
-                "createdAt": "2023-12-05T12:34:56",
-                "firstName": "John",
-                "lastName": "Doe",
-                "text": "Prisoner was released from hospital"
-              }
-            """,
-          )
-          .exchange()
-          .expectStatus().isBadRequest
-
-        assertThatNoDomainEventsWereSent()
-      }
-    }
-
-    @DisplayName("works")
-    @Nested
-    inner class HappyPath {
-      @Test
-      fun `can add description addendum`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(validPayload)
-          .exchange()
-          .expectStatus().isCreated
-          .expectBody().json(
-            // language=json
-            """
-            {
-              "id": "${existingReport.id}",
-              "reportReference": "11124149",
-              "type": "FIND_6",
-              "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
-              "location": "MDI",
-              "prisonId": "MDI",
-              "title": "Incident Report 11124149",
-              "description": "A new incident created in the new service of type find of illicit items",
-              "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
-              "status": "DRAFT",
-              "nomisStatus": null,
-              "assignedTo": "USER1",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "request-user",
-              "createdInNomis": false,
-              "lastModifiedInNomis": false,
-              "descriptionAddendums": [
-                {
-                  "createdBy": "staff-1",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "firstName": "First 1",
-                  "lastName": "Last 1",
-                  "text": "Addendum #1"
-                },
-                {
-                  "createdBy": "staff-2",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "firstName": "First 2",
-                  "lastName": "Last 2",
-                  "text": "Addendum #2"
-                },
-                {
-                  "createdBy": "USER_1",
-                  "createdAt": "2023-12-05T21:00:00",
-                  "firstName": "John",
-                  "lastName": "Doe",
-                  "text": "Prisoner was released from hospital"
-                }
-              ]
-            }
-            """,
-            JsonCompareMode.LENIENT,
-          )
-
-        assertThatDomainEventWasSent(
-          "incident.report.amended",
-          "11124149",
-          InformationSource.DPS,
-          WhatChanged.DESCRIPTION_ADDENDUMS,
-        )
-      }
-
-      @Test
-      fun `can add description addendum to a report first created in NOMIS`() {
-        val nomisReport = reportRepository.save(
-          buildReport(
-            reportReference = "11124146",
-            reportTime = now,
-            source = InformationSource.NOMIS,
-            generateDescriptionAddendums = 1,
-          ),
-        )
-        webTestClient.post().uri("/incident-reports/${nomisReport.id}/description-addendums")
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(validPayload)
-          .exchange()
-          .expectStatus().isCreated
-          .expectBody().json(
-            // language=json
-            """
-            {
-              "id": "${nomisReport.id}",
-              "status": "DRAFT",
-              "createdInNomis": true,
-              "lastModifiedInNomis": false,
-              "descriptionAddendums": [
-                {
-                  "createdBy": "staff-1",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "firstName": "First 1",
-                  "lastName": "Last 1",
-                  "text":"Addendum #1"
-                },
-                {
-                  "createdAt": "2023-12-05T21:00:00",
-                  "createdBy": "USER_1",
-                  "firstName": "John",
-                  "lastName": "Doe",
-                  "text": "Prisoner was released from hospital"
-                }
-              ]
-            }
-            """,
-            JsonCompareMode.LENIENT,
-          )
-
-        assertThatDomainEventWasSent(
-          "incident.report.amended",
-          nomisReport.reportReference,
-          InformationSource.DPS,
-          WhatChanged.DESCRIPTION_ADDENDUMS,
-        )
-      }
-
-      @Test
-      fun `can add description addendum without createdAt field`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(
-            // language=json
-            """
-          {
-            "createdBy": "USER_2",
-            "firstName": "Fred",
-            "lastName": "Doe",
-            "text": "Prisoner was released from healthcare"
-          }
-          """,
-          )
-          .exchange()
-          .expectStatus().isCreated
-          .expectBody().json(
-            // language=json
-            """
-            {
-              "id": "${existingReport.id}",
-              "reportReference": "11124149",
-              "type": "FIND_6",
-              "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
-              "location": "MDI",
-              "prisonId": "MDI",
-              "title": "Incident Report 11124149",
-              "description": "A new incident created in the new service of type find of illicit items",
-              "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
-              "status": "DRAFT",
-              "nomisStatus": null,
-              "assignedTo": "USER1",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "request-user",
-              "createdInNomis": false,
-              "lastModifiedInNomis": false,
-              "descriptionAddendums": [
-                {
-                  "createdBy": "staff-1",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "firstName": "First 1",
-                  "lastName": "Last 1",
-                  "text": "Addendum #1"
-                },
-                {
-                  "createdBy": "staff-2",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "firstName": "First 2",
-                  "lastName": "Last 2",
-                  "text": "Addendum #2"
-                },
-                {
-                  "createdBy": "USER_2",
-                  "createdAt": "2023-12-05T12:34:56",
-                  "firstName": "Fred",
-                  "lastName": "Doe",
-                  "text": "Prisoner was released from healthcare"
-                }
-              ]
-            }
-            """,
-            JsonCompareMode.LENIENT,
-          )
-
-        assertThatDomainEventWasSent(
-          "incident.report.amended",
-          "11124149",
-          InformationSource.DPS,
-          WhatChanged.DESCRIPTION_ADDENDUMS,
-        )
-      }
-    }
-  }
-
   @DisplayName("PATCH /incident-reports/{id}/status")
   @Nested
   inner class ChangeStatus {
@@ -2567,6 +2287,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         buildReport(
           reportReference = "11124146",
           reportTime = now,
+          generateDescriptionAddendums = 2,
           generateStaffInvolvement = 2,
           generatePrisonerInvolvement = 2,
           generateCorrections = 2,
@@ -2754,6 +2475,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               reportReference = "11124147",
               reportTime = now,
               source = InformationSource.NOMIS,
+              generateDescriptionAddendums = 2,
               generateStaffInvolvement = 2,
               generatePrisonerInvolvement = 2,
               generateCorrections = 2,
@@ -2971,6 +2693,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             reportReference = "11124147",
             reportTime = now,
             source = InformationSource.NOMIS,
+            generateDescriptionAddendums = 2,
             generateStaffInvolvement = 2,
             generatePrisonerInvolvement = 2,
             generateCorrections = 2,
@@ -3089,6 +2812,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               reportReference = "11124147",
               reportTime = now,
               source = InformationSource.NOMIS,
+              generateDescriptionAddendums = 2,
               generateStaffInvolvement = 2,
               generatePrisonerInvolvement = 2,
               generateCorrections = 2,
@@ -3109,6 +2833,81 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         }
       }
     }
+  }
+
+  @DisplayName("Description addendums")
+  @Nested
+  inner class DescriptionAddendums : RelatedObjects("description-addendums", WhatChanged.DESCRIPTION_ADDENDUMS) {
+    @DisplayName("GET /incident-reports/{reportId}/description-addendums")
+    @Nested
+    inner class ListObjects : RelatedObjects.ListObjects()
+
+    @DisplayName("POST /incident-reports/{reportId}/description-addendums")
+    @Nested
+    inner class AddObject :
+      RelatedObjects.AddObject(
+        invalidRequests = listOf(
+          InvalidRequestTestCase(
+            "short username",
+            getResource("/related-objects/description-addendums/add-request-short-username.json"),
+            "addDescriptionAddendum.createdBy: size must be between 3 and 120",
+          ),
+          InvalidRequestTestCase(
+            "empty name",
+            getResource("/related-objects/description-addendums/add-request-empty-name.json"),
+            "addDescriptionAddendum.firstName: size must be between 1 and 255",
+          ),
+          InvalidRequestTestCase(
+            "long name",
+            getResource("/related-objects/description-addendums/add-request-long-name.json"),
+            "addDescriptionAddendum.lastName: size must be between 1 and 255",
+          ),
+        ),
+      ) {
+      @Test
+      fun `can add description addendum without createdAt field`() {
+        val validRequest = getResource("/related-objects/description-addendums/add-request-no-date.json")
+        webTestClient.post().uri(urlWithoutRelatedObjects)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validRequest)
+          .exchange()
+          .expectStatus().isCreated
+          .expectBody().json(
+            // language=json
+            """
+            [
+              {
+                "createdAt": "2023-12-05T12:34:56"
+              }
+            ]
+            """,
+            JsonCompareMode.LENIENT,
+          )
+      }
+    }
+
+    @DisplayName("PATCH /incident-reports/{reportId}/description-addendums/{index}")
+    @Nested
+    inner class UpdateObject :
+      RelatedObjects.UpdateObject(
+        invalidRequests = listOf(
+          InvalidRequestTestCase(
+            "long username",
+            getResource("/related-objects/description-addendums/update-request-long-username.json"),
+            "updateDescriptionAddendum.createdBy: size must be between 3 and 120",
+          ),
+          InvalidRequestTestCase(
+            "empty text",
+            getResource("/related-objects/description-addendums/update-request-empty-text.json"),
+            "updateDescriptionAddendum.text: size must be between 1 and",
+          ),
+        ),
+      )
+
+    @DisplayName("DELETE /incident-reports/{reportId}/description-addendums/{index}")
+    @Nested
+    inner class RemoveObject : RelatedObjects.RemoveObject()
   }
 
   @DisplayName("Staff involvement")
@@ -3230,7 +3029,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         ),
       ) {
       @Test
-      fun `automatically flags staff involvements as done`() {
+      fun `automatically flags prisoner involvements as done`() {
         val newReportId = reportRepository.save(
           buildReport(
             reportReference = "11124149",

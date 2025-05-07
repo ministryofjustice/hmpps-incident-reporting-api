@@ -7,8 +7,10 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import org.hibernate.Hibernate
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateDescriptionAddendum
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
+import kotlin.jvm.optionals.getOrElse
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum as DescriptionAddendumDto
 
 @Entity
@@ -24,9 +26,10 @@ class DescriptionAddendum(
   val sequence: Int,
 
   var createdBy: String,
+  var createdAt: LocalDateTime,
+
   var firstName: String,
   var lastName: String,
-  var createdAt: LocalDateTime,
   var text: String,
 ) : Comparable<DescriptionAddendum> {
 
@@ -59,6 +62,14 @@ class DescriptionAddendum(
   override fun toString(): String {
     return "DescriptionAddendum(id=$id, report=${report.reportReference}, " +
       "createdBy=$firstName $lastName, createdAt=$createdAt, text=$text)"
+  }
+
+  fun updateWith(request: UpdateDescriptionAddendum, now: LocalDateTime) {
+    request.createdBy?.let { createdBy = it }
+    request.createdAt?.let { createdAt = it.getOrElse { now } }
+    request.firstName?.let { firstName = it }
+    request.lastName?.let { lastName = it }
+    request.text?.let { text = it }
   }
 
   fun toDto() = DescriptionAddendumDto(

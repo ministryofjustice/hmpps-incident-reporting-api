@@ -1,0 +1,18 @@
+[
+  {
+    "sequence": 0,
+    "createdBy": "staff-1",
+    "createdAt": "2023-12-05T12:34:00",
+    "firstName": "First 1",
+    "lastName": "Last 1",
+    "text": "Addendum #1"
+  },
+  {
+    "sequence": 1,
+    "createdBy": "abc12a",
+    "createdAt": "2023-12-05T12:34:00",
+    "firstName": "First 2",
+    "lastName": "Last 2",
+    "text": "Prisoner was released from hospital"
+  }
+]

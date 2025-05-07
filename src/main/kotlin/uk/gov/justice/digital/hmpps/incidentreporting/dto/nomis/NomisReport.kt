@@ -123,9 +123,9 @@ data class NomisReport(
     return DescriptionAddendum(
       sequence = index,
       createdBy = SYSTEM_USERNAME,
+      createdAt = createdAt,
       firstName = firstName,
       lastName = lastName,
-      createdAt = createdAt,
       text = addText,
     )
   }

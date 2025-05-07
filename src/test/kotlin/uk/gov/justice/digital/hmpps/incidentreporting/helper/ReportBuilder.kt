@@ -57,11 +57,12 @@ fun buildReport(
 
   (1..generateDescriptionAddendums).forEach { addendumIndex ->
     report.addDescriptionAddendum(
+      sequence = addendumIndex - 1,
       createdBy = "staff-$addendumIndex",
-      firstName = "First $addendumIndex",
-      lastName = "Last $addendumIndex",
       // Round to seconds to account for NOMIS description format granularity
       createdAt = reportTime.truncatedTo(ChronoUnit.MINUTES),
+      firstName = "First $addendumIndex",
+      lastName = "Last $addendumIndex",
       text = "Addendum #$addendumIndex",
     )
   }

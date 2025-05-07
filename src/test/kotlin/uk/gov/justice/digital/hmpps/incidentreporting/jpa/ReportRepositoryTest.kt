@@ -264,6 +264,24 @@ class ReportRepositoryTest : IntegrationTestBase() {
       )
     report.addStatusHistory(Status.DRAFT, now, "user5")
     report.addStatusHistory(Status.AWAITING_ANALYSIS, now, "user1")
+
+    report.addDescriptionAddendum(
+      sequence = 0,
+      createdBy = "SOME_USER_1",
+      createdAt = now,
+      firstName = "John",
+      lastName = "Doe",
+      text = "The prisoner was admitted to hospital",
+    )
+    report.addDescriptionAddendum(
+      sequence = 1,
+      createdBy = "SOME_USER_2",
+      createdAt = now,
+      firstName = "Jane",
+      lastName = "Doe",
+      text = "The prisoner was discharged from hospital",
+    )
+
     report.addStaffInvolved(
       sequence = 0,
       staffUsername = "user1",
@@ -322,21 +340,6 @@ class ReportRepositoryTest : IntegrationTestBase() {
       .addResponse("NO", null, 1, "No", "user1", now)
       .addResponse("MAYBE", null, 2, "Maybe", "user1", now)
       .addResponse("OTHER", null, 3, "Other", "user1", now)
-
-    report.addDescriptionAddendum(
-      "SOME_USER_1",
-      "John",
-      "Doe",
-      now,
-      "The prisoner was admitted to hospital",
-    )
-    report.addDescriptionAddendum(
-      "SOME_USER_2",
-      "Jane",
-      "Doe",
-      now,
-      "The prisoner was discharged from hospital",
-    )
 
     TestTransaction.flagForCommit()
     TestTransaction.end()
