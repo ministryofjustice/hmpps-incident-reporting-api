@@ -75,7 +75,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       buildReport(
         reportReference = "11124143",
         reportTime = now,
-        generateDescriptionAddendums = 2,
       ),
     )
   }
@@ -574,24 +573,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
-              "descriptionAddendums": [
-                {
-                  "sequence": 0,
-                  "createdBy": "staff-1",
-                  "firstName": "First 1",
-                  "lastName": "Last 1",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "text": "Addendum #1"
-                },
-                {
-                  "sequence": 1,
-                  "createdBy": "staff-2",
-                  "firstName": "First 2",
-                  "lastName": "Last 2",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "text": "Addendum #2"
-                }
-              ],
+              "descriptionAddendums": [],
               "event": {
                 "id": "${existingReport.event.id}",
                 "eventReference": "11124143",
@@ -767,24 +749,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
-              "descriptionAddendums": [
-                {
-                  "sequence": 0,
-                  "createdBy": "staff-1",
-                  "firstName": "First 1",
-                  "lastName": "Last 1",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "text": "Addendum #1"
-                },
-                {
-                  "sequence": 1,
-                  "createdBy": "staff-2",
-                  "firstName": "First 2",
-                  "lastName": "Last 2",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "text": "Addendum #2"
-                }
-              ],
+              "descriptionAddendums": [],
               "event": {
                 "id": "${existingReport.event.id}",
                 "eventReference": "11124143",
@@ -1505,6 +1470,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     @BeforeEach
     fun setUp() {
+      existingReport = reportRepository.save(
+        buildReport(
+          reportReference = "11124149",
+          reportTime = now,
+          generateDescriptionAddendums = 2,
+        ),
+      )
       url = "/incident-reports/${existingReport.id}/description-addendums"
     }
 
@@ -1596,13 +1568,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """
             {
               "id": "${existingReport.id}",
-              "reportReference": "11124143",
+              "reportReference": "11124149",
               "type": "FIND_6",
               "nomisType": "FIND0422",
               "incidentDateAndTime": "2023-12-05T11:34:56",
               "location": "MDI",
               "prisonId": "MDI",
-              "title": "Incident Report 11124143",
+              "title": "Incident Report 11124149",
               "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
@@ -1644,7 +1616,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         assertThatDomainEventWasSent(
           "incident.report.amended",
-          "11124143",
+          "11124149",
           InformationSource.DPS,
           WhatChanged.DESCRIPTION_ADDENDUMS,
         )
@@ -1811,24 +1783,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
-              "descriptionAddendums": [
-                {
-                  "sequence": 0,
-                  "createdBy": "staff-1",
-                  "firstName": "First 1",
-                  "lastName": "Last 1",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "text": "Addendum #1"
-                },
-                {
-                  "sequence": 1,
-                  "createdBy": "staff-2",
-                  "firstName": "First 2",
-                  "lastName": "Last 2",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "text": "Addendum #2"
-                }
-              ],
+              "descriptionAddendums": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "DRAFT",
@@ -1876,24 +1831,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "prisonId": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
-              "descriptionAddendums": [
-                {
-                  "sequence": 0,
-                  "createdBy": "staff-1",
-                  "firstName": "First 1",
-                  "lastName": "Last 1",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "text": "Addendum #1"
-                },
-                {
-                  "sequence": 1,
-                  "createdBy": "staff-2",
-                  "firstName": "First 2",
-                  "lastName": "Last 2",
-                  "createdAt": "2023-12-05T12:34:00",
-                  "text": "Addendum #2"
-                }
-              ],
+              "descriptionAddendums": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
               "status": "AWAITING_ANALYSIS",
