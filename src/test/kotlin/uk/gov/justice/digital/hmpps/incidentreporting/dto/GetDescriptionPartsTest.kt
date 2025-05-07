@@ -105,6 +105,32 @@ class GetDescriptionPartsTest {
       assertThat(description).isNull()
       assertThat(addenda).isEmpty()
     }
+
+    @Test
+    fun `valid description with different date format`() {
+      val minimalReportDto = createBasicReport(
+        "Original description" +
+          "User:STARK,TONY Date:07/06/2024 12:13Some updated details",
+      )
+
+      val result = minimalReportDto.getDescriptionParts()
+
+      val expected: Pair<String?, List<DescriptionAddendum>> = Pair(
+        "Original description",
+        listOf(
+          DescriptionAddendum(
+            createdBy = "INCIDENT_REPORTING_API",
+            firstName = "TONY",
+            lastName = "STARK",
+            createdAt = LocalDateTime.parse("2024-06-07T12:13"),
+            text = "Some updated details",
+            sequence = 0,
+          ),
+        ),
+      )
+
+      assertThat(result).isEqualTo(expected)
+    }
   }
 
   @DisplayName("handles errors")
