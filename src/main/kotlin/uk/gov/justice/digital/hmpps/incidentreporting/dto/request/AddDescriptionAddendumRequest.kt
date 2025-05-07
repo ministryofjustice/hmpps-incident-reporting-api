@@ -1,15 +1,13 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.dto.request
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
 @Schema(
-  description = "Request to add an addendum to the description of the incident report",
-  accessMode = Schema.AccessMode.READ_ONLY,
+  description = "Add to the description of an incident report by appending an addendum",
+  accessMode = Schema.AccessMode.WRITE_ONLY,
 )
-@JsonInclude(JsonInclude.Include.ALWAYS)
-class DescriptionAddendumRequest(
+class AddDescriptionAddendumRequest(
   @Schema(description = "Username of user who added this addendum", example = "USER_1")
   val createdBy: String,
   @Schema(description = "When addendum was added", example = "2024-04-29T12:34:56.789012")
