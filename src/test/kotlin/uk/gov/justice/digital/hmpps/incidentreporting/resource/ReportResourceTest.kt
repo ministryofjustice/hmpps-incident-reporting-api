@@ -2865,6 +2865,28 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         ),
       ) {
       @Test
+      fun `can add description addendum without createdBy field`() {
+        val validRequest = getResource("/related-objects/description-addendums/add-request-no-username.json")
+        webTestClient.post().uri(urlWithoutRelatedObjects)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validRequest)
+          .exchange()
+          .expectStatus().isCreated
+          .expectBody().json(
+            // language=json
+            """
+            [
+              {
+                "createdBy": "request-user"
+              }
+            ]
+            """,
+            JsonCompareMode.LENIENT,
+          )
+      }
+
+      @Test
       fun `can add description addendum without createdAt field`() {
         val validRequest = getResource("/related-objects/description-addendums/add-request-no-date.json")
         webTestClient.post().uri(urlWithoutRelatedObjects)

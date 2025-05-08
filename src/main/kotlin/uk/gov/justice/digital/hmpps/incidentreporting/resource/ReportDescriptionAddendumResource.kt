@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddDescriptionAddendum
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateDescriptionAddendum
@@ -76,7 +77,7 @@ class ReportDescriptionAddendumResource :
   @Operation(
     summary = "Adds a description addendum to this incident report",
     description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
-      "Authentication token must provide a username which is recorded as the report modifier.",
+      "Authentication token must provide a username which is recorded as the report modifier and possibly as addendum author.",
     responses = [
       ApiResponse(
         responseCode = "201",
@@ -125,7 +126,7 @@ class ReportDescriptionAddendumResource :
         val sequence = if (report.descriptionAddendums.isEmpty()) 0 else report.descriptionAddendums.last().sequence + 1
         report.addDescriptionAddendum(
           sequence = sequence,
-          createdBy = createdBy,
+          createdBy = createdBy ?: authenticationHolder.username ?: SYSTEM_USERNAME,
           createdAt = createdAt ?: LocalDateTime.now(clock),
           firstName = firstName,
           lastName = lastName,

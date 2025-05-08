@@ -10,16 +10,17 @@ import java.time.LocalDateTime
 )
 class AddDescriptionAddendum(
   @Schema(
-    description = "Username of user who added this addendum",
+    description = "Username of user who added this addendum, defaulting to request token user",
     example = "USER_1",
-    requiredMode = Schema.RequiredMode.REQUIRED,
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    nullable = true,
     minLength = 3,
     maxLength = 120,
   )
   @field:Size(min = 3, max = 120)
-  val createdBy: String,
+  val createdBy: String? = null,
   @Schema(
-    description = "When addendum was added, defaults to now",
+    description = "When addendum was added, defaulting to “now”",
     example = "2024-04-29T12:34:56.789012",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -45,7 +46,7 @@ class AddDescriptionAddendum(
   val lastName: String,
   @Schema(
     description = "Addendum text",
-    example = "Correction made to the report",
+    example = "Internal investigation has concluded",
     requiredMode = Schema.RequiredMode.REQUIRED,
     minLength = 1,
   )
