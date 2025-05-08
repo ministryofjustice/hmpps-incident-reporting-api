@@ -218,24 +218,6 @@ class Report(
     return this
   }
 
-  fun addDescriptionAddendum(
-    createdBy: String,
-    firstName: String,
-    lastName: String,
-    createdAt: LocalDateTime,
-    text: String,
-  ): DescriptionAddendum {
-    return DescriptionAddendum(
-      report = this,
-      createdBy = createdBy,
-      firstName = firstName,
-      lastName = lastName,
-      createdAt = createdAt,
-      text = text,
-      sequence = this.descriptionAddendums.size,
-    ).also { descriptionAddendums.add(it) }
-  }
-
   fun addStatusHistory(
     status: Status,
     changedAt: LocalDateTime,
@@ -249,7 +231,7 @@ class Report(
     ).also { historyOfStatuses.add(it) }
   }
 
-  fun findStaffInvolvedByIndex(index: Int): StaffInvolvement = staffInvolved.elementAtOrNull(index - 1)
+  fun findDescriptionAddendumByIndex(index: Int): DescriptionAddendum = descriptionAddendums.elementAtOrNull(index - 1)
     ?: throw ObjectAtIndexNotFoundException(StaffInvolvement::class, index)
 
   fun updateDescriptionAddendums(upsertAddendums: Collection<DescriptionAddendumDto>) {
@@ -267,13 +249,8 @@ class Report(
     )
   }
 
-  fun addDescriptionAddendum(addendum: DescriptionAddendum): DescriptionAddendum {
-    this.descriptionAddendums.add(addendum)
-    return addendum
-  }
-
-  fun createDescriptionAddendum(upsertAddendum: DescriptionAddendumDto): DescriptionAddendum {
-    return DescriptionAddendum(
+  private fun createDescriptionAddendum(upsertAddendum: DescriptionAddendumDto): DescriptionAddendum =
+    DescriptionAddendum(
       report = this,
       createdAt = upsertAddendum.createdAt,
       createdBy = upsertAddendum.createdBy,
@@ -282,7 +259,37 @@ class Report(
       text = upsertAddendum.text,
       sequence = upsertAddendum.sequence,
     )
+
+  fun addDescriptionAddendum(addendum: DescriptionAddendum): DescriptionAddendum {
+    this.descriptionAddendums.add(addendum)
+    return addendum
   }
+
+  fun addDescriptionAddendum(
+    sequence: Int,
+    createdBy: String,
+    createdAt: LocalDateTime,
+    firstName: String,
+    lastName: String,
+    text: String,
+  ): DescriptionAddendum {
+    return DescriptionAddendum(
+      report = this,
+      sequence = sequence,
+      createdBy = createdBy,
+      firstName = firstName,
+      lastName = lastName,
+      createdAt = createdAt,
+      text = text,
+    ).also { descriptionAddendums.add(it) }
+  }
+
+  fun removeDescriptionAddendum(addendum: DescriptionAddendum) {
+    descriptionAddendums.remove(addendum)
+  }
+
+  fun findStaffInvolvedByIndex(index: Int): StaffInvolvement = staffInvolved.elementAtOrNull(index - 1)
+    ?: throw ObjectAtIndexNotFoundException(StaffInvolvement::class, index)
 
   fun updateStaffInvolved(nomisStaffParties: Collection<NomisStaffParty>) {
     this.staffInvolved.retainAll(
@@ -299,7 +306,7 @@ class Report(
     )
   }
 
-  fun createStaffInvolved(nomisStaffParty: NomisStaffParty): StaffInvolvement = StaffInvolvement(
+  private fun createStaffInvolved(nomisStaffParty: NomisStaffParty): StaffInvolvement = StaffInvolvement(
     report = this,
     sequence = nomisStaffParty.sequence,
     staffUsername = nomisStaffParty.staff.username,
@@ -358,7 +365,7 @@ class Report(
     this.prisonersInvolved.retainAll(newInvolvements)
   }
 
-  fun createPrisonerInvolved(nomisOffenderParty: NomisOffenderParty): PrisonerInvolvement = PrisonerInvolvement(
+  private fun createPrisonerInvolved(nomisOffenderParty: NomisOffenderParty): PrisonerInvolvement = PrisonerInvolvement(
     report = this,
     sequence = nomisOffenderParty.sequence,
     prisonerNumber = nomisOffenderParty.offender.offenderNo,
@@ -420,7 +427,7 @@ class Report(
     )
   }
 
-  fun createCorrectionRequest(nomisRequirement: NomisRequirement): CorrectionRequest = CorrectionRequest(
+  private fun createCorrectionRequest(nomisRequirement: NomisRequirement): CorrectionRequest = CorrectionRequest(
     report = this,
     sequence = nomisRequirement.sequence,
     correctionRequestedBy = nomisRequirement.staff.username,

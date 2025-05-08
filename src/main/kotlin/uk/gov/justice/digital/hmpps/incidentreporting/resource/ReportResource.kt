@@ -37,7 +37,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.DescriptionAddendumRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.SimplePage
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.toSimplePage
@@ -535,63 +534,6 @@ class ReportResource(
     ) {
       reportService.updateReport(id, updateReportRequest)
         ?: throw ReportNotFoundException(id)
-    }
-  }
-
-  @PostMapping("/{id}/description-addendums")
-  @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
-  @ResponseStatus(HttpStatus.CREATED)
-  @Operation(
-    summary = "Appends to the report description",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
-      "Authentication token must provide a username which is recorded as the report’s modifier.",
-    responses = [
-      ApiResponse(
-        responseCode = "201",
-        description = "Returns updated incident report",
-      ),
-      ApiResponse(
-        responseCode = "400",
-        description = "Invalid request",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
-      ),
-      ApiResponse(
-        responseCode = "401",
-        description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
-      ),
-      ApiResponse(
-        responseCode = "403",
-        description = "Missing required role. Requires the MAINTAIN_INCIDENT_REPORTS role with write scope.",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
-      ),
-      ApiResponse(
-        responseCode = "404",
-        description = "Data not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
-      ),
-    ],
-  )
-  fun addDescriptionAddendum(
-    @Schema(
-      description = "The internal ID of the report",
-      example = "11111111-2222-3333-4444-555555555555",
-      requiredMode = Schema.RequiredMode.REQUIRED,
-    )
-    @PathVariable
-    id: UUID,
-    @RequestBody
-    @Valid
-    request: DescriptionAddendumRequest,
-  ): ReportWithDetails {
-    val report = reportService.addDescriptionAddendum(id, request) ?: throw ReportNotFoundException(id)
-
-    return eventPublishAndAudit(
-      ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-      InformationSource.DPS,
-      WhatChanged.DESCRIPTION_ADDENDUMS,
-    ) {
-      report
     }
   }
 
