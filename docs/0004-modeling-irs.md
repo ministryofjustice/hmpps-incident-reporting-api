@@ -21,7 +21,17 @@ classDiagram
     LocalDateTime correctionRequestedAt
     String correctionRequestedBy
     String descriptionOfChange
+    String location
     int sequence
+  }
+  class DescriptionAddendum {
+    Long id
+    LocalDateTime createdAt
+    String createdBy
+    String firstName
+    String lastName
+    int sequence
+    String text
   }
   class Event {
     UUID id
@@ -125,6 +135,7 @@ classDiagram
   PrisonerInvolvement "0..*" <--> "1" Report
   Question "0..*" <--> "1" Report
   Question "1" <--> "1..*" Response
+  Report "1" <--> "0..*" DescriptionAddendum
   Report "1..*" <--> "1" Event
   Report "1" <--> "0..*" History
   Report "1" <--> "0..*" StaffInvolvement
@@ -174,6 +185,17 @@ classDiagram
     timestamp correction_requested_at
     varchar(120) correction_requested_by
     integer sequence
+    varchar(20) location
+    integer id
+  }
+  class description_addendum {
+    uuid report_id
+    integer sequence
+    text text
+    timestamp created_at
+    varchar(120) created_by
+    varchar(255) first_name
+    varchar(255) last_name
     integer id
   }
   class event {
@@ -239,7 +261,6 @@ classDiagram
     varchar(20) location
     varchar(60) type
     varchar(5) source
-    varchar(5) modified_in
     varchar(60) status
     timestamp incident_date_and_time
     timestamp reported_at
@@ -249,6 +270,7 @@ classDiagram
     timestamp created_at
     varchar(120) modified_by
     timestamp modified_at
+    varchar(5) modified_in
     boolean staff_involvement_done
     boolean prisoner_involvement_done
     uuid id
@@ -282,6 +304,7 @@ classDiagram
   }
 
   correction_request --> report: report_id
+  description_addendum --> report: report_id
   historical_question --> history: history_id
   historical_response --> historical_question: historical_question_id
   history --> report: report_id
