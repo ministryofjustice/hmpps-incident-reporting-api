@@ -72,13 +72,6 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
     }
   }
 
-  protected inline fun <reified T : Any> List<T>.elementAtIndex(index: Int): T {
-    if (index < 1 || index > size) {
-      throw ObjectAtIndexNotFoundException(T::class, index)
-    }
-    return get(index - 1)
-  }
-
   abstract fun listObjects(reportId: UUID): List<ResponseDto>
   abstract fun addObject(reportId: UUID, @Valid request: AddRequest): List<ResponseDto>
   abstract fun updateObject(
