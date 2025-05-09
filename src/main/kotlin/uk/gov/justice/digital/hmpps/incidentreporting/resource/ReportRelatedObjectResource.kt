@@ -6,19 +6,16 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
-import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.service.ChangeReportService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService.Companion.log
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.time.Clock
-import java.time.LocalDateTime
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @RequestMapping("/incident-reports/{reportId}", produces = [MediaType.APPLICATION_JSON_VALUE])
 @Tag(
@@ -36,20 +33,10 @@ abstract class ReportRelatedObjectResource<ResponseDto, AddRequest, UpdateReques
   private lateinit var telemetryClient: TelemetryClient
 
   @Autowired
-  private lateinit var reportRepository: ReportRepository
+  protected lateinit var changeReportService: ChangeReportService
 
-  protected fun (UUID).findReportOrThrowNotFound(): Report {
-    return reportRepository.findById(this).getOrNull()
-      ?: throw ReportNotFoundException(this)
-  }
-
-  protected fun <T> (UUID).updateReportOrThrowNotFound(changeMessage: String, block: (Report) -> T): T {
-    val report = findReportOrThrowNotFound()
-    return block(report).also {
-      report.modifiedIn = InformationSource.DPS
-      report.modifiedAt = LocalDateTime.now(clock)
-      report.modifiedBy = authenticationHolder.username ?: SYSTEM_USERNAME
-
+  protected fun publishChangeEvents(changeMessage: String, changeReport: () -> Report): Report {
+    return changeReport().also { report ->
       val basicReport = report.toDtoBasic()
       eventPublishAndAudit(
         event = ReportDomainEventType.INCIDENT_REPORT_AMENDED,
@@ -61,7 +48,6 @@ abstract class ReportRelatedObjectResource<ResponseDto, AddRequest, UpdateReques
 
       log.info("$changeMessage reference=${report.reportReference} ID=${report.id}")
       telemetryClient.trackEvent(
-        // TODO: should different related object actions raise different events?
         changeMessage,
         basicReport,
       )

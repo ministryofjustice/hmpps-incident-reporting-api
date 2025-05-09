@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -59,7 +58,6 @@ class ReportCorrectionRequestResource :
       ),
     ],
   )
-  @Transactional(readOnly = true)
   override fun listObjects(
     @Schema(
       description = "The incident report id",
@@ -69,7 +67,7 @@ class ReportCorrectionRequestResource :
     @PathVariable
     reportId: UUID,
   ): List<CorrectionRequest> {
-    return reportId.findReportOrThrowNotFound()
+    return changeReportService.findReportOrThrowNotFound(reportId)
       .correctionRequests.map { it.toDto() }
   }
 
@@ -107,7 +105,6 @@ class ReportCorrectionRequestResource :
       ),
     ],
   )
-  @Transactional
   override fun addObject(
     @Schema(
       description = "The incident report id",
@@ -120,21 +117,25 @@ class ReportCorrectionRequestResource :
     @Valid
     request: AddCorrectionRequest,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound(
-      "Added correction request to incident report",
-    ) { report ->
-      with(request) {
+    val now = LocalDateTime.now(clock)
+    val requestUser = authenticationHolder.username ?: SYSTEM_USERNAME
+
+    return publishChangeEvents("Added correction request to incident report") {
+      changeReportService.changeReportOrThrowNotFound(
+        reportId = reportId,
+        now = now,
+        requestUser = requestUser,
+      ) { report ->
         val sequence = if (report.correctionRequests.isEmpty()) 0 else report.correctionRequests.last().sequence + 1
         report.addCorrectionRequest(
           sequence = sequence,
-          descriptionOfChange = descriptionOfChange,
-          correctionRequestedBy = authenticationHolder.username ?: SYSTEM_USERNAME,
-          correctionRequestedAt = LocalDateTime.now(clock),
-          location = location,
+          descriptionOfChange = request.descriptionOfChange,
+          correctionRequestedBy = requestUser,
+          correctionRequestedAt = now,
+          location = request.location,
         )
       }
-      report.correctionRequests.map { it.toDto() }
-    }
+    }.correctionRequests.map { it.toDto() }
   }
 
   @PatchMapping("/correction-requests/{index}")
@@ -171,7 +172,6 @@ class ReportCorrectionRequestResource :
       ),
     ],
   )
-  @Transactional
   override fun updateObject(
     @Schema(
       description = "The incident report id",
@@ -192,20 +192,27 @@ class ReportCorrectionRequestResource :
     request: UpdateCorrectionRequest,
   ): List<CorrectionRequest> {
     if (request.isEmpty) {
-      return reportId.findReportOrThrowNotFound().correctionRequests.map { it.toDto() }
+      return changeReportService.findReportOrThrowNotFound(reportId)
+        .correctionRequests.map { it.toDto() }
     }
 
-    return reportId.updateReportOrThrowNotFound(
-      "Updated a correction request in incident report",
-    ) { report ->
-      report.findCorrectionRequestByIndex(index)
-        .updateWith(
-          request,
-          requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME,
-          now = LocalDateTime.now(clock),
-        )
-      report.correctionRequests.map { it.toDto() }
-    }
+    val now = LocalDateTime.now(clock)
+    val requestUser = authenticationHolder.username ?: SYSTEM_USERNAME
+
+    return publishChangeEvents("Updated a correction request in incident report") {
+      changeReportService.changeReportOrThrowNotFound(
+        reportId = reportId,
+        now = now,
+        requestUser = requestUser,
+      ) { report ->
+        report.findCorrectionRequestByIndex(index)
+          .updateWith(
+            request = request,
+            now = now,
+            requestUsername = requestUser,
+          )
+      }
+    }.correctionRequests.map { it.toDto() }
   }
 
   @DeleteMapping("/correction-requests/{index}")
@@ -237,7 +244,6 @@ class ReportCorrectionRequestResource :
       ),
     ],
   )
-  @Transactional
   override fun removeObject(
     @Schema(
       description = "The incident report id",
@@ -254,11 +260,17 @@ class ReportCorrectionRequestResource :
     @PathVariable
     index: Int,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound(
-      "Deleted correction request from incident report",
-    ) { report ->
-      report.findCorrectionRequestByIndex(index).let { report.removeCorrectionRequest(it) }
-      report.correctionRequests.map { it.toDto() }
-    }
+    val now = LocalDateTime.now(clock)
+    val requestUser = authenticationHolder.username ?: SYSTEM_USERNAME
+
+    return publishChangeEvents("Deleted correction request from incident report") {
+      changeReportService.changeReportOrThrowNotFound(
+        reportId = reportId,
+        now = now,
+        requestUser = requestUser,
+      ) { report ->
+        report.findCorrectionRequestByIndex(index).let { report.removeCorrectionRequest(it) }
+      }
+    }.correctionRequests.map { it.toDto() }
   }
 }
