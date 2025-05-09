@@ -28,7 +28,9 @@ import java.util.UUID
 @RestController
 @Validated
 class ReportCorrectionRequestResource :
-  ReportRelatedObjectsResource<CorrectionRequest, AddCorrectionRequest, UpdateCorrectionRequest>() {
+  ReportRelatedObjectResource<CorrectionRequest, AddCorrectionRequest, UpdateCorrectionRequest>() {
+  override val whatChanges = WhatChanged.CORRECTION_REQUESTS
+
   @GetMapping("/correction-requests")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -120,7 +122,6 @@ class ReportCorrectionRequestResource :
   ): List<CorrectionRequest> {
     return reportId.updateReportOrThrowNotFound(
       "Added correction request to incident report",
-      WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
       with(request) {
         val sequence = if (report.correctionRequests.isEmpty()) 0 else report.correctionRequests.last().sequence + 1
@@ -196,7 +197,6 @@ class ReportCorrectionRequestResource :
 
     return reportId.updateReportOrThrowNotFound(
       "Updated a correction request in incident report",
-      WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
       report.findCorrectionRequestByIndex(index)
         .updateWith(
@@ -256,7 +256,6 @@ class ReportCorrectionRequestResource :
   ): List<CorrectionRequest> {
     return reportId.updateReportOrThrowNotFound(
       "Deleted correction request from incident report",
-      WhatChanged.CORRECTION_REQUESTS,
     ) { report ->
       report.findCorrectionRequestByIndex(index).let { report.removeCorrectionRequest(it) }
       report.correctionRequests.map { it.toDto() }

@@ -28,7 +28,9 @@ import java.util.UUID
 @RestController
 @Validated
 class ReportDescriptionAddendumResource :
-  ReportRelatedObjectsResource<DescriptionAddendum, AddDescriptionAddendum, UpdateDescriptionAddendum>() {
+  ReportRelatedObjectResource<DescriptionAddendum, AddDescriptionAddendum, UpdateDescriptionAddendum>() {
+  override val whatChanges = WhatChanged.DESCRIPTION_ADDENDUMS
+
   @GetMapping("/description-addendums")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -120,7 +122,6 @@ class ReportDescriptionAddendumResource :
   ): List<DescriptionAddendum> {
     return reportId.updateReportOrThrowNotFound(
       "Added description addendum to incident report",
-      WhatChanged.DESCRIPTION_ADDENDUMS,
     ) { report ->
       with(request) {
         val sequence = if (report.descriptionAddendums.isEmpty()) 0 else report.descriptionAddendums.last().sequence + 1
@@ -197,7 +198,6 @@ class ReportDescriptionAddendumResource :
 
     return reportId.updateReportOrThrowNotFound(
       "Updated a description addendum in incident report",
-      WhatChanged.DESCRIPTION_ADDENDUMS,
     ) { report ->
       report.findDescriptionAddendumByIndex(index)
         .updateWith(
@@ -256,7 +256,6 @@ class ReportDescriptionAddendumResource :
   ): List<DescriptionAddendum> {
     return reportId.updateReportOrThrowNotFound(
       "Deleted description addendum from incident report",
-      WhatChanged.DESCRIPTION_ADDENDUMS,
     ) { report ->
       report.findDescriptionAddendumByIndex(index).let { report.removeDescriptionAddendum(it) }
       report.descriptionAddendums.map { it.toDto() }

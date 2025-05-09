@@ -26,7 +26,9 @@ import java.util.UUID
 @RestController
 @Validated
 class ReportPrisonerInvolvementResource :
-  ReportRelatedObjectsResource<PrisonerInvolvement, AddPrisonerInvolvement, UpdatePrisonerInvolvement>() {
+  ReportRelatedObjectResource<PrisonerInvolvement, AddPrisonerInvolvement, UpdatePrisonerInvolvement>() {
+  override val whatChanges = WhatChanged.PRISONERS_INVOLVED
+
   @GetMapping("/prisoners-involved")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -118,7 +120,6 @@ class ReportPrisonerInvolvementResource :
   ): List<PrisonerInvolvement> {
     return reportId.updateReportOrThrowNotFound(
       "Added an involved prisoner to incident report",
-      WhatChanged.PRISONERS_INVOLVED,
     ) { report ->
       with(request) {
         val sequence = if (report.prisonersInvolved.isEmpty()) 0 else report.prisonersInvolved.last().sequence + 1
@@ -197,7 +198,6 @@ class ReportPrisonerInvolvementResource :
 
     return reportId.updateReportOrThrowNotFound(
       "Updated an involved prisoner in incident report",
-      WhatChanged.PRISONERS_INVOLVED,
     ) { report ->
       report.findPrisonerInvolvedByIndex(index).updateWith(request)
       report.prisonersInvolved.map { it.toDto() }
@@ -252,7 +252,6 @@ class ReportPrisonerInvolvementResource :
   ): List<PrisonerInvolvement> {
     return reportId.updateReportOrThrowNotFound(
       "Deleted an involved prisoner from incident report",
-      WhatChanged.PRISONERS_INVOLVED,
     ) { report ->
       report.findPrisonerInvolvedByIndex(index).let { report.removePrisonerInvolved(it) }
       report.prisonersInvolved.map { it.toDto() }
