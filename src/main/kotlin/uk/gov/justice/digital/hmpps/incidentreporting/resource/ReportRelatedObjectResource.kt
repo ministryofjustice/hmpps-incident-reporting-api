@@ -25,7 +25,7 @@ import kotlin.jvm.optionals.getOrNull
   name = "Objects related to incident reports",
   description = "Create, retrieve, update and delete objects that are related to incident reports",
 )
-abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateRequest> : EventBaseResource() {
+abstract class ReportRelatedObjectResource<ResponseDto, AddRequest, UpdateRequest> : EventBaseResource() {
   @Autowired
   protected lateinit var clock: Clock
 
@@ -43,11 +43,7 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
       ?: throw ReportNotFoundException(this)
   }
 
-  protected fun <T> (UUID).updateReportOrThrowNotFound(
-    changeMessage: String,
-    whatChanged: WhatChanged? = null,
-    block: (Report) -> T,
-  ): T {
+  protected fun <T> (UUID).updateReportOrThrowNotFound(changeMessage: String, block: (Report) -> T): T {
     val report = findReportOrThrowNotFound()
     return block(report).also {
       report.modifiedIn = InformationSource.DPS
@@ -56,9 +52,9 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
 
       val basicReport = report.toDtoBasic()
       eventPublishAndAudit(
-        ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-        InformationSource.DPS,
-        whatChanged,
+        event = ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+        informationSource = InformationSource.DPS,
+        whatChanged = whatChanges,
       ) {
         basicReport
       }
@@ -71,6 +67,8 @@ abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateReque
       )
     }
   }
+
+  protected abstract val whatChanges: WhatChanged
 
   abstract fun listObjects(reportId: UUID): List<ResponseDto>
   abstract fun addObject(reportId: UUID, @Valid request: AddRequest): List<ResponseDto>

@@ -26,7 +26,9 @@ import java.util.UUID
 @RestController
 @Validated
 class ReportStaffInvolvementResource :
-  ReportRelatedObjectsResource<StaffInvolvement, AddStaffInvolvement, UpdateStaffInvolvement>() {
+  ReportRelatedObjectResource<StaffInvolvement, AddStaffInvolvement, UpdateStaffInvolvement>() {
+  override val whatChanges = WhatChanged.STAFF_INVOLVED
+
   @GetMapping("/staff-involved")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -118,7 +120,6 @@ class ReportStaffInvolvementResource :
   ): List<StaffInvolvement> {
     return reportId.updateReportOrThrowNotFound(
       "Added an involved member of staff to incident report",
-      WhatChanged.STAFF_INVOLVED,
     ) { report ->
       with(request) {
         val sequence = if (report.staffInvolved.isEmpty()) 0 else report.staffInvolved.last().sequence + 1
@@ -196,7 +197,6 @@ class ReportStaffInvolvementResource :
 
     return reportId.updateReportOrThrowNotFound(
       "Updated an involved member of staff in incident report",
-      WhatChanged.STAFF_INVOLVED,
     ) { report ->
       report.findStaffInvolvedByIndex(index).updateWith(request)
       report.staffInvolved.map { it.toDto() }
@@ -251,7 +251,6 @@ class ReportStaffInvolvementResource :
   ): List<StaffInvolvement> {
     return reportId.updateReportOrThrowNotFound(
       "Deleted an involved member of staff from incident report",
-      WhatChanged.STAFF_INVOLVED,
     ) { report ->
       report.findStaffInvolvedByIndex(index).let { report.removeStaffInvolved(it) }
       report.staffInvolved.map { it.toDto() }
