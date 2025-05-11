@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,13 +19,15 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.StaffInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddStaffInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateStaffInvolvement
+import uk.gov.justice.digital.hmpps.incidentreporting.service.StaffInvolvementService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.util.UUID
 
 @RestController
 @Validated
-class ReportStaffInvolvementResource :
-  ReportRelatedObjectResource<StaffInvolvement, AddStaffInvolvement, UpdateStaffInvolvement>() {
+class ReportStaffInvolvementResource(
+  private val relatedObjectService: StaffInvolvementService,
+) : ReportRelatedObjectResource<StaffInvolvement, AddStaffInvolvement, UpdateStaffInvolvement>() {
   override val whatChanges = WhatChanged.STAFF_INVOLVED
 
   @GetMapping("/staff-involved")
@@ -57,7 +58,6 @@ class ReportStaffInvolvementResource :
       ),
     ],
   )
-  @Transactional(readOnly = true)
   override fun listObjects(
     @Schema(
       description = "The incident report id",
@@ -67,8 +67,7 @@ class ReportStaffInvolvementResource :
     @PathVariable
     reportId: UUID,
   ): List<StaffInvolvement> {
-    return reportId.findReportOrThrowNotFound()
-      .staffInvolved.map { it.toDto() }
+    return relatedObjectService.listObjects(reportId)
   }
 
   @PostMapping("/staff-involved")
@@ -105,7 +104,6 @@ class ReportStaffInvolvementResource :
       ),
     ],
   )
-  @Transactional
   override fun addObject(
     @Schema(
       description = "The incident report id",
@@ -118,22 +116,8 @@ class ReportStaffInvolvementResource :
     @Valid
     request: AddStaffInvolvement,
   ): List<StaffInvolvement> {
-    return reportId.updateReportOrThrowNotFound(
-      "Added an involved member of staff to incident report",
-    ) { report ->
-      with(request) {
-        val sequence = if (report.staffInvolved.isEmpty()) 0 else report.staffInvolved.last().sequence + 1
-        report.addStaffInvolved(
-          sequence = sequence,
-          staffUsername = staffUsername,
-          firstName = firstName,
-          lastName = lastName,
-          staffRole = staffRole,
-          comment = comment,
-        )
-      }
-      report.staffInvolvementDone = true
-      report.staffInvolved.map { it.toDto() }
+    return publishChangeEvents("Added an involved member of staff to incident report") { now, requestUsername ->
+      relatedObjectService.addObject(reportId, request, now, requestUsername)
     }
   }
 
@@ -171,7 +155,6 @@ class ReportStaffInvolvementResource :
       ),
     ],
   )
-  @Transactional
   override fun updateObject(
     @Schema(
       description = "The incident report id",
@@ -192,14 +175,11 @@ class ReportStaffInvolvementResource :
     request: UpdateStaffInvolvement,
   ): List<StaffInvolvement> {
     if (request.isEmpty) {
-      return reportId.findReportOrThrowNotFound().staffInvolved.map { it.toDto() }
+      return relatedObjectService.listObjects(reportId)
     }
 
-    return reportId.updateReportOrThrowNotFound(
-      "Updated an involved member of staff in incident report",
-    ) { report ->
-      report.findStaffInvolvedByIndex(index).updateWith(request)
-      report.staffInvolved.map { it.toDto() }
+    return publishChangeEvents("Updated an involved member of staff in incident report") { now, requestUsername ->
+      relatedObjectService.updateObject(reportId, index, request, now, requestUsername)
     }
   }
 
@@ -232,7 +212,6 @@ class ReportStaffInvolvementResource :
       ),
     ],
   )
-  @Transactional
   override fun removeObject(
     @Schema(
       description = "The incident report id",
@@ -249,11 +228,8 @@ class ReportStaffInvolvementResource :
     @PathVariable
     index: Int,
   ): List<StaffInvolvement> {
-    return reportId.updateReportOrThrowNotFound(
-      "Deleted an involved member of staff from incident report",
-    ) { report ->
-      report.findStaffInvolvedByIndex(index).let { report.removeStaffInvolved(it) }
-      report.staffInvolved.map { it.toDto() }
+    return publishChangeEvents("Deleted an involved member of staff from incident report") { now, requestUsername ->
+      relatedObjectService.deleteObject(reportId, index, now, requestUsername)
     }
   }
 }

@@ -2271,7 +2271,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   @Nested
   abstract inner class RelatedObjects(
     val urlSuffix: String,
-    val whatChanged: WhatChanged? = null,
+    val whatChanged: WhatChanged,
   ) {
     protected lateinit var existingReportWithRelatedObjects: Report
     protected lateinit var urlWithRelatedObjects: String
