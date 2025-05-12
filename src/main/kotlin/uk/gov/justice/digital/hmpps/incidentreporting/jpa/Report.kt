@@ -260,7 +260,7 @@ class Report(
       sequence = upsertAddendum.sequence,
     )
 
-  fun addDescriptionAddendum(addendum: DescriptionAddendum): DescriptionAddendum {
+  private fun addDescriptionAddendum(addendum: DescriptionAddendum): DescriptionAddendum {
     this.descriptionAddendums.add(addendum)
     return addendum
   }
@@ -316,7 +316,7 @@ class Report(
     comment = nomisStaffParty.comment,
   )
 
-  fun addStaffInvolved(staffInvolvement: StaffInvolvement): StaffInvolvement {
+  private fun addStaffInvolved(staffInvolvement: StaffInvolvement): StaffInvolvement {
     this.staffInvolved.add(staffInvolvement)
     return staffInvolvement
   }
@@ -378,7 +378,7 @@ class Report(
     comment = nomisOffenderParty.comment,
   )
 
-  fun addPrisonerInvolved(prisonerInvolvement: PrisonerInvolvement): PrisonerInvolvement {
+  private fun addPrisonerInvolved(prisonerInvolvement: PrisonerInvolvement): PrisonerInvolvement {
     this.prisonersInvolved.add(prisonerInvolvement)
     return prisonerInvolvement
   }
@@ -436,7 +436,7 @@ class Report(
     location = nomisRequirement.prisonId,
   )
 
-  fun addCorrectionRequest(correctionRequest: CorrectionRequest): CorrectionRequest {
+  private fun addCorrectionRequest(correctionRequest: CorrectionRequest): CorrectionRequest {
     this.correctionRequests.add(correctionRequest)
     return correctionRequest
   }

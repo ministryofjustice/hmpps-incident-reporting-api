@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,18 +16,20 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.CorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateCorrectionRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.service.CorrectionRequestService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
-import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
 @Validated
-class ReportCorrectionRequestResource :
-  ReportRelatedObjectsResource<CorrectionRequest, AddCorrectionRequest, UpdateCorrectionRequest>() {
+class ReportCorrectionRequestResource(
+  private val relatedObjectService: CorrectionRequestService,
+) : ReportRelatedObjectResource<CorrectionRequest, AddCorrectionRequest, UpdateCorrectionRequest>() {
+  override val whatChanges = WhatChanged.CORRECTION_REQUESTS
+
   @GetMapping("/correction-requests")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -57,7 +58,6 @@ class ReportCorrectionRequestResource :
       ),
     ],
   )
-  @Transactional(readOnly = true)
   override fun listObjects(
     @Schema(
       description = "The incident report id",
@@ -67,8 +67,7 @@ class ReportCorrectionRequestResource :
     @PathVariable
     reportId: UUID,
   ): List<CorrectionRequest> {
-    return reportId.findReportOrThrowNotFound()
-      .correctionRequests.map { it.toDto() }
+    return relatedObjectService.listObjects(reportId)
   }
 
   @PostMapping("/correction-requests")
@@ -105,7 +104,6 @@ class ReportCorrectionRequestResource :
       ),
     ],
   )
-  @Transactional
   override fun addObject(
     @Schema(
       description = "The incident report id",
@@ -118,21 +116,8 @@ class ReportCorrectionRequestResource :
     @Valid
     request: AddCorrectionRequest,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound(
-      "Added correction request to incident report",
-      WhatChanged.CORRECTION_REQUESTS,
-    ) { report ->
-      with(request) {
-        val sequence = if (report.correctionRequests.isEmpty()) 0 else report.correctionRequests.last().sequence + 1
-        report.addCorrectionRequest(
-          sequence = sequence,
-          descriptionOfChange = descriptionOfChange,
-          correctionRequestedBy = authenticationHolder.username ?: SYSTEM_USERNAME,
-          correctionRequestedAt = LocalDateTime.now(clock),
-          location = location,
-        )
-      }
-      report.correctionRequests.map { it.toDto() }
+    return publishChangeEvents("Added correction request to incident report") { now, requestUsername ->
+      relatedObjectService.addObject(reportId, request, now, requestUsername)
     }
   }
 
@@ -170,7 +155,6 @@ class ReportCorrectionRequestResource :
       ),
     ],
   )
-  @Transactional
   override fun updateObject(
     @Schema(
       description = "The incident report id",
@@ -191,20 +175,11 @@ class ReportCorrectionRequestResource :
     request: UpdateCorrectionRequest,
   ): List<CorrectionRequest> {
     if (request.isEmpty) {
-      return reportId.findReportOrThrowNotFound().correctionRequests.map { it.toDto() }
+      return relatedObjectService.listObjects(reportId)
     }
 
-    return reportId.updateReportOrThrowNotFound(
-      "Updated a correction request in incident report",
-      WhatChanged.CORRECTION_REQUESTS,
-    ) { report ->
-      report.findCorrectionRequestByIndex(index)
-        .updateWith(
-          request,
-          requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME,
-          now = LocalDateTime.now(clock),
-        )
-      report.correctionRequests.map { it.toDto() }
+    return publishChangeEvents("Updated a correction request in incident report") { now, requestUsername ->
+      relatedObjectService.updateObject(reportId, index, request, now, requestUsername)
     }
   }
 
@@ -237,7 +212,6 @@ class ReportCorrectionRequestResource :
       ),
     ],
   )
-  @Transactional
   override fun removeObject(
     @Schema(
       description = "The incident report id",
@@ -254,12 +228,8 @@ class ReportCorrectionRequestResource :
     @PathVariable
     index: Int,
   ): List<CorrectionRequest> {
-    return reportId.updateReportOrThrowNotFound(
-      "Deleted correction request from incident report",
-      WhatChanged.CORRECTION_REQUESTS,
-    ) { report ->
-      report.findCorrectionRequestByIndex(index).let { report.removeCorrectionRequest(it) }
-      report.correctionRequests.map { it.toDto() }
+    return publishChangeEvents("Deleted correction request from incident report") { now, requestUsername ->
+      relatedObjectService.deleteObject(reportId, index, now, requestUsername)
     }
   }
 }

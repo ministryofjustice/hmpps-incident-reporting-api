@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportDomainEventType
 import uk.gov.justice.digital.hmpps.incidentreporting.service.ReportService.Companion.log
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
@@ -18,66 +17,49 @@ import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @RequestMapping("/incident-reports/{reportId}", produces = [MediaType.APPLICATION_JSON_VALUE])
 @Tag(
   name = "Objects related to incident reports",
   description = "Create, retrieve, update and delete objects that are related to incident reports",
 )
-abstract class ReportRelatedObjectsResource<ResponseDto, AddRequest, UpdateRequest> : EventBaseResource() {
+abstract class ReportRelatedObjectResource<ResponseDto, AddRequest, UpdateRequest> : EventBaseResource() {
   @Autowired
-  protected lateinit var clock: Clock
+  private lateinit var clock: Clock
 
   @Autowired
-  protected lateinit var authenticationHolder: HmppsAuthenticationHolder
+  private lateinit var authenticationHolder: HmppsAuthenticationHolder
 
   @Autowired
   private lateinit var telemetryClient: TelemetryClient
 
-  @Autowired
-  private lateinit var reportRepository: ReportRepository
-
-  protected fun (UUID).findReportOrThrowNotFound(): Report {
-    return reportRepository.findById(this).getOrNull()
-      ?: throw ReportNotFoundException(this)
-  }
-
-  protected fun <T> (UUID).updateReportOrThrowNotFound(
+  protected fun publishChangeEvents(
     changeMessage: String,
-    whatChanged: WhatChanged? = null,
-    block: (Report) -> T,
-  ): T {
-    val report = findReportOrThrowNotFound()
-    return block(report).also {
-      report.modifiedIn = InformationSource.DPS
-      report.modifiedAt = LocalDateTime.now(clock)
-      report.modifiedBy = authenticationHolder.username ?: SYSTEM_USERNAME
+    changeReport: (LocalDateTime, String) -> Pair<ReportBasic, List<ResponseDto>>,
+  ): List<ResponseDto> {
+    val now = LocalDateTime.now(clock)
+    val requestUsername = authenticationHolder.username ?: SYSTEM_USERNAME
 
-      val basicReport = report.toDtoBasic()
+    return changeReport(now, requestUsername).let { (basicReport, relatedObjects) ->
       eventPublishAndAudit(
-        ReportDomainEventType.INCIDENT_REPORT_AMENDED,
-        InformationSource.DPS,
-        whatChanged,
+        event = ReportDomainEventType.INCIDENT_REPORT_AMENDED,
+        informationSource = InformationSource.DPS,
+        whatChanged = whatChanges,
       ) {
         basicReport
       }
 
-      log.info("$changeMessage reference=${report.reportReference} ID=${report.id}")
+      log.info("$changeMessage reference=${basicReport.reportReference} ID=${basicReport.id}")
       telemetryClient.trackEvent(
-        // TODO: should different related object actions raise different events?
         changeMessage,
         basicReport,
       )
+
+      relatedObjects
     }
   }
 
-  protected inline fun <reified T : Any> List<T>.elementAtIndex(index: Int): T {
-    if (index < 1 || index > size) {
-      throw ObjectAtIndexNotFoundException(T::class, index)
-    }
-    return get(index - 1)
-  }
+  protected abstract val whatChanges: WhatChanged
 
   abstract fun listObjects(reportId: UUID): List<ResponseDto>
   abstract fun addObject(reportId: UUID, @Valid request: AddRequest): List<ResponseDto>

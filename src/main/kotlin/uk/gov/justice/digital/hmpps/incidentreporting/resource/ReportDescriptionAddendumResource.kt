@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,18 +16,20 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.AddDescriptionAddendum
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateDescriptionAddendum
+import uk.gov.justice.digital.hmpps.incidentreporting.service.DescriptionAddendumService
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
-import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
 @Validated
-class ReportDescriptionAddendumResource :
-  ReportRelatedObjectsResource<DescriptionAddendum, AddDescriptionAddendum, UpdateDescriptionAddendum>() {
+class ReportDescriptionAddendumResource(
+  private val relatedObjectService: DescriptionAddendumService,
+) : ReportRelatedObjectResource<DescriptionAddendum, AddDescriptionAddendum, UpdateDescriptionAddendum>() {
+  override val whatChanges = WhatChanged.DESCRIPTION_ADDENDUMS
+
   @GetMapping("/description-addendums")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_VIEW_INCIDENT_REPORTS')")
@@ -57,7 +58,6 @@ class ReportDescriptionAddendumResource :
       ),
     ],
   )
-  @Transactional(readOnly = true)
   override fun listObjects(
     @Schema(
       description = "The incident report id",
@@ -67,8 +67,7 @@ class ReportDescriptionAddendumResource :
     @PathVariable
     reportId: UUID,
   ): List<DescriptionAddendum> {
-    return reportId.findReportOrThrowNotFound()
-      .descriptionAddendums.map { it.toDto() }
+    return relatedObjectService.listObjects(reportId)
   }
 
   @PostMapping("/description-addendums")
@@ -105,7 +104,6 @@ class ReportDescriptionAddendumResource :
       ),
     ],
   )
-  @Transactional
   override fun addObject(
     @Schema(
       description = "The incident report id",
@@ -118,22 +116,8 @@ class ReportDescriptionAddendumResource :
     @Valid
     request: AddDescriptionAddendum,
   ): List<DescriptionAddendum> {
-    return reportId.updateReportOrThrowNotFound(
-      "Added description addendum to incident report",
-      WhatChanged.DESCRIPTION_ADDENDUMS,
-    ) { report ->
-      with(request) {
-        val sequence = if (report.descriptionAddendums.isEmpty()) 0 else report.descriptionAddendums.last().sequence + 1
-        report.addDescriptionAddendum(
-          sequence = sequence,
-          createdBy = createdBy ?: authenticationHolder.username ?: SYSTEM_USERNAME,
-          createdAt = createdAt ?: LocalDateTime.now(clock),
-          firstName = firstName,
-          lastName = lastName,
-          text = text,
-        )
-      }
-      report.descriptionAddendums.map { it.toDto() }
+    return publishChangeEvents("Added description addendum to incident report") { now, requestUsername ->
+      relatedObjectService.addObject(reportId, request, now, requestUsername)
     }
   }
 
@@ -171,7 +155,6 @@ class ReportDescriptionAddendumResource :
       ),
     ],
   )
-  @Transactional
   override fun updateObject(
     @Schema(
       description = "The incident report id",
@@ -192,19 +175,11 @@ class ReportDescriptionAddendumResource :
     request: UpdateDescriptionAddendum,
   ): List<DescriptionAddendum> {
     if (request.isEmpty) {
-      return reportId.findReportOrThrowNotFound().descriptionAddendums.map { it.toDto() }
+      return relatedObjectService.listObjects(reportId)
     }
 
-    return reportId.updateReportOrThrowNotFound(
-      "Updated a description addendum in incident report",
-      WhatChanged.DESCRIPTION_ADDENDUMS,
-    ) { report ->
-      report.findDescriptionAddendumByIndex(index)
-        .updateWith(
-          request,
-          now = LocalDateTime.now(clock),
-        )
-      report.descriptionAddendums.map { it.toDto() }
+    return publishChangeEvents("Updated a description addendum in incident report") { now, requestUsername ->
+      relatedObjectService.updateObject(reportId, index, request, now, requestUsername)
     }
   }
 
@@ -237,7 +212,6 @@ class ReportDescriptionAddendumResource :
       ),
     ],
   )
-  @Transactional
   override fun removeObject(
     @Schema(
       description = "The incident report id",
@@ -254,12 +228,8 @@ class ReportDescriptionAddendumResource :
     @PathVariable
     index: Int,
   ): List<DescriptionAddendum> {
-    return reportId.updateReportOrThrowNotFound(
-      "Deleted description addendum from incident report",
-      WhatChanged.DESCRIPTION_ADDENDUMS,
-    ) { report ->
-      report.findDescriptionAddendumByIndex(index).let { report.removeDescriptionAddendum(it) }
-      report.descriptionAddendums.map { it.toDto() }
+    return publishChangeEvents("Deleted description addendum from incident report") { now, requestUsername ->
+      relatedObjectService.deleteObject(reportId, index, now, requestUsername)
     }
   }
 }
