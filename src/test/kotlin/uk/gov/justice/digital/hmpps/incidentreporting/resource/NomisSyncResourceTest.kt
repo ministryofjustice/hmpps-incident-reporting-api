@@ -989,7 +989,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ],
                 "historyOfStatuses": [
                   {
-                    "status": "AWAITING_ANALYSIS",
+                    "status": "AWAITING_REVIEW",
                     "nomisStatus": "AWAN",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2"
@@ -1032,7 +1032,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonerInvolvementDone": true,
                 "reportedBy": "user2",
                 "reportedAt": "2023-12-05T12:34:56",
-                "status": "AWAITING_ANALYSIS",
+                "status": "AWAITING_REVIEW",
                 "nomisStatus": "AWAN",
                 "assignedTo": "user2",
                 "createdAt": "2023-12-05T14:34:56",
