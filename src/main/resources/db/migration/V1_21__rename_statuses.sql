@@ -40,7 +40,7 @@ VALUES (9, 'NOT_REPORTABLE', 'Not reportable'),
 UPDATE report
 SET status='AWAITING_REVIEW'
 WHERE status = 'AWAITING_ANALYSIS';
-UPDATE history
+UPDATE status_history
 SET status='AWAITING_REVIEW'
 WHERE status = 'AWAITING_ANALYSIS';
 
@@ -48,7 +48,7 @@ WHERE status = 'AWAITING_ANALYSIS';
 UPDATE report
 SET status='NEEDS_UPDATING'
 WHERE status = 'INFORMATION_REQUIRED';
-UPDATE history
+UPDATE status_history
 SET status='NEEDS_UPDATING'
 WHERE status = 'INFORMATION_REQUIRED';
 
@@ -56,7 +56,7 @@ WHERE status = 'INFORMATION_REQUIRED';
 UPDATE report
 SET status='UPDATED'
 WHERE status = 'INFORMATION_AMENDED';
-UPDATE history
+UPDATE status_history
 SET status='UPDATED'
 WHERE status = 'INFORMATION_AMENDED';
 
@@ -64,7 +64,7 @@ WHERE status = 'INFORMATION_AMENDED';
 UPDATE report
 SET status='ON_HOLD'
 WHERE status = 'IN_ANALYSIS';
-UPDATE history
+UPDATE status_history
 SET status='ON_HOLD'
 WHERE status = 'IN_ANALYSIS';
 
