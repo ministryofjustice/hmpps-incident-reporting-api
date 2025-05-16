@@ -99,7 +99,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       val nonMatchingSpecifications = listOf(
         filterByLocations("LEI"),
         filterBySource(InformationSource.NOMIS),
-        filterByStatuses(Status.AWAITING_ANALYSIS),
+        filterByStatuses(Status.AWAITING_REVIEW),
         filterByTypes(Type.FOOD_REFUSAL_1),
         filterByIncidentDateFrom(today),
         filterByIncidentDateUntil(today.minusDays(2)),
@@ -125,7 +125,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
             reportTime = now.minusDays(3),
             location = "MDI",
             source = InformationSource.DPS,
-            status = Status.AWAITING_ANALYSIS,
+            status = Status.AWAITING_REVIEW,
             type = Type.ASSAULT_5,
           ),
           buildReport(
@@ -133,7 +133,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
             reportTime = now.minusDays(2),
             location = "LEI",
             source = InformationSource.DPS,
-            status = Status.AWAITING_ANALYSIS,
+            status = Status.AWAITING_REVIEW,
             type = Type.FIND_6,
           ),
           buildReport(
@@ -171,17 +171,17 @@ class ReportRepositoryTest : IntegrationTestBase() {
         emptyList(),
       )
       assertSpecificationReturnsReports(
-        filterByStatuses(Status.AWAITING_ANALYSIS)
+        filterByStatuses(Status.AWAITING_REVIEW)
           .and(filterBySource(InformationSource.DPS)),
         listOf(report1Id, report2Id),
       )
       assertSpecificationReturnsReports(
         filterByStatuses(Status.DRAFT)
-          .or(filterByStatuses(Status.AWAITING_ANALYSIS)),
+          .or(filterByStatuses(Status.AWAITING_REVIEW)),
         listOf(report1Id, report2Id, report3Id),
       )
       assertSpecificationReturnsReports(
-        filterByStatuses(listOf(Status.DRAFT, Status.AWAITING_ANALYSIS)),
+        filterByStatuses(listOf(Status.DRAFT, Status.AWAITING_REVIEW)),
         listOf(report1Id, report2Id, report3Id),
       )
       assertSpecificationReturnsReports(
@@ -189,20 +189,20 @@ class ReportRepositoryTest : IntegrationTestBase() {
         listOf(report1Id, report2Id, report3Id),
       )
       assertSpecificationReturnsReports(
-        filterByStatuses(Status.AWAITING_ANALYSIS)
+        filterByStatuses(Status.AWAITING_REVIEW)
           .and(filterBySource(InformationSource.DPS))
           .and(filterByTypes(Type.FIND_6)),
         listOf(report2Id),
       )
       assertSpecificationReturnsReports(
-        filterByStatuses(Status.AWAITING_ANALYSIS)
+        filterByStatuses(Status.AWAITING_REVIEW)
           .and(filterByLocations("LEI"))
           .and(filterBySource(InformationSource.DPS))
           .and(filterByTypes(Type.FIND_6)),
         listOf(report2Id),
       )
       assertSpecificationReturnsReports(
-        filterByStatuses(Status.AWAITING_ANALYSIS)
+        filterByStatuses(Status.AWAITING_REVIEW)
           .and(filterBySource(InformationSource.DPS))
           .and(filterByLocations("MDI"))
           .and(filterByTypes(Type.FIND_6)),
@@ -239,7 +239,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         Report(
           reportReference = reportRepository.generateReportReference(),
           incidentDateAndTime = hourAgo,
-          status = Status.AWAITING_ANALYSIS,
+          status = Status.AWAITING_REVIEW,
           type = Type.SELF_HARM_1,
           title = "A summary",
           description = "An incident occurred",
@@ -263,7 +263,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
         ),
       )
     report.addStatusHistory(Status.DRAFT, now, "user5")
-    report.addStatusHistory(Status.AWAITING_ANALYSIS, now, "user1")
+    report.addStatusHistory(Status.AWAITING_REVIEW, now, "user1")
 
     report.addDescriptionAddendum(
       sequence = 0,
@@ -347,7 +347,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
 
     report = reportRepository.findOneEagerlyByReportReference(report.reportReference)
       ?: throw EntityNotFoundException()
-    assertThat(report.status).isEqualTo(Status.AWAITING_ANALYSIS)
+    assertThat(report.status).isEqualTo(Status.AWAITING_REVIEW)
     assertThat(report.type).isEqualTo(Type.ASSAULT_5)
     assertThat(report.description).isEqualTo("An incident occurred")
     assertThat(report.descriptionAddendums).hasSize(2)
@@ -364,7 +364,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
     assertThat(report.history.elementAt(2).questions.elementAt(1).responses.elementAt(1).response).isEqualTo("OTHER")
     assertThat(report.historyOfStatuses).hasSize(2)
     assertThat(report.historyOfStatuses.elementAt(0).status).isEqualTo(Status.DRAFT)
-    assertThat(report.historyOfStatuses.elementAt(1).status).isEqualTo(Status.AWAITING_ANALYSIS)
+    assertThat(report.historyOfStatuses.elementAt(1).status).isEqualTo(Status.AWAITING_REVIEW)
     assertThat(report.staffInvolved).hasSize(1)
     assertThat(report.staffInvolved.elementAt(0).lastName).isEqualTo("Jones")
     assertThat(report.prisonersInvolved).isEmpty()

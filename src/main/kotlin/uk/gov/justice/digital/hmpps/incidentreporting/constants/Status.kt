@@ -16,14 +16,20 @@ enum class Status(
   val nomisStatus: String?,
 ) {
   DRAFT("Draft", null),
-  AWAITING_ANALYSIS("Awaiting analysis", "AWAN"),
-  IN_ANALYSIS("In analysis", "INAN"),
-  INFORMATION_REQUIRED("Information required", "INREQ"),
-  INFORMATION_AMENDED("Information amended", "INAME"),
+  AWAITING_REVIEW("Awaiting review", "AWAN"),
+  ON_HOLD("On hold", "INAN"),
+  NEEDS_UPDATING("Needs updating", "INREQ"),
+  UPDATED("Updated", "INAME"),
   CLOSED("Closed", "CLOSE"),
+
+  // TODO: POST_INCIDENT_UPDATE/INCIDENT_UPDATED will be removed
   POST_INCIDENT_UPDATE("Post-incident update", "PIU"),
   INCIDENT_UPDATED("Incident updated", "IUP"),
+
   DUPLICATE("Duplicate", "DUP"),
+  NOT_REPORTABLE("Not reportable", null),
+  REOPENED("Reopened", null),
+  WAS_CLOSED("Was closed", null),
   ;
 
   companion object {
