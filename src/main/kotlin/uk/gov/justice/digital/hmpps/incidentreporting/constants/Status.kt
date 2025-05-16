@@ -27,8 +27,6 @@ enum class Status(
   INCIDENT_UPDATED("Incident updated", "IUP"),
 
   DUPLICATE("Duplicate", "DUP"),
-
-  // TODO: New statuses tbc
   NOT_REPORTABLE("Not reportable", null),
   REOPENED("Reopened", null),
   WAS_CLOSED("Was closed", null),
