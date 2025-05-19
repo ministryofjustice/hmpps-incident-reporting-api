@@ -67,8 +67,3 @@ WHERE status = 'IN_ANALYSIS';
 UPDATE status_history
 SET status='ON_HOLD'
 WHERE status = 'IN_ANALYSIS';
-
--- TODO: What happens to statuses removed in NOMIS?
---       (e.g. 'Post incident update' and 'incident updated')
---       Does sync takes care of it? Do we need another migration
---       to update existing reports/history?
