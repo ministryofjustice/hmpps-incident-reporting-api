@@ -680,7 +680,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ],
                 "historyOfStatuses": [
                   {
-                    "status": "AWAITING_ANALYSIS",
+                    "status": "AWAITING_REVIEW",
                     "nomisStatus": "AWAN",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2"
@@ -723,7 +723,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonerInvolvementDone": true,
                 "reportedBy": "user2",
                 "reportedAt": "2023-12-05T12:34:56",
-                "status": "AWAITING_ANALYSIS",
+                "status": "AWAITING_REVIEW",
                 "nomisStatus": "AWAN",
                 "assignedTo": "user2",
                 "createdAt": "2023-12-05T14:34:56",
@@ -989,7 +989,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ],
                 "historyOfStatuses": [
                   {
-                    "status": "AWAITING_ANALYSIS",
+                    "status": "AWAITING_REVIEW",
                     "nomisStatus": "AWAN",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2"
@@ -1032,7 +1032,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonerInvolvementDone": true,
                 "reportedBy": "user2",
                 "reportedAt": "2023-12-05T12:34:56",
-                "status": "AWAITING_ANALYSIS",
+                "status": "AWAITING_REVIEW",
                 "nomisStatus": "AWAN",
                 "assignedTo": "user2",
                 "createdAt": "2023-12-05T14:34:56",
@@ -1283,7 +1283,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 ],
                 "historyOfStatuses": [
                   {
-                    "status": "AWAITING_ANALYSIS",
+                    "status": "AWAITING_REVIEW",
                     "nomisStatus": "AWAN",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "user2"
@@ -1326,7 +1326,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonerInvolvementDone": true,
                 "reportedBy": "user2",
                 "reportedAt": "2023-12-05T12:34:56",
-                "status": "AWAITING_ANALYSIS",
+                "status": "AWAITING_REVIEW",
                 "nomisStatus": "AWAN",
                 "assignedTo": "user2",
                 "createdAt": "2023-12-05T14:34:56",
@@ -1848,7 +1848,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "changedBy": "USER1"
                   },
                   {
-                    "status": "IN_ANALYSIS",
+                    "status": "ON_HOLD",
                     "nomisStatus": "INAN",
                     "changedAt": "2023-12-05T12:34:56",
                     "changedBy": "updater"
@@ -1912,7 +1912,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "prisonerInvolvementDone": true,
                 "reportedBy": "OF42",
                 "reportedAt": "2023-12-04T12:34:56",
-                "status": "IN_ANALYSIS",
+                "status": "ON_HOLD",
                 "nomisStatus": "INAN",
                 "assignedTo": "USER1",
                 "createdAt": "2023-12-04T12:34:56",

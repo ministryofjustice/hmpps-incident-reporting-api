@@ -120,8 +120,8 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
           "nomisCode" to null,
         ),
         mapOf(
-          "code" to "IN_ANALYSIS",
-          "description" to "In analysis",
+          "code" to "ON_HOLD",
+          "description" to "On hold",
           "nomisCode" to "INAN",
         ),
       ),

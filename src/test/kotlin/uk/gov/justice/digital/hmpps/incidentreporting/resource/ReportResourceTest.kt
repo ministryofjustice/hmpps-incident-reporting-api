@@ -225,7 +225,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   reportTime = now.minusDays(daysBefore),
                   reportingUsername = if (index < 2) "USER1" else "USER2",
                   location = if (index < 2) "LEI" else "MDI",
-                  status = if (fromDps) Status.DRAFT else Status.AWAITING_ANALYSIS,
+                  status = if (fromDps) Status.DRAFT else Status.AWAITING_REVIEW,
                   source = if (fromDps) InformationSource.DPS else InformationSource.NOMIS,
                   type = if (index < 3) Type.FIND_6 else Type.FIRE_1,
                   generateStaffInvolvement = index,
@@ -397,10 +397,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             "location=BXI                                                | 0",
             "status=                                                     | 5",
             "status=DRAFT                                                | 3",
-            "status=AWAITING_ANALYSIS                                    | 2",
-            "status=AWAITING_ANALYSIS,DRAFT                              | 5",
-            "status=AWAITING_ANALYSIS&status=DRAFT                       | 5",
-            "status=AWAITING_ANALYSIS,DRAFT&source=DPS                   | 3",
+            "status=AWAITING_REVIEW                                      | 2",
+            "status=AWAITING_REVIEW,DRAFT                                | 5",
+            "status=AWAITING_REVIEW&status=DRAFT                         | 5",
+            "status=AWAITING_REVIEW,DRAFT&source=DPS                     | 3",
             "status=CLOSED                                               | 0",
             "source=DPS                                                  | 3",
             "source=NOMIS                                                | 2",
@@ -1459,7 +1459,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
     // language=json
     private val validPayload = """
-      {"newStatus": "AWAITING_ANALYSIS"}
+      {"newStatus": "AWAITING_REVIEW"}
     """
 
     @BeforeEach
@@ -1609,7 +1609,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:34:56",
-              "status": "AWAITING_ANALYSIS",
+              "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:34:56",
@@ -1625,7 +1625,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "changedBy": "USER1"
                 },
                 {
-                  "status": "AWAITING_ANALYSIS",
+                  "status": "AWAITING_REVIEW",
                   "nomisStatus": "AWAN",
                   "changedAt": "2023-12-05T12:34:56",
                   "changedBy": "request-user"
@@ -1664,7 +1664,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """
             {
               "id": "${nomisReport.id}",
-              "status": "AWAITING_ANALYSIS",
+              "status": "AWAITING_REVIEW",
               "createdInNomis": true,
               "lastModifiedInNomis": false
             }
@@ -1781,7 +1781,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           buildReport(
             reportReference = "11124146",
             reportTime = now.minusMinutes(3),
-            status = Status.AWAITING_ANALYSIS,
+            status = Status.AWAITING_REVIEW,
             generateQuestions = 2,
             generateResponses = 2,
             generateHistory = 0,
@@ -1814,7 +1814,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:31:56",
-              "status": "AWAITING_ANALYSIS",
+              "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
@@ -1881,7 +1881,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           buildReport(
             reportReference = "11124146",
             reportTime = now.minusMinutes(3),
-            status = Status.AWAITING_ANALYSIS,
+            status = Status.AWAITING_REVIEW,
             generateQuestions = 2,
             generateResponses = 2,
             generateStaffInvolvement = 1,
@@ -1911,7 +1911,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:31:56",
-              "status": "AWAITING_ANALYSIS",
+              "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
@@ -1974,7 +1974,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "questions": [],
               "historyOfStatuses": [
                 {
-                  "status": "AWAITING_ANALYSIS",
+                  "status": "AWAITING_REVIEW",
                   "nomisStatus": "AWAN",
                   "changedAt": "2023-12-05T12:31:56",
                   "changedBy": "USER1"
@@ -2010,7 +2010,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           buildReport(
             reportReference = "11124146",
             reportTime = now.minusMinutes(3),
-            status = Status.AWAITING_ANALYSIS,
+            status = Status.AWAITING_REVIEW,
             generateQuestions = 1,
             generateResponses = 1,
             generateStaffInvolvement = 1,
@@ -2040,7 +2040,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [],
               "reportedBy": "USER1",
               "reportedAt": "2023-12-05T12:31:56",
-              "status": "AWAITING_ANALYSIS",
+              "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
               "assignedTo": "USER1",
               "createdAt": "2023-12-05T12:31:56",
@@ -2097,7 +2097,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "questions": [],
               "historyOfStatuses": [
                 {
-                  "status": "AWAITING_ANALYSIS",
+                  "status": "AWAITING_REVIEW",
                   "nomisStatus": "AWAN",
                   "changedAt": "2023-12-05T12:31:56",
                   "changedBy": "USER1"
