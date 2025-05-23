@@ -24,6 +24,8 @@ generic-service:
 
   postgresDatabaseRestore:
     enabled: true
+    env:
+      SCHEMA_TO_RESTORE: "public"
     namespace_secrets:
       dps-rds-instance-output:
         DB_NAME: "database_name"
