@@ -109,7 +109,6 @@ class NomisSyncServiceTest {
         NomisRequirement(
           sequence = 0,
           comment = "Title should include prisoner number",
-          date = today,
           recordedDate = now,
           prisonId = "MDI",
           staff = NomisStaff(

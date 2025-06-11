@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -11,11 +10,8 @@ data class NomisRequirement(
   val sequence: Int,
   @Schema(description = "The update required to the incident report")
   val comment: String?,
-  @Schema(description = "Date the requirement was recorded", deprecated = true)
-  val date: LocalDate,
-  // TODO: will become non-optional once all environments are migrated
   @Schema(description = "Date and time the requirement was recorded")
-  val recordedDate: LocalDateTime?,
+  val recordedDate: LocalDateTime,
   @Schema(description = "The staff member who made the requirement request")
   val staff: NomisStaff,
   @Schema(description = "The reporting location of the staff")
