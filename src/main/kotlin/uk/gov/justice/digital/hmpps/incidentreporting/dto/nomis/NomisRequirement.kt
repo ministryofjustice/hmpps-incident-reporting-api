@@ -11,8 +11,11 @@ data class NomisRequirement(
   val sequence: Int,
   @Schema(description = "The update required to the incident report")
   val comment: String?,
-  @Schema(description = "Date the requirement was recorded")
+  @Schema(description = "Date the requirement was recorded", deprecated = true)
   val date: LocalDate,
+  // TODO: will become non-optional once all environments are migrated
+  @Schema(description = "Date and time the requirement was recorded")
+  val recordedDate: LocalDateTime?,
   @Schema(description = "The staff member who made the requirement request")
   val staff: NomisStaff,
   @Schema(description = "The reporting location of the staff")
