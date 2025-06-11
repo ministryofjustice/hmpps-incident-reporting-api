@@ -131,6 +131,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             sequence = 0,
             comment = "Change 1",
             date = today,
+            recordedDate = now,
             staff = reportingStaff,
             prisonId = "MDI",
             createDateTime = now,
@@ -140,6 +141,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
             sequence = 1,
             comment = "Change 2",
             date = today.minusWeeks(1),
+            recordedDate = now.minusWeeks(1),
             staff = reportingStaff,
             prisonId = "MDI",
             createDateTime = now,
@@ -710,13 +712,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "descriptionOfChange": "Change 1",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T00:00:00"
+                    "correctionRequestedAt": "2023-12-05T12:34:56"
                   },
                   {
                     "descriptionOfChange": "Change 2",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T00:00:00"
+                    "correctionRequestedAt": "2023-11-28T12:34:56"
                   }
                 ],
                 "staffInvolvementDone": true,
@@ -1018,13 +1020,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   {
                     "descriptionOfChange": "Change 1",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T00:00:00",
+                    "correctionRequestedAt": "2023-12-05T12:34:56",
                     "location": "MDI"
                   },
                   {
                     "descriptionOfChange": "Change 2",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T00:00:00",
+                    "correctionRequestedAt": "2023-11-28T12:34:56",
                     "location": "MDI"
                   }
                 ],
@@ -1313,13 +1315,13 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "descriptionOfChange": "Change 1",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T00:00:00"
+                    "correctionRequestedAt": "2023-12-05T12:34:56"
                   },
                   {
                     "descriptionOfChange": "Change 2",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T00:00:00"
+                    "correctionRequestedAt": "2023-11-28T12:34:56"
                   }
                 ],
                 "staffInvolvementDone": true,
@@ -1414,6 +1416,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 sequence = 0,
                 comment = "Could you update the title please",
                 date = today.minusWeeks(1),
+                recordedDate = now.minusWeeks(1),
                 staff = reportingStaff,
                 prisonId = "MDI",
                 createDateTime = now,
@@ -1423,6 +1426,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 sequence = 1,
                 comment = "Also the description",
                 date = today,
+                recordedDate = now,
                 staff = reportingStaff,
                 prisonId = "MDI",
                 createDateTime = now,
@@ -1898,14 +1902,14 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "descriptionOfChange": "Could you update the title please",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T00:00:00"
+                    "correctionRequestedAt": "2023-11-28T12:34:56"
                   },
                   {
                     "sequence": 1,
                     "descriptionOfChange": "Also the description",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T00:00:00"
+                    "correctionRequestedAt": "2023-12-05T12:34:56"
                   }
                 ],
                 "staffInvolvementDone": true,
