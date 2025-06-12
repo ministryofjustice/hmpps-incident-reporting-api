@@ -106,7 +106,6 @@
     {
       "sequence": 0,
       "comment": "Type should be assault",
-      "date": "2024-01-20",
       "recordedDate": "2024-01-20T09:10:20",
       "staff": {
         "username": "user2",
@@ -121,7 +120,6 @@
     {
       "sequence": 1,
       "comment": "Add details to description",
-      "date": "2024-01-21",
       "recordedDate": "2024-01-21T11:20:30",
       "staff": {
         "username": "user2",

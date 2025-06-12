@@ -130,7 +130,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           NomisRequirement(
             sequence = 0,
             comment = "Change 1",
-            date = today,
             recordedDate = now,
             staff = reportingStaff,
             prisonId = "MDI",
@@ -140,7 +139,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           NomisRequirement(
             sequence = 1,
             comment = "Change 2",
-            date = today.minusWeeks(1),
             recordedDate = now.minusWeeks(1),
             staff = reportingStaff,
             prisonId = "MDI",
@@ -1415,7 +1413,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               NomisRequirement(
                 sequence = 0,
                 comment = "Could you update the title please",
-                date = today.minusWeeks(1),
                 recordedDate = now.minusWeeks(1),
                 staff = reportingStaff,
                 prisonId = "MDI",
@@ -1425,7 +1422,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
               NomisRequirement(
                 sequence = 1,
                 comment = "Also the description",
-                date = today,
                 recordedDate = now,
                 staff = reportingStaff,
                 prisonId = "MDI",

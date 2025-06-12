@@ -431,7 +431,7 @@ class Report(
     report = this,
     sequence = nomisRequirement.sequence,
     correctionRequestedBy = nomisRequirement.staff.username,
-    correctionRequestedAt = nomisRequirement.recordedDate ?: nomisRequirement.date.atStartOfDay(),
+    correctionRequestedAt = nomisRequirement.recordedDate,
     descriptionOfChange = nomisRequirement.comment ?: NO_DETAILS_GIVEN,
     location = nomisRequirement.prisonId,
   )
