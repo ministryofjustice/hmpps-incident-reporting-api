@@ -25,13 +25,13 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.5")
   implementation("io.opentelemetry:opentelemetry-api:1.51.0")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:8.3.4")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:8.4.0")
 
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.6")
+  runtimeOnly("org.postgresql:postgresql:42.7.7")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
@@ -41,7 +41,7 @@ dependencies {
 
   testImplementation("javax.xml.bind:jaxb-api:2.3.1")
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.4.6")
-  testImplementation("org.wiremock:wiremock-standalone:3.13.0")
+  testImplementation("org.wiremock:wiremock-standalone:3.13.1")
   testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.swagger.parser.v3:swagger-parser:2.1.27")
@@ -49,8 +49,6 @@ dependencies {
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
   testImplementation("org.testcontainers:localstack:1.21.1")
   testImplementation("org.testcontainers:postgresql:1.21.1")
-
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }
 
 kotlin {
