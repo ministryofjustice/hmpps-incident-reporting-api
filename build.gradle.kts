@@ -44,13 +44,11 @@ dependencies {
   testImplementation("org.wiremock:wiremock-standalone:3.13.1")
   testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("org.mockito:mockito-inline:5.2.0")
-  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.29")
+  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.27")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
   testImplementation("org.testcontainers:localstack:1.21.1")
   testImplementation("org.testcontainers:postgresql:1.21.1")
-
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.13.1")
 }
 
 kotlin {
