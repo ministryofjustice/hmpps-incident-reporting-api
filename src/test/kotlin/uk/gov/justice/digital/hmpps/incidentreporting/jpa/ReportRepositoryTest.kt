@@ -21,9 +21,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
@@ -45,9 +43,6 @@ class ReportRepositoryTest : IntegrationTestBase() {
   @Autowired
   lateinit var reportRepository: ReportRepository
 
-  @Autowired
-  lateinit var eventRepository: EventRepository
-
   private val hourAgo = now.minusHours(1)
   private val halfHourAgo = now.minusMinutes(30)
   private val quarterHourAgo = now.minusMinutes(15)
@@ -55,7 +50,6 @@ class ReportRepositoryTest : IntegrationTestBase() {
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
-    eventRepository.deleteAll()
 
     TestTransaction.flagForCommit()
     TestTransaction.end()
@@ -245,16 +239,6 @@ class ReportRepositoryTest : IntegrationTestBase() {
           description = "An incident occurred",
           reportedBy = "user1",
           location = "MDI",
-          event = Event(
-            eventReference = eventRepository.generateEventReference(),
-            eventDateAndTime = hourAgo,
-            location = "MDI",
-            title = "Event summary",
-            description = "An event occurred",
-            createdAt = now,
-            modifiedAt = now,
-            modifiedBy = "user1",
-          ),
           reportedAt = now,
           assignedTo = "user2",
           createdAt = now,

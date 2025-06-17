@@ -34,7 +34,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncReque
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import java.time.Clock
 import java.util.UUID
@@ -56,14 +55,10 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
   @Autowired
   lateinit var reportRepository: ReportRepository
 
-  @Autowired
-  lateinit var eventRepository: EventRepository
-
   lateinit var existingNomisReport: Report
 
   private fun deleteAllReports() {
     reportRepository.deleteAll()
-    eventRepository.deleteAll()
   }
 
   @BeforeEach
@@ -480,17 +475,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "title": "An incident occurred updated",
                 "description": "A New Incident From NOMIS",
                 "descriptionAddendums": [],
-                "event": {
-                  "eventReference": "112414666",
-                  "eventDateAndTime": "2023-12-05T11:34:56",
-                  "location": "MDI",
-                  "prisonId": "MDI",
-                  "title": "An incident occurred updated",
-                  "description": "A New Incident From NOMIS",
-                  "createdAt": "2023-12-05T14:34:56",
-                  "modifiedAt": "2023-12-05T17:34:56",
-                  "modifiedBy": "another-user"
-                },
                 "questions": [
                   {
                     "code": "4",
@@ -789,17 +773,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "text": "Even more information"
                   }
                 ],
-                "event": {
-                  "eventReference": "112414666",
-                  "eventDateAndTime": "2023-12-05T11:34:56",
-                  "location": "MDI",
-                  "prisonId": "MDI",
-                  "title": "An incident occurred updated",
-                  "description": "A New Incident From NOMISUser:STARK,TONY Date:07-JUN-2024 12:13Some extra informationUser:BANNER,BRUCE Date:10-JUN-2024 14:53Even more information",
-                  "createdAt": "2023-12-05T14:34:56",
-                  "modifiedAt": "2023-12-05T17:34:56",
-                  "modifiedBy": "another-user"
-                },
                 "questions": [
                   {
                     "code": "4",
@@ -1083,17 +1056,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "title": "An incident occurred updated",
                 "description": "New NOMIS incident",
                 "descriptionAddendums": [],
-                "event": {
-                  "eventReference": "$newIncidentId",
-                  "eventDateAndTime": "2023-12-05T11:34:56",
-                  "location": "MDI",
-                  "prisonId": "MDI",
-                  "title": "An incident occurred updated",
-                  "description": "New NOMIS incident",
-                  "createdAt": "2023-12-05T14:34:56",
-                  "modifiedAt": "2023-12-05T17:34:56",
-                  "modifiedBy": "another-user"
-                },
                 "questions": [
                   {
                     "code": "4",
@@ -1624,18 +1586,6 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "text": "Some updated details"
                   }
                 ],
-                "event": {
-                  "id": "${existingNomisReport.event.id}",
-                  "eventReference": "$NOMIS_INCIDENT_NUMBER",
-                  "eventDateAndTime": "2023-11-25T12:34:56",
-                  "location": "FBI",
-                  "prisonId": "FBI",
-                  "title": "Updated title",
-                  "description": "Original description",
-                  "createdAt": "2023-12-04T12:34:56",
-                  "modifiedAt": "2023-12-05T12:29:56",
-                  "modifiedBy": "updater"
-                },
                 "questions": [
                   {
                     "code": "4",
@@ -2155,7 +2105,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
     @Test
     fun `can create a report during initial migration`() {
-      deleteAllReports() // drop reports from test setup to prevent report and event reference clashes
+      deleteAllReports() // drop reports from test setup to prevent report reference clashes
 
       sendAuthorisedSyncRequest(
         initialMigration = true,
@@ -2168,7 +2118,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
     @Test
     fun `can create a report after initial migration`() {
-      deleteAllReports() // drop reports from test setup to prevent report and event reference clashes
+      deleteAllReports() // drop reports from test setup to prevent report reference clashes
 
       sendAuthorisedSyncRequest(
         initialMigration = false,

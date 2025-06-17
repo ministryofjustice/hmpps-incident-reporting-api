@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.elementAtWrapped
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import java.time.Clock
 
@@ -37,16 +36,12 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
   @Autowired
   lateinit var reportRepository: ReportRepository
 
-  @Autowired
-  lateinit var eventRepository: EventRepository
-
   lateinit var existingReport1: Report
   lateinit var existingReport2: Report
 
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
-    eventRepository.deleteAll()
 
     existingReport1 = reportRepository.save(
       buildReport(

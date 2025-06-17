@@ -7,7 +7,6 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.NamedAttributeNode
 import jakarta.persistence.NamedEntityGraph
 import jakarta.persistence.NamedEntityGraphs
@@ -47,7 +46,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum as
       name = "Report.eager",
       attributeNodes = [
         NamedAttributeNode("descriptionAddendums"),
-        NamedAttributeNode("event"),
         NamedAttributeNode("staffInvolved"),
         NamedAttributeNode("prisonersInvolved"),
         NamedAttributeNode("correctionRequests"),
@@ -120,13 +118,6 @@ class Report(
   var reportedBy: String,
   var reportedAt: LocalDateTime,
 
-  @ManyToOne(
-    fetch = FetchType.LAZY,
-    cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH],
-    optional = false,
-  )
-  var event: Event,
-
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val historyOfStatuses: SortedSet<StatusHistory> = sortedSetOf(),
@@ -164,6 +155,39 @@ class Report(
 ) : Comparable<Report> {
 
   companion object {
+    fun createReport(nomisReport: NomisReport): Report {
+      val status = Status.fromNomisCode(nomisReport.status.code)
+      val (upsertDescription, upsertAddendums) = nomisReport.getDescriptionParts()
+      val report = Report(
+        reportReference = "${nomisReport.incidentId}",
+        type = Type.fromNomisCode(nomisReport.type),
+        incidentDateAndTime = nomisReport.incidentDateTime,
+        location = nomisReport.prison.code,
+        title = nomisReport.title ?: NO_DETAILS_GIVEN,
+        description = upsertDescription ?: NO_DETAILS_GIVEN,
+        reportedBy = nomisReport.reportingStaff.username,
+        reportedAt = nomisReport.reportedDateTime,
+        status = status,
+        questionSetId = "${nomisReport.questionnaireId}",
+        createdAt = nomisReport.createDateTime,
+        modifiedAt = nomisReport.lastModifiedDateTime ?: nomisReport.createDateTime,
+        modifiedBy = nomisReport.lastModifiedBy ?: nomisReport.createdBy,
+        source = InformationSource.NOMIS,
+        modifiedIn = InformationSource.NOMIS,
+        assignedTo = nomisReport.reportingStaff.username,
+      )
+      report.addStatusHistory(status, nomisReport.reportedDateTime, nomisReport.reportingStaff.username)
+
+      report.updateDescriptionAddendums(upsertAddendums)
+      report.updateStaffInvolved(nomisReport.staffParties)
+      report.updatePrisonerInvolved(nomisReport.offenderParties)
+      report.updateCorrectionRequests(nomisReport.requirements)
+      report.updateQuestionAndResponses(nomisReport.questions)
+      report.updateHistory(nomisReport.history)
+
+      return report
+    }
+
     private val COMPARATOR = compareBy<Report>
       { it.reportReference }
   }
@@ -598,24 +622,11 @@ class Report(
     this.modifiedIn = InformationSource.NOMIS
 
     this.type = Type.fromNomisCode(upsert.type)
-
-    // NOTE: Currently we update the event information as well on update.
-    //       For some of these fields makes more sense because that's explicitly
-    //       the intent (e.g. `incidentDateTime`, `location`, etc... are also in the event)
-    //       For Event's title/description may make less sense, but we're keeping this in
-    //       as well for now.
     this.incidentDateAndTime = upsert.incidentDateTime
-    this.event.eventDateAndTime = incidentDateAndTime
-
     this.location = upsert.prison.code
-    this.event.location = location
-
     this.title = upsert.title ?: NO_DETAILS_GIVEN
-    this.event.title = title
-
     val (upsertDescription, upsertAddendums) = upsert.getDescriptionParts()
     this.description = upsertDescription ?: NO_DETAILS_GIVEN
-    this.event.description = description
 
     this.reportedBy = upsert.reportingStaff.username
     this.reportedAt = upsert.reportedDateTime
@@ -629,13 +640,8 @@ class Report(
     this.questionSetId = "${upsert.questionnaireId}"
 
     this.createdAt = upsert.createDateTime
-    this.event.createdAt = upsert.createDateTime
-
     this.modifiedAt = upsert.lastModifiedDateTime ?: upsert.createDateTime
-    this.event.modifiedAt = modifiedAt
-
     this.modifiedBy = updatedBy
-    this.event.modifiedBy = updatedBy
 
     updateDescriptionAddendums(upsertAddendums)
     updateStaffInvolved(upsert.staffParties)
@@ -682,7 +688,6 @@ class Report(
     modifiedBy = modifiedBy,
     createdInNomis = source == InformationSource.NOMIS,
     lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
-    event = event.toDto(),
     questions = questions.map { it.toDto() },
     history = history.map { it.toDto() },
     historyOfStatuses = historyOfStatuses.map { it.toDto() },

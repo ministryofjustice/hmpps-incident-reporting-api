@@ -38,7 +38,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncReque
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.today
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
@@ -151,7 +150,6 @@ class NomisSyncServiceTest {
   )
 
   private val sampleReportId = UUID.fromString("11111111-2222-3333-4444-555555555555")
-  private val sampleEventId = UUID.fromString("11111111-2222-3333-4444-666666666666")
 
   /** saved entity based on successful `sampleSyncRequest` */
   private val sampleReport = Report(
@@ -162,17 +160,6 @@ class NomisSyncServiceTest {
     title = "Cutting",
     description = "Offender was found in own cell with a razor",
     location = "MDI",
-    event = Event(
-      id = sampleEventId,
-      eventReference = "112414323",
-      eventDateAndTime = whenIncidentHappened,
-      location = "MDI",
-      title = "Cutting",
-      description = "Offender was found in own cell with a razor",
-      createdAt = now.plusHours(2),
-      modifiedAt = now.plusHours(5),
-      modifiedBy = "another-user",
-    ),
     reportedBy = reportedBy,
     reportedAt = now,
     status = Status.AWAITING_REVIEW,
@@ -230,21 +217,7 @@ class NomisSyncServiceTest {
       report.source == sampleReport.source &&
       report.createdAt == sampleReport.createdAt &&
       report.modifiedAt == sampleReport.modifiedAt &&
-      report.modifiedBy == sampleReport.modifiedBy &&
-      isEqualToSampleEvent(report.event)
-  }
-
-  /** compare event entity about to be saved with the mocked response */
-  private fun isEqualToSampleEvent(event: Event): Boolean {
-    // NB: cannot compare arg to sampleReport directly
-    val sampleEvent = sampleReport.event
-    return event.eventReference == sampleEvent.eventReference &&
-      event.eventDateAndTime == sampleEvent.eventDateAndTime &&
-      event.location == sampleEvent.location &&
-      event.description == sampleEvent.description &&
-      event.createdAt == sampleEvent.createdAt &&
-      event.modifiedAt == sampleEvent.modifiedAt &&
-      event.modifiedBy == sampleEvent.modifiedBy
+      report.modifiedBy == sampleReport.modifiedBy
   }
 
   private fun assertSampleReportConvertedToDto(report: ReportWithDetails) {
@@ -255,14 +228,6 @@ class NomisSyncServiceTest {
     assertThat(report.location).isEqualTo("MDI")
     assertThat(report.title).isEqualTo("Cutting")
     assertThat(report.description).isEqualTo("Offender was found in own cell with a razor")
-    assertThat(report.event.id).isEqualTo(sampleEventId)
-    assertThat(report.event.eventReference).isEqualTo("112414323")
-    assertThat(report.event.eventDateAndTime).isEqualTo(whenIncidentHappened)
-    assertThat(report.event.description).isEqualTo("Offender was found in own cell with a razor")
-    assertThat(report.event.location).isEqualTo("MDI")
-    assertThat(report.event.createdAt.toString()).isEqualTo("2023-12-05T14:34:56")
-    assertThat(report.event.modifiedBy).isEqualTo("another-user")
-    assertThat(report.event.modifiedAt.toString()).isEqualTo("2023-12-05T17:34:56")
     assertThat(report.reportedBy).isEqualTo(reportedBy)
     assertThat(report.reportedAt).isEqualTo(now)
     assertThat(report.status).isEqualTo(Status.AWAITING_REVIEW)
@@ -413,17 +378,6 @@ class NomisSyncServiceTest {
       title = "Cutting",
       description = "Offender was found in own cell with a razor",
       location = "MDI",
-      event = Event(
-        id = sampleEventId,
-        eventReference = "112414323",
-        eventDateAndTime = whenIncidentHappened,
-        location = "MDI",
-        title = "Cutting",
-        description = "Offender was found in own cell with a razor",
-        createdAt = now.plusHours(2),
-        modifiedAt = now.plusHours(5),
-        modifiedBy = "another-user",
-      ),
       reportedBy = reportedBy,
       reportedAt = now,
       status = Status.AWAITING_REVIEW,
@@ -473,22 +427,21 @@ class NomisSyncServiceTest {
     verify(telemetryClient, never()).trackEvent(anyOrNull(), anyOrNull(), anyOrNull())
   }
 
-  @ParameterizedTest(name = "throws report-already-exists exception if {0} constraint failed")
-  @ValueSource(strings = ["event_reference", "report_reference"])
-  fun `throws report-already-exists exception if identifier constraints failed`(constraint: String) {
+  @Test
+  fun `throws report-already-exists exception if "report_reference" constraints failed`() {
     val syncRequest = sampleSyncRequest.copy(
       id = null,
       initialMigration = true,
     )
 
-    val abbreviatedMessage = "ERROR: duplicate key value violates unique constraint \"$constraint\""
+    val abbreviatedMessage = "ERROR: duplicate key value violates unique constraint \"report_reference\""
     val simulatedDatabaseError = DataIntegrityViolationException(
       abbreviatedMessage,
       ConstraintViolationException(
         abbreviatedMessage,
         // in practice, a org.postgresql.util.PSQLException
         SQLException(abbreviatedMessage),
-        constraint,
+        "report_reference",
       ),
     )
     whenever(reportRepository.save(any())).thenThrow(simulatedDatabaseError)

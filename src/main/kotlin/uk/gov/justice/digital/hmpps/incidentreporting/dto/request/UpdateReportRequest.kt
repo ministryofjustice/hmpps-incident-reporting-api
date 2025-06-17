@@ -68,14 +68,6 @@ data class UpdateReportRequest(
     defaultValue = "null",
   )
   val prisonerInvolvementDone: Boolean? = null,
-
-  @Schema(
-    description = "Whether the parent event should also be updated",
-    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-    defaultValue = "false",
-    example = "true",
-  )
-  val updateEvent: Boolean = false,
 ) {
   @JsonIgnore
   val isEmpty: Boolean =
@@ -107,16 +99,6 @@ data class UpdateReportRequest(
     report.modifiedIn = InformationSource.DPS
     report.modifiedBy = requestUsername
     report.modifiedAt = now
-
-    if (updateEvent) {
-      val event = report.event
-      incidentDateAndTime?.let { event.eventDateAndTime = it }
-      location?.let { event.location = it }
-      title?.let { event.title = it }
-      description?.let { event.description = it }
-      event.modifiedBy = requestUsername
-      event.modifiedAt = now
-    }
 
     return report
   }

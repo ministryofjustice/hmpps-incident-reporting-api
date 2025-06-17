@@ -10,11 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.json.JsonAssert
 import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
-import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 
 /**
@@ -25,15 +23,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepos
 @DisplayName("Mapping JPA entities to DTOs")
 class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
   @Autowired
-  lateinit var eventRepository: EventRepository
-
-  @Autowired
   lateinit var reportRepository: ReportRepository
 
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
-    eventRepository.deleteAll()
   }
 
   @Test
@@ -52,22 +46,6 @@ class EntityToDtoMappingEdgeCaseTest : SqsIntegrationTestBase() {
     assertThat(savedReport.id).isNotNull()
     assertThat(savedReport.toDtoBasic().id).isEqualTo(savedReport.id)
     assertThat(savedReport.toDtoWithDetails().id).isEqualTo(savedReport.id)
-  }
-
-  @Test
-  fun `event must have a non-null id to map to the dto`() {
-    val unsavedEvent = buildEvent(
-      eventReference = "1234",
-      eventDateAndTime = now.minusHours(2),
-      reportDateAndTime = now,
-    )
-    assertThat(unsavedEvent.id).isNull()
-    assertThatThrownBy { unsavedEvent.toDto() }
-      .isInstanceOf(NullPointerException::class.java)
-
-    val savedEvent = eventRepository.save(unsavedEvent)
-    assertThat(savedEvent.id).isNotNull()
-    assertThat(savedEvent.toDto().id).isEqualTo(savedEvent.id)
   }
 
   @Test

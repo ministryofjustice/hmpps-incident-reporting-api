@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Size
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 
@@ -40,24 +39,8 @@ data class CreateReportRequest(
   @Schema(description = "Longer summary of the incident", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
   @field:Size(min = 1)
   val description: String,
-  @Schema(
-    description = "Whether to link to a new event",
-    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-    defaultValue = "false",
-  )
-  val createNewEvent: Boolean = false,
-  @Schema(
-    description = "Which existing event to link to",
-    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-    nullable = true,
-    defaultValue = "null",
-  )
-  val linkedEventReference: String? = null,
 ) {
   fun validate(now: LocalDateTime) {
-    if (!createNewEvent && linkedEventReference.isNullOrEmpty()) {
-      throw ValidationException("Either createNewEvent or linkedEventReference must be provided")
-    }
     if (!type.active) {
       throw ValidationException("Inactive incident type $type")
     }
@@ -68,13 +51,11 @@ data class CreateReportRequest(
 
   fun createReport(
     reportReference: String,
-    event: Event,
     requestUsername: String,
     now: LocalDateTime,
   ): Report {
     val status = Status.DRAFT
     val report = Report(
-      event = event,
       reportReference = reportReference,
       type = type,
       status = status,
@@ -95,22 +76,5 @@ data class CreateReportRequest(
     )
     report.addStatusHistory(status, now, requestUsername)
     return report
-  }
-
-  fun createEvent(
-    generatedEventReference: String,
-    requestUsername: String,
-    now: LocalDateTime,
-  ): Event {
-    return Event(
-      eventReference = generatedEventReference,
-      eventDateAndTime = incidentDateAndTime,
-      location = location,
-      title = title,
-      description = description,
-      createdAt = now,
-      modifiedAt = now,
-      modifiedBy = requestUsername,
-    )
   }
 }

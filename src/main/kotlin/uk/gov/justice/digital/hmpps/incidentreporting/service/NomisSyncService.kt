@@ -11,13 +11,13 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSourc
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportModifiedInDpsException
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportNotFoundException
 import java.time.Clock
 import java.util.UUID
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report as ReportEntity
 
 @Service
 @Transactional(rollbackFor = [ReportAlreadyExistsException::class])
@@ -70,14 +70,14 @@ class NomisSyncService(
   }
 
   private fun createNewReport(incidentReport: NomisReport): ReportWithDetails {
-    val unsavedReportEntity = Event.createReport(incidentReport)
+    val unsavedReportEntity = ReportEntity.createReport(incidentReport)
     val reportEntity = try {
       reportRepository.save(unsavedReportEntity)
     } catch (e: DataIntegrityViolationException) {
       val constraintViolation = e.cause as? org.hibernate.exception.ConstraintViolationException
       if (
         constraintViolation != null &&
-        listOf("event_reference", "report_reference").contains(constraintViolation.constraintName)
+        listOf("report_reference").contains(constraintViolation.constraintName)
       ) {
         throw ReportAlreadyExistsException("${incidentReport.incidentId}")
       } else {

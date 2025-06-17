@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
-import org.springframework.test.json.JsonAssert
 import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
@@ -24,7 +23,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRe
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
@@ -42,9 +40,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var reportRepository: ReportRepository
-
-  @Autowired
-  lateinit var eventRepository: EventRepository
 
   lateinit var existingReport: Report
 
@@ -69,7 +64,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
-    eventRepository.deleteAll()
 
     existingReport = reportRepository.save(
       buildReport(
@@ -161,7 +155,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `returns empty list when there are no reports`() {
         reportRepository.deleteAll()
-        eventRepository.deleteAll()
 
         webTestClient.get().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
@@ -574,18 +567,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [],
-              "event": {
-                "id": "${existingReport.event.id}",
-                "eventReference": "11124143",
-                "eventDateAndTime": "2023-12-05T11:34:56",
-                "location": "MDI",
-                "prisonId": "MDI",
-                "title": "An event occurred",
-                "description": "Details of the event",
-                "createdAt": "2023-12-05T12:34:56",
-                "modifiedAt": "2023-12-05T12:34:56",
-                "modifiedBy": "USER1"
-              },
               "questions": [],
               "history": [],
               "historyOfStatuses": [
@@ -750,18 +731,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [],
-              "event": {
-                "id": "${existingReport.event.id}",
-                "eventReference": "11124143",
-                "eventDateAndTime": "2023-12-05T11:34:56",
-                "location": "MDI",
-                "prisonId": "MDI",
-                "title": "An event occurred",
-                "description": "Details of the event",
-                "createdAt": "2023-12-05T12:34:56",
-                "modifiedAt": "2023-12-05T12:34:56",
-                "modifiedBy": "USER1"
-              },
               "questions": [],
               "history": [],
               "historyOfStatuses": [
@@ -806,7 +775,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       description = "Longer explanation of incident",
       type = Type.SELF_HARM_1,
       location = "MDI",
-      createNewEvent = true,
     )
 
     @DisplayName("is secured")
@@ -879,21 +847,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
-      fun `cannot create a report without creating or linking event`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(createReportRequest.copy(createNewEvent = false).toJson())
-          .exchange()
-          .expectStatus().isBadRequest
-          .expectBody().jsonPath("developerMessage").value<String> {
-            assertThat(it).contains("Either createNewEvent or linkedEventReference must be provided")
-          }
-
-        assertThatNoDomainEventsWereSent()
-      }
-
-      @Test
       fun `cannot create a report with an inactive type`() {
         webTestClient.post().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -932,85 +885,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "An incident occurred",
               "description": "Longer explanation of incident",
               "descriptionAddendums": [],
-              "event": {
-                "eventDateAndTime": "2023-12-05T11:34:56",
-                "location": "MDI",
-                "prisonId": "MDI",
-                "title": "An incident occurred",
-                "description": "Longer explanation of incident",
-                "createdAt": "2023-12-05T12:34:56",
-                "modifiedAt": "2023-12-05T12:34:56",
-                "modifiedBy": "request-user"
-              },
-              "questions": [],
-              "history": [],
-              "historyOfStatuses": [
-                {
-                  "status": "DRAFT",
-                  "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
-                  "changedBy": "request-user"
-                }
-              ],
-              "staffInvolved": [],
-              "prisonersInvolved": [],
-              "correctionRequests": [],
-              "staffInvolvementDone": false,
-              "prisonerInvolvementDone": false,
-              "reportedBy": "request-user",
-              "reportedAt": "2023-12-05T12:34:56",
-              "status": "DRAFT",
-              "nomisStatus": null,
-              "assignedTo": "request-user",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "request-user",
-              "createdInNomis": false,
-              "lastModifiedInNomis": false
-            }
-            """,
-            JsonCompareMode.LENIENT,
-          )
-
-        assertThatDomainEventWasSent("incident.report.created", null)
-      }
-
-      @Test
-      fun `can add a new incident linked to an existing event`() {
-        webTestClient.post().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(
-            createReportRequest.copy(
-              createNewEvent = false,
-              linkedEventReference = existingReport.event.eventReference,
-            ).toJson(),
-          )
-          .exchange()
-          .expectStatus().isCreated
-          .expectBody().json(
-            // language=json
-            """
-            {
-              "type": "SELF_HARM_1",
-              "nomisType": "SELF_HARM",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
-              "location": "MDI",
-              "prisonId": "MDI",
-              "title": "An incident occurred",
-              "description": "Longer explanation of incident",
-              "descriptionAddendums": [],
-              "event": {
-                "eventReference": "${existingReport.event.eventReference}",
-                "eventDateAndTime": "2023-12-05T11:34:56",
-                "location": "MDI",
-                "prisonId": "MDI",
-                "title": "An event occurred",
-                "description": "Details of the event",
-                "createdAt": "2023-12-05T12:34:56",
-                "modifiedAt": "2023-12-05T12:34:56",
-                "modifiedBy": "USER1"
-              },
               "questions": [],
               "history": [],
               "historyOfStatuses": [
@@ -1350,69 +1224,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "11124149",
-          InformationSource.DPS,
-          WhatChanged.BASIC_REPORT,
-        )
-      }
-
-      @ParameterizedTest(name = "can propagate updates to parent event when requested: {0}")
-      @ValueSource(booleans = [true, false])
-      fun `can propagate updates to parent event when requested`(updateEvent: Boolean) {
-        val updateReportRequest = UpdateReportRequest(
-          incidentDateAndTime = now.minusHours(2),
-          location = "LEI",
-          title = "Updated report 11124143",
-          description = "Updated incident report of type find of illicit items",
-
-          updateEvent = updateEvent,
-        )
-        webTestClient.patch().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .bodyValue(updateReportRequest.toJson())
-          .exchange()
-          .expectStatus().isOk
-
-        val eventJson = eventRepository.findOneByEventReference("11124143")!!
-          .toDto().toJson()
-        JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
-          if (updateEvent) {
-            // language=json
-            """
-            {
-              "eventReference": "11124143",
-              "eventDateAndTime": "2023-12-05T10:34:56",
-              "location": "LEI",
-              "prisonId": "LEI",
-              "title": "Updated report 11124143",
-              "description": "Updated incident report of type find of illicit items",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "request-user"
-            }
-            """
-          } else {
-            // language=json
-            """
-            {
-              "eventReference": "11124143",
-              "eventDateAndTime": "2023-12-05T11:34:56",
-              "location": "MDI",
-              "prisonId": "MDI",
-              "title": "An event occurred",
-              "description": "Details of the event",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
-              "modifiedBy": "USER1"
-            }
-            """
-          },
-          eventJson,
-        )
-
-        assertThatDomainEventWasSent(
-          "incident.report.amended",
-          "11124143",
           InformationSource.DPS,
           WhatChanged.BASIC_REPORT,
         )
@@ -2199,13 +2010,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     @DisplayName("works")
     @Nested
     inner class HappyPath {
-      @ParameterizedTest(name = "can delete a report by ID (including orphaned event? {0})")
-      @ValueSource(booleans = [true, false])
-      fun `can delete a report by ID`(deleteOrphanedEvents: Boolean) {
+      @Test
+      fun `can delete a report by ID`() {
         val reportId = existingReport.id!!
-        val eventId = existingReport.event.id!!
 
-        webTestClient.delete().uri("$url?deleteOrphanedEvents=$deleteOrphanedEvents")
+        webTestClient.delete().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
           .exchange()
@@ -2222,48 +2031,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           )
 
         assertThat(reportRepository.findOneEagerlyById(reportId)).isNull()
-        if (deleteOrphanedEvents) {
-          assertThat(eventRepository.findById(eventId)).isEmpty
-        } else {
-          assertThat(eventRepository.findById(eventId)).isPresent
-        }
 
         assertThatDomainEventWasSent("incident.report.deleted", "11124143")
-      }
-
-      @Test
-      fun `cannot cascade deleting non-orphan event`() {
-        val reportId = existingReport.id!!
-        val eventId = existingReport.event.id!!
-
-        existingReport.event.addReport(
-          buildReport(
-            reportReference = "11124142",
-            reportTime = now.minusMinutes(5),
-          ),
-        )
-        eventRepository.save(existingReport.event)
-        val otherReportId = reportRepository.findAll().first { it.id != reportId }.id!!
-
-        webTestClient.delete().uri("$url?deleteOrphanedEvents=true")
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-          .header("Content-Type", "application/json")
-          .exchange()
-          .expectStatus().isOk
-          .expectBody().json(
-            // language=json
-            """
-            {
-              "id": "$reportId",
-              "reportReference": "11124143"
-            }
-            """,
-            JsonCompareMode.LENIENT,
-          )
-
-        val remainingReportIds = reportRepository.findAllById(listOf(reportId, otherReportId)).map { it.id }
-        assertThat(remainingReportIds).containsOnly(otherReportId)
-        assertThat(eventRepository.findById(eventId)).isPresent
       }
     }
   }
