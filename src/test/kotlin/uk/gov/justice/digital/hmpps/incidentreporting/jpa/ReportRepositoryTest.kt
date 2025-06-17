@@ -309,7 +309,7 @@ class ReportRepositoryTest : IntegrationTestBase() {
       .addResponse("OCCUR_CELL", "CELL", null, 1, "In the cell", "user1", now)
 
     report.addQuestion("METHOD", "Method Used to hurt themselves?", 2)
-      .addResponse(" METHOD_KNIFE", "KNIFE", null, 0, "They used a knife", "user1", now)
+      .addResponse("METHOD_KNIFE", "KNIFE", null, 0, "They used a knife", "user1", now)
       .addResponse("METHOD_OTHER", "OTHER", null, 1, "They used something else", "user1", now)
 
     report.addQuestion("BLAH", "Blah?", 3)
