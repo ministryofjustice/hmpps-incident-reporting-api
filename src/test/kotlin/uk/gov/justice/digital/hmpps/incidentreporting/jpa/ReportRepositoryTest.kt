@@ -305,27 +305,27 @@ class ReportRepositoryTest : IntegrationTestBase() {
       ?: throw EntityNotFoundException()
 
     report.addQuestion("WHERE_OCCURRED", "Where did this occur?", 1)
-      .addResponse("DETOX_UNIT", null, 0, "They hurt themselves", "user1", now)
-      .addResponse("CELL", null, 1, "In the cell", "user1", now)
+      .addResponse("OCCUR_DETOX", "DETOX_UNIT", null, 0, "They hurt themselves", "user1", now)
+      .addResponse("OCCUR_CELL", "CELL", null, 1, "In the cell", "user1", now)
 
     report.addQuestion("METHOD", "Method Used to hurt themselves?", 2)
-      .addResponse("KNIFE", null, 0, "They used a knife", "user1", now)
-      .addResponse("OTHER", null, 1, "They used something else", "user1", now)
+      .addResponse("METHOD_KNIFE", "KNIFE", null, 0, "They used a knife", "user1", now)
+      .addResponse("METHOD_OTHER", "OTHER", null, 1, "They used something else", "user1", now)
 
     report.addQuestion("BLAH", "Blah?", 3)
-      .addResponse("HEAD", null, 0, "Head", "user1", now)
-      .addResponse("ARM", null, 1, "Arm", "user1", now)
+      .addResponse("BLAH_HEAD", "HEAD", null, 0, "Head", "user1", now)
+      .addResponse("BLAH_ARM", "ARM", null, 1, "Arm", "user1", now)
 
     report.addHistory(Type.FIND_6, halfHourAgo, "user2")
       .addQuestion("FINDS-Q1", "Finds question 1", 1)
-      .addResponse("response1", 0, null, "Some information 1", "user1", halfHourAgo)
-      .addResponse("response2", 1, null, "Some information 2", "user1", halfHourAgo)
-      .addResponse("response3", 2, null, "Some information 3", "user1", halfHourAgo)
+      .addResponse("FINDS-Q1-R1", "response1", 0, null, "Some information 1", "user1", halfHourAgo)
+      .addResponse("FINDS-Q1-R2", "response2", 1, null, "Some information 2", "user1", halfHourAgo)
+      .addResponse("FINDS-Q1-R3", "response3", 2, null, "Some information 3", "user1", halfHourAgo)
 
     report.addHistory(Type.ASSAULT_5, quarterHourAgo, "user1")
       .addQuestion("ASSAULT-Q1", "Assault question 1", 1)
-      .addResponse("response4", 0, null, "Some information 4", "user1", quarterHourAgo)
-      .addResponse("response5", 1, null, "Some information 5", "user1", quarterHourAgo)
+      .addResponse("ASSAULT-Q1-R4", "response4", 0, null, "Some information 4", "user1", quarterHourAgo)
+      .addResponse("ASSAULT-Q1-R5", "response5", 1, null, "Some information 5", "user1", quarterHourAgo)
 
     TestTransaction.flagForCommit()
     TestTransaction.end()
@@ -336,10 +336,10 @@ class ReportRepositoryTest : IntegrationTestBase() {
     report.changeType(Type.ASSAULT_5, now, "user5")
 
     report.addQuestion("SOME_QUESTION", "Another question?", 4)
-      .addResponse("YES", null, 0, "Yes", "user1", now)
-      .addResponse("NO", null, 1, "No", "user1", now)
-      .addResponse("MAYBE", null, 2, "Maybe", "user1", now)
-      .addResponse("OTHER", null, 3, "Other", "user1", now)
+      .addResponse("SOME_QUESTION_YES", "YES", null, 0, "Yes", "user1", now)
+      .addResponse("SOME_QUESTION_NO", "NO", null, 1, "No", "user1", now)
+      .addResponse("SOME_QUESTION_MAYBE", "MAYBE", null, 2, "Maybe", "user1", now)
+      .addResponse("SOME_QUESTION_OTHER", "OTHER", null, 3, "Other", "user1", now)
 
     TestTransaction.flagForCommit()
     TestTransaction.end()

@@ -578,6 +578,7 @@ class Report(
       )
       question.responses.forEach { response ->
         historicalQuestion.addResponse(
+          code = response.code,
           response = response.response,
           sequence = response.sequence,
           responseDate = response.responseDate,

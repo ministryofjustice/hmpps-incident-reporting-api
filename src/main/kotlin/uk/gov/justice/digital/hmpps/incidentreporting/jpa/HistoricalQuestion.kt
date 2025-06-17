@@ -104,6 +104,7 @@ class HistoricalQuestion(
     nomisResponse.answer?.let {
       HistoricalResponse(
         historicalQuestion = this,
+        code = nomisResponse.questionResponseId.toString(),
         response = it,
         sequence = nomisResponse.responseSequence,
         responseDate = nomisResponse.responseDate,
@@ -119,6 +120,7 @@ class HistoricalQuestion(
   }
 
   fun addResponse(
+    code: String?,
     response: String,
     sequence: Int,
     responseDate: LocalDate? = null,
@@ -129,6 +131,7 @@ class HistoricalQuestion(
     addResponse(
       HistoricalResponse(
         historicalQuestion = this,
+        code = code,
         response = response,
         sequence = sequence,
         responseDate = responseDate,

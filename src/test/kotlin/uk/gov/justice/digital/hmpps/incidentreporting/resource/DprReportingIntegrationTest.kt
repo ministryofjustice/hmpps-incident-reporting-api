@@ -540,6 +540,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             question = "WHERE DID THE INCIDENT TAKE PLACE",
             1,
           ).addResponse(
+            code = "WHERE_CELL",
             response = "CELL",
             additionalInformation = "H1",
             sequence = 0,
@@ -550,17 +551,17 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             code = "1",
             question = "DID SELF HARM METHOD INVOLVE CUTTING",
             2,
-          ).addResponse(response = "YES", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+          ).addResponse(code = "WHERE_CELL", response = "YES", sequence = 0, recordedBy = "staff-1", recordedAt = now)
           selfHarm.addQuestion(
             code = "1",
             question = "TYPE OF IMPLEMENT USED",
             3,
-          ).addResponse(response = "Knife", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+          ).addResponse(code = "TYPE_KNIFE", response = "Knife", sequence = 0, recordedBy = "staff-1", recordedAt = now)
           selfHarm.addQuestion(
             code = "1",
             question = "WHAT OTHER METHOD OF SELF HARM WAS INVOLVED",
             4,
-          ).addResponse(response = "Mirror", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+          ).addResponse(code = "SM_MIRROR", response = "Mirror", sequence = 0, recordedBy = "staff-1", recordedAt = now)
 
           reportRepository.saveAndFlush(selfHarm)
 
@@ -811,7 +812,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             code = "1",
             question = "WAS A SERIOUS INJURY SUSTAINED",
             1,
-          ).addResponse(response = "YES", sequence = 0, recordedBy = "staff-1", recordedAt = now)
+          ).addResponse(code = "SERIOUS_YES", response = "YES", sequence = 0, recordedBy = "staff-1", recordedAt = now)
 
           reportRepository.saveAndFlush(violence)
 

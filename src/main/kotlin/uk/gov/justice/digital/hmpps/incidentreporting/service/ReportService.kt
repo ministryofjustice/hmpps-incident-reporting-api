@@ -326,6 +326,7 @@ class ReportService(
           var sequence = if (this.responses.isEmpty()) 0 else this.responses.last().sequence + 1
           request.responses.forEach {
             addResponse(
+              code = it.code,
               response = it.response,
               sequence = sequence,
               responseDate = it.responseDate,

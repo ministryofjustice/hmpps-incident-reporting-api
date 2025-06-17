@@ -111,6 +111,7 @@ class Question(
   fun createResponse(nomisResponse: NomisResponse, recordedAt: LocalDateTime): Response? = nomisResponse.answer?.let {
     Response(
       question = this,
+      code = nomisResponse.questionResponseId.toString(),
       response = it,
       sequence = nomisResponse.sequence,
       responseDate = nomisResponse.responseDate,
@@ -126,6 +127,7 @@ class Question(
   }
 
   fun addResponse(
+    code: String?,
     response: String,
     responseDate: LocalDate? = null,
     sequence: Int,
@@ -136,6 +138,7 @@ class Question(
     addResponse(
       Response(
         question = this,
+        code = code,
         response = response,
         sequence = sequence,
         responseDate = responseDate,

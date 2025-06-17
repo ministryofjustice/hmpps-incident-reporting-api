@@ -6,6 +6,7 @@
     "additionalInformation": "Amounts do not matter",
     "responses": [
       {
+        "code": null,
         "response": "Note with phone number",
         "sequence": 0,
         "responseDate": null,
@@ -14,6 +15,7 @@
         "recordedAt": "2023-12-05T12:34:56"
       },
       {
+        "code": null,
         "response": "Mobile phone",
         "sequence": 1,
         "responseDate": null,
@@ -22,6 +24,7 @@
         "recordedAt": "2023-12-05T12:34:56"
       },
       {
+        "code": null,
         "response": "Note with date",
         "sequence": 2,
         "responseDate": "2023-11-30",

@@ -27,28 +27,19 @@
   },
   {
     "code": "2",
-    "question": "Question #2",
+    "question": "Updated question #2",
     "sequence": 2,
     "responses": [
       {
-        "code": "2-1",
-        "response": "Response #1",
+        "code": "NEW-CODE",
+        "response": "New response",
         "sequence": 0,
-        "responseDate": "2023-12-04",
-        "additionalInformation": "Prose #1",
-        "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56"
-      },
-      {
-        "code": "2-2",
-        "response": "Response #2",
-        "sequence": 1,
-        "responseDate": "2023-12-03",
-        "additionalInformation": "Prose #2",
-        "recordedBy": "some-user",
+        "responseDate": null,
+        "additionalInformation": null,
+        "recordedBy": "request-user",
         "recordedAt": "2023-12-05T12:34:56"
       }
     ],
-    "additionalInformation": "Explanation #2"
+    "additionalInformation": "Updated explanation #2"
   }
 ]

@@ -22,7 +22,11 @@ class Response(
   @ManyToOne(fetch = FetchType.LAZY)
   val question: Question,
 
-  // TODO: should we add a `val code: String` like in Question?
+  /**
+   * Identifier that refers to a specific answer for an incident type.
+   * TODO: remove nullable once migrated.
+   */
+  val code: String?,
 
   val sequence: Int,
 
@@ -48,7 +52,7 @@ class Response(
   companion object {
     private val COMPARATOR = compareBy<Response>
       { it.question }
-      .thenBy { it.sequence }
+      .thenBy { it.sequence } // TODO: replace with code once not nullable
   }
 
   override fun compareTo(other: Response) = COMPARATOR.compare(this, other)
@@ -72,10 +76,11 @@ class Response(
   }
 
   override fun toString(): String {
-    return "Response(id=$id, questionId=${question.id}, sequence=$sequence, response=$response)"
+    return "Response(id=$id, questionId=${question.id}, code=$code, sequence=$sequence, response=$response)"
   }
 
   fun toDto() = ResponseDto(
+    code = code,
     response = response,
     sequence = sequence,
     responseDate = responseDate,
