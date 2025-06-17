@@ -5,6 +5,7 @@
     "sequence": 1,
     "responses": [
       {
+        "code": "1-1",
         "response": "Response #1",
         "sequence": 0,
         "responseDate": "2023-12-04",
@@ -13,6 +14,7 @@
         "recordedAt": "2023-12-05T12:34:56"
       },
       {
+        "code": "1-2",
         "response": "Response #2",
         "sequence": 1,
         "responseDate": "2023-12-03",
@@ -29,6 +31,7 @@
     "sequence": 2,
     "responses": [
       {
+        "code": "2-1",
         "response": "Response #1",
         "sequence": 0,
         "responseDate": "2023-12-04",
@@ -37,6 +40,7 @@
         "recordedAt": "2023-12-05T12:34:56"
       },
       {
+        "code": "2-2",
         "response": "Response #2",
         "sequence": 1,
         "responseDate": "2023-12-03",
@@ -54,6 +58,7 @@
     "additionalInformation": "Amounts do not matter",
     "responses": [
       {
+        "code": null,
         "response": "Note with phone number",
         "sequence": 0,
         "responseDate": null,
@@ -62,6 +67,7 @@
         "recordedAt": "2023-12-05T12:34:56"
       },
       {
+        "code": null,
         "response": "Mobile phone",
         "sequence": 1,
         "responseDate": null,
@@ -70,6 +76,7 @@
         "recordedAt": "2023-12-05T12:34:56"
       },
       {
+        "code": null,
         "response": "Note with date",
         "sequence": 2,
         "responseDate": "2023-11-30",
@@ -86,6 +93,7 @@
     "additionalInformation": null,
     "responses": [
       {
+        "code": null,
         "response": "No",
         "sequence": 0,
         "responseDate": null,
@@ -102,6 +110,7 @@
     "additionalInformation": null,
     "responses": [
       {
+        "code": null,
         "response": "Yes",
         "sequence": 0,
         "responseDate": "2023-12-01",

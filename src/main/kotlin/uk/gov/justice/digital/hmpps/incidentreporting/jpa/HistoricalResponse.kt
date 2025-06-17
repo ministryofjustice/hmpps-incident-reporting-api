@@ -22,7 +22,8 @@ class HistoricalResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val historicalQuestion: HistoricalQuestion,
 
-  // TODO: should we add a `val code: String` like in HistoricalQuestion?
+  // TODO: remove nullable once migrated.
+  val code: String?,
 
   val sequence: Int,
 
@@ -48,7 +49,7 @@ class HistoricalResponse(
   companion object {
     private val COMPARATOR = compareBy<HistoricalResponse>
       { it.historicalQuestion }
-      .thenBy { it.sequence }
+      .thenBy { it.sequence } // TODO: replace with code once not nullable
   }
 
   override fun compareTo(other: HistoricalResponse) = COMPARATOR.compare(this, other)
@@ -77,6 +78,7 @@ class HistoricalResponse(
   }
 
   fun toDto() = HistoricalResponseDto(
+    code = code,
     response = response,
     sequence = sequence,
     responseDate = responseDate,

@@ -106,6 +106,7 @@ fun buildReport(
     )
     (1..generateResponses).forEach { responseIndex ->
       question.addResponse(
+        code = "$questionIndex-$responseIndex",
         response = "Response #$responseIndex",
         sequence = responseIndex - 1,
         responseDate = eventDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
@@ -131,6 +132,7 @@ fun buildReport(
       )
       (1..generateResponses).forEach { responseIndex ->
         historicalQuestion.addResponse(
+          code = "#$historyIndex-$responseIndex",
           response = "Historical response #$historyIndex-$responseIndex",
           responseDate = eventDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
           additionalInformation = "Prose #$responseIndex in history #$historyIndex",

@@ -186,7 +186,7 @@ class NomisSyncServiceTest {
 
   init {
     sampleReport.addQuestion("42", "What implement was used?", 1)
-      .addResponse("Razor", null, 0, null, reportedBy, now)
+      .addResponse("RAZOR", "Razor", null, 0, null, reportedBy, now)
     sampleReport.addStaffInvolved(
       sequence = 0,
       staffRole = StaffRole.PRESENT_AT_SCENE,

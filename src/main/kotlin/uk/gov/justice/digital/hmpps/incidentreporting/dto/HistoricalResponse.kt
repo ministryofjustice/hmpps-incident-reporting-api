@@ -11,6 +11,8 @@ import java.time.LocalDateTime
 )
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class HistoricalResponse(
+  @Schema(description = "Unique identifier for a response to a question", nullable = true)
+  val code: String?,
   @Schema(description = "The response text as seen by downstream data consumers")
   val response: String,
   // TODO: sequences are only being exposed while we sort out sync problems: they do not need to remain in the api contract

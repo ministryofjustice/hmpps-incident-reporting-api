@@ -3446,6 +3446,28 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         }
 
         @Test
+        fun `can update existing question with responses that contain codes in response`() {
+          val validUpdateRequest =
+            getResource("/questions-with-responses/update-request-with-responses-with-codes.json")
+          val expectedResponse = getResource("/questions-with-responses/update-response-with-responses-with-codes.json")
+          webTestClient.put().uri(urlWithQuestionsAndResponses)
+            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+            .header("Content-Type", "application/json")
+            .bodyValue(validUpdateRequest)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
+
+          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
+
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            whatChanged = WhatChanged.QUESTIONS,
+          )
+        }
+
+        @Test
         fun `can update existing question with responses`() {
           val validUpdateRequest = getResource("/questions-with-responses/update-request-with-responses.json")
           val expectedResponse = getResource("/questions-with-responses/update-response-with-responses.json")

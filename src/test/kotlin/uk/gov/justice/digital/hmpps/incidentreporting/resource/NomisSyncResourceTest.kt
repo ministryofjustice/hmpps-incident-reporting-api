@@ -1643,6 +1643,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "sequence": 1,
                     "responses": [
                       {
+                        "code": "10",
                         "response": "John",
                         "sequence": 0,
                         "responseDate": "2023-12-03",
@@ -1651,6 +1652,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
+                        "code": "11",
                         "response": "Trevor",
                         "sequence": 1,
                         "responseDate": null,
@@ -1659,6 +1661,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
+                        "code": "12",
                         "response": "Maybe someone else?",
                         "sequence": 2,
                         "responseDate": "2023-12-02",
@@ -1675,6 +1678,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "sequence": 2,
                     "responses": [
                       {
+                        "code": "13",
                         "response": "Cell",
                         "sequence": 0,
                         "responseDate": "2023-12-04",
@@ -1683,6 +1687,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
+                        "code": "14",
                         "response": "Landing",
                         "sequence": 1,
                         "responseDate": null,
@@ -1691,6 +1696,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
+                        "code": "15",
                         "response": "Kitchen",
                         "sequence": 2,
                         "responseDate": "2023-11-25",
@@ -1699,6 +1705,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "recordedAt": "2023-12-04T12:34:56"
                       },
                       {
+                        "code": "16",
                         "response": "Exercise area",
                         "sequence": 3,
                         "responseDate": null,
@@ -1723,6 +1730,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "sequence": 1,
                         "responses": [
                           {
+                            "code": "1",
                             "response": "Old answer 1",
                             "sequence": 0,
                             "responseDate": "2023-12-05",
@@ -1731,6 +1739,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                             "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
+                            "code": "2",
                             "response": "Old answer 2",
                             "sequence": 1,
                             "responseDate": null,
@@ -1739,6 +1748,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                             "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
+                            "code": "3",
                             "response": "Old answer 3",
                             "sequence": 2,
                             "responseDate": "2023-11-28",
@@ -1755,6 +1765,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "sequence": 2,
                         "responses": [
                           {
+                            "code": "4",
                             "response": "Old answer 4",
                             "sequence": 0,
                             "responseDate": "2023-12-04",
@@ -1763,6 +1774,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                             "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
+                            "code": "5",
                             "response": "Old answer 5",
                             "sequence": 1,
                             "responseDate": null,
@@ -1771,6 +1783,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                             "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
+                            "code": "6",
                             "response": "Old answer 6",
                             "sequence": 2,
                             "responseDate": "2023-11-27",
@@ -1795,6 +1808,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "sequence": 1,
                         "responses": [
                           {
+                            "code": "12",
                             "response": "Old old answer 1",
                             "sequence": 0,
                             "responseDate": null,
@@ -1803,6 +1817,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                             "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
+                            "code": "22",
                             "response": "Old old answer 2",
                             "sequence": 1,
                             "responseDate": null,
@@ -1819,6 +1834,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                         "sequence": 2,
                         "responses": [
                           {
+                            "code": "44",
                             "response": "Old old answer 1",
                             "sequence": 0,
                             "responseDate": null,
@@ -1827,6 +1843,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                             "recordedAt": "2023-12-04T12:34:56"
                           },
                           {
+                            "code": "55",
                             "response": "Old old answer 2",
                             "sequence": 1,
                             "responseDate": null,
@@ -1943,6 +1960,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         val q3 = newReport.addQuestion(code = "3", sequence = 3, question = "Q3")
 
         q1.addResponse(
+          code = "Q1-R1",
           response = "Q1-R1",
           responseDate = today,
           sequence = 0,
@@ -1952,6 +1970,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         )
 
         q1.addResponse(
+          code = "Q1-R2",
           response = "Q1-R2",
           responseDate = today,
           sequence = 1,
@@ -1961,6 +1980,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         )
 
         q2.addResponse(
+          code = "Q2-R1",
           response = "Q2-R1",
           responseDate = today,
           sequence = 0,
@@ -1970,6 +1990,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         )
 
         q3.addResponse(
+          code = "Q3-R1",
           response = "Q3-R1",
           responseDate = today,
           sequence = 0,
