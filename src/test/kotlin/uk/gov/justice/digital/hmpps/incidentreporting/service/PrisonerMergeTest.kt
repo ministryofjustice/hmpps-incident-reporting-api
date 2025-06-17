@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.microsoft.applicationinsights.TelemetryClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -17,14 +16,10 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.prisonersearch.Prisoner
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
-import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
-import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
-import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.zoneId
+import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
@@ -33,9 +28,8 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @DisplayName("Prisoner merging and booking moving")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@ActiveProfiles("test")
-class PrisonerMergeTest {
+@Transactional
+class PrisonerMergeTest : SqsIntegrationTestBase() {
   private val reportRepository: ReportRepository = mock()
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
@@ -50,9 +44,6 @@ class PrisonerMergeTest {
     authenticationHolder = authenticationHolder,
     clock = clock,
   )
-
-  @Autowired
-  protected lateinit var objectMapper: ObjectMapper
 
   @DisplayName("Replacing prisoner numbers")
   @Nested
