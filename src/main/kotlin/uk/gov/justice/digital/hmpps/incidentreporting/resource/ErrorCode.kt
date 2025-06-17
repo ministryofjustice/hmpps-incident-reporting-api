@@ -10,7 +10,6 @@ enum class ErrorCode(
   val errorCode: Int,
 ) {
   ValidationFailure(100),
-  EventNotFound(201),
   ReportNotFound(301),
   ReportAlreadyExists(302),
   ReportModifedInDps(303),

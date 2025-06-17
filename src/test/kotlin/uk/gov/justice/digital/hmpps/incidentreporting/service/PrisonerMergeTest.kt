@@ -26,7 +26,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTes
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.zoneId
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
@@ -38,7 +37,6 @@ import java.util.UUID
 @ActiveProfiles("test")
 class PrisonerMergeTest {
   private val reportRepository: ReportRepository = mock()
-  private val eventRepository: EventRepository = mock()
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val authenticationHolder: HmppsAuthenticationHolder = mock()
@@ -46,7 +44,6 @@ class PrisonerMergeTest {
 
   private val reportService = ReportService(
     reportRepository = reportRepository,
-    eventRepository = eventRepository,
     prisonerInvolvementRepository = prisonerInvolvementRepository,
     prisonerSearchService = prisonerSearchService,
     telemetryClient = telemetryClient,

@@ -24,10 +24,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeTypeRequ
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateEventReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
@@ -41,7 +39,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterBySource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByStatuses
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByTypes
-import uk.gov.justice.digital.hmpps.incidentreporting.resource.EventNotFoundException
 import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.time.Clock
 import java.time.LocalDate
@@ -54,7 +51,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report as ReportEntity
 @Transactional(readOnly = true)
 class ReportService(
   private val reportRepository: ReportRepository,
-  private val eventRepository: EventRepository,
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository,
   private val prisonerSearchService: PrisonerSearchService,
   private val telemetryClient: TelemetryClient,
@@ -127,15 +123,9 @@ class ReportService(
   }
 
   @Transactional
-  fun deleteReportById(id: UUID, deleteOrphanedEvents: Boolean = true): ReportWithDetails? {
+  fun deleteReportById(id: UUID): ReportWithDetails? {
     return reportRepository.findOneEagerlyById(id)?.let { report ->
-      val eventIdToDelete = if (deleteOrphanedEvents && report.event.reports.size == 1) {
-        report.event.id!!
-      } else {
-        null
-      }
       report.toDtoWithDetails().also {
-        report.event.reports.removeIf { it.id == id }
         reportRepository.deleteById(id)
 
         log.info("Deleted incident report reference=${report.reportReference} ID=${report.id}")
@@ -143,12 +133,6 @@ class ReportService(
           "Deleted incident report",
           it,
         )
-
-        eventIdToDelete?.let { eventId ->
-          eventRepository.deleteById(eventId)
-
-          log.info("Deleted event ID=$eventId")
-        }
       }
     }
   }
@@ -160,20 +144,8 @@ class ReportService(
 
     createReportRequest.validate(now = now)
 
-    val event = if (createReportRequest.linkedEventReference != null) {
-      eventRepository.findOneByEventReference(createReportRequest.linkedEventReference)
-        ?: throw EventNotFoundException(createReportRequest.linkedEventReference)
-    } else {
-      createReportRequest.createEvent(
-        eventRepository.generateEventReference(),
-        requestUsername = requestUsername,
-        now = now,
-      )
-    }
-
     val unsavedReport = createReportRequest.createReport(
       reportReference = reportRepository.generateReportReference(),
-      event = event,
       requestUsername = requestUsername,
       now = now,
     )
@@ -202,14 +174,9 @@ class ReportService(
         requestUsername = requestUsername,
         now = now,
       ).toDtoBasic().apply {
-        val changeMessage = if (updateReportRequest.updateEvent) {
-          "Updated incident report and event"
-        } else {
-          "Updated incident report"
-        }
-        log.info("$changeMessage reference=$reportReference ID=$id")
+        log.info("Updated incident report reference=$reportReference ID=$id")
         telemetryClient.trackEvent(
-          changeMessage,
+          "Updated incident report",
           this,
         )
       }

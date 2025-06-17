@@ -19,7 +19,7 @@ fun buildReport(
   status: Status = Status.DRAFT,
   type: Type = Type.FIND_6,
   reportingUsername: String = "USER1",
-  // all related entities apart from event are optionally generated:
+  // all "related objects" are optionally generated:
   generateDescriptionAddendums: Int = 0,
   generateStaffInvolvement: Int = 0,
   generatePrisonerInvolvement: Int = 0,
@@ -28,10 +28,10 @@ fun buildReport(
   generateResponses: Int = 0,
   generateHistory: Int = 0,
 ): Report {
-  val eventDateAndTime = reportTime.minusHours(1)
+  val incidentDateAndTime = reportTime.minusHours(1)
   val report = Report(
     reportReference = reportReference,
-    incidentDateAndTime = eventDateAndTime,
+    incidentDateAndTime = incidentDateAndTime,
     location = location,
     source = source,
     modifiedIn = source,
@@ -45,13 +45,6 @@ fun buildReport(
     reportedBy = reportingUsername,
     assignedTo = reportingUsername,
     modifiedBy = reportingUsername,
-    event = buildEvent(
-      eventReference = reportReference,
-      eventDateAndTime = eventDateAndTime,
-      reportDateAndTime = reportTime,
-      location = location,
-      reportingUsername = reportingUsername,
-    ),
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)
 
@@ -109,7 +102,7 @@ fun buildReport(
         code = "$questionIndex-$responseIndex",
         response = "Response #$responseIndex",
         sequence = responseIndex - 1,
-        responseDate = eventDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
+        responseDate = incidentDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
         additionalInformation = "Prose #$responseIndex",
         recordedBy = "some-user",
         recordedAt = reportTime,
@@ -134,7 +127,7 @@ fun buildReport(
         historicalQuestion.addResponse(
           code = "#$historyIndex-$responseIndex",
           response = "Historical response #$historyIndex-$responseIndex",
-          responseDate = eventDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
+          responseDate = incidentDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
           additionalInformation = "Prose #$responseIndex in history #$historyIndex",
           recordedBy = "some-user",
           recordedAt = reportTime,

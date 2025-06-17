@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Primary
 import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.EventRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import java.time.Clock
 
@@ -30,13 +29,9 @@ class SubjectAccessRequestResourceTest : SqsIntegrationTestBase() {
   @Autowired
   lateinit var reportRepository: ReportRepository
 
-  @Autowired
-  lateinit var eventRepository: EventRepository
-
   @BeforeEach
   fun setUp() {
     reportRepository.deleteAll()
-    eventRepository.deleteAll()
 
     reportRepository.save(
       buildReport(

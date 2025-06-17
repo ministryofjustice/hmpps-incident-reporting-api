@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisStatus
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.clock
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase.Companion.now
-import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Event
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 
 /**
  * Tests for edge cases when converting NOMIS DTOs to JPA entities.
@@ -47,10 +47,10 @@ class NomisDtoToJpaMappingEdgeCaseTest {
   @Nested
   inner class WhenCreatingNewReport {
     @Test
-    fun `report details should be copied to new report and event`() {
+    fun `report details should be copied to new report`() {
       val reportDto = minimalReportDto.copy()
 
-      val reportEntity = Event.createReport(reportDto)
+      val reportEntity = Report.createReport(reportDto)
       assertThat(reportEntity.title).isEqualTo("TITLE")
       assertThat(reportEntity.description).isEqualTo("DESCRIPTION")
       assertThat(reportEntity.reportReference).isEqualTo("112414323")
@@ -70,39 +70,24 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(reportEntity.historyOfStatuses).allSatisfy { status ->
         assertThat(status.status).isEqualTo(Status.AWAITING_REVIEW)
       }
-
-      val eventEntity = reportEntity.event
-      assertThat(eventEntity.title).isEqualTo("TITLE")
-      assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
-      assertThat(eventEntity.eventReference).isEqualTo("112414323")
-      assertThat(eventEntity.location).isEqualTo("MDI")
-      assertThat(eventEntity.modifiedBy).isEqualTo("user1")
     }
 
     @Test
     fun `missing report title adopts a fallback value`() {
       val reportDto = minimalReportDto.copy(title = null)
 
-      val reportEntity = Event.createReport(reportDto)
+      val reportEntity = Report.createReport(reportDto)
       assertThat(reportEntity.title).isEqualTo("NO DETAILS GIVEN")
       assertThat(reportEntity.description).isEqualTo("DESCRIPTION")
-
-      val eventEntity = reportEntity.event
-      assertThat(eventEntity.title).isEqualTo("NO DETAILS GIVEN")
-      assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
     }
 
     @Test
     fun `missing report description adopts a fallback value`() {
       val reportDto = minimalReportDto.copy(description = null)
 
-      val reportEntity = Event.createReport(reportDto)
+      val reportEntity = Report.createReport(reportDto)
       assertThat(reportEntity.title).isEqualTo("TITLE")
       assertThat(reportEntity.description).isEqualTo("NO DETAILS GIVEN")
-
-      val eventEntity = reportEntity.event
-      assertThat(eventEntity.title).isEqualTo("TITLE")
-      assertThat(eventEntity.description).isEqualTo("NO DETAILS GIVEN")
     }
   }
 
@@ -120,7 +105,7 @@ class NomisDtoToJpaMappingEdgeCaseTest {
     )
 
     @Test
-    fun `report details should be copied to existing report and event`() {
+    fun `report details should be copied to existing report`() {
       val existingReportEntity = buildExistingReport()
       val reportDto = minimalReportDto.copy()
 
@@ -135,13 +120,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(existingReportEntity.modifiedBy).isEqualTo("user1")
       assertThat(existingReportEntity.source).isEqualTo(InformationSource.NOMIS)
       assertThat(existingReportEntity.modifiedIn).isEqualTo(InformationSource.NOMIS)
-
-      val eventEntity = existingReportEntity.event
-      assertThat(eventEntity.title).isEqualTo("TITLE")
-      assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
-      assertThat(eventEntity.createdAt).isEqualTo(now.minusMinutes(4))
-      assertThat(eventEntity.modifiedAt).isEqualTo(now.minusMinutes(4))
-      assertThat(eventEntity.modifiedBy).isEqualTo("user1")
     }
 
     @Test
@@ -155,10 +133,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       )
       assertThat(existingReportEntity.title).isEqualTo("NO DETAILS GIVEN")
       assertThat(existingReportEntity.description).isEqualTo("DESCRIPTION")
-
-      val eventEntity = existingReportEntity.event
-      assertThat(eventEntity.title).isEqualTo("NO DETAILS GIVEN")
-      assertThat(eventEntity.description).isEqualTo("DESCRIPTION")
     }
 
     @Test
@@ -172,10 +146,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       )
       assertThat(existingReportEntity.title).isEqualTo("TITLE")
       assertThat(existingReportEntity.description).isEqualTo("NO DETAILS GIVEN")
-
-      val eventEntity = existingReportEntity.event
-      assertThat(eventEntity.title).isEqualTo("TITLE")
-      assertThat(eventEntity.description).isEqualTo("NO DETAILS GIVEN")
     }
 
     @Test

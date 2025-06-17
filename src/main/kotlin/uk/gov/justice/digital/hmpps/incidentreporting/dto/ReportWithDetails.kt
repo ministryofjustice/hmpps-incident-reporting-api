@@ -30,9 +30,6 @@ class ReportWithDetails(
   createdInNomis: Boolean,
   lastModifiedInNomis: Boolean,
 
-  @Schema(description = "Event linking multiple incident reports together")
-  val event: Event,
-
   @Schema(description = "The question-response pairs that make up this report")
   val questions: List<Question>,
   @Schema(description = "Prior versions of this report, created when the report type changes")

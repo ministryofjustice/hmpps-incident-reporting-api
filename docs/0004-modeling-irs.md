@@ -33,17 +33,6 @@ classDiagram
     int sequence
     String text
   }
-  class Event {
-    UUID id
-    LocalDateTime createdAt
-    String description
-    LocalDateTime eventDateAndTime
-    String eventReference
-    String location
-    LocalDateTime modifiedAt
-    String modifiedBy
-    String title
-  }
   class HistoricalQuestion {
     Long id
     String additionalInformation
@@ -136,7 +125,6 @@ classDiagram
   Question "0..*" <--> "1" Report
   Question "1" <--> "1..*" Response
   Report "1" <--> "0..*" DescriptionAddendum
-  Report "1..*" <--> "1" Event
   Report "1" <--> "0..*" History
   Report "1" <--> "0..*" StaffInvolvement
   StatusHistory "1..*" <--> "1" Report
@@ -198,17 +186,6 @@ classDiagram
     varchar(255) last_name
     integer id
   }
-  class event {
-    varchar(25) event_reference
-    timestamp event_date_and_time
-    varchar(255) title
-    text description
-    varchar(20) location
-    timestamp created_at
-    varchar(120) modified_by
-    timestamp modified_at
-    uuid id
-  }
   class historical_question {
     integer history_id
     integer sequence
@@ -254,7 +231,6 @@ classDiagram
     integer id
   }
   class report {
-    uuid event_id
     varchar(25) report_reference
     varchar(255) title
     text description
@@ -310,7 +286,6 @@ classDiagram
   history --> report: report_id
   prisoner_involvement --> report: report_id
   question --> report: report_id
-  report --> event: event_id
   response --> question: question_id
   staff_involvement --> report: report_id
   status_history --> report: report_id

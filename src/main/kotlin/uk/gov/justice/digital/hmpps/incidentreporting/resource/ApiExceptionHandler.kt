@@ -237,21 +237,6 @@ class ApiExceptionHandler {
       )
   }
 
-  @ExceptionHandler(EventNotFoundException::class)
-  fun handleEventNotFound(e: EventNotFoundException): ResponseEntity<ErrorResponse> {
-    log.debug(e.message)
-    return ResponseEntity
-      .status(HttpStatus.NOT_FOUND)
-      .body(
-        ErrorResponse(
-          status = HttpStatus.NOT_FOUND,
-          errorCode = ErrorCode.EventNotFound,
-          userMessage = "Event not found: ${e.message}",
-          developerMessage = e.message,
-        ),
-      )
-  }
-
   @ExceptionHandler(ReportNotFoundException::class)
   fun handleReportNotFound(e: ReportNotFoundException): ResponseEntity<ErrorResponse> {
     log.debug(e.message)
@@ -353,12 +338,6 @@ class ApiExceptionHandler {
         ),
       )
   }
-}
-
-class EventNotFoundException(
-  description: String,
-) : Exception("There is no event found: $description") {
-  constructor(id: UUID) : this(id.toString())
 }
 
 class ReportNotFoundException(
