@@ -10,7 +10,7 @@ generic-service:
   replicaCount: 4
 
   image:
-    repository: quay.io/hmpps/hmpps-incident-reporting-api
+    repository: ghcr.io/ministryofjustice/hmpps-incident-reporting-api
     tag: app_version # override at deployment time
     port: 8080
 
