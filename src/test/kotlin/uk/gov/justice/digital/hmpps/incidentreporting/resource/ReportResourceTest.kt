@@ -915,7 +915,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             JsonCompareMode.LENIENT,
           )
 
-        assertThatDomainEventWasSent("incident.report.created", null)
+        assertThatDomainEventWasSent(
+          "incident.report.created",
+          null,
+          "MDI",
+          WhatChanged.ANYTHING,
+        )
       }
     }
   }
@@ -1095,7 +1100,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "11124143",
-          InformationSource.DPS,
+          "LEI",
           WhatChanged.BASIC_REPORT,
         )
       }
@@ -1168,7 +1173,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "11124143",
-          InformationSource.DPS,
+          updateReportRequest.location ?: "MDI",
           WhatChanged.BASIC_REPORT,
         )
       }
@@ -1224,7 +1229,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "11124149",
-          InformationSource.DPS,
+          "MDI",
           WhatChanged.BASIC_REPORT,
         )
       }
@@ -1450,7 +1455,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "11124143",
-          InformationSource.DPS,
+          "MDI",
           WhatChanged.STATUS,
         )
       }
@@ -1810,7 +1815,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "11124146",
-          InformationSource.DPS,
+          "MDI",
           WhatChanged.TYPE,
         )
       }
@@ -1933,7 +1938,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         assertThatDomainEventWasSent(
           "incident.report.amended",
           "11124146",
-          InformationSource.DPS,
+          "MDI",
           WhatChanged.TYPE,
         )
       }
@@ -2032,7 +2037,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
         assertThat(reportRepository.findOneEagerlyById(reportId)).isNull()
 
-        assertThatDomainEventWasSent("incident.report.deleted", "11124143")
+        assertThatDomainEventWasSent(
+          "incident.report.deleted",
+          "11124143",
+          "MDI",
+          WhatChanged.ANYTHING,
+        )
       }
     }
   }
@@ -2216,7 +2226,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124143",
-            InformationSource.DPS,
+            "MDI",
             whatChanged,
           )
         }
@@ -2234,7 +2244,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "11124146", InformationSource.DPS, whatChanged)
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            "MDI",
+            whatChanged,
+          )
         }
 
         @Test
@@ -2411,7 +2426,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "11124146", InformationSource.DPS, whatChanged)
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            "MDI",
+            whatChanged,
+          )
         }
 
         @ParameterizedTest(name = "can update {0} related object partially")
@@ -2433,7 +2453,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "11124146", InformationSource.DPS, whatChanged)
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            "MDI",
+            whatChanged,
+          )
         }
 
         @DisplayName("can update nullable properties of a related object")
@@ -2556,7 +2581,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "11124146", InformationSource.DPS, whatChanged)
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            "MDI",
+            whatChanged,
+          )
         }
 
         @Test
@@ -2571,7 +2601,12 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
           assertThatReportWasModified(existingReportWithRelatedObjects.id!!)
 
-          assertThatDomainEventWasSent("incident.report.amended", "11124146", InformationSource.DPS, whatChanged)
+          assertThatDomainEventWasSent(
+            "incident.report.amended",
+            "11124146",
+            "MDI",
+            whatChanged,
+          )
         }
 
         @Test
@@ -3167,7 +3202,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124143",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 
@@ -3187,7 +3223,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 
@@ -3210,7 +3247,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 
@@ -3232,7 +3270,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 
@@ -3253,7 +3292,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 
@@ -3275,7 +3315,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 
@@ -3297,7 +3338,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 
@@ -3448,7 +3490,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 
@@ -3471,7 +3514,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           assertThatDomainEventWasSent(
             "incident.report.amended",
             "11124146",
-            whatChanged = WhatChanged.QUESTIONS,
+            "MDI",
+            WhatChanged.QUESTIONS,
           )
         }
 

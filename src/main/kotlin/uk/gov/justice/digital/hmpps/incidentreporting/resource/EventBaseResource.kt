@@ -16,7 +16,7 @@ abstract class EventBaseResource {
   protected fun <T : ReportBasic> eventPublishAndAudit(
     event: ReportDomainEventType,
     informationSource: InformationSource,
-    whatChanged: WhatChanged? = null,
+    whatChanged: WhatChanged,
     block: () -> T,
   ): T = block().also { report ->
     eventPublishAndAuditService.publishEvent(
@@ -25,25 +25,10 @@ abstract class EventBaseResource {
         id = report.id,
         reportReference = report.reportReference,
         source = informationSource,
+        location = report.location,
         whatChanged = whatChanged,
       ),
       auditData = report,
-    )
-  }
-
-  protected fun <T : ReportBasic> eventPublishAndAuditNomisEvent(
-    event: ReportDomainEventType,
-    whatChanged: WhatChanged? = null,
-    block: () -> T,
-  ): T = block().also { report ->
-    eventPublishAndAuditService.publishEvent(
-      eventType = event,
-      additionalInformation = AdditionalInformation(
-        id = report.id,
-        reportReference = report.reportReference,
-        source = InformationSource.NOMIS,
-        whatChanged = whatChanged,
-      ),
     )
   }
 }
