@@ -136,9 +136,10 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
 
   fun assertThatDomainEventWasSent(
     eventType: String,
-    reportReference: String?,
+    reportReference: String?, // nullable because caller may not know reference (eg when generated)
+    location: String,
+    whatChanged: WhatChanged,
     source: InformationSource = InformationSource.DPS,
-    whatChanged: WhatChanged? = null,
   ) {
     getDomainEvents(1).let {
       val event = it[0]
@@ -147,6 +148,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
         assertThat(event.additionalInformation?.reportReference).isEqualTo(reportReference)
       }
       assertThat(event.additionalInformation?.source).isEqualTo(source)
+      assertThat(event.additionalInformation?.location).isEqualTo(location)
       assertThat(event.additionalInformation?.whatChanged).isEqualTo(whatChanged)
     }
   }

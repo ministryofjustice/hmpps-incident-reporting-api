@@ -95,7 +95,8 @@ data class AdditionalInformation(
   /** Human-readable reference */
   val reportReference: String,
   val source: InformationSource,
-  val whatChanged: WhatChanged? = null,
+  val location: String,
+  val whatChanged: WhatChanged,
 )
 
 data class HMPPSDomainEvent(

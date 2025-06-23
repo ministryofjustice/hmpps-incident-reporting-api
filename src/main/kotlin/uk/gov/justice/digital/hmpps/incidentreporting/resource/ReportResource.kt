@@ -471,6 +471,7 @@ class ReportResource(
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_CREATED,
       InformationSource.DPS,
+      WhatChanged.ANYTHING,
     ) {
       reportService.createReport(createReportRequest)
     }
@@ -703,6 +704,7 @@ class ReportResource(
     return eventPublishAndAudit(
       ReportDomainEventType.INCIDENT_REPORT_DELETED,
       InformationSource.DPS,
+      WhatChanged.ANYTHING,
     ) {
       reportService.deleteReportById(id)
         ?: throw ReportNotFoundException(id)
