@@ -513,7 +513,7 @@ class Report(
   fun addQuestion(
     code: String,
     question: String,
-    questionLabel: String?,
+    label: String?,
     sequence: Int,
     additionalInformation: String? = null,
   ): Question {
@@ -521,7 +521,7 @@ class Report(
       report = this,
       code = code,
       question = question,
-      questionLabel = questionLabel,
+      label = label,
       sequence = sequence,
       additionalInformation = additionalInformation,
     ).also { questions.add(it) }
@@ -529,7 +529,7 @@ class Report(
 
   fun addQuestion(nomisQuestion: NomisQuestion): Question = this.addQuestion(
     code = nomisQuestion.questionId.toString(),
-    questionLabel = nomisQuestion.questionLabel,
+    label = nomisQuestion.questionLabel,
     sequence = nomisQuestion.sequence,
     question = nomisQuestion.question,
   )
@@ -600,7 +600,7 @@ class Report(
       val historicalQuestion = history.addQuestion(
         code = question.code,
         question = question.question,
-        questionLabel = question.questionLabel.toString(),
+        label = question.label,
         sequence = question.sequence,
         additionalInformation = question.additionalInformation,
       )

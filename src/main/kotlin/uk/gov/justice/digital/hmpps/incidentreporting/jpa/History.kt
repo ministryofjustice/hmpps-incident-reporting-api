@@ -99,7 +99,7 @@ class History(
   fun addQuestion(
     code: String,
     question: String,
-    questionLabel: String,
+    label: String?,
     sequence: Int,
     additionalInformation: String? = null,
   ): HistoricalQuestion {
@@ -107,7 +107,7 @@ class History(
       history = this,
       code = code,
       question = question,
-      questionLabel = questionLabel,
+      label = label,
       sequence = sequence,
       additionalInformation = additionalInformation,
     ).also { questions.add(it) }
@@ -117,7 +117,7 @@ class History(
     code = historyQuestion.questionId.toString(),
     sequence = historyQuestion.sequence,
     question = historyQuestion.question,
-    questionLabel = historyQuestion.questionLabel,
+    label = historyQuestion.label,
   )
 
   fun toDto() = HistoryDto(

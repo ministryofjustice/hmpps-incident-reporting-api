@@ -12,7 +12,7 @@ data class NomisHistoryQuestion(
   @Schema(description = "The Question being asked")
   val question: String,
   @Schema(description = "The question text as seen by the users in DPS", nullable = true)
-  val questionLabel: String,
+  val label: String?,
   @Schema(description = "Historical list of Responses to this question")
   val answers: List<NomisHistoryResponse> = listOf(),
 )

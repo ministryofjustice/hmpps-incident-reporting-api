@@ -285,7 +285,7 @@ class ReportService(
             addQuestion(
               code = request.code,
               question = request.question,
-              questionLabel = request.questionLabel,
+              label = request.label,
               sequence = sequence,
               additionalInformation = request.additionalInformation,
             )

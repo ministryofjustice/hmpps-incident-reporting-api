@@ -32,7 +32,7 @@ data class AddOrUpdateQuestionWithResponses(
     minLength = 1,
   )
   @field:Size(min = 1)
-  val questionLabel: String,
+  val label: String?,
   @Schema(description = "The responses to this question", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
   @field:Valid
   @field:Size(min = 1)
