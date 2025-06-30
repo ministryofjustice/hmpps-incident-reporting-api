@@ -26,6 +26,13 @@ data class AddOrUpdateQuestionWithResponses(
   )
   @field:Size(min = 1)
   val question: String,
+  @Schema(
+    description = "The question text as seen by the users in DPS",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    minLength = 1,
+  )
+  @field:Size(min = 1)
+  val questionLabel: String,
   @Schema(description = "The responses to this question", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
   @field:Valid
   @field:Size(min = 1)

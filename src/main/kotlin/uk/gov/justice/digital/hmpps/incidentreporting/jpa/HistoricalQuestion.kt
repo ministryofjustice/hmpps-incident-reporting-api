@@ -41,6 +41,12 @@ class HistoricalQuestion(
   var question: String,
 
   /**
+   * The question text as seen by the users in DPS
+   */
+  // TODO: remove nullable once migrated?
+  var questionLabel: String?,
+
+  /**
    * Unused: could be a free-text response to a question
    */
   val additionalInformation: String? = null,
@@ -146,6 +152,7 @@ class HistoricalQuestion(
   fun toDto() = HistoricalQuestionDto(
     code = code,
     question = question,
+    questionLabel = questionLabel.toString(),
     sequence = sequence,
     additionalInformation = additionalInformation,
     responses = responses.map { it.toDto() },

@@ -11,6 +11,8 @@ data class NomisHistoryQuestion(
   val sequence: Int,
   @Schema(description = "The Question being asked")
   val question: String,
+  @Schema(description = "The question text as seen by the users in DPS", nullable = true)
+  val questionLabel: String,
   @Schema(description = "Historical list of Responses to this question")
   val answers: List<NomisHistoryResponse> = listOf(),
 )
