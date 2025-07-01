@@ -296,6 +296,7 @@ class ReportService(
             addResponse(
               code = it.code,
               response = it.response,
+              label = it.label,
               sequence = sequence,
               responseDate = it.responseDate,
               recordedBy = requestUsername,

@@ -102,6 +102,7 @@ fun buildReport(
       question.addResponse(
         code = "$questionIndex-$responseIndex",
         response = "Response #$responseIndex",
+        label = "Label #$responseIndex",
         sequence = responseIndex - 1,
         responseDate = incidentDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
         additionalInformation = "Prose #$responseIndex",
@@ -129,6 +130,7 @@ fun buildReport(
         historicalQuestion.addResponse(
           code = "#$historyIndex-$responseIndex",
           response = "Historical response #$historyIndex-$responseIndex",
+          label = "Historical label #$historyIndex-$responseIndex",
           responseDate = incidentDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
           additionalInformation = "Prose #$responseIndex in history #$historyIndex",
           recordedBy = "some-user",

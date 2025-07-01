@@ -608,6 +608,7 @@ class Report(
         historicalQuestion.addResponse(
           code = response.code,
           response = response.response,
+          label = response.label,
           sequence = response.sequence,
           responseDate = response.responseDate,
           additionalInformation = response.additionalInformation,

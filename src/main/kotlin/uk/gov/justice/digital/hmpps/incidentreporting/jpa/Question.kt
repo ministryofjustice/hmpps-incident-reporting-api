@@ -118,6 +118,7 @@ class Question(
       question = this,
       code = nomisResponse.questionResponseId.toString(),
       response = it,
+      label = it,
       sequence = nomisResponse.sequence,
       responseDate = nomisResponse.responseDate,
       additionalInformation = nomisResponse.comment,
@@ -134,6 +135,7 @@ class Question(
   fun addResponse(
     code: String,
     response: String,
+    label: String,
     responseDate: LocalDate? = null,
     sequence: Int,
     additionalInformation: String? = null,
@@ -145,6 +147,7 @@ class Question(
         question = this,
         code = code,
         response = response,
+        label = label,
         sequence = sequence,
         responseDate = responseDate,
         additionalInformation = additionalInformation,

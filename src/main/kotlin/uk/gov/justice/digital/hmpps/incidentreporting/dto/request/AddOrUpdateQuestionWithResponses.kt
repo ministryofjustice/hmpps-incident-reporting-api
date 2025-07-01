@@ -64,6 +64,13 @@ data class AddOrUpdateQuestionResponse(
   @field:Size(min = 1)
   val response: String,
   @Schema(
+    description = "The response text as seen by the user at the point of entry",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    minLength = 1,
+  )
+  @field:Size(min = 1)
+  val label: String,
+  @Schema(
     description = "Optional response as a date",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
