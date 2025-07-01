@@ -41,7 +41,6 @@ data class AddOrUpdateQuestionWithResponses(
 
 @Schema(description = "A response to a question", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class AddOrUpdateQuestionResponse(
-  // TODO: WARNING will overwrite any existing response code if null.  This will change once we have the code as mandatory
   @Schema(
     description = "The response code; used as a unique identifier within one report",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -49,7 +48,7 @@ data class AddOrUpdateQuestionResponse(
     maxLength = 60,
   )
   @field:Size(min = 1, max = 60)
-  val code: String? = null,
+  val code: String,
   @Schema(
     description = "The response text as seen by downstream data consumers",
     requiredMode = Schema.RequiredMode.REQUIRED,

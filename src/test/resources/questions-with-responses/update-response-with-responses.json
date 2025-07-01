@@ -31,7 +31,7 @@
     "sequence": 2,
     "responses": [
       {
-        "code": null,
+        "code": "2-2",
         "response": "New response",
         "sequence": 0,
         "responseDate": null,
