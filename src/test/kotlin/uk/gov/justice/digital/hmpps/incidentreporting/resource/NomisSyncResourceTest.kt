@@ -1397,7 +1397,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 1,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
-                "Who was involved?",
+                "WHO WAS INVOLVED",
                 listOf(
                   NomisResponse(
                     10,
@@ -1436,7 +1436,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 2,
                 createDateTime = now,
                 createdBy = reportingStaff.username,
-                "Where did this happen?",
+                "WHERE DID THIS HAPPEN",
                 listOf(
                   NomisResponse(
                     13,
@@ -1589,7 +1589,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "questions": [
                   {
                     "code": "4",
-                    "question": "Who was involved?",
+                    "question": "WHO WAS INVOLVED",
+                    "label": "WHO WAS INVOLVED",
                     "sequence": 1,
                     "responses": [
                       {
@@ -1624,7 +1625,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                   },
                   {
                     "code": "5",
-                    "question": "Where did this happen?",
+                    "question": "WHERE DID THIS HAPPEN",
+                    "label": "WHERE DID THIS HAPPEN",
                     "sequence": 2,
                     "responses": [
                       {
@@ -1677,6 +1679,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "1",
                         "question": "Old question 1",
+                        "label": "Old question 1",
                         "sequence": 1,
                         "responses": [
                           {
@@ -1712,6 +1715,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "2",
                         "question": "Old question 2",
+                        "label": "Old question 2",
                         "sequence": 2,
                         "responses": [
                           {
@@ -1755,6 +1759,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "11",
                         "question": "Old old question 1",
+                        "label": "Old old question 1",
                         "sequence": 1,
                         "responses": [
                           {
@@ -1781,6 +1786,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "22",
                         "question": "Old old question 2",
+                        "label": "Old old question 2",
                         "sequence": 2,
                         "responses": [
                           {
