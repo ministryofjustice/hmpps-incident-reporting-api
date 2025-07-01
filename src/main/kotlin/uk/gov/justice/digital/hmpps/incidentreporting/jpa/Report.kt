@@ -122,9 +122,6 @@ class Report(
   @SortNatural
   val historyOfStatuses: SortedSet<StatusHistory> = sortedSetOf(),
 
-  // TODO: what's this for?
-  val assignedTo: String,
-
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val staffInvolved: SortedSet<StaffInvolvement> = sortedSetOf(),
@@ -174,7 +171,6 @@ class Report(
         modifiedBy = nomisReport.lastModifiedBy ?: nomisReport.createdBy,
         source = InformationSource.NOMIS,
         modifiedIn = InformationSource.NOMIS,
-        assignedTo = nomisReport.reportingStaff.username,
       )
       report.addStatusHistory(status, nomisReport.reportedDateTime, nomisReport.reportingStaff.username)
 
@@ -662,7 +658,6 @@ class Report(
     reportedBy = reportedBy,
     reportedAt = reportedAt,
     status = status,
-    assignedTo = assignedTo,
     createdAt = createdAt,
     modifiedAt = modifiedAt,
     modifiedBy = modifiedBy,
@@ -682,7 +677,6 @@ class Report(
     reportedBy = reportedBy,
     reportedAt = reportedAt,
     status = status,
-    assignedTo = assignedTo,
     createdAt = createdAt,
     modifiedAt = modifiedAt,
     modifiedBy = modifiedBy,
