@@ -117,20 +117,6 @@ class ReportResource(
       @Size(min = 2, max = 20)
       String,
       >? = null,
-    // TODO: `prisonId` can be removed once NOMIS reconciliation checks are updated to use `location`
-    @Schema(
-      description = "Filter by given location, typically a prison ID. Ignored if `location` is also used.",
-      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
-      nullable = true,
-      deprecated = true,
-      defaultValue = "null",
-      example = "MDI",
-      minLength = 2,
-      maxLength = 6,
-    )
-    @RequestParam(required = false)
-    @Size(min = 2, max = 6)
-    prisonId: String? = null,
     @Schema(
       description = "Filter by given information source",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -246,7 +232,7 @@ class ReportResource(
     if (pageable.pageSize > 50) {
       throw ValidationException("Page size must be 50 or less")
     }
-    val locations = location ?: if (prisonId != null) listOf(prisonId) else emptyList()
+    val locations = location ?: emptyList()
     return reportService.getBasicReports(
       reference = reference,
       locations = locations,

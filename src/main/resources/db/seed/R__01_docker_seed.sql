@@ -9,7 +9,7 @@ $$
             title, description,
             type, status, source,
             incident_date_and_time, location,
-            reported_at, reported_by, assigned_to,
+            reported_at, reported_by,
             created_at,
             modified_by
         )
@@ -18,7 +18,7 @@ $$
             'Assault', 'Details of assualt on staff',
             'ASSAULT', 'DRAFT', 'NOMIS',
             now(), 'MDI',
-            now(), 'IR_REPORTING_OFFICER', 'IR_REPORTING_OFFICER',
+            now(), 'IR_REPORTING_OFFICER',
             now(), 'IR_REPORTING_OFFICER'
         )
         returning id into v_report_id;

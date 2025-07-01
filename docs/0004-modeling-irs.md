@@ -74,7 +74,6 @@ classDiagram
   }
   class Report {
     UUID id
-    String assignedTo
     LocalDateTime createdAt
     String description
     LocalDateTime incidentDateAndTime

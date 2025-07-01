@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -15,9 +14,6 @@ data class NomisHistory(
   val description: String?,
   @Schema(description = "Questions asked for the questionnaire")
   val questions: List<NomisHistoryQuestion>,
-  @Schema(description = "When the questionnaire was changed")
-  @Deprecated("Use incidentChangeDateTime instead")
-  val incidentChangeDate: LocalDate? = null,
   @Schema(description = "When the questionnaire was changed with time")
   val incidentChangeDateTime: LocalDateTime? = null,
   @Schema(description = "Who changed the questionnaire")

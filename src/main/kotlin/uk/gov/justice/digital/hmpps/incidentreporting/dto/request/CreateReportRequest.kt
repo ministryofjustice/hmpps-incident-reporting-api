@@ -68,7 +68,6 @@ data class CreateReportRequest(
       prisonerInvolvementDone = false,
       reportedBy = requestUsername,
       reportedAt = now,
-      assignedTo = requestUsername,
       createdAt = now,
       modifiedAt = now,
       modifiedBy = requestUsername,
