@@ -2,6 +2,7 @@
   {
     "code": "1",
     "question": "Question #1",
+    "label": "Label #1",
     "sequence": 1,
     "responses": [
       {
@@ -28,6 +29,7 @@
   {
     "code": "2",
     "question": "Updated question #2",
+    "label": "Label #2",
     "sequence": 2,
     "responses": [
       {

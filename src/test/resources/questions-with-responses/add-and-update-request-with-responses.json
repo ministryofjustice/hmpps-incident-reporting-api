@@ -2,6 +2,7 @@
   {
     "code": "1",
     "question": "Updated question #1",
+    "label": "Label #1",
     "additionalInformation": "Updated explanation #1",
     "responses": [
       {
@@ -23,6 +24,7 @@
   {
     "code": "2002",
     "question": "Was anybody hurt?",
+    "label": "Was anybody hurt?",
     "responses": [
       {
         "code": "2002-1",

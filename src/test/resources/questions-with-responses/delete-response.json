@@ -2,6 +2,7 @@
   {
     "code": "1",
     "question": "Question #1",
+    "label": "Label #1",
     "sequence": 1,
     "responses": [
       {

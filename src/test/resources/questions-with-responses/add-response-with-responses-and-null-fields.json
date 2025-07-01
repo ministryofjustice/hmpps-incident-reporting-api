@@ -2,6 +2,7 @@
   {
     "code": "1",
     "question": "Question #1",
+    "label": "Label #1",
     "sequence": 1,
     "responses": [
       {
@@ -28,6 +29,7 @@
   {
     "code": "2",
     "question": "Question #2",
+    "label": "Label #2",
     "sequence": 2,
     "responses": [
       {
@@ -54,6 +56,7 @@
   {
     "code": "2001",
     "question": "List every “find”",
+    "label": "Label #1",
     "sequence": 3,
     "additionalInformation": null,
     "responses": [

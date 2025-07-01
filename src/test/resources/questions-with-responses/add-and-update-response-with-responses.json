@@ -2,6 +2,7 @@
   {
     "code": "1",
     "question": "Updated question #1",
+    "label": "Label #1",
     "sequence": 1,
     "responses": [
       {
@@ -37,6 +38,7 @@
   {
     "code": "2",
     "question": "Question #2",
+    "label": "Label #2",
     "sequence": 2,
     "responses": [
       {
@@ -63,6 +65,7 @@
   {
     "code": "2002",
     "question": "Was anybody hurt?",
+    "label": "Was anybody hurt?",
     "sequence": 3,
     "additionalInformation": null,
     "responses": [

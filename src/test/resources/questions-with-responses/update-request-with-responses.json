@@ -2,6 +2,7 @@
   {
     "code": "2",
     "question": "Updated question #2",
+    "label": "Label #2",
     "additionalInformation": "Updated explanation #2",
     "responses": [
       {
