@@ -56,7 +56,6 @@ class NomisDtoToJpaMappingEdgeCaseTest {
       assertThat(reportEntity.reportReference).isEqualTo("112414323")
       assertThat(reportEntity.location).isEqualTo("MDI")
       assertThat(reportEntity.questionSetId).isEqualTo("2124")
-      assertThat(reportEntity.assignedTo).isEqualTo("user1")
       assertThat(reportEntity.modifiedBy).isEqualTo("user1")
       assertThat(reportEntity.reportedBy).isEqualTo("user1")
       assertThat(reportEntity.source).isEqualTo(InformationSource.NOMIS)

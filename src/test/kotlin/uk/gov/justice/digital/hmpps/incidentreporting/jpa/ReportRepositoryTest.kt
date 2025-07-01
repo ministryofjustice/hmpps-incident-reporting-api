@@ -240,7 +240,6 @@ class ReportRepositoryTest : IntegrationTestBase() {
           reportedBy = "user1",
           location = "MDI",
           reportedAt = now,
-          assignedTo = "user2",
           createdAt = now,
           modifiedAt = now,
           modifiedBy = "user1",

@@ -163,7 +163,6 @@ class NomisSyncServiceTest {
     reportedBy = reportedBy,
     reportedAt = now,
     status = Status.AWAITING_REVIEW,
-    assignedTo = reportedBy,
     source = InformationSource.NOMIS,
     modifiedIn = InformationSource.NOMIS,
     createdAt = now.plusHours(2),
@@ -213,7 +212,6 @@ class NomisSyncServiceTest {
       report.reportedBy == sampleReport.reportedBy &&
       report.reportedAt == sampleReport.reportedAt &&
       report.status == sampleReport.status &&
-      report.assignedTo == sampleReport.assignedTo &&
       report.source == sampleReport.source &&
       report.createdAt == sampleReport.createdAt &&
       report.modifiedAt == sampleReport.modifiedAt &&
@@ -231,7 +229,6 @@ class NomisSyncServiceTest {
     assertThat(report.reportedBy).isEqualTo(reportedBy)
     assertThat(report.reportedAt).isEqualTo(now)
     assertThat(report.status).isEqualTo(Status.AWAITING_REVIEW)
-    assertThat(report.assignedTo).isEqualTo(reportedBy)
     assertThat(report.createdAt).isEqualTo(now.plusHours(2))
     assertThat(report.modifiedAt).isEqualTo(now.plusHours(5))
     assertThat(report.modifiedBy).isEqualTo("another-user")
@@ -382,7 +379,6 @@ class NomisSyncServiceTest {
       reportedBy = reportedBy,
       reportedAt = now,
       status = Status.AWAITING_REVIEW,
-      assignedTo = reportedBy,
       source = InformationSource.NOMIS,
       modifiedIn = InformationSource.DPS,
       createdAt = now.plusHours(2),

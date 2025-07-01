@@ -33,13 +33,6 @@ open class ReportBasic(
   val reportedAt: LocalDateTime,
   @Schema(description = "The current status of this report", example = "DRAFT")
   val status: Status,
-  @Schema(
-    description = "Optional user who this report is currently assigned to (NB: this field will probably be removed)",
-    example = "null",
-    deprecated = true,
-  )
-  val assignedTo: String?,
-
   @Schema(description = "When the report was first created", example = "2024-04-29T12:34:56.789012")
   val createdAt: LocalDateTime,
   @Schema(description = "When the report was last changed", example = "2024-04-29T12:34:56.789012")
@@ -53,15 +46,4 @@ open class ReportBasic(
   @Schema(description = "Last modified in NOMIS as opposed to DPS", example = "false")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   val lastModifiedInNomis: Boolean,
-) {
-  // TODO: `prisonId` can be removed once NOMIS reconciliation checks are updated to use `location`
-  @Suppress("unused")
-  @get:Schema(
-    description = "The location where incident took place, typically a NOMIS prison ID",
-    deprecated = true,
-    example = "MDI",
-  )
-  @get:JsonProperty
-  val prisonId: String
-    get() = location
-}
+)

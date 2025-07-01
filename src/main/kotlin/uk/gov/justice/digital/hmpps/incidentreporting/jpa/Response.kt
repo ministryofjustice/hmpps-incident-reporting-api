@@ -56,7 +56,7 @@ class Response(
   companion object {
     private val COMPARATOR = compareBy<Response>
       { it.question }
-      .thenBy { it.sequence } // TODO: replace with code once not nullable
+      .thenBy { it.code }
   }
 
   override fun compareTo(other: Response) = COMPARATOR.compare(this, other)
@@ -68,19 +68,19 @@ class Response(
     other as Response
 
     if (question != other.question) return false
-    if (sequence != other.sequence) return false
+    if (code != other.code) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = question.hashCode()
-    result = 31 * result + sequence.hashCode()
+    result = 31 * result + code.hashCode()
     return result
   }
 
   override fun toString(): String {
-    return "Response(id=$id, questionId=${question.id}, code=$code, sequence=$sequence, response=$response)"
+    return "Response(id=$id, questionId=${question.id}, code=$code, code=$code, response=$response)"
   }
 
   fun toDto() = ResponseDto(

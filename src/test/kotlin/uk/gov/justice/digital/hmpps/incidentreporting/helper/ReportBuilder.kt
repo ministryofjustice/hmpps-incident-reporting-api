@@ -43,7 +43,6 @@ fun buildReport(
     createdAt = reportTime,
     modifiedAt = reportTime,
     reportedBy = reportingUsername,
-    assignedTo = reportingUsername,
     modifiedBy = reportingUsername,
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)
