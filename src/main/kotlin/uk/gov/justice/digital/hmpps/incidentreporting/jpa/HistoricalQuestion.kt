@@ -120,7 +120,7 @@ class HistoricalQuestion(
   }
 
   fun addResponse(
-    code: String?,
+    code: String,
     response: String,
     sequence: Int,
     responseDate: LocalDate? = null,

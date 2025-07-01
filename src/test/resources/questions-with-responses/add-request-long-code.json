@@ -5,10 +5,12 @@
     "additionalInformation": "Amounts do not matter",
     "responses": [
       {
+        "code": "2001-1",
         "response": "Note with phone number",
         "additionalInformation": "020 1111 2222"
       },
       {
+        "code": "2001-2",
         "response": "Mobile phone",
         "additionalInformation": "Not a smartphone"
       }
