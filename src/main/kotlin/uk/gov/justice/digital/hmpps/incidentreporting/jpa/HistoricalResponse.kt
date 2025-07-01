@@ -22,8 +22,7 @@ class HistoricalResponse(
   @ManyToOne(fetch = FetchType.LAZY)
   val historicalQuestion: HistoricalQuestion,
 
-  // TODO: remove nullable once migrated.
-  val code: String?,
+  val code: String,
 
   val sequence: Int,
 

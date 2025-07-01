@@ -1,0 +1,2 @@
+ALTER TABLE response ALTER COLUMN code SET NOT NULL;
+ALTER TABLE historical_response ALTER COLUMN code SET NOT NULL;

@@ -132,7 +132,7 @@ class Question(
   }
 
   fun addResponse(
-    code: String?,
+    code: String,
     response: String,
     responseDate: LocalDate? = null,
     sequence: Int,

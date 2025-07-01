@@ -58,7 +58,7 @@
     "additionalInformation": "Amounts do not matter",
     "responses": [
       {
-        "code": null,
+        "code": "2001-1",
         "response": "Note with phone number",
         "sequence": 0,
         "responseDate": null,
@@ -67,7 +67,7 @@
         "recordedAt": "2023-12-05T12:34:56"
       },
       {
-        "code": null,
+        "code": "2001-2",
         "response": "Mobile phone",
         "sequence": 1,
         "responseDate": null,
@@ -76,7 +76,7 @@
         "recordedAt": "2023-12-05T12:34:56"
       },
       {
-        "code": null,
+        "code": "2001-3",
         "response": "Note with date",
         "sequence": 2,
         "responseDate": "2023-11-30",

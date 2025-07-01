@@ -24,9 +24,8 @@ class Response(
 
   /**
    * Identifier that refers to a specific answer for an incident type.
-   * TODO: remove nullable once migrated.
    */
-  val code: String?,
+  val code: String,
 
   val sequence: Int,
 
