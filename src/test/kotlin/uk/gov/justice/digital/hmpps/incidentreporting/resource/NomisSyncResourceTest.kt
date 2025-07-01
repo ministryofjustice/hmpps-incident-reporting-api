@@ -1905,9 +1905,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           ),
         )
 
-        val q1 = newReport.addQuestion(code = "1", sequence = 1, question = "Q1")
-        val q2 = newReport.addQuestion(code = "2", sequence = 2, question = "Q2")
-        val q3 = newReport.addQuestion(code = "3", sequence = 3, question = "Q3")
+        val q1 = newReport.addQuestion(code = "1", sequence = 1, question = "Q1", label = "Label 1")
+        val q2 = newReport.addQuestion(code = "2", sequence = 2, question = "Q2", label = "Label 2")
+        val q3 = newReport.addQuestion(code = "3", sequence = 3, question = "Q3", label = "Label 3")
 
         q1.addResponse(
           code = "Q1-R1",

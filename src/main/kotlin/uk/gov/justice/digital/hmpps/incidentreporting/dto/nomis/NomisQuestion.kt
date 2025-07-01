@@ -18,8 +18,7 @@ data class NomisQuestion(
 
   @Schema(description = "The Question being asked")
   val question: String,
-  @Schema(description = "The question text as seen by the users in DPS", nullable = true)
-  val label: String?,
+
   @Schema(description = "List of Responses to this question")
   val answers: List<NomisResponse> = listOf(),
 )

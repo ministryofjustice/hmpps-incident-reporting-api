@@ -41,10 +41,9 @@ class Question(
   var question: String,
 
   /**
-   * The question text as seen by the users in DPS
+   * The question text as seen by the user at the point of entry
    */
-  // TODO: remove nullable once migrated?
-  var label: String?,
+  var label: String,
 
   /**
    * Unused: could be a free-text response to a question
@@ -55,7 +54,7 @@ class Question(
   @SortNatural
   val responses: SortedSet<Response> = sortedSetOf(),
 
-  ) : Comparable<Question> {
+) : Comparable<Question> {
 
   companion object {
     private val COMPARATOR = compareBy<Question>

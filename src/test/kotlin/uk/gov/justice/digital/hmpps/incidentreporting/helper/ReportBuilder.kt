@@ -94,6 +94,7 @@ fun buildReport(
     val question = report.addQuestion(
       code = questionIndex.toString(),
       question = "Question #$questionIndex",
+      label = "Label #$questionIndex",
       sequence = questionIndex,
       additionalInformation = "Explanation #$questionIndex",
     )
@@ -120,6 +121,7 @@ fun buildReport(
       val historicalQuestion = history.addQuestion(
         code = "$historyIndex-$questionIndex",
         question = "Historical question #$historyIndex-$questionIndex",
+        label = "Historical label #$historyIndex-$questionIndex",
         sequence = questionIndex,
         additionalInformation = "Explanation #$questionIndex in history #$historyIndex",
       )

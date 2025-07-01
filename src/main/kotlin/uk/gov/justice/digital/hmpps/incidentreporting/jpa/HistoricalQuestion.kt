@@ -41,10 +41,9 @@ class HistoricalQuestion(
   var question: String,
 
   /**
-   * The question text as seen by the users in DPS
+   * The question text as seen by the users at the point of entry
    */
-  // TODO: remove nullable once migrated?
-  var label: String?,
+  var label: String,
 
   /**
    * Unused: could be a free-text response to a question

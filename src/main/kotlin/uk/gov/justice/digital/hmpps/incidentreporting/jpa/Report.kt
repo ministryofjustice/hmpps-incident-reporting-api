@@ -513,7 +513,7 @@ class Report(
   fun addQuestion(
     code: String,
     question: String,
-    label: String?,
+    label: String,
     sequence: Int,
     additionalInformation: String? = null,
   ): Question {
@@ -529,7 +529,7 @@ class Report(
 
   fun addQuestion(nomisQuestion: NomisQuestion): Question = this.addQuestion(
     code = nomisQuestion.questionId.toString(),
-    label = nomisQuestion.label,
+    label = nomisQuestion.question,
     sequence = nomisQuestion.sequence,
     question = nomisQuestion.question,
   )
