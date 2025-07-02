@@ -1810,7 +1810,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "55",
                             "response": "Old old answer 2",
-                            "label": "Old old question 2",
+                            "label": "Old old answer 2",
                             "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": null,
