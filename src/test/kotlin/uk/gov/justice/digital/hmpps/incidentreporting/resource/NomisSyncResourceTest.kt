@@ -1589,6 +1589,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "10",
                         "response": "John",
+                        "label": "John",
                         "sequence": 0,
                         "responseDate": "2023-12-03",
                         "additionalInformation": "comment 1",
@@ -1598,6 +1599,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "11",
                         "response": "Trevor",
+                        "label": "Trevor",
                         "sequence": 1,
                         "responseDate": null,
                         "additionalInformation": "comment 2",
@@ -1607,6 +1609,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "12",
                         "response": "Maybe someone else?",
+                        "label": "Maybe someone else?",
                         "sequence": 2,
                         "responseDate": "2023-12-02",
                         "additionalInformation": null,
@@ -1625,6 +1628,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "13",
                         "response": "Cell",
+                        "label": "Cell",
                         "sequence": 0,
                         "responseDate": "2023-12-04",
                         "additionalInformation": "comment 1",
@@ -1634,6 +1638,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "14",
                         "response": "Landing",
+                        "label": "Landing",
                         "sequence": 1,
                         "responseDate": null,
                         "additionalInformation": "comment 2",
@@ -1643,6 +1648,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "15",
                         "response": "Kitchen",
+                        "label": "Kitchen",
                         "sequence": 2,
                         "responseDate": "2023-11-25",
                         "additionalInformation": null,
@@ -1652,6 +1658,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                       {
                         "code": "16",
                         "response": "Exercise area",
+                        "label": "Exercise area",
                         "sequence": 3,
                         "responseDate": null,
                         "additionalInformation": null,
@@ -1678,6 +1685,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "1",
                             "response": "Old answer 1",
+                            "label": "Old answer 1",
                             "sequence": 0,
                             "responseDate": "2023-12-05",
                             "additionalInformation": "comment 1",
@@ -1687,6 +1695,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "2",
                             "response": "Old answer 2",
+                            "label": "Old answer 2",
                             "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": "comment 2",
@@ -1696,6 +1705,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "3",
                             "response": "Old answer 3",
+                            "label": "Old answer 3",
                             "sequence": 2,
                             "responseDate": "2023-11-28",
                             "additionalInformation": null,
@@ -1714,6 +1724,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "4",
                             "response": "Old answer 4",
+                            "label": "Old answer 4",
                             "sequence": 0,
                             "responseDate": "2023-12-04",
                             "additionalInformation": "comment 1",
@@ -1723,6 +1734,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "5",
                             "response": "Old answer 5",
+                            "label": "Old answer 5",
                             "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": "comment 2",
@@ -1732,6 +1744,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "6",
                             "response": "Old answer 6",
+                            "label": "Old answer 6",
                             "sequence": 2,
                             "responseDate": "2023-11-27",
                             "additionalInformation": null,
@@ -1758,6 +1771,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "12",
                             "response": "Old old answer 1",
+                            "label": "Old old answer 1",
                             "sequence": 0,
                             "responseDate": null,
                             "additionalInformation": null,
@@ -1767,6 +1781,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "22",
                             "response": "Old old answer 2",
+                            "label": "Old old answer 2",
                             "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": null,
@@ -1785,6 +1800,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "44",
                             "response": "Old old answer 1",
+                            "label": "Old old answer 1",
                             "sequence": 0,
                             "responseDate": null,
                             "additionalInformation": null,
@@ -1794,6 +1810,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                           {
                             "code": "55",
                             "response": "Old old answer 2",
+                            "label": "Old old question 2",
                             "sequence": 1,
                             "responseDate": null,
                             "additionalInformation": null,
@@ -1910,6 +1927,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         q1.addResponse(
           code = "Q1-R1",
           response = "Q1-R1",
+          label = "Q1-R1",
           responseDate = today,
           sequence = 0,
           additionalInformation = "Info Q1-R1",
@@ -1920,6 +1938,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         q1.addResponse(
           code = "Q1-R2",
           response = "Q1-R2",
+          label = "Q1-R2",
           responseDate = today,
           sequence = 1,
           additionalInformation = "Info Q1-R2",
@@ -1930,6 +1949,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         q2.addResponse(
           code = "Q2-R1",
           response = "Q2-R1",
+          label = "Q2-R1",
           responseDate = today,
           sequence = 0,
           additionalInformation = "Info Q2",
@@ -1940,6 +1960,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         q3.addResponse(
           code = "Q3-R1",
           response = "Q3-R1",
+          label = "Q3-R1",
           responseDate = today,
           sequence = 0,
           additionalInformation = "Info Q3",
