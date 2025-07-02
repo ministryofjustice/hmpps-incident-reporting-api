@@ -8,6 +8,7 @@
       {
         "code": "NEW-CODE",
         "response": "New response",
+        "label": "New label",
         "responseDate": null,
         "additionalInformation": null
       }

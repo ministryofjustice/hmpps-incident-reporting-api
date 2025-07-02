@@ -8,6 +8,7 @@
       {
         "code": "1-1",
         "response": "Response #1",
+        "label": "Label #1",
         "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
@@ -17,6 +18,7 @@
       {
         "code": "1-2",
         "response": "Response #2",
+        "label": "Label #2",
         "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
@@ -35,6 +37,7 @@
       {
         "code": "2-1",
         "response": "Response #1",
+        "label": "Label #1",
         "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
@@ -44,6 +47,7 @@
       {
         "code": "2-2",
         "response": "Response #2",
+        "label": "Label #2",
         "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",

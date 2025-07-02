@@ -8,16 +8,19 @@
       {
         "code": "2001-1",
         "response": "Note with phone number",
+        "label": "Note with phone number",
         "additionalInformation": "020 1111 2222"
       },
       {
         "code": "2001-2",
         "response": "Mobile phone",
+        "label": "Mobile phone",
         "additionalInformation": "Not a smartphone"
       },
       {
         "code": "2001-3",
         "response": "Note with date",
+        "label": "Note with date",
         "responseDate": "2023-11-30"
       }
     ]
@@ -29,7 +32,8 @@
     "responses": [
       {
         "code": "2002-1",
-        "response": "No"
+        "response": "No",
+        "label": "No"
       }
     ]
   },
@@ -41,6 +45,7 @@
       {
         "code": "2003-1",
         "response": "Yes",
+        "label": "Yes",
         "responseDate": "2023-12-01"
       }
     ]

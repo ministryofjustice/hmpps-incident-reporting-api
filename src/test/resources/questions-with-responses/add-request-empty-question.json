@@ -8,11 +8,13 @@
       {
         "code": "2001-1",
         "response": "Note with phone number",
+        "label": "Note with phone number",
         "additionalInformation": "020 1111 2222"
       },
       {
         "code": "2001-2",
         "response": "Mobile phone",
+        "label": "Mobile phone",
         "responseDate": "2023-12-04",
         "additionalInformation": "Not a smartphone"
       }
