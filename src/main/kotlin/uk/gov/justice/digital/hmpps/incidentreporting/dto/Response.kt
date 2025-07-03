@@ -12,7 +12,7 @@ data class Response(
   val code: String?,
   @Schema(description = "The response text as seen by downstream data consumers")
   val response: String,
-  @Schema(description = "The response text as seen by the user at the point of entry", nullable = true)
+  @Schema(description = "The response text as seen by the user at the point of entry")
   val label: String,
   // TODO: sequences are only being exposed while we sort out sync problems: they do not need to remain in the api contract
   @Schema(description = "Sequence of the responses", deprecated = true)
