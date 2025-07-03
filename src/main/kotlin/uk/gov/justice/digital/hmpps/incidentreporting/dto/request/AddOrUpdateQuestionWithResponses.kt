@@ -26,6 +26,13 @@ data class AddOrUpdateQuestionWithResponses(
   )
   @field:Size(min = 1)
   val question: String,
+  @Schema(
+    description = "The question text as seen by the user at the point of entry",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    minLength = 1,
+  )
+  @field:Size(min = 1)
+  val label: String,
   @Schema(description = "The responses to this question", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
   @field:Valid
   @field:Size(min = 1)
@@ -56,6 +63,13 @@ data class AddOrUpdateQuestionResponse(
   )
   @field:Size(min = 1)
   val response: String,
+  @Schema(
+    description = "The response text as seen by the user at the point of entry",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    minLength = 1,
+  )
+  @field:Size(min = 1)
+  val label: String,
   @Schema(
     description = "Optional response as a date",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,

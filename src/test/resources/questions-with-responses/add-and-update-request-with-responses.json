@@ -2,31 +2,37 @@
   {
     "code": "1",
     "question": "Updated question #1",
+    "label": "Label #1",
     "additionalInformation": "Updated explanation #1",
     "responses": [
       {
         "code": "1-1",
         "response": "New response #1",
+        "label": "New label #1",
         "responseDate": "2023-11-30"
       },
       {
         "code": "1-2",
         "response": "New response #2",
+        "label": "New label #2",
         "additionalInformation": "Comment #1"
       },
       {
         "code": "1-3",
-        "response": "New response #3"
+        "response": "New response #3",
+        "label": "New label #3"
       }
     ]
   },
   {
     "code": "2002",
     "question": "Was anybody hurt?",
+    "label": "Was anybody hurt?",
     "responses": [
       {
         "code": "2002-1",
-        "response": "No"
+        "response": "No",
+        "label": "No"
       }
     ]
   }

@@ -93,6 +93,7 @@ fun buildReport(
     val question = report.addQuestion(
       code = questionIndex.toString(),
       question = "Question #$questionIndex",
+      label = "Label #$questionIndex",
       sequence = questionIndex,
       additionalInformation = "Explanation #$questionIndex",
     )
@@ -100,6 +101,7 @@ fun buildReport(
       question.addResponse(
         code = "$questionIndex-$responseIndex",
         response = "Response #$responseIndex",
+        label = "Label #$responseIndex",
         sequence = responseIndex - 1,
         responseDate = incidentDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
         additionalInformation = "Prose #$responseIndex",
@@ -119,6 +121,7 @@ fun buildReport(
       val historicalQuestion = history.addQuestion(
         code = "$historyIndex-$questionIndex",
         question = "Historical question #$historyIndex-$questionIndex",
+        label = "Historical label #$historyIndex-$questionIndex",
         sequence = questionIndex,
         additionalInformation = "Explanation #$questionIndex in history #$historyIndex",
       )
@@ -126,6 +129,7 @@ fun buildReport(
         historicalQuestion.addResponse(
           code = "#$historyIndex-$responseIndex",
           response = "Historical response #$historyIndex-$responseIndex",
+          label = "Historical label #$historyIndex-$responseIndex",
           responseDate = incidentDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
           additionalInformation = "Prose #$responseIndex in history #$historyIndex",
           recordedBy = "some-user",

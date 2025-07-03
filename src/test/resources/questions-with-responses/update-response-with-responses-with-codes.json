@@ -2,11 +2,13 @@
   {
     "code": "1",
     "question": "Question #1",
+    "label": "Label #1",
     "sequence": 1,
     "responses": [
       {
         "code": "1-1",
         "response": "Response #1",
+        "label": "Label #1",
         "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
@@ -16,6 +18,7 @@
       {
         "code": "1-2",
         "response": "Response #2",
+        "label": "Label #2",
         "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
@@ -28,11 +31,13 @@
   {
     "code": "2",
     "question": "Updated question #2",
+    "label": "Label #2",
     "sequence": 2,
     "responses": [
       {
         "code": "NEW-CODE",
         "response": "New response",
+        "label": "New label",
         "sequence": 0,
         "responseDate": null,
         "additionalInformation": null,

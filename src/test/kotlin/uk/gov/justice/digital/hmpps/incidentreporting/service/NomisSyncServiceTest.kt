@@ -126,7 +126,7 @@ class NomisSyncServiceTest {
           sequence = 1,
           createDateTime = now,
           createdBy = reportedBy,
-          question = "What implement was used?",
+          question = "WHAT IMPLEMENT WAS USED",
           answers = listOf(
             NomisResponse(
               answer = "Razor",
@@ -171,8 +171,8 @@ class NomisSyncServiceTest {
   )
 
   init {
-    sampleReport.addQuestion("42", "What implement was used?", 1)
-      .addResponse("RAZOR", "Razor", null, 0, null, reportedBy, now)
+    sampleReport.addQuestion("42", "WHAT IMPLEMENT WAS USED", "What implement was used?", 1)
+      .addResponse("RAZOR", "Razor", "Razor", null, 0, null, reportedBy, now)
     sampleReport.addStaffInvolved(
       sequence = 0,
       staffRole = StaffRole.PRESENT_AT_SCENE,
@@ -241,7 +241,8 @@ class NomisSyncServiceTest {
     assertThat(report.questions).hasSize(1)
     val question = report.questions[0]
     assertThat(question.code).isEqualTo("42")
-    assertThat(question.question).isEqualTo("What implement was used?")
+    assertThat(question.question).isEqualTo("WHAT IMPLEMENT WAS USED")
+    assertThat(question.label).isEqualTo("What implement was used?")
     assertThat(question.additionalInformation).isNull()
     assertThat(question.responses).hasSize(1)
     val response = question.responses[0]

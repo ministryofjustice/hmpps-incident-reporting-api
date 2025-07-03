@@ -41,6 +41,11 @@ class HistoricalQuestion(
   var question: String,
 
   /**
+   * The question text as seen by the users at the point of entry
+   */
+  var label: String,
+
+  /**
    * Unused: could be a free-text response to a question
    */
   val additionalInformation: String? = null,
@@ -106,6 +111,7 @@ class HistoricalQuestion(
         historicalQuestion = this,
         code = nomisResponse.questionResponseId.toString(),
         response = it,
+        label = it,
         sequence = nomisResponse.responseSequence,
         responseDate = nomisResponse.responseDate,
         additionalInformation = nomisResponse.comment,
@@ -122,6 +128,7 @@ class HistoricalQuestion(
   fun addResponse(
     code: String,
     response: String,
+    label: String,
     sequence: Int,
     responseDate: LocalDate? = null,
     additionalInformation: String? = null,
@@ -133,6 +140,7 @@ class HistoricalQuestion(
         historicalQuestion = this,
         code = code,
         response = response,
+        label = label,
         sequence = sequence,
         responseDate = responseDate,
         additionalInformation = additionalInformation,
@@ -146,6 +154,7 @@ class HistoricalQuestion(
   fun toDto() = HistoricalQuestionDto(
     code = code,
     question = question,
+    label = label,
     sequence = sequence,
     additionalInformation = additionalInformation,
     responses = responses.map { it.toDto() },

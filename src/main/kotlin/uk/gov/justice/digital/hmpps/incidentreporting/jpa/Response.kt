@@ -35,6 +35,11 @@ class Response(
   var response: String,
 
   /**
+   * The response text as seen by the users at the point of entry
+   */
+  var label: String,
+
+  /**
    * Optional date attached to response
    */
   var responseDate: LocalDate? = null,
@@ -81,6 +86,7 @@ class Response(
   fun toDto() = ResponseDto(
     code = code,
     response = response,
+    label = label,
     sequence = sequence,
     responseDate = responseDate,
     recordedBy = recordedBy,

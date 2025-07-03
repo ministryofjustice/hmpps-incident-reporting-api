@@ -16,6 +16,8 @@ data class HistoricalQuestion(
   val code: String,
   @Schema(description = "The question text as seen by downstream data consumers")
   val question: String,
+  @Schema(description = "The question text as seen by the user at the point of entry")
+  val label: String,
   // TODO: sequences are only being exposed while we sort out sync problems: they do not need to remain in the api contract
   @Schema(description = "Sequence of the questions", deprecated = true)
   val sequence: Int,

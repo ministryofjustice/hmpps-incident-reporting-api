@@ -2,6 +2,7 @@
   {
     "code": "2001",
     "question": "List every “find”",
+    "label": "Label #1",
     "additionalInformation": "Amounts do not matter",
     "responses": []
   }

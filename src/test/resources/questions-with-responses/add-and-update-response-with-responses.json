@@ -2,11 +2,13 @@
   {
     "code": "1",
     "question": "Updated question #1",
+    "label": "Label #1",
     "sequence": 1,
     "responses": [
       {
         "code": "1-1",
         "response": "New response #1",
+        "label": "New label #1",
         "sequence": 0,
         "responseDate": "2023-11-30",
         "additionalInformation": null,
@@ -16,6 +18,7 @@
       {
         "code": "1-2",
         "response": "New response #2",
+        "label": "New label #2",
         "sequence": 1,
         "responseDate": null,
         "additionalInformation": "Comment #1",
@@ -25,6 +28,7 @@
       {
         "code": "1-3",
         "response": "New response #3",
+        "label": "New label #3",
         "sequence": 2,
         "responseDate": null,
         "additionalInformation": null,
@@ -37,11 +41,13 @@
   {
     "code": "2",
     "question": "Question #2",
+    "label": "Label #2",
     "sequence": 2,
     "responses": [
       {
         "code": "2-1",
         "response": "Response #1",
+        "label": "Label #1",
         "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
@@ -51,6 +57,7 @@
       {
         "code": "2-2",
         "response": "Response #2",
+        "label": "Label #2",
         "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
@@ -63,12 +70,14 @@
   {
     "code": "2002",
     "question": "Was anybody hurt?",
+    "label": "Was anybody hurt?",
     "sequence": 3,
     "additionalInformation": null,
     "responses": [
       {
         "code": "2002-1",
         "response": "No",
+        "label": "No",
         "sequence": 0,
         "responseDate": null,
         "additionalInformation": null,

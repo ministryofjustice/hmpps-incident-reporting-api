@@ -2,20 +2,24 @@
   {
     "code": "2001",
     "question": "List every “find”",
+    "label": "Label #1",
     "additionalInformation": null,
     "responses": [
       {
         "code": "2001-1",
-        "response": "Note with phone number"
+        "response": "Note with phone number",
+        "label": "Note with phone number"
       },
       {
         "code": "2001-2",
         "response": "Mobile phone",
+        "label": "Mobile phone",
         "additionalInformation": null
       },
       {
         "code": "2001-3",
         "response": "Chewing gum",
+        "label": "Chewing gum",
         "responseDate": null
       }
     ]

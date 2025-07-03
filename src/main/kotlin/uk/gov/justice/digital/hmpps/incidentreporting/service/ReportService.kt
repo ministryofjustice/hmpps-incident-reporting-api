@@ -285,6 +285,7 @@ class ReportService(
             addQuestion(
               code = request.code,
               question = request.question,
+              label = request.label,
               sequence = sequence,
               additionalInformation = request.additionalInformation,
             )
@@ -295,6 +296,7 @@ class ReportService(
             addResponse(
               code = it.code,
               response = it.response,
+              label = it.label,
               sequence = sequence,
               responseDate = it.responseDate,
               recordedBy = requestUsername,

@@ -2,11 +2,13 @@
   {
     "code": "1",
     "question": "Question #1",
+    "label": "Label #1",
     "sequence": 1,
     "responses": [
       {
         "code": "1-1",
         "response": "Response #1",
+        "label": "Label #1",
         "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
@@ -16,6 +18,7 @@
       {
         "code": "1-2",
         "response": "Response #2",
+        "label": "Label #2",
         "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
@@ -28,11 +31,13 @@
   {
     "code": "2",
     "question": "Question #2",
+    "label": "Label #2",
     "sequence": 2,
     "responses": [
       {
         "code": "2-1",
         "response": "Response #1",
+        "label": "Label #1",
         "sequence": 0,
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
@@ -42,6 +47,7 @@
       {
         "code": "2-2",
         "response": "Response #2",
+        "label": "Label #2",
         "sequence": 1,
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
@@ -54,12 +60,14 @@
   {
     "code": "2001",
     "question": "List every “find”",
+    "label": "Label #1",
     "sequence": 3,
     "additionalInformation": "Amounts do not matter",
     "responses": [
       {
         "code": "2001-1",
         "response": "Note with phone number",
+        "label": "Note with phone number",
         "sequence": 0,
         "responseDate": null,
         "additionalInformation": "020 1111 2222",
@@ -69,6 +77,7 @@
       {
         "code": "2001-2",
         "response": "Mobile phone",
+        "label": "Mobile phone",
         "sequence": 1,
         "responseDate": null,
         "additionalInformation": "Not a smartphone",
@@ -78,6 +87,7 @@
       {
         "code": "2001-3",
         "response": "Note with date",
+        "label": "Note with date",
         "sequence": 2,
         "responseDate": "2023-11-30",
         "additionalInformation": null,
