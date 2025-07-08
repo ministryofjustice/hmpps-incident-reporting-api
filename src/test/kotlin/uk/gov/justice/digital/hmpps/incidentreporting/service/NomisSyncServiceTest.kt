@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.argThat
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -129,8 +129,8 @@ class NomisSyncServiceTest {
           question = "WHAT IMPLEMENT WAS USED",
           answers = listOf(
             NomisResponse(
-              answer = "Razor",
-              questionResponseId = null,
+              answer = "RAZOR",
+              questionResponseId = 512,
               sequence = 0,
               comment = null,
               createDateTime = now,
@@ -171,8 +171,9 @@ class NomisSyncServiceTest {
   )
 
   init {
+    sampleReport.addStatusHistory(Status.AWAITING_REVIEW, now, "user2")
     sampleReport.addQuestion("42", "WHAT IMPLEMENT WAS USED", "What implement was used?", 1)
-      .addResponse("RAZOR", "Razor", "Razor", null, 0, null, reportedBy, now)
+      .addResponse("512", "RAZOR", "Razor", null, 0, null, reportedBy, now)
     sampleReport.addStaffInvolved(
       sequence = 0,
       staffRole = StaffRole.PRESENT_AT_SCENE,
@@ -236,17 +237,21 @@ class NomisSyncServiceTest {
     assertThat(report.lastModifiedInNomis).isTrue()
 
     assertThat(report.history).isEmpty()
-    assertThat(report.historyOfStatuses).isEmpty()
+    assertThat(report.historyOfStatuses).hasSize(1)
+    val status = report.historyOfStatuses[0]
+    assertThat(status.status).isEqualTo(Status.AWAITING_REVIEW)
 
     assertThat(report.questions).hasSize(1)
     val question = report.questions[0]
     assertThat(question.code).isEqualTo("42")
     assertThat(question.question).isEqualTo("WHAT IMPLEMENT WAS USED")
-    assertThat(question.label).isEqualTo("What implement was used?")
+    assertThat(question.label).isEqualTo("WHAT IMPLEMENT WAS USED")
     assertThat(question.additionalInformation).isNull()
     assertThat(question.responses).hasSize(1)
     val response = question.responses[0]
-    assertThat(response.response).isEqualTo("Razor")
+    assertThat(response.code).isEqualTo("512")
+    assertThat(response.response).isEqualTo("RAZOR")
+    assertThat(response.label).isEqualTo("RAZOR")
     assertThat(response.responseDate).isNull()
     assertThat(response.additionalInformation).isNull()
     assertThat(response.recordedBy).isEqualTo(reportedBy)
@@ -285,14 +290,17 @@ class NomisSyncServiceTest {
       initialMigration = initialMigration,
     )
 
-    whenever(reportRepository.save(any())).thenReturn(sampleReport)
+    whenever(reportRepository.save(any())).doAnswer { invocation ->
+      val reportBeingSaved = invocation.arguments[0] as Report
+
+      // verify that correct entity was to be saved
+      assertThat(isEqualToSampleReport(reportBeingSaved, null)).isTrue()
+
+      reportBeingSaved.id = sampleReportId
+      reportBeingSaved
+    }
 
     val report = syncService.upsert(syncRequest)
-
-    // verify that correct entity was to be saved
-    verify(reportRepository).save(
-      argThat { it -> isEqualToSampleReport(it, null) },
-    )
 
     // verify sampleReport is correctly converted into DTO
     assertSampleReportConvertedToDto(report)

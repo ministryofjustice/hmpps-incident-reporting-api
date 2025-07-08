@@ -22,7 +22,9 @@
       "sequence": 1,
       "responses": [
         {
+          "code": "1-1",
           "response": "Response #1",
+          "label": "Label #1",
           "sequence": 0,
           "responseDate": "2023-12-04",
           "additionalInformation": "Prose #1",
@@ -30,7 +32,9 @@
           "recordedAt": "2023-12-05T12:34:56"
         },
         {
+          "code": "1-2",
           "response": "Response #2",
+          "label": "Label #2",
           "sequence": 1,
           "responseDate": "2023-12-03",
           "additionalInformation": "Prose #2",
@@ -46,7 +50,9 @@
       "question": "Question #2",
       "responses": [
         {
+          "code": "2-1",
           "response": "Response #1",
+          "label": "Label #1",
           "sequence": 0,
           "responseDate": "2023-12-04",
           "additionalInformation": "Prose #1",
@@ -54,7 +60,9 @@
           "recordedAt": "2023-12-05T12:34:56"
         },
         {
+          "code": "2-2",
           "response": "Response #2",
+          "label": "Label #2",
           "sequence": 1,
           "responseDate": "2023-12-03",
           "additionalInformation": "Prose #2",
@@ -70,7 +78,9 @@
       "sequence": 3,
       "responses": [
         {
+          "code": "3-1",
           "response": "Response #1",
+          "label": "Label #1",
           "sequence": 0,
           "responseDate": "2023-12-04",
           "additionalInformation": "Prose #1",
@@ -78,7 +88,9 @@
           "recordedAt": "2023-12-05T12:34:56"
         },
         {
+          "code": "3-2",
           "response": "Response #2",
+          "label": "Label #2",
           "sequence": 1,
           "responseDate": "2023-12-03",
           "additionalInformation": "Prose #2",
@@ -102,7 +114,9 @@
           "sequence": 1,
           "responses": [
             {
-              "response": "Historical response #1-1",
+              "code": "1-1-1",
+              "response": "Historical response #1-1-1",
+              "label": "Historical label #1-1-1",
               "sequence": 0,
               "responseDate": "2023-12-04",
               "additionalInformation": "Prose #1 in history #1",
@@ -110,7 +124,9 @@
               "recordedAt": "2023-12-05T12:34:56"
             },
             {
-              "response": "Historical response #1-2",
+              "code": "1-1-2",
+              "response": "Historical response #1-1-2",
+              "label": "Historical label #1-1-2",
               "sequence": 1,
               "responseDate": "2023-12-03",
               "additionalInformation": "Prose #2 in history #1",
@@ -126,7 +142,9 @@
           "sequence": 2,
           "responses": [
             {
-              "response": "Historical response #1-1",
+              "code": "1-2-1",
+              "response": "Historical response #1-2-1",
+              "label": "Historical label #1-2-1",
               "sequence": 0,
               "responseDate": "2023-12-04",
               "additionalInformation": "Prose #1 in history #1",
@@ -134,7 +152,9 @@
               "recordedAt": "2023-12-05T12:34:56"
             },
             {
-              "response": "Historical response #1-2",
+              "code": "1-2-2",
+              "response": "Historical response #1-2-2",
+              "label": "Historical label #1-2-2",
               "sequence": 1,
               "responseDate": "2023-12-03",
               "additionalInformation": "Prose #2 in history #1",
@@ -150,7 +170,9 @@
           "sequence": 3,
           "responses": [
             {
-              "response": "Historical response #1-1",
+              "code": "1-3-1",
+              "response": "Historical response #1-3-1",
+              "label": "Historical label #1-3-1",
               "sequence": 0,
               "responseDate": "2023-12-04",
               "additionalInformation": "Prose #1 in history #1",
@@ -158,7 +180,9 @@
               "recordedAt": "2023-12-05T12:34:56"
             },
             {
-              "response": "Historical response #1-2",
+              "code": "1-3-2",
+              "response": "Historical response #1-3-2",
+              "label": "Historical label #1-3-2",
               "sequence": 1,
               "responseDate": "2023-12-03",
               "additionalInformation": "Prose #2 in history #1",
@@ -182,7 +206,9 @@
           "sequence": 1,
           "responses": [
             {
-              "response": "Historical response #2-1",
+              "code": "2-1-1",
+              "response": "Historical response #2-1-1",
+              "label": "Historical label #2-1-1",
               "sequence": 0,
               "responseDate": "2023-12-04",
               "additionalInformation": "Prose #1 in history #2",
@@ -190,7 +216,9 @@
               "recordedAt": "2023-12-05T12:34:56"
             },
             {
-              "response": "Historical response #2-2",
+              "code": "2-1-2",
+              "response": "Historical response #2-1-2",
+              "label": "Historical label #2-1-2",
               "sequence": 1,
               "responseDate": "2023-12-03",
               "additionalInformation": "Prose #2 in history #2",
@@ -206,7 +234,9 @@
           "sequence": 2,
           "responses": [
             {
-              "response": "Historical response #2-1",
+              "code": "2-2-1",
+              "response": "Historical response #2-2-1",
+              "label": "Historical label #2-2-1",
               "sequence": 0,
               "responseDate": "2023-12-04",
               "additionalInformation": "Prose #1 in history #2",
@@ -214,7 +244,9 @@
               "recordedAt": "2023-12-05T12:34:56"
             },
             {
-              "response": "Historical response #2-2",
+              "code": "2-2-2",
+              "response": "Historical response #2-2-2",
+              "label": "Historical label #2-2-2",
               "sequence": 1,
               "responseDate": "2023-12-03",
               "additionalInformation": "Prose #2 in history #2",
@@ -230,7 +262,9 @@
           "sequence": 3,
           "responses": [
             {
-              "response": "Historical response #2-1",
+              "code": "2-3-1",
+              "response": "Historical response #2-3-1",
+              "label": "Historical label #2-3-1",
               "sequence": 0,
               "responseDate": "2023-12-04",
               "additionalInformation": "Prose #1 in history #2",
@@ -238,7 +272,9 @@
               "recordedAt": "2023-12-05T12:34:56"
             },
             {
-              "response": "Historical response #2-2",
+              "code": "2-3-2",
+              "response": "Historical response #2-3-2",
+              "label": "Historical label #2-3-2",
               "sequence": 1,
               "responseDate": "2023-12-03",
               "additionalInformation": "Prose #2 in history #2",

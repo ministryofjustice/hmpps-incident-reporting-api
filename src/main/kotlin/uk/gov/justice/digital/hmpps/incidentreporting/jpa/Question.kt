@@ -103,6 +103,7 @@ class Question(
         newResponse?.let { newVersion ->
           this.responses.find { it == newVersion }?.apply {
             response = newVersion.response
+            label = newVersion.label
             responseDate = newVersion.responseDate
             additionalInformation = newVersion.additionalInformation
             recordedBy = newVersion.recordedBy
