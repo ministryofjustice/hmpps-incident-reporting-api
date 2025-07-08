@@ -14,13 +14,13 @@ import org.springframework.data.domain.Sort
 @Schema(description = "Page of results", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class SimplePage<T>(
-  @Schema(description = "Elements in this pages", example = "[Item1,Item2]")
+  @param:Schema(description = "Elements in this pages", example = "[Item1,Item2]")
   val content: List<T>,
-  @Schema(description = "Page number (0-based)", example = "0")
+  @param:Schema(description = "Page number (0-based)", example = "0")
   val number: Int,
-  @Schema(description = "Page size", example = "20")
+  @param:Schema(description = "Page size", example = "20")
   val size: Int,
-  @Schema(description = "Total number of elements in all pages", example = "55")
+  @param:Schema(description = "Total number of elements in all pages", example = "55")
   val totalElements: Long,
   @JsonIgnore
   val sort: Sort,

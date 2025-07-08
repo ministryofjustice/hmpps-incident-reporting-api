@@ -13,7 +13,7 @@ import java.time.LocalDateTime
   accessMode = Schema.AccessMode.WRITE_ONLY,
 )
 data class UpdateReportRequest(
-  @Schema(
+  @param:Schema(
     description = "When the incident took place",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -21,7 +21,7 @@ data class UpdateReportRequest(
     example = "2024-04-29T12:34:56.789012",
   )
   val incidentDateAndTime: LocalDateTime? = null,
-  @Schema(
+  @param:Schema(
     description = "The location where incident took place, typically a NOMIS prison ID",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -32,7 +32,7 @@ data class UpdateReportRequest(
   )
   @field:Size(min = 2, max = 20)
   val location: String? = null,
-  @Schema(
+  @param:Schema(
     description = "Brief title describing the incident",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -42,7 +42,7 @@ data class UpdateReportRequest(
   )
   @field:Size(min = 5, max = 255)
   val title: String? = null,
-  @Schema(
+  @param:Schema(
     description = "Longer summary of the incident",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -52,7 +52,7 @@ data class UpdateReportRequest(
   @field:Size(min = 1)
   val description: String? = null,
 
-  @Schema(
+  @param:Schema(
     description = "Internal flag which, " +
       "if false, is used to indicate that addition of staff involvements is unfinished",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -60,7 +60,7 @@ data class UpdateReportRequest(
     defaultValue = "null",
   )
   val staffInvolvementDone: Boolean? = null,
-  @Schema(
+  @param:Schema(
     description = "Internal flag which, " +
       "if false, is used to indicate that addition of prisoner involvements is unfinished",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,

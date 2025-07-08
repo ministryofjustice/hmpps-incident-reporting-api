@@ -11,7 +11,7 @@ import java.util.Optional
   accessMode = Schema.AccessMode.WRITE_ONLY,
 )
 data class UpdateStaffInvolvement(
-  @Schema(
+  @param:Schema(
     description = "Username, absent for manually-added staff or those without NOMIS/DPS accounts" +
       "– omit to preserve existing username, provide null to clear it",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -23,7 +23,7 @@ data class UpdateStaffInvolvement(
     @Size(min = 3, max = 120)
     String,
     >? = null,
-  @Schema(
+  @param:Schema(
     description = "First name",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -33,7 +33,7 @@ data class UpdateStaffInvolvement(
   )
   @field:Size(min = 1, max = 255)
   val firstName: String? = null,
-  @Schema(
+  @param:Schema(
     description = "Surname",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -43,14 +43,14 @@ data class UpdateStaffInvolvement(
   )
   @field:Size(min = 1, max = 255)
   val lastName: String? = null,
-  @Schema(
+  @param:Schema(
     description = "Their role",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
     defaultValue = "null",
   )
   val staffRole: StaffRole? = null,
-  @Schema(
+  @param:Schema(
     description = "Optional comment on staff member involvement " +
       "– omit to preserve existing comment, provide null to clear it",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,

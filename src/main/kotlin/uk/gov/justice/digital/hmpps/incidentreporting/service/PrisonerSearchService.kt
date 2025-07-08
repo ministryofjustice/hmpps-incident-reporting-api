@@ -49,5 +49,6 @@ class PrisonerSearchService(
 }
 
 class PrisonersNotFoundException(
+  @Suppress("unused")
   val missingPrisonerNumbers: Set<String>,
 ) : Exception("Prisoner numbers not found: ${missingPrisonerNumbers.joinToString()}")

@@ -8,14 +8,14 @@ import java.time.LocalDateTime
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class CorrectionRequest(
   // TODO: sequences are only being exposed while we sort out sync problems: they do not need to remain in the api contract
-  @Schema(description = "Sequence of the correction requests for this report", deprecated = true)
+  @param:Schema(description = "Sequence of the correction requests for this report", deprecated = true)
   val sequence: Int,
-  @Schema(description = "The changes being requested")
+  @param:Schema(description = "The changes being requested")
   val descriptionOfChange: String,
-  @Schema(description = "Member of staff requesting changed")
+  @param:Schema(description = "Member of staff requesting changed")
   val correctionRequestedBy: String,
-  @Schema(description = "When the changes were requested", example = "2024-04-29T12:34:56.789012")
+  @param:Schema(description = "When the changes were requested", example = "2024-04-29T12:34:56.789012")
   val correctionRequestedAt: LocalDateTime,
-  @Schema(description = "The reporting location of the staff")
+  @param:Schema(description = "The reporting location of the staff")
   val location: String? = null,
 )

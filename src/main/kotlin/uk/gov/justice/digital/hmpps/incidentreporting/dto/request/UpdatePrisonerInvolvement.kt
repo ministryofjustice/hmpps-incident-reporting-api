@@ -9,7 +9,7 @@ import java.util.Optional
 
 @Schema(description = "Update an involved prisoner in an incident report", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class UpdatePrisonerInvolvement(
-  @Schema(
+  @param:Schema(
     description = "Prisoner’s NOMIS number",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -19,7 +19,7 @@ data class UpdatePrisonerInvolvement(
   )
   @field:Size(min = 7, max = 10)
   val prisonerNumber: String? = null,
-  @Schema(
+  @param:Schema(
     description = "First name",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -29,7 +29,7 @@ data class UpdatePrisonerInvolvement(
   )
   @field:Size(min = 1, max = 255)
   val firstName: String? = null,
-  @Schema(
+  @param:Schema(
     description = "Surname",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -39,21 +39,21 @@ data class UpdatePrisonerInvolvement(
   )
   @field:Size(min = 1, max = 255)
   val lastName: String? = null,
-  @Schema(
+  @param:Schema(
     description = "Their role",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
     defaultValue = "null",
   )
   val prisonerRole: PrisonerRole? = null,
-  @Schema(
+  @param:Schema(
     description = "Optional outcome of prisoner’s involvement " +
       "– omit to preserve existing outcome, provide null to clear it",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
   )
   val outcome: Optional<PrisonerOutcome>? = null,
-  @Schema(
+  @param:Schema(
     description = "Optional comment on prisoner’s involvement " +
       "– omit to preserve existing comment, provide null to clear it",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,

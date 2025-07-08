@@ -9,18 +9,18 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class PrisonerInvolvement(
   // TODO: sequences are only being exposed while we sort out sync problems: they do not need to remain in the api contract
-  @Schema(description = "Sequence of the prisoner involvement for this report", deprecated = true)
+  @param:Schema(description = "Sequence of the prisoner involvement for this report", deprecated = true)
   val sequence: Int,
-  @Schema(description = "Prisoner’s NOMIS number")
+  @param:Schema(description = "Prisoner’s NOMIS number")
   val prisonerNumber: String,
-  @Schema(description = "First name")
+  @param:Schema(description = "First name")
   var firstName: String,
-  @Schema(description = "Surname")
+  @param:Schema(description = "Surname")
   var lastName: String,
-  @Schema(description = "Their role")
+  @param:Schema(description = "Their role")
   val prisonerRole: PrisonerRole,
-  @Schema(description = "Optional outcome of prisoner’s involvement", nullable = true)
+  @param:Schema(description = "Optional outcome of prisoner’s involvement", nullable = true)
   val outcome: PrisonerOutcome? = null,
-  @Schema(description = "Optional comment on prisoner’s involvement", nullable = true)
+  @param:Schema(description = "Optional comment on prisoner’s involvement", nullable = true)
   val comment: String? = null,
 )

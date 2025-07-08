@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 
 @Schema(description = "Changes an incident report’s type", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class ChangeTypeRequest(
-  @Schema(description = "The new type", requiredMode = Schema.RequiredMode.REQUIRED, example = "DAMAGE")
+  @param:Schema(description = "The new type", requiredMode = Schema.RequiredMode.REQUIRED, example = "DAMAGE")
   val newType: Type,
 ) {
   fun validate() {

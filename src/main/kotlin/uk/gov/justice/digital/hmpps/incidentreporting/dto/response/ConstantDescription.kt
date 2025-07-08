@@ -9,8 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 )
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class ConstantDescription(
-  @Schema(description = "Machine-readable identifier of this value", example = "VICTIM")
+  @param:Schema(description = "Machine-readable identifier of this value", example = "VICTIM")
   val code: String,
-  @Schema(description = "Human-readable description of this value", example = "Victim")
+  @param:Schema(description = "Human-readable description of this value", example = "Victim")
   val description: String,
 )

@@ -11,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class RefreshViewsService(
   private val entityManager: EntityManager,
-  @Value("\${dpr.report.views}") private val materializedViews: List<String>,
-
+  @param:Value($$"${dpr.report.views}") private val materializedViews: List<String>,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)

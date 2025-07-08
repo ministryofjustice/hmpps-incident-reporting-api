@@ -349,6 +349,7 @@ class ReportNotFoundException(
 class ReportAlreadyExistsException(
   description: String,
 ) : Exception("Report already exists: $description") {
+  @Suppress("unused")
   constructor(id: UUID) : this(id.toString())
 }
 

@@ -43,7 +43,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
 
   lateinit var existingReport: Report
 
-  protected fun assertThatReportWasModified(id: UUID) {
+  private fun assertThatReportWasModified(id: UUID) {
     webTestClient.get().uri("/incident-reports/$id")
       .headers(setAuthorisation(roles = listOf("ROLE_VIEW_INCIDENT_REPORTS"), scopes = listOf("read")))
       .header("Content-Type", "application/json")
@@ -2443,7 +2443,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   .bodyValue(request)
                   .exchange()
                   .expectStatus().isOk
-                  .expectBody().jsonPath("[0].${testCase.field}").isEqualTo(expectedFieldValue)
+                  .expectBody().jsonPath("[0].${testCase.field}").isEqualTo(
+                    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+                    expectedFieldValue,
+                  )
               }
             }
           }

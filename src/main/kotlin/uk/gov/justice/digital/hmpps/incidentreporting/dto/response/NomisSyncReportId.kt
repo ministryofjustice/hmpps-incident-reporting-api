@@ -7,6 +7,6 @@ import java.util.UUID
 @Schema(description = "Incident report ID", accessMode = Schema.AccessMode.READ_ONLY)
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class NomisSyncReportId(
-  @Schema(description = "The internal ID of this report")
+  @param:Schema(description = "The internal ID of this report")
   val id: UUID,
 )

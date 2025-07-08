@@ -15,6 +15,7 @@ abstract class EventBaseResource {
 
   protected fun <T : ReportBasic> eventPublishAndAudit(
     event: ReportDomainEventType,
+    @Suppress("SameParameterValue")
     informationSource: InformationSource,
     whatChanged: WhatChanged,
     block: () -> T,

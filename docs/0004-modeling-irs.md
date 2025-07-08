@@ -37,12 +37,15 @@ classDiagram
     Long id
     String additionalInformation
     String code
+    String label
     String question
     int sequence
   }
   class HistoricalResponse {
     Long id
     String additionalInformation
+    String code
+    String label
     LocalDateTime recordedAt
     String recordedBy
     String response
@@ -69,6 +72,7 @@ classDiagram
     Long id
     String additionalInformation
     String code
+    String label
     String question
     int sequence
   }
@@ -95,6 +99,8 @@ classDiagram
   class Response {
     Long id
     String additionalInformation
+    String code
+    String label
     LocalDateTime recordedAt
     String recordedBy
     String response
@@ -191,6 +197,7 @@ classDiagram
     varchar(60) code
     text question
     text additional_information
+    text label
     integer id
   }
   class historical_response {
@@ -201,6 +208,8 @@ classDiagram
     text additional_information
     timestamp recorded_at
     varchar(120) recorded_by
+    varchar(60) code
+    text label
     integer id
   }
   class history {
@@ -227,6 +236,7 @@ classDiagram
     varchar(60) code
     text question
     text additional_information
+    text label
     integer id
   }
   class report {
@@ -240,7 +250,6 @@ classDiagram
     timestamp incident_date_and_time
     timestamp reported_at
     varchar(120) reported_by
-    varchar(120) assigned_to
     varchar(20) question_set_id
     timestamp created_at
     varchar(120) modified_by
@@ -258,6 +267,8 @@ classDiagram
     text additional_information
     timestamp recorded_at
     varchar(120) recorded_by
+    varchar(60) code
+    text label
     integer id
   }
   class staff_involvement {
@@ -278,14 +289,14 @@ classDiagram
     integer id
   }
 
-  correction_request --> report: report_id
-  description_addendum --> report: report_id
-  historical_question --> history: history_id
-  historical_response --> historical_question: historical_question_id
-  history --> report: report_id
-  prisoner_involvement --> report: report_id
-  question --> report: report_id
-  response --> question: question_id
-  staff_involvement --> report: report_id
-  status_history --> report: report_id
+  correction_request  -->  report : report_id
+  description_addendum  -->  report : report_id
+  historical_question  -->  history : history_id
+  historical_response  -->  historical_question : historical_question_id
+  history  -->  report : report_id
+  prisoner_involvement  -->  report : report_id
+  question  -->  report : report_id
+  response  -->  question : question_id
+  staff_involvement  -->  report : report_id
+  status_history  -->  report : report_id
 ```
