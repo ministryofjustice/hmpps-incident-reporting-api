@@ -11,7 +11,7 @@ import java.time.LocalDate
   accessMode = Schema.AccessMode.WRITE_ONLY,
 )
 data class AddOrUpdateQuestionWithResponses(
-  @Schema(
+  @param:Schema(
     description = "The question code; used as a unique identifier within one report",
     requiredMode = Schema.RequiredMode.REQUIRED,
     minLength = 1,
@@ -19,25 +19,29 @@ data class AddOrUpdateQuestionWithResponses(
   )
   @field:Size(min = 1, max = 60)
   val code: String,
-  @Schema(
+  @param:Schema(
     description = "The question text as seen by downstream data consumers",
     requiredMode = Schema.RequiredMode.REQUIRED,
     minLength = 1,
   )
   @field:Size(min = 1)
   val question: String,
-  @Schema(
+  @param:Schema(
     description = "The question text as seen by the user at the point of entry",
     requiredMode = Schema.RequiredMode.REQUIRED,
     minLength = 1,
   )
   @field:Size(min = 1)
   val label: String,
-  @Schema(description = "The responses to this question", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
+  @param:Schema(
+    description = "The responses to this question",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    minLength = 1,
+  )
   @field:Valid
   @field:Size(min = 1)
   val responses: List<AddOrUpdateQuestionResponse>,
-  @Schema(
+  @param:Schema(
     description = "Optional additional information",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -48,7 +52,7 @@ data class AddOrUpdateQuestionWithResponses(
 
 @Schema(description = "A response to a question", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class AddOrUpdateQuestionResponse(
-  @Schema(
+  @param:Schema(
     description = "The response code; used as a unique identifier within one report",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     minLength = 1,
@@ -56,21 +60,21 @@ data class AddOrUpdateQuestionResponse(
   )
   @field:Size(min = 1, max = 60)
   val code: String,
-  @Schema(
+  @param:Schema(
     description = "The response text as seen by downstream data consumers",
     requiredMode = Schema.RequiredMode.REQUIRED,
     minLength = 1,
   )
   @field:Size(min = 1)
   val response: String,
-  @Schema(
+  @param:Schema(
     description = "The response text as seen by the user at the point of entry",
     requiredMode = Schema.RequiredMode.REQUIRED,
     minLength = 1,
   )
   @field:Size(min = 1)
   val label: String,
-  @Schema(
+  @param:Schema(
     description = "Optional response as a date",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -78,7 +82,7 @@ data class AddOrUpdateQuestionResponse(
     example = "2024-04-29",
   )
   val responseDate: LocalDate? = null,
-  @Schema(
+  @param:Schema(
     description = "Optional additional information",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,

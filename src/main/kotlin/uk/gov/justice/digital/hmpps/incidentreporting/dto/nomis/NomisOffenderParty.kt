@@ -6,24 +6,24 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisOffenderParty(
-  @Schema(description = "Offender involved in the incident")
+  @param:Schema(description = "Offender involved in the incident")
   val offender: NomisOffender,
-  @Schema(description = "The sequence number providing an order for a list of offender parties")
+  @param:Schema(description = "The sequence number providing an order for a list of offender parties")
   val sequence: Int,
-  @Schema(description = "Offender role in the incident")
+  @param:Schema(description = "Offender role in the incident")
   val role: NomisCode,
-  @Schema(description = "The outcome of the incident")
+  @param:Schema(description = "The outcome of the incident")
   val outcome: NomisCode?,
-  @Schema(description = "General information about the incident")
+  @param:Schema(description = "General information about the incident")
   val comment: String?,
 
-  @Schema(description = "The date and time the offender party was created")
+  @param:Schema(description = "The date and time the offender party was created")
   val createDateTime: LocalDateTime,
-  @Schema(description = "The username of the person who created the offender party")
+  @param:Schema(description = "The username of the person who created the offender party")
   val createdBy: String,
 
-  @Schema(description = "The date and time the offender party was last updated")
+  @param:Schema(description = "The date and time the offender party was last updated")
   val lastModifiedDateTime: LocalDateTime? = createDateTime,
-  @Schema(description = "The username of the person who last updated the offender party")
+  @param:Schema(description = "The username of the person who last updated the offender party")
   val lastModifiedBy: String? = createdBy,
 )

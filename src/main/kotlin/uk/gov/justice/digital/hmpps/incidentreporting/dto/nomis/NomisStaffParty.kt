@@ -6,22 +6,22 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisStaffParty(
-  @Schema(description = "Staff involved in the incident")
+  @param:Schema(description = "Staff involved in the incident")
   val staff: NomisStaff,
-  @Schema(description = "The sequence number providing an order for a list of staff parties")
+  @param:Schema(description = "The sequence number providing an order for a list of staff parties")
   val sequence: Int,
-  @Schema(description = "Staff role in the incident")
+  @param:Schema(description = "Staff role in the incident")
   val role: NomisCode,
-  @Schema(description = "General information about the incident")
+  @param:Schema(description = "General information about the incident")
   val comment: String?,
 
-  @Schema(description = "The date and time the staff party was created")
+  @param:Schema(description = "The date and time the staff party was created")
   val createDateTime: LocalDateTime,
-  @Schema(description = "The username of the person who created the staff party")
+  @param:Schema(description = "The username of the person who created the staff party")
   val createdBy: String,
 
-  @Schema(description = "The date and time the staff party was last updated")
+  @param:Schema(description = "The date and time the staff party was last updated")
   val lastModifiedDateTime: LocalDateTime? = createDateTime,
-  @Schema(description = "The username of the person who last updated the staff party")
+  @param:Schema(description = "The username of the person who last updated the staff party")
   val lastModifiedBy: String? = createdBy,
 )

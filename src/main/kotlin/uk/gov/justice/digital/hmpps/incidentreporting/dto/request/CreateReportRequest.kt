@@ -11,15 +11,15 @@ import java.time.LocalDateTime
 
 @Schema(description = "Payload to create a new draft incident report", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class CreateReportRequest(
-  @Schema(description = "Incident report type", requiredMode = Schema.RequiredMode.REQUIRED)
+  @param:Schema(description = "Incident report type", requiredMode = Schema.RequiredMode.REQUIRED)
   val type: Type,
-  @Schema(
+  @param:Schema(
     description = "When the incident took place",
     requiredMode = Schema.RequiredMode.REQUIRED,
     example = "2024-04-29T12:34:56.789012",
   )
   val incidentDateAndTime: LocalDateTime,
-  @Schema(
+  @param:Schema(
     description = "The location where incident took place, typically a NOMIS prison ID",
     requiredMode = Schema.RequiredMode.REQUIRED,
     example = "MDI",
@@ -28,7 +28,7 @@ data class CreateReportRequest(
   )
   @field:Size(min = 2, max = 20)
   val location: String,
-  @Schema(
+  @param:Schema(
     description = "Brief title describing the incident",
     requiredMode = Schema.RequiredMode.REQUIRED,
     minLength = 5,
@@ -36,7 +36,11 @@ data class CreateReportRequest(
   )
   @field:Size(min = 5, max = 255)
   val title: String,
-  @Schema(description = "Longer summary of the incident", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 1)
+  @param:Schema(
+    description = "Longer summary of the incident",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    minLength = 1,
+  )
   @field:Size(min = 1)
   val description: String,
 ) {

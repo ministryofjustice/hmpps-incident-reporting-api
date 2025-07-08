@@ -18,7 +18,8 @@ class ReportWithDetails(
   location: String,
   title: String,
   description: String,
-  @Schema(description = "Addendums to the description")
+  @Suppress("unused")
+  @param:Schema(description = "Addendums to the description")
   val descriptionAddendums: List<DescriptionAddendum>,
   reportedBy: String,
   reportedAt: LocalDateTime,
@@ -29,26 +30,26 @@ class ReportWithDetails(
   createdInNomis: Boolean,
   lastModifiedInNomis: Boolean,
 
-  @Schema(description = "The question-response pairs that make up this report")
+  @param:Schema(description = "The question-response pairs that make up this report")
   val questions: List<Question>,
-  @Schema(description = "Prior versions of this report, created when the report type changes")
+  @param:Schema(description = "Prior versions of this report, created when the report type changes")
   val history: List<History>,
-  @Schema(description = "Previous statuses the incident report transitioned to")
+  @param:Schema(description = "Previous statuses the incident report transitioned to")
   val historyOfStatuses: List<StatusHistory>,
 
-  @Schema(description = "Which members of staff were involved?")
+  @param:Schema(description = "Which members of staff were involved?")
   val staffInvolved: List<StaffInvolvement>,
-  @Schema(description = "Which prisoners were involved?")
+  @param:Schema(description = "Which prisoners were involved?")
   val prisonersInvolved: List<PrisonerInvolvement>,
-  @Schema(description = "The corrections that were requested of this report")
+  @param:Schema(description = "The corrections that were requested of this report")
   val correctionRequests: List<CorrectionRequest>,
 
-  @Schema(
+  @param:Schema(
     description = "Internal flag which, " +
       "if false, is used to indicate that addition of staff involvements is unfinished",
   )
   val staffInvolvementDone: Boolean,
-  @Schema(
+  @param:Schema(
     description = "Internal flag which, " +
       "if false, is used to indicate that addition of prisoner involvements is unfinished",
   )

@@ -6,24 +6,24 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisRequirement(
-  @Schema(description = "The sequence number providing an order for a list of requirements")
+  @param:Schema(description = "The sequence number providing an order for a list of requirements")
   val sequence: Int,
-  @Schema(description = "The update required to the incident report")
+  @param:Schema(description = "The update required to the incident report")
   val comment: String?,
-  @Schema(description = "Date and time the requirement was recorded")
+  @param:Schema(description = "Date and time the requirement was recorded")
   val recordedDate: LocalDateTime,
-  @Schema(description = "The staff member who made the requirement request")
+  @param:Schema(description = "The staff member who made the requirement request")
   val staff: NomisStaff,
-  @Schema(description = "The reporting location of the staff")
+  @param:Schema(description = "The reporting location of the staff")
   val prisonId: String,
 
-  @Schema(description = "The date and time the requirement was created")
+  @param:Schema(description = "The date and time the requirement was created")
   val createDateTime: LocalDateTime,
-  @Schema(description = "The username of the person who created the requirement")
+  @param:Schema(description = "The username of the person who created the requirement")
   val createdBy: String,
 
-  @Schema(description = "The date and time the requirement was last updated")
+  @param:Schema(description = "The date and time the requirement was last updated")
   val lastModifiedDateTime: LocalDateTime? = createDateTime,
-  @Schema(description = "The username of the person who last updated the requirement")
+  @param:Schema(description = "The username of the person who last updated the requirement")
   val lastModifiedBy: String? = createdBy,
 )

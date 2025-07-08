@@ -5,12 +5,12 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisHistoryQuestion(
-  @Schema(description = "The sequence number of the response question for this incident")
+  @param:Schema(description = "The sequence number of the response question for this incident")
   val questionId: Long,
-  @Schema(description = "The sequence number of the question for this incident")
+  @param:Schema(description = "The sequence number of the question for this incident")
   val sequence: Int,
-  @Schema(description = "The Question being asked")
+  @param:Schema(description = "The Question being asked")
   val question: String,
-  @Schema(description = "Historical list of Responses to this question")
-  val answers: List<NomisHistoryResponse> = listOf(),
+  @param:Schema(description = "Historical list of Responses to this question")
+  val answers: List<NomisHistoryResponse> = emptyList(),
 )

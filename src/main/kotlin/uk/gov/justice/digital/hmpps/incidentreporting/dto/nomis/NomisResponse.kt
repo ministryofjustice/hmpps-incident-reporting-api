@@ -7,25 +7,25 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisResponse(
-  @Schema(description = "The id of the questionnaire question answer")
+  @param:Schema(description = "The id of the questionnaire question answer")
   val questionResponseId: Long?,
-  @Schema(description = "The sequence number of the response for this incident")
+  @param:Schema(description = "The sequence number of the response for this incident")
   val sequence: Int,
-  @Schema(description = "The answer text")
+  @param:Schema(description = "The answer text")
   val answer: String?,
-  @Schema(description = "Response date added to the response by recording staff")
+  @param:Schema(description = "Response date added to the response by recording staff")
   val responseDate: LocalDate? = null,
-  @Schema(description = "Comment added to the response by recording staff")
+  @param:Schema(description = "Comment added to the response by recording staff")
   val comment: String?,
-  @Schema(description = "Recording staff")
+  @param:Schema(description = "Recording staff")
   val recordingStaff: NomisStaff,
 
-  @Schema(description = "The date and time the response was created")
+  @param:Schema(description = "The date and time the response was created")
   val createDateTime: LocalDateTime,
-  @Schema(description = "The username of the person who created the response")
+  @param:Schema(description = "The username of the person who created the response")
   val createdBy: String,
-  @Schema(description = "The date and time the response was last updated")
+  @param:Schema(description = "The date and time the response was last updated")
   val lastModifiedDateTime: LocalDateTime? = createDateTime,
-  @Schema(description = "The username of the person who last updated the response")
+  @param:Schema(description = "The username of the person who last updated the response")
   val lastModifiedBy: String? = createdBy,
 )

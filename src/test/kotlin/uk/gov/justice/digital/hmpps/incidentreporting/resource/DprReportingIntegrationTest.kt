@@ -30,7 +30,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     fun fixedClock(): Clock = clock
   }
 
-  @Value("\${dpr.lib.system.role}")
+  @Value($$"${dpr.lib.system.role}")
   lateinit var systemRole: String
 
   @Autowired

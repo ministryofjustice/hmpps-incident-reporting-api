@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisStatus(
-  @Schema(description = "Status Code")
+  @param:Schema(description = "Status Code")
   val code: String,
-  @Schema(description = "Status Description")
+  @param:Schema(description = "Status Description")
   val description: String,
 )

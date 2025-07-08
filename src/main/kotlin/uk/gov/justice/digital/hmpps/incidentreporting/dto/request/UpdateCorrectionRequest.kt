@@ -7,7 +7,7 @@ import java.util.Optional
 
 @Schema(description = "Update a correction request in an incident report", accessMode = Schema.AccessMode.WRITE_ONLY)
 data class UpdateCorrectionRequest(
-  @Schema(
+  @param:Schema(
     description = "The changes being requested",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
@@ -16,7 +16,7 @@ data class UpdateCorrectionRequest(
   )
   @field:Size(min = 1)
   val descriptionOfChange: String? = null,
-  @Schema(
+  @param:Schema(
     description = "The location where the staff member is raising the correction",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,

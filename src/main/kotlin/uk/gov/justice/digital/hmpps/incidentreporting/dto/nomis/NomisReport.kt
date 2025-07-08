@@ -27,59 +27,59 @@ private val DATE_FORMATTER_2 = DateTimeFormatterBuilder().parseCaseInsensitive()
 @Schema(description = "NOMIS Incident Report Details")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class NomisReport(
-  @Schema(description = "The Incident id")
+  @param:Schema(description = "The Incident id")
   val incidentId: Long,
-  @Schema(description = "The id of the questionnaire associated with this incident")
+  @param:Schema(description = "The id of the questionnaire associated with this incident")
   val questionnaireId: Long,
-  @Schema(description = "A summary of the incident")
+  @param:Schema(description = "A summary of the incident")
   val title: String?,
-  @Schema(description = "The incident details")
+  @param:Schema(description = "The incident details")
   val description: String?,
-  @Schema(description = "Prison where the incident occurred")
+  @param:Schema(description = "Prison where the incident occurred")
   val prison: NomisCode,
 
-  @Schema(description = "Status details")
+  @param:Schema(description = "Status details")
   val status: NomisStatus,
-  @Schema(description = "The incident questionnaire type")
+  @param:Schema(description = "The incident questionnaire type")
   val type: String,
 
-  @Schema(description = "If the response is locked ie if the response is completed")
+  @param:Schema(description = "If the response is locked ie if the response is completed")
   val lockedResponse: Boolean,
 
-  @Schema(description = "The date and time of the incident")
+  @param:Schema(description = "The date and time of the incident")
   val incidentDateTime: LocalDateTime,
 
-  @Schema(description = "The staff member who reported the incident")
+  @param:Schema(description = "The staff member who reported the incident")
   val reportingStaff: NomisStaff,
-  @Schema(description = "The date and time the incident was reported")
+  @param:Schema(description = "The date and time the incident was reported")
   val reportedDateTime: LocalDateTime,
 
-  @Schema(description = "The date and time the incident was created")
+  @param:Schema(description = "The date and time the incident was created")
   val createDateTime: LocalDateTime,
-  @Schema(description = "The username of the person who created the incident")
+  @param:Schema(description = "The username of the person who created the incident")
   val createdBy: String,
 
-  @Schema(description = "The date and time the incident was last updated")
+  @param:Schema(description = "The date and time the incident was last updated")
   val lastModifiedDateTime: LocalDateTime? = createDateTime,
-  @Schema(description = "The username of the person who last updated the incident")
+  @param:Schema(description = "The username of the person who last updated the incident")
   val lastModifiedBy: String? = createdBy,
 
-  @Schema(description = "The follow up date for the incident")
+  @param:Schema(description = "The follow up date for the incident")
   val followUpDate: LocalDate? = null,
 
-  @Schema(description = "Staff involved in the incident")
+  @param:Schema(description = "Staff involved in the incident")
   val staffParties: List<NomisStaffParty>,
 
-  @Schema(description = "Offenders involved in the incident")
+  @param:Schema(description = "Offenders involved in the incident")
   val offenderParties: List<NomisOffenderParty>,
 
-  @Schema(description = "Requirements for completing the incident report")
+  @param:Schema(description = "Requirements for completing the incident report")
   val requirements: List<NomisRequirement>,
 
-  @Schema(description = "Questions asked for the incident")
+  @param:Schema(description = "Questions asked for the incident")
   val questions: List<NomisQuestion>,
 
-  @Schema(description = "Historical questionnaire details for the incident")
+  @param:Schema(description = "Historical questionnaire details for the incident")
   val history: List<NomisHistory>,
 ) {
 
@@ -116,7 +116,7 @@ data class NomisReport(
 
     val createdAt = try {
       LocalDateTime.parse(dateTimeString, DATE_FORMATTER_1)
-    } catch (e: DateTimeParseException) {
+    } catch (@Suppress("unused") e: DateTimeParseException) {
       LocalDateTime.parse(dateTimeString, DATE_FORMATTER_2)
     }
 

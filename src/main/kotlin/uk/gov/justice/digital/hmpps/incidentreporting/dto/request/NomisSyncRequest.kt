@@ -33,6 +33,7 @@ data class NomisSyncRequest(
 
 @Schema(description = "Incident report created in NOMIS", accessMode = Schema.AccessMode.WRITE_ONLY)
 interface NomisSyncCreateRequest {
+  @Suppress("unused")
   @get:Schema(
     description = "Set to true for initial migration",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -41,6 +42,7 @@ interface NomisSyncCreateRequest {
   )
   val initialMigration: Boolean
 
+  @Suppress("unused")
   @get:Schema(description = "Complete incident report payload", requiredMode = Schema.RequiredMode.REQUIRED)
   val incidentReport: NomisReport
 }
@@ -54,6 +56,7 @@ interface NomisSyncUpdateRequest {
   )
   val id: UUID
 
+  @Suppress("unused")
   @get:Schema(
     description = "Omit or set to false for updates",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -61,6 +64,7 @@ interface NomisSyncUpdateRequest {
   )
   val initialMigration: Boolean
 
+  @Suppress("unused")
   @get:Schema(description = "Complete incident report payload", requiredMode = Schema.RequiredMode.REQUIRED)
   val incidentReport: NomisReport
 }
