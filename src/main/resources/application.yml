@@ -7,8 +7,10 @@ spring:
     name: hmpps-incident-reporting-api
   main:
     web-application-type: servlet
-  codec:
-    max-in-memory-size: 10MB
+
+  http:
+    codecs:
+      max-in-memory-size: 10MB
 
   security:
     oauth2:
