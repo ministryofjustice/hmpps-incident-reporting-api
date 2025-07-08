@@ -200,7 +200,7 @@ class NomisSyncServiceTest {
   }
 
   /** compare report entity about to be saved with the mocked response */
-  private fun isEqualToSampleReport(report: Report, expectedId: UUID?): Boolean {
+  private fun isEqualToSampleReport(report: Report, @Suppress("SameParameterValue") expectedId: UUID?): Boolean {
     // NB: cannot compare arg to sampleReport directly
     return report.id == expectedId &&
       report.reportReference == sampleReport.reportReference &&
