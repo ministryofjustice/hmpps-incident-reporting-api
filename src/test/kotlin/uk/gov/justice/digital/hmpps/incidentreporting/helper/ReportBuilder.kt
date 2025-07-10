@@ -127,9 +127,9 @@ fun buildReport(
       )
       (1..generateResponses).forEach { responseIndex ->
         historicalQuestion.addResponse(
-          code = "#$historyIndex-$responseIndex",
-          response = "Historical response #$historyIndex-$responseIndex",
-          label = "Historical label #$historyIndex-$responseIndex",
+          code = "$historyIndex-$questionIndex-$responseIndex",
+          response = "Historical response #$historyIndex-$questionIndex-$responseIndex",
+          label = "Historical label #$historyIndex-$questionIndex-$responseIndex",
           responseDate = incidentDateAndTime.toLocalDate().minusDays(responseIndex.toLong()),
           additionalInformation = "Prose #$responseIndex in history #$historyIndex",
           recordedBy = "some-user",

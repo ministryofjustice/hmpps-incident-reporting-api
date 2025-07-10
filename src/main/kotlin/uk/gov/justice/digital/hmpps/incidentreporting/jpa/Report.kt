@@ -502,6 +502,7 @@ class Report(
     sequence = nomisQuestion.sequence,
   )?.apply {
     question = nomisQuestion.question
+    label = nomisQuestion.question
   } ?: addQuestion(nomisQuestion).also { newQuestion ->
     questions.add(newQuestion)
   }

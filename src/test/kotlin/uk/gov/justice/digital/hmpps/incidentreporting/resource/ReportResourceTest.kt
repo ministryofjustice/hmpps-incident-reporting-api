@@ -1620,14 +1620,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "additionalInformation": "Explanation #1",
                   "responses": [
                     {
+                      "code": "1-1",
                       "response": "Response #1",
+                      "label": "Label #1",
                       "responseDate": "2023-12-04",
                       "additionalInformation": "Prose #1",
                       "recordedBy": "some-user",
                       "recordedAt": "2023-12-05T12:31:56"
                     },
                     {
+                      "code": "1-2",
                       "response": "Response #2",
+                      "label": "Label #2",
                       "responseDate": "2023-12-03",
                       "additionalInformation": "Prose #2",
                       "recordedBy": "some-user",
@@ -1641,14 +1645,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                   "additionalInformation": "Explanation #2",
                   "responses": [
                     {
+                      "code": "2-1",
                       "response": "Response #1",
+                      "label": "Label #1",
                       "responseDate": "2023-12-04",
                       "additionalInformation": "Prose #1",
                       "recordedBy": "some-user",
                       "recordedAt": "2023-12-05T12:31:56"
                     },
                     {
+                      "code": "2-2",
                       "response": "Response #2",
+                      "label": "Label #2",
                       "responseDate": "2023-12-03",
                       "additionalInformation": "Prose #2",
                       "recordedBy": "some-user",
@@ -1720,14 +1728,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "additionalInformation": "Explanation #1",
                       "responses": [
                         {
+                          "code": "1-1",
                           "response": "Response #1",
+                          "label": "Label #1",
                           "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
                           "recordedAt": "2023-12-05T12:31:56"
                         },
                         {
+                          "code": "1-2",
                           "response": "Response #2",
+                          "label": "Label #2",
                           "responseDate": "2023-12-03",
                           "additionalInformation": "Prose #2",
                           "recordedBy": "some-user",
@@ -1741,14 +1753,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "additionalInformation": "Explanation #2",
                       "responses": [
                         {
+                          "code": "2-1",
                           "response": "Response #1",
+                          "label": "Label #1",
                           "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
                           "recordedAt": "2023-12-05T12:31:56"
                         },
                         {
+                          "code": "2-2",
                           "response": "Response #2",
+                          "label": "Label #2",
                           "responseDate": "2023-12-03",
                           "additionalInformation": "Prose #2",
                           "recordedBy": "some-user",
@@ -1847,7 +1863,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "additionalInformation": "Explanation #1 in history #1",
                       "responses": [
                         {
-                          "response": "Historical response #1-1",
+                          "code": "1-1-1",
+                          "response": "Historical response #1-1-1",
+                          "label": "Historical label #1-1-1",
                           "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1 in history #1",
                           "recordedBy": "some-user",
@@ -1869,7 +1887,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "additionalInformation": "Explanation #1",
                       "responses": [
                         {
+                          "code": "1-1",
                           "response": "Response #1",
+                          "label": "Label #1",
                           "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
@@ -3211,29 +3231,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
             .header("Content-Type", "application/json")
             .bodyValue(validRequestWithNulls)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
-
-          assertThatReportWasModified(existingReportWithQuestionsAndResponses.id!!)
-
-          assertThatDomainEventWasSent(
-            "incident.report.amended",
-            "11124146",
-            "MDI",
-            WhatChanged.QUESTIONS,
-          )
-        }
-
-        @Test
-        fun `can update existing question with responses that contain codes in response`() {
-          val validUpdateRequest =
-            getResource("/questions-with-responses/update-request-with-responses-with-codes.json")
-          val expectedResponse = getResource("/questions-with-responses/update-response-with-responses-with-codes.json")
-          webTestClient.put().uri(urlWithQuestionsAndResponses)
-            .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
-            .header("Content-Type", "application/json")
-            .bodyValue(validUpdateRequest)
             .exchange()
             .expectStatus().isOk
             .expectBody().json(expectedResponse, JsonCompareMode.STRICT)
