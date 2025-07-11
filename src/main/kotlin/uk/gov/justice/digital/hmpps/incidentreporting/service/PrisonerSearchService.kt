@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -9,7 +10,14 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.prisonersearch.Prisone
 @Service
 class PrisonerSearchService(
   private val prisonerSearchWebClient: WebClient,
+  objectMapper: ObjectMapper,
 ) {
+  private val responseFields by lazy {
+    objectMapper.serializerProviderInstance.findValueSerializer(Prisoner::class.java).properties()
+      .asSequence()
+      .joinToString(",") { it.name }
+  }
+
   /**
    * Search for prisoners by their prisoner number
    *
@@ -26,7 +34,12 @@ class PrisonerSearchService(
         val requestBody = mapOf("prisonerNumbers" to pageOfPrisonerNumbers)
         prisonerSearchWebClient
           .post()
-          .uri("/prisoner-search/prisoner-numbers")
+          .uri(
+            "/prisoner-search/prisoner-numbers?responseFields={responseFields}",
+            mapOf(
+              "responseFields" to responseFields,
+            ),
+          )
           .header("Content-Type", "application/json")
           .bodyValue(requestBody)
           .retrieve()
