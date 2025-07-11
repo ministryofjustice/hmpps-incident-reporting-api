@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.integration.wiremock
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.prisonersearch.Prisoner
 
@@ -16,7 +17,7 @@ class PrisonerSearchMockServer : MockServer(PRISONER_SEARCH_WIREMOCK_PORT) {
       ),
     )
     return stubFor(
-      post("/prisoner-search/prisoner-numbers")
+      post(urlPathEqualTo("/prisoner-search/prisoner-numbers"))
         .withRequestBody(
           WireMock.equalToJson(requestBody, true, false),
         )
@@ -30,7 +31,7 @@ class PrisonerSearchMockServer : MockServer(PRISONER_SEARCH_WIREMOCK_PORT) {
 
   fun stubSearchFails(): StubMapping {
     return stubFor(
-      post("/prisoner-search/prisoner-numbers")
+      post(urlPathEqualTo("/prisoner-search/prisoner-numbers"))
         .willReturn(
           aResponse()
             .withHeader("Content-Type", "application/json")

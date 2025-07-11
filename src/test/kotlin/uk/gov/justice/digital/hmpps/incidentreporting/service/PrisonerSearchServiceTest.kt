@@ -36,7 +36,7 @@ class PrisonerSearchServiceTest {
   @Test
   fun `returns an empty map when passed no prisoner numbers`() {
     val webClient = createWebClientMockResponses() // would throw 404 if ever called
-    val prisonerSearchService = PrisonerSearchService(webClient)
+    val prisonerSearchService = PrisonerSearchService(webClient, mapper)
     val prisoners = prisonerSearchService.searchByPrisonerNumbers(emptySet())
     assertThat(prisoners).isEmpty()
   }
@@ -54,7 +54,7 @@ class PrisonerSearchServiceTest {
       )
     }
     val webClient = createWebClientMockResponses(mockPrisoners)
-    val prisonerSearchService = PrisonerSearchService(webClient)
+    val prisonerSearchService = PrisonerSearchService(webClient, mapper)
     val prisoners = prisonerSearchService.searchByPrisonerNumbers(mockPrisonerNumbers.shuffled().toSet())
     assertThat(prisoners).hasSize(mockPrisonerNumbers.size)
   }
@@ -89,7 +89,7 @@ class PrisonerSearchServiceTest {
     val allPrisonerNumbers = (1..2000).map { String.format("A%04dAA", it) }.toSet()
 
     val webClient = createWebClientMockResponses(response1, response2, response3)
-    val prisonerSearchService = PrisonerSearchService(webClient)
+    val prisonerSearchService = PrisonerSearchService(webClient, mapper)
     val prisoners = prisonerSearchService.searchByPrisonerNumbers(allPrisonerNumbers)
     assertThat(prisoners).hasSize(2000)
   }
@@ -105,7 +105,7 @@ class PrisonerSearchServiceTest {
         ),
       ),
     )
-    val prisonerSearchService = PrisonerSearchService(webClient)
+    val prisonerSearchService = PrisonerSearchService(webClient, mapper)
     assertThatThrownBy {
       prisonerSearchService.searchByPrisonerNumbers(setOf("A0001AA", "A0002AA"))
     }.isInstanceOf(PrisonersNotFoundException::class.java)
