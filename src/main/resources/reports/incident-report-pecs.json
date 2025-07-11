@@ -38,7 +38,7 @@
       "id": "summary",
       "name": "PECS incident report summary",
       "datasource": "replicaDataSource",
-      "query": "SELECT id, report_reference, ctf.code as type, ctf.description as type_description, status, cs.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, (case when location = 'NOU' then 'National Operations Unit' when location = 'G5' then 'Inter Prison Escorts' when location = 'NORTH' then 'PECS Gen4 - North' when location ='SOUTH' then 'PECS Gen4 - South' end) as pecs_region,  modified_at\nFROM report r join constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status != 'DUPLICATE' AND location IN ('NOU', 'G5', 'NORTH', 'SOUTH')",
+      "query": "SELECT id, report_reference, ctf.code as type, ctf.description as type_description, status, cs.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, (case when location = 'NORTH' then 'PECS Gen4 - North' when location ='SOUTH' then 'PECS Gen4 - South' end) as pecs_region,  modified_at\nFROM report r join constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status != 'DUPLICATE' AND location IN ('NORTH', 'SOUTH')",
       "schema": {
         "field": [
           {
@@ -79,8 +79,6 @@
             "filter": {
               "type": "multiselect",
               "staticoptions": [
-                {"name": "NOU","display": "National Operations Unit"},
-                {"name": "G5","display": "Inter Prison Escorts"},
                 {"name": "NORTH","display": "PECS Gen4 - North"},
                 {"name": "SOUTH","display": "PECS Gen4 - South"}
               ]

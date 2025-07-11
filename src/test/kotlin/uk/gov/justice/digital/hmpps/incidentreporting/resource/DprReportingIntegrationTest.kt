@@ -313,7 +313,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           val pecsReport = reportRepository.saveAndFlush(
             buildReport(
               reportReference = "11124141",
-              location = "NOU",
+              location = "NORTH",
               reportTime = now,
               generateStaffInvolvement = 3,
               generatePrisonerInvolvement = 2,
@@ -343,7 +343,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "title": "${pecsReport.title}",
                   "description": "${pecsReport.description}",
                   "location": "${pecsReport.location}",
-                  "pecs_region": "National Operations Unit",
+                  "pecs_region": "PECS Gen4 - North",
                   "modified_at": "05/12/2023 12:34"
                 }
               ]
