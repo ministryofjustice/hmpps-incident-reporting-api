@@ -5,6 +5,9 @@ generic-service:
   ingress:
     host: incident-reporting-api.hmpps.service.justice.gov.uk
 
+  scheduledDowntime:
+    enabled: false
+
   resources:
     requests:
       memory: 4G
