@@ -14,6 +14,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.TypeFamily
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserType
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 
 @DisplayName("Compare the result of migrations to in-built constant enumerations")
@@ -134,7 +136,7 @@ class ConstantsTableTest : IntegrationTestBase() {
 
   @Test
   fun `user action table`() {
-    val expected = Status.entries.map {
+    val expected = UserAction.entries.map {
       mapOf(
         "code" to it.name,
         "description" to it.description,
@@ -151,7 +153,7 @@ class ConstantsTableTest : IntegrationTestBase() {
 
   @Test
   fun `user type table`() {
-    val expected = Status.entries.map {
+    val expected = UserType.entries.map {
       mapOf(
         "code" to it.name,
         "description" to it.description,

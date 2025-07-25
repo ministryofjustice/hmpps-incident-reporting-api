@@ -13,6 +13,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.TypeFamily
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserType
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 
 @DisplayName("Constants resource")
@@ -21,6 +23,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
   @ValueSource(
     strings = [
       "error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types",
+      "user-actions", "user-types",
     ],
   )
   fun `cannot access without authorisation`(endpoint: String) {
@@ -33,6 +36,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
   @ValueSource(
     strings = [
       "error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types",
+      "user-actions", "user-types",
     ],
   )
   fun `can access without special roles`(endpoint: String) {
@@ -162,7 +166,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
     ),
     ConstantsTestCase(
       "user-actions",
-      Type.entries.size,
+      UserAction.entries.size,
       listOf(
         mapOf(
           "code" to "REQUEST_DUPLICATE",
@@ -176,7 +180,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
     ),
     ConstantsTestCase(
       "user-types",
-      Type.entries.size,
+      UserType.entries.size,
       listOf(
         mapOf(
           "code" to "REPORTING_OFFICER",

@@ -10,13 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.TypeFamily
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.*
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerOutcomeConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerRoleConstantDescription
@@ -180,7 +174,7 @@ class ConstantsResource {
     ],
   )
   fun userActions(): List<UserActionConstantDescription> {
-    return Type.entries.map {
+    return UserAction.entries.map {
       UserActionConstantDescription(it.name, it.description)
     }
   }
@@ -197,7 +191,7 @@ class ConstantsResource {
     ],
   )
   fun userTypes(): List<UserTypeConstantDescription> {
-    return Type.entries.map {
+    return UserType.entries.map {
       UserTypeConstantDescription(it.name, it.description)
     }
   }
