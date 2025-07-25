@@ -2965,7 +2965,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         )
     }
 
-
     @DisplayName("PATCH /incident-reports/{reportId}/correction-requests/{index}")
     @Nested
     inner class UpdateObject :
