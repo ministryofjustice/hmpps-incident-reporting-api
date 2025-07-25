@@ -36,7 +36,7 @@ data class AddCorrectionRequest(
     minLength = 1,
     maxLength = 25,
   )
-  @field:Size(min = 8, max = 8)
+  @field:Size(min = 1, max = 25)
   val originalReportReference: String? = null,
   @param:Schema(
     description = "Type of user that submitted this action on the report",

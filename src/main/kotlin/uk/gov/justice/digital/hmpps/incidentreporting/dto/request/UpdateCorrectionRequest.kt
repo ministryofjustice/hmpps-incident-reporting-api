@@ -35,7 +35,10 @@ data class UpdateCorrectionRequest(
     nullable = true,
     defaultValue = "null",
   )
-  val userAction: Optional<UserAction>? = null,
+  val userAction: Optional<
+    @Size(min = 1)
+    UserAction,
+    >? = null,
   @param:Schema(
     description = "Reference number of the original report of which this report is a duplicate of",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -44,15 +47,20 @@ data class UpdateCorrectionRequest(
     minLength = 1,
     maxLength = 25,
   )
-  @field:Size(min = 8, max = 8)
-  val originalReportReference: Optional<String>? = null,
+  val originalReportReference: Optional<
+    @Size(min = 1, max = 25)
+    String,
+    >? = null,
   @param:Schema(
     description = "Type of user that submitted this action on the report",
     requiredMode = Schema.RequiredMode.REQUIRED,
     nullable = true,
     defaultValue = "null",
   )
-  val userType: Optional<UserType>? = null,
+  val userType: Optional<
+    @Size(min = 1)
+    UserType,
+    >? = null,
 ) {
   @JsonIgnore
   val isEmpty: Boolean =

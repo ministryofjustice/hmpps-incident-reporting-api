@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.*
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerOutcomeConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerRoleConstantDescription
