@@ -1,11 +1,6 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.helper
 
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerOutcome
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
-import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.*
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -86,6 +81,8 @@ fun buildReport(
       correctionRequestedBy = "qa",
       descriptionOfChange = "Fix request #$correctionIndex",
       location = "MDI",
+      userAction = UserAction.REQUEST_CORRECTION,
+      userType = UserType.DATA_WARDEN
     )
   }
 

@@ -4,20 +4,29 @@
     "descriptionOfChange": "Fix request #1",
     "correctionRequestedBy": "qa",
     "correctionRequestedAt": "2023-12-05T12:34:56",
-    "location": "MDI"
+    "location": "MDI",
+    "userAction": "REQUEST_CORRECTION",
+    "originalReportReference": null,
+    "userType": "DATA_WARDEN"
   },
   {
     "sequence": 1,
     "descriptionOfChange": "Fix request #2",
     "correctionRequestedBy": "qa",
     "correctionRequestedAt": "2023-12-05T12:34:56",
-    "location": "MDI"
+    "location": "MDI",
+    "userAction": "REQUEST_CORRECTION",
+    "originalReportReference": null,
+    "userType": "DATA_WARDEN"
   },
   {
     "sequence": 2,
     "descriptionOfChange": "Description needs to mention prisoner numbers",
     "correctionRequestedBy": "request-user",
     "correctionRequestedAt": "2023-12-05T12:34:56",
-    "location": "MDI"
+    "location": "MDI",
+    "userAction": null,
+    "originalReportReference": null,
+    "userType": null
   }
 ]

@@ -35,10 +35,7 @@ data class UpdateCorrectionRequest(
     nullable = true,
     defaultValue = "null",
   )
-  val userAction: Optional<
-    @Size(min = 1)
-    UserAction,
-    >? = null,
+  val userAction: Optional<UserAction>? = null,
   @param:Schema(
     description = "Reference number of the original report of which this report is a duplicate of",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -57,10 +54,7 @@ data class UpdateCorrectionRequest(
     nullable = true,
     defaultValue = "null",
   )
-  val userType: Optional<
-    @Size(min = 1)
-    UserType,
-    >? = null,
+  val userType: Optional<UserType>? = null,
 ) {
   @JsonIgnore
   val isEmpty: Boolean =

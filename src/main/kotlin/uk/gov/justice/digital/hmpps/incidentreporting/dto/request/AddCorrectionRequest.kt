@@ -26,7 +26,6 @@ data class AddCorrectionRequest(
     nullable = true,
     defaultValue = "null",
   )
-  @field:Size(min = 1)
   val userAction: UserAction? = null,
   @param:Schema(
     description = "Reference number of the original report of which this report is a duplicate of",
@@ -44,6 +43,5 @@ data class AddCorrectionRequest(
     nullable = true,
     defaultValue = "null",
   )
-  @field:Size(min = 1)
   val userType: UserType? = null,
 )
