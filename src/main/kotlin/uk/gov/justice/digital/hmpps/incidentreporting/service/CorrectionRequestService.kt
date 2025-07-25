@@ -32,6 +32,9 @@ class CorrectionRequestService(
         correctionRequestedBy = requestUsername,
         correctionRequestedAt = now,
         location = request.location,
+        userAction = request.userAction,
+        originalReportReference = request.originalReportReference,
+        userType = request.userType,
       )
     }
   }
