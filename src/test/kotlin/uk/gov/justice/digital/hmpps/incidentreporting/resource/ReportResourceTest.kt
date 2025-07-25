@@ -2937,6 +2937,35 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         ),
       )
 
+    @Test
+    fun `can add correction request without userAction, userType, or originalReportReference`() {
+      val validRequest = getResource("/related-objects/correction-requests/add-request-with-all-parameters.json")
+      webTestClient.post().uri(urlWithoutRelatedObjects)
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+        .header("Content-Type", "application/json")
+        .bodyValue(validRequest)
+        .exchange()
+        .expectStatus().isCreated
+        .expectBody().json(
+          // language=json
+          """
+            [
+              {
+                "descriptionOfChange": "Found to be a duplicate",
+                "correctionRequestedBy": "request-user",
+                "correctionRequestedAt": "2023-12-05T12:34:56",
+                "location": "MDI",
+                "userAction": "MARK_DUPLICATE",
+                "originalReportReference": "12345678",
+                "userType": "DATA_WARDEN"
+              }
+            ]
+            """,
+          JsonCompareMode.LENIENT,
+        )
+    }
+
+
     @DisplayName("PATCH /incident-reports/{reportId}/correction-requests/{index}")
     @Nested
     inner class UpdateObject :
@@ -2959,6 +2988,58 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           ),
         ),
       )
+
+    @Test
+    fun `can update correction request with all parameters`() {
+      val validRequest = getResource("/related-objects/correction-requests/update-request-all-parameters.json")
+      webTestClient.post().uri(urlWithoutRelatedObjects)
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+        .header("Content-Type", "application/json")
+        .bodyValue(validRequest)
+        .exchange()
+        .expectStatus().isCreated
+        .expectBody().json(
+          // language=json
+          """
+            [
+              {
+                "descriptionOfChange": "This was found to be a duplicate",
+                "location": "LEI",
+                "userAction": "MARK_DUPLICATE",
+                "originalReportReference": "12345678",
+                "userType": "DATA_WARDEN"
+              }
+            ]
+            """,
+          JsonCompareMode.LENIENT,
+        )
+    }
+
+    @Test
+    fun `can update correction request with nullable parameters as null`() {
+      val validRequest = getResource("/related-objects/correction-requests/update-request-null-extra-parameters.json")
+      webTestClient.post().uri(urlWithoutRelatedObjects)
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+        .header("Content-Type", "application/json")
+        .bodyValue(validRequest)
+        .exchange()
+        .expectStatus().isCreated
+        .expectBody().json(
+          // language=json
+          """
+            [
+              {
+                "descriptionOfChange": "Description needs to mention prisoner numbers",
+                "location": "LEI",
+                "userAction": null,
+                "originalReportReference": null,
+                "userType": null
+              }
+            ]
+            """,
+          JsonCompareMode.LENIENT,
+        )
+    }
 
     @DisplayName("DELETE /incident-reports/{reportId}/correction-requests/{index}")
     @Nested
