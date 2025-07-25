@@ -160,6 +160,34 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
         ),
       ),
     ),
+    ConstantsTestCase(
+      "user-actions",
+      Type.entries.size,
+      listOf(
+        mapOf(
+          "code" to "REQUEST_DUPLICATE",
+          "description" to "Request to mark duplicate",
+        ),
+        mapOf(
+          "code" to "CLOSE",
+          "description" to "Close",
+        ),
+      ),
+    ),
+    ConstantsTestCase(
+      "user-types",
+      Type.entries.size,
+      listOf(
+        mapOf(
+          "code" to "REPORTING_OFFICER",
+          "description" to "Reporting officer",
+        ),
+        mapOf(
+          "code" to "DATA_WARDEN",
+          "description" to "Data warden",
+        ),
+      ),
+    ),
   ).map { (endpoint, expectedCount, expectedSamples) ->
     DynamicTest.dynamicTest("exposes $endpoint constants") {
       webTestClient.get().uri("/constants/$endpoint")

@@ -5,7 +5,7 @@
 --
 -- NB:
 --   - any changes to constants / enumeration classes REQUIRE new migrations!
---   - these tables should NOT be used in foreign key constaints! otherwise migrations would be overly-complicated
+--   - these tables should NOT be used in foreign key constraints! otherwise migrations would be overly-complicated
 --   - NOMIS codes are not included as DPR reports are being recreated and there’s no need to preserve a link to data that will be removed
 
 create table constant_prisoner_outcome

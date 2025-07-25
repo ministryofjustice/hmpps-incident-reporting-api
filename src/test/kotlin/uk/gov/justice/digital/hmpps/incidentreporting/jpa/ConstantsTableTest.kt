@@ -131,4 +131,38 @@ class ConstantsTableTest : IntegrationTestBase() {
     )
     assertThat(actual).isEqualTo(expected)
   }
+
+  @Test
+  fun `user action table`() {
+    val expected = Status.entries.map {
+      mapOf(
+        "code" to it.name,
+        "description" to it.description,
+      )
+    }
+    val actual = listAllConstants(
+      // language=postgresql
+      """
+      SELECT code, description FROM constant_user_action
+      """,
+    )
+    assertThat(actual).isEqualTo(expected)
+  }
+
+  @Test
+  fun `user type table`() {
+    val expected = Status.entries.map {
+      mapOf(
+        "code" to it.name,
+        "description" to it.description,
+      )
+    }
+    val actual = listAllConstants(
+      // language=postgresql
+      """
+      SELECT code, description FROM constant_user_type
+      """,
+    )
+    assertThat(actual).isEqualTo(expected)
+  }
 }
