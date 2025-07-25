@@ -4,13 +4,19 @@
     "correctionRequestedBy": "request-user",
     "correctionRequestedAt": "2023-12-05T12:34:56",
     "location": "MDI",
-    "sequence": 0
+    "sequence": 0,
+    "userAction": "REQUEST_CORRECTION",
+    "originalReportReference": null,
+    "userType": "DATA_WARDEN"
   },
   {
     "descriptionOfChange": "Fix request #2",
     "correctionRequestedBy": "qa",
     "correctionRequestedAt": "2023-12-05T12:34:56",
     "location": "MDI",
-    "sequence": 1
+    "sequence": 1,
+    "userAction": "REQUEST_CORRECTION",
+    "originalReportReference": null,
+    "userType": "DATA_WARDEN"
   }
 ]

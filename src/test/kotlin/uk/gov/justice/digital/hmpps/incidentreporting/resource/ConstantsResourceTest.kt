@@ -13,6 +13,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.TypeFamily
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserType
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 
 @DisplayName("Constants resource")
@@ -21,6 +23,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
   @ValueSource(
     strings = [
       "error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types",
+      "user-actions", "user-types",
     ],
   )
   fun `cannot access without authorisation`(endpoint: String) {
@@ -33,6 +36,7 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
   @ValueSource(
     strings = [
       "error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types",
+      "user-actions", "user-types",
     ],
   )
   fun `can access without special roles`(endpoint: String) {
@@ -157,6 +161,34 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
         mapOf(
           "code" to "KEY_OR_LOCK",
           "description" to "Key or lock compromise",
+        ),
+      ),
+    ),
+    ConstantsTestCase(
+      "user-actions",
+      UserAction.entries.size,
+      listOf(
+        mapOf(
+          "code" to "REQUEST_DUPLICATE",
+          "description" to "Request to mark duplicate",
+        ),
+        mapOf(
+          "code" to "CLOSE",
+          "description" to "Close",
+        ),
+      ),
+    ),
+    ConstantsTestCase(
+      "user-types",
+      UserType.entries.size,
+      listOf(
+        mapOf(
+          "code" to "REPORTING_OFFICER",
+          "description" to "Reporting officer",
+        ),
+        mapOf(
+          "code" to "DATA_WARDEN",
+          "description" to "Data warden",
         ),
       ),
     ),

@@ -731,13 +731,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "descriptionOfChange": "Change 1",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T12:34:56"
+                    "correctionRequestedAt": "2023-12-05T12:34:56",
+                    "userAction": null,
+                    "originalReportReference": null,
+                    "userType": null
                   },
                   {
                     "descriptionOfChange": "Change 2",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T12:34:56"
+                    "correctionRequestedAt": "2023-11-28T12:34:56",
+                    "userAction": null,
+                    "originalReportReference": null,
+                    "userType": null
                   }
                 ],
                 "staffInvolvementDone": true,
@@ -1102,13 +1108,19 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "descriptionOfChange": "Change 1",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T12:34:56"
+                    "correctionRequestedAt": "2023-12-05T12:34:56",
+                    "userAction": null,
+                    "originalReportReference": null,
+                    "userType": null
                   },
                   {
                     "descriptionOfChange": "Change 2",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T12:34:56"
+                    "correctionRequestedAt": "2023-11-28T12:34:56",
+                    "userAction": null,
+                    "originalReportReference": null,
+                    "userType": null
                   }
                 ],
                 "staffInvolvementDone": true,
@@ -1713,14 +1725,20 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "descriptionOfChange": "Could you update the title please",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-11-28T12:34:56"
+                    "correctionRequestedAt": "2023-11-28T12:34:56",
+                    "userAction": null,
+                    "originalReportReference": null,
+                    "userType": null
                   },
                   {
                     "sequence": 1,
                     "descriptionOfChange": "Also the description",
                     "location": "MDI",
                     "correctionRequestedBy": "user2",
-                    "correctionRequestedAt": "2023-12-05T12:34:56"
+                    "correctionRequestedAt": "2023-12-05T12:34:56",
+                    "userAction": null,
+                    "originalReportReference": null,
+                    "userType": null
                   }
                 ],
                 "staffInvolvementDone": true,

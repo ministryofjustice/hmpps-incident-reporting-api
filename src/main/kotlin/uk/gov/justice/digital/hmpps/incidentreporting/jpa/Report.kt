@@ -21,6 +21,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserType
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
@@ -467,6 +469,9 @@ class Report(
     correctionRequestedAt: LocalDateTime,
     descriptionOfChange: String,
     location: String? = null,
+    userAction: UserAction? = null,
+    originalReportReference: String? = null,
+    userType: UserType? = null,
   ): CorrectionRequest {
     return addCorrectionRequest(
       CorrectionRequest(
@@ -476,6 +481,9 @@ class Report(
         correctionRequestedAt = correctionRequestedAt,
         descriptionOfChange = descriptionOfChange,
         location = location,
+        userAction = userAction,
+        originalReportReference = originalReportReference,
+        userType = userType,
       ),
     )
   }

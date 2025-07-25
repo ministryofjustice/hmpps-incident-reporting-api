@@ -4,6 +4,9 @@
     "correctionRequestedBy": "qa",
     "correctionRequestedAt": "2023-12-05T12:34:56",
     "location": "MDI",
-    "sequence": 1
+    "sequence": 1,
+    "userAction": "REQUEST_CORRECTION",
+    "originalReportReference": null,
+    "userType": "DATA_WARDEN"
   }
 ]

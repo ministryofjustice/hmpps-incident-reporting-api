@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import org.hibernate.Hibernate
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserType
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateCorrectionRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
@@ -29,6 +31,9 @@ class CorrectionRequest(
   var correctionRequestedBy: String,
   var correctionRequestedAt: LocalDateTime,
   var location: String? = null,
+  var userAction: UserAction? = null,
+  var originalReportReference: String? = null,
+  var userType: UserType? = null,
 ) : Comparable<CorrectionRequest> {
 
   companion object {
@@ -72,6 +77,9 @@ class CorrectionRequest(
     request.location?.let { location = it.getOrNull() }
     correctionRequestedBy = requestUsername
     correctionRequestedAt = now
+    request.userAction?.let { userAction = it.getOrNull() }
+    request.originalReportReference?.let { originalReportReference = it.getOrNull() }
+    request.userType?.let { userType = it.getOrNull() }
   }
 
   fun toDto() = CorrectionRequestDto(
@@ -80,5 +88,8 @@ class CorrectionRequest(
     correctionRequestedBy = correctionRequestedBy,
     correctionRequestedAt = correctionRequestedAt,
     location = location,
+    userType = userType,
+    originalReportReference = originalReportReference,
+    userAction = userAction,
   )
 }

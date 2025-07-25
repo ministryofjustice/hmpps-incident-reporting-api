@@ -1,0 +1,7 @@
+{
+  "descriptionOfChange": "This was found to be a duplicate",
+  "location": "LEI",
+  "userAction": "MARK_DUPLICATE",
+  "originalReportReference": "12345678",
+  "userType": "DATA_WARDEN"
+}
