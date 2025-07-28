@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa
 
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -31,8 +33,10 @@ class CorrectionRequest(
   var correctionRequestedBy: String,
   var correctionRequestedAt: LocalDateTime,
   var location: String? = null,
+  @Enumerated(EnumType.STRING)
   var userAction: UserAction? = null,
   var originalReportReference: String? = null,
+  @Enumerated(EnumType.STRING)
   var userType: UserType? = null,
 ) : Comparable<CorrectionRequest> {
 
