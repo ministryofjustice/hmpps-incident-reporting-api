@@ -26,14 +26,15 @@ create table constant_user_type
 );
 
 insert into constant_user_action(sequence, code, description)
-values (0, 'REQUEST_DUPLICATE', 'Request to mark duplicate'),
-       (1, 'REQUEST_NOT_REPORTABLE', 'Request to mark not reportable'),
-       (2, 'REQUEST_CORRECTION', 'Request correction'),
-       (3, 'RECALL', 'Recall'),
-       (4, 'CLOSE', 'Close'),
-       (5, 'MARK_DUPLICATE', 'Mark as duplicate'),
-       (6, 'MARK_NOT_REPORTABLE', 'Mark as not reportable'),
-       (7, 'HOLD', 'Put on hold');
+values (0, 'REQUEST_REVIEW', 'Request a data warden to review the report'),
+       (1, 'REQUEST_DUPLICATE', 'Request to mark duplicate'),
+       (2, 'REQUEST_NOT_REPORTABLE', 'Request to mark not reportable'),
+       (3, 'REQUEST_CORRECTION', 'Request correction'),
+       (4, 'RECALL', 'Recall'),
+       (5, 'CLOSE', 'Close'),
+       (6, 'MARK_DUPLICATE', 'Mark as duplicate'),
+       (7, 'MARK_NOT_REPORTABLE', 'Mark as not reportable'),
+       (8, 'HOLD', 'Put on hold');
 
 insert into constant_user_type(sequence, code, description)
 values (0, 'REPORTING_OFFICER', 'Reporting officer'),
