@@ -12,6 +12,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.constants
 enum class UserAction(
   val description: String,
 ) {
+  REQUEST_REVIEW("Request a data warden to review the report"),
   REQUEST_DUPLICATE("Request to mark duplicate"),
   REQUEST_NOT_REPORTABLE("Request to mark not reportable"),
   REQUEST_CORRECTION("Request correction"),
