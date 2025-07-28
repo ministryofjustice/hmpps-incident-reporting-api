@@ -17,6 +17,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.TypeFamily
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserType
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.ConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerOutcomeConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.PrisonerRoleConstantDescription
@@ -24,6 +26,8 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.StaffRoleCons
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.StatusConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeConstantDescription
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.TypeFamilyConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.UserActionConstantDescription
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.UserTypeConstantDescription
 
 @RestController
 @Validated
@@ -163,6 +167,40 @@ class ConstantsResource {
   fun typeFamilies(): List<TypeFamilyConstantDescription> {
     return TypeFamily.entries.map {
       TypeFamilyConstantDescription(it.name, it.description)
+    }
+  }
+
+  @GetMapping("/user-actions")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "List codes and descriptions of user actions",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns codes and descriptions",
+      ),
+    ],
+  )
+  fun userActions(): List<UserActionConstantDescription> {
+    return UserAction.entries.map {
+      UserActionConstantDescription(it.name, it.description)
+    }
+  }
+
+  @GetMapping("/user-types")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+    summary = "List codes and descriptions of user types",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Returns codes and descriptions",
+      ),
+    ],
+  )
+  fun userTypes(): List<UserTypeConstantDescription> {
+    return UserType.entries.map {
+      UserTypeConstantDescription(it.name, it.description)
     }
   }
 }
