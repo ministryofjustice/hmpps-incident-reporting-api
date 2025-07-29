@@ -1,6 +1,6 @@
 {
-  "id": "incident-report-pecs",
-  "name": "PECS Incident reports",
+  "id": "incident-report-pecs-v2",
+  "name": "PECS Incident reports (Dev only)",
   "description": "List of all PECS incidents filtered by dates, types, status and locations",
   "metadata": {
     "author": "Michael Willis",
@@ -38,7 +38,7 @@
       "id": "summary",
       "name": "PECS incident report summary",
       "datasource": "replicaDataSource",
-      "query": "SELECT id, report_reference, ctf.code as type, ctf.description as type_description, status, cs.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, (case when location = 'NORTH' then 'PECS Gen4 - North' when location ='SOUTH' then 'PECS Gen4 - South' end) as pecs_region,  modified_at\nFROM report r join constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE') AND location IN ('NORTH', 'SOUTH')",
+      "query": "SELECT r.id,\n       report_reference,\n       ctf.code                                                                                                     as type,\n       ctf.description                                                                                              as type_description,\n       status,\n       cs.description                                                                                               as status_description,\n       incident_date_and_time,\n       reported_at,\n       reported_by,\n       title,\n       r.description,\n       location,\n       el.name                                                                      as pecs_region,\n       modified_at\nFROM report r\n         join constant_status cs on r.status = cs.code\n         join constant_type ct on r.type = ct.code\n         join constant_type_family ctf on ctf.code = ct.family_code\n         join external.locations el on el.id = r.location\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')\n  AND el.agency_type = 'PECS'",
       "schema": {
         "field": [
           {
@@ -75,14 +75,7 @@
           },
           {
             "name": "location",
-            "type": "string",
-            "filter": {
-              "type": "multiselect",
-              "staticoptions": [
-                {"name": "NORTH","display": "PECS Gen4 - North"},
-                {"name": "SOUTH","display": "PECS Gen4 - South"}
-              ]
-            }
+            "type": "string"
           },
           {
             "name": "reported_at",
@@ -122,6 +115,26 @@
           {
             "name": "description",
             "display": "Type description",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pecsRegions",
+      "name": "PECS regions",
+      "datasource": "replicaDataSource",
+      "query": "SELECT id, name from external.locations where agency_type = 'PECS'",
+      "schema": {
+        "field": [
+          {
+            "name": "id",
+            "display": "Code",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "display": "Region",
             "type": "string"
           }
         ]
@@ -178,7 +191,18 @@
             "display": "PECS Region",
             "sortable": true,
             "visible": "true",
-            "defaultsort": false
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "mandatory": false,
+              "dynamicoptions": {
+                "maximumOptions": 10,
+                "returnAsStaticOptions": true,
+                "dataset": "pecsRegions",
+                "name": "id",
+                "display": "name"
+              }
+            }
           },
           {
             "name": "$ref:location",
