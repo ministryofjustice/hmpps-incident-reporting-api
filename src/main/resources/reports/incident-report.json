@@ -1,7 +1,7 @@
 {
   "id": "incident-report",
   "name": "Incident report summary",
-  "description": "List of all incidents filtered by dates, types, status and locations (INC0009)",
+  "description": "List of all incidents filtered by dates, types, status and locations",
   "metadata": {
     "author": "Michael Willis",
     "version": "1.0.0",
@@ -55,7 +55,7 @@
       "id": "summary",
       "name": "Incident report summary",
       "datasource": "replicaDataSource",
-      "query": "SELECT id, report_reference, ctf.code as type, ctf.description as type_description, status, constant_status.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, modified_at\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status != 'DUPLICATE'",
+      "query": "SELECT id, report_reference, ctf.code as type, ctf.description as type_description, status, constant_status.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, modified_at\nFROM report r join constant_status on r.status = constant_status.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')",
       "schema": {
         "field": [
           {

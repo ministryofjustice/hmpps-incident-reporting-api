@@ -92,7 +92,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(6)
+          .expectBody().jsonPath("$.length()").isEqualTo(8)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -103,7 +103,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(6)
+          .expectBody().jsonPath("$.length()").isEqualTo(8)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -117,7 +117,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(6)
+          .jsonPath("$.length()").isEqualTo(8)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -168,7 +168,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             {
               "id": "incident-report",
               "name": "Incident report summary",
-              "description": "List of all incidents filtered by dates, types, status and locations (INC0009)",
+              "description": "List of all incidents filtered by dates, types, status and locations",
               "variant": {
                 "id": "summary",
                 "name": "Incident Report Summary",
