@@ -25,7 +25,7 @@
             {
               "match": [
                 "${role}",
-                "INCIDENT_REPORTS__PECS"
+                "INCIDENT_REPORTS__ADMIN"
               ]
             }
           ]
@@ -38,7 +38,7 @@
       "id": "summary",
       "name": "PECS incident report summary",
       "datasource": "replicaDataSource",
-      "query": "SELECT r.id,\n       report_reference,\n       ctf.code                                                                                                     as type,\n       ctf.description                                                                                              as type_description,\n       status,\n       cs.description                                                                                               as status_description,\n       incident_date_and_time,\n       reported_at,\n       reported_by,\n       title,\n       r.description,\n       location,\n       el.name                                                                      as pecs_region,\n       modified_at\nFROM report r\n         join constant_status cs on r.status = cs.code\n         join constant_type ct on r.type = ct.code\n         join constant_type_family ctf on ctf.code = ct.family_code\n         join external.locations el on el.id = r.location\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')\n  AND el.agency_type = 'PECS'",
+      "query": "SELECT r.id,\n       report_reference,\n       ctf.code                                                                                                     as type,\n       ctf.description                                                                                              as type_description,\n       status,\n       cs.description                                                                                               as status_description,\n       incident_date_and_time,\n       reported_at,\n       reported_by,\n       initcap(s.first_name)       as reporter_first_name,\n       initcap(s.last_name)        as reporter_last_name,\n       title,\n       r.description,\n       location,\n       el.name                                                                      as pecs_region,\n       modified_at\nFROM report r\n         join constant_status cs on r.status = cs.code\n         join constant_type ct on r.type = ct.code\n         join constant_type_family ctf on ctf.code = ct.family_code\n         join external.locations el on el.id = r.location\n         join staff.staff s on s.username = r.reported_by\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')\n  AND el.agency_type = 'PECS'",
       "schema": {
         "field": [
           {
@@ -86,6 +86,14 @@
             "type": "string"
           },
           {
+            "name": "reporter_first_name",
+            "type": "string"
+          },
+          {
+            "name": "reporter_last_name",
+            "type": "string"
+          },
+          {
             "name": "title",
             "type": "string"
           },
@@ -124,7 +132,7 @@
       "id": "pecsRegions",
       "name": "PECS regions",
       "datasource": "replicaDataSource",
-      "query": "SELECT id, name from external.locations where agency_type = 'PECS'",
+      "query": "SELECT id, name from external.locations where agency_type = 'PECS' and active = 'Y'",
       "schema": {
         "field": [
           {
@@ -164,7 +172,7 @@
   "report": [
     {
       "id": "summary",
-      "name": "PECS incident reports",
+      "name": "PECS incident reports (V2)",
       "description": "List of all PECS incidents filtered by dates, types, status and PECS areas",
       "version": "1.0.0",
       "dataset": "$ref:summary",
@@ -188,9 +196,16 @@
           },
           {
             "name": "$ref:pecs_region",
-            "display": "PECS Region",
+            "display": "PECS region",
             "sortable": true,
             "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:location",
+            "display": "Region",
+            "sortable": false,
+            "visible": "false",
             "defaultsort": false,
             "filter": {
               "type": "multiselect",
@@ -205,15 +220,8 @@
             }
           },
           {
-            "name": "$ref:location",
-            "display": "PECS Code",
-            "sortable": false,
-            "visible": "false",
-            "defaultsort": false
-          },
-          {
             "name": "$ref:type",
-            "display": "Type code",
+            "display": "Type",
             "sortable": false,
             "visible": "false",
             "defaultsort": false,
@@ -238,7 +246,7 @@
           },
           {
             "name": "$ref:status",
-            "display": "Status code",
+            "display": "Status",
             "sortable": false,
             "visible": "false",
             "defaultsort": false,
@@ -295,12 +303,20 @@
             "name": "$ref:description",
             "display": "Incident description",
             "sortable": false,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": false,
             "wordwrap": "break-words"
           },
           {
             "name": "$ref:reported_by",
+            "display": "Reported by",
+            "sortable": false,
+            "visible": "false",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:reporter_last_name",
+            "formula": "${reporter_last_name}, ${reporter_first_name}",
             "display": "Reported by",
             "sortable": false,
             "visible": "true",

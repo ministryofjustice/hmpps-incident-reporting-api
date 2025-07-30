@@ -25,9 +25,7 @@
             {
               "match": [
                 "${role}",
-                "INCIDENT_REPORTS__RO",
-                "INCIDENT_REPORTS__RW",
-                "INCIDENT_REPORTS__APPROVE"
+                "INCIDENT_REPORTS__ADMIN"
               ]
             }
           ]
@@ -55,7 +53,7 @@
       "id": "summary",
       "name": "Incident report summary",
       "datasource": "replicaDataSource",
-      "query": "SELECT r.id,\n       report_reference,\n       ctf.code                    as type,\n       ctf.description             as type_description,\n       status,\n       constant_status.description as status_description,\n       incident_date_and_time,\n       reported_at,\n       reported_by,\n       title,\n       r.description,\n       location as prison_id,\n       modified_at,\n       COALESCE(prs.name, el.name)                    as prison_name,\n       el.area_code\nFROM report r\n         join constant_status on r.status = constant_status.code\n         join constant_type ct on r.type = ct.code\n         join constant_type_family ctf on ctf.code = ct.family_code\n         join external.locations el on el.id = r.location and el.agency_type = 'INST'\n         left join establishment.prison prs on prs.prison_id = r.location\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')",
+      "query": "SELECT r.id,\n       report_reference,\n       ctf.code                    as type,\n       ctf.description             as type_description,\n       status,\n       constant_status.description as status_description,\n       incident_date_and_time,\n       reported_at,\n       reported_by,\n       title,\n       r.description,\n       location                    as prison_id,\n       modified_at,\n       COALESCE(prs.name, el.name) as prison_name,\n       el.noms_region_code         as region_code,\n       area.description            as region_name,\n       initcap(s.first_name)       as reporter_first_name,\n       initcap(s.last_name)        as reporter_last_name\nFROM report r\n         join constant_status on r.status = constant_status.code\n         join constant_type ct on r.type = ct.code\n         join constant_type_family ctf on ctf.code = ct.family_code\n         join external.locations el on el.id = r.location and el.agency_type = 'INST'\n         join establishment.prison prs on prs.prison_id = r.location\n         join regional.area area on area.area_code = el.noms_region_code\n         join staff.staff s on s.username = r.reported_by\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')",
       "schema": {
         "field": [
           {
@@ -95,7 +93,11 @@
             "type": "string"
           },
           {
-            "name": "area_code",
+            "name": "region_code",
+            "type": "string"
+          },
+          {
+            "name": "region_name",
             "type": "string"
           },
           {
@@ -117,6 +119,14 @@
           {
             "name": "modified_at",
             "type": "datetime"
+          },
+          {
+            "name": "reporter_first_name",
+            "type": "string"
+          },
+          {
+            "name": "reporter_last_name",
+            "type": "string"
           }
         ]
       }
@@ -142,20 +152,20 @@
       }
     },
     {
-      "id": "areaCodes",
-      "name": "Area Codes",
+      "id": "regionCodes",
+      "name": "Region Codes",
       "datasource": "replicaDataSource",
-      "query": "select distinct area_code as code, area_code as name from external.locations where agency_type = 'INST' and area_code is not null order by area_code",
+      "query": "select area_code as code, description from regional.area where area_class = 'REGION' and active_flag = 'Y' order by description",
       "schema": {
         "field": [
           {
             "name": "code",
-            "display": "Area code",
+            "display": "Code",
             "type": "string"
           },
           {
-            "name": "name",
-            "display": "Area",
+            "name": "description",
+            "display": "Description",
             "type": "string"
           }
         ]
@@ -205,7 +215,7 @@
   "report": [
     {
       "id": "summary",
-      "name": "Incident Report Summary",
+      "name": "Incident Report Summary (V2)",
       "description": "List of all incidents filtered by dates, types, status and locations",
       "version": "1.0.0",
       "dataset": "$ref:summary",
@@ -229,9 +239,9 @@
           },
           {
             "name": "$ref:prison_id",
-            "display": "Prison code",
+            "display": "Prison",
             "sortable": true,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": false,
             "filter": {
               "type": "multiselect",
@@ -249,12 +259,12 @@
             "name": "$ref:prison_name",
             "display": "Prison name",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
-            "name": "$ref:area_code",
-            "display": "Area",
+            "name": "$ref:region_code",
+            "display": "Region",
             "sortable": true,
             "visible": "false",
             "defaultsort": false,
@@ -264,15 +274,22 @@
               "dynamicoptions": {
                 "maximumOptions": 140,
                 "returnAsStaticOptions": true,
-                "dataset": "areaCodes",
+                "dataset": "regionCodes",
                 "name": "code",
-                "display": "name"
+                "display": "description"
               }
             }
           },
           {
+            "name": "$ref:region_name",
+            "display": "Region name",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
             "name": "$ref:type",
-            "display": "Type code",
+            "display": "Type",
             "sortable": false,
             "visible": "false",
             "defaultsort": false,
@@ -297,7 +314,7 @@
           },
           {
             "name": "$ref:status",
-            "display": "Status code",
+            "display": "Status",
             "sortable": false,
             "visible": "false",
             "defaultsort": false,
@@ -354,12 +371,13 @@
             "name": "$ref:description",
             "display": "Incident description",
             "sortable": false,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": false,
             "wordwrap": "break-words"
           },
           {
-            "name": "$ref:reported_by",
+            "name": "$ref:reporter_last_name",
+            "formula": "${reporter_last_name}, ${reporter_first_name}",
             "display": "Reported by",
             "sortable": false,
             "visible": "true",
