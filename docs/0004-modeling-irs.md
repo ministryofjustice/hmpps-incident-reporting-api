@@ -22,7 +22,10 @@ classDiagram
     String correctionRequestedBy
     String descriptionOfChange
     String location
+    String originalReportReference
     int sequence
+    UserAction userAction
+    UserType userType
   }
   class DescriptionAddendum {
     Long id
@@ -172,6 +175,16 @@ classDiagram
     varchar(60) description
     varchar(60) code
   }
+  class constant_user_action {
+    integer sequence
+    varchar(60) description
+    varchar(60) code
+  }
+  class constant_user_type {
+    integer sequence
+    varchar(60) description
+    varchar(60) code
+  }
   class correction_request {
     uuid report_id
     text description_of_change
@@ -179,6 +192,9 @@ classDiagram
     varchar(120) correction_requested_by
     integer sequence
     varchar(20) location
+    varchar(60) user_action
+    varchar(25) original_report_reference
+    varchar(60) user_type
     integer id
   }
   class description_addendum {
@@ -289,14 +305,14 @@ classDiagram
     integer id
   }
 
-  correction_request  -->  report : report_id
-  description_addendum  -->  report : report_id
-  historical_question  -->  history : history_id
-  historical_response  -->  historical_question : historical_question_id
-  history  -->  report : report_id
-  prisoner_involvement  -->  report : report_id
-  question  -->  report : report_id
-  response  -->  question : question_id
-  staff_involvement  -->  report : report_id
-  status_history  -->  report : report_id
+  correction_request --> report: report_id
+  description_addendum --> report: report_id
+  historical_question --> history: history_id
+  historical_response --> historical_question: historical_question_id
+  history --> report: report_id
+  prisoner_involvement --> report: report_id
+  question --> report: report_id
+  response --> question: question_id
+  staff_involvement --> report: report_id
+  status_history --> report: report_id
 ```
