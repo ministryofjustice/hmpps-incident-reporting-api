@@ -494,7 +494,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -583,7 +584,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -654,7 +656,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -743,7 +746,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -895,7 +899,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.LENIENT,
@@ -1011,7 +1016,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(UpdateReportRequest().toJson())
+          .bodyValue("{}")
           .exchange()
           .expectStatus().isOk
           .expectBody().json(
@@ -1032,7 +1037,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -1073,7 +1079,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -1144,7 +1151,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -1363,6 +1371,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
@@ -1409,6 +1418,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
@@ -1612,6 +1622,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "history": [],
               "questions": [
                 {
@@ -1715,6 +1726,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "history": [
                 {
                   "type": "FIND_6",
@@ -1850,6 +1862,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "history": [
                 {
                   "type": "ASSAULT_5",

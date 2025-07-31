@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 import java.util.Optional
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 
 @Schema(
   description = "Payload to update key properties of an incident report",
@@ -105,7 +106,7 @@ data class UpdateReportRequest(
     description?.let { report.description = it }
     staffInvolvementDone?.let { report.staffInvolvementDone = it }
     prisonerInvolvementDone?.let { report.prisonerInvolvementDone = it }
-    duplicatedReportId?.let { report.duplicatedReportId = it }
+    duplicatedReportId?.let { report.duplicatedReportId = it.getOrNull() }
 
     report.modifiedIn = InformationSource.DPS
     report.modifiedBy = requestUsername
