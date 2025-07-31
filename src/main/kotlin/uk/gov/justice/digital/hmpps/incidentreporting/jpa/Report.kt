@@ -151,6 +151,7 @@ class Report(
   var createdAt: LocalDateTime,
   var modifiedAt: LocalDateTime,
   var modifiedBy: String,
+  var duplicatedReportId: UUID? = null,
 ) : Comparable<Report> {
 
   companion object {
@@ -677,6 +678,7 @@ class Report(
     modifiedBy = modifiedBy,
     createdInNomis = source == InformationSource.NOMIS,
     lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
+    duplicatedReportId = duplicatedReportId,
   )
 
   fun toDtoWithDetails() = ReportWithDetails(
@@ -696,6 +698,7 @@ class Report(
     modifiedBy = modifiedBy,
     createdInNomis = source == InformationSource.NOMIS,
     lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
+    duplicatedReportId = duplicatedReportId,
     questions = questions.map { it.toDto() },
     history = history.map { it.toDto() },
     historyOfStatuses = historyOfStatuses.map { it.toDto() },

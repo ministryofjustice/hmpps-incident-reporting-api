@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
+import java.util.Optional
+import java.util.UUID
 
 @Schema(
   description = "Payload to update key properties of an incident report",
@@ -68,6 +70,13 @@ data class UpdateReportRequest(
     defaultValue = "null",
   )
   val prisonerInvolvementDone: Boolean? = null,
+  @param:Schema(
+    description = "ID of the original report of which this report is a duplicate of",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    nullable = true,
+    defaultValue = "null",
+  )
+  val duplicatedReportId: Optional<UUID>? = null,
 ) {
   @JsonIgnore
   val isEmpty: Boolean =
@@ -76,7 +85,8 @@ data class UpdateReportRequest(
       title == null &&
       description == null &&
       staffInvolvementDone == null &&
-      prisonerInvolvementDone == null
+      prisonerInvolvementDone == null &&
+      duplicatedReportId == null
 
   fun validate(now: LocalDateTime) {
     if (incidentDateAndTime != null && incidentDateAndTime > now) {
@@ -95,6 +105,7 @@ data class UpdateReportRequest(
     description?.let { report.description = it }
     staffInvolvementDone?.let { report.staffInvolvementDone = it }
     prisonerInvolvementDone?.let { report.prisonerInvolvementDone = it }
+    duplicatedReportId?.let { report.duplicatedReportId = it }
 
     report.modifiedIn = InformationSource.DPS
     report.modifiedBy = requestUsername
