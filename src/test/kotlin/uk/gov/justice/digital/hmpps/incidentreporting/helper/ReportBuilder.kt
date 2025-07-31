@@ -48,6 +48,7 @@ fun buildReport(
     modifiedAt = reportTime,
     reportedBy = reportingUsername,
     modifiedBy = reportingUsername,
+    duplicatedReportId = duplicatedReportId,
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)
 

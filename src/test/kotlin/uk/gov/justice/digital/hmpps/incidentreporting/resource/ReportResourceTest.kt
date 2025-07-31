@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
+import java.util.Optional
 import java.util.UUID
 
 @DisplayName("Report resource")
@@ -920,10 +921,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   @Nested
   inner class UpdateReport {
     private lateinit var url: String
+    lateinit var duplicatedExistingReport: Report
 
     @BeforeEach
     fun setUp() {
       url = "/incident-reports/${existingReport.id}"
+
+      duplicatedExistingReport = reportRepository.save(
+        buildReport(
+          reportReference = "11124144",
+          reportTime = now,
+        ),
+      )
     }
 
     @DisplayName("is secured")
@@ -1054,6 +1063,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           location = "LEI",
           title = "Updated report 11124143",
           description = "Updated incident report of type find of illicit items",
+          duplicatedReportId = Optional.of(UUID.fromString(duplicatedExistingReport.id.toString())),
         )
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1080,7 +1090,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": "${duplicatedExistingReport.id}"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1095,7 +1105,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "can update `{0}` of an incident report")
-      @ValueSource(strings = ["incidentDateAndTime", "location", "title", "description"])
+      @ValueSource(strings = ["incidentDateAndTime", "location", "title", "description", "duplicatedReportId"])
       fun `can update an incident report field`(fieldName: String) {
         val updateReportRequest = UpdateReportRequest(
           incidentDateAndTime = if (fieldName == "incidentDateAndTime") now.minusHours(2) else null,
@@ -1103,6 +1113,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           title = if (fieldName == "title") "Updated report 11124143" else null,
           description = if (fieldName == "description") {
             "Updated incident report of type find of illicit items"
+          } else {
+            null
+          },
+          duplicatedReportId = if (fieldName == "duplicatedReportId") {
+            Optional.of(UUID.fromString(duplicatedExistingReport.id.toString()))
           } else {
             null
           },
@@ -1126,6 +1141,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "Updated incident report of type find of illicit items"
         } else {
           "A new incident created in the new service of type find of illicit items"
+        }
+        val expectedDuplicatedReportId = if (fieldName == "duplicatedReportId") {
+          "${duplicatedExistingReport.id}"
+        } else {
+          null
         }
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1152,7 +1172,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": $expectedDuplicatedReportId
             }
             """,
             JsonCompareMode.STRICT,
