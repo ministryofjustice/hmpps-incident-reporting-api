@@ -1063,7 +1063,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           location = "LEI",
           title = "Updated report 11124143",
           description = "Updated incident report of type find of illicit items",
-          duplicatedReportId = Optional.of(UUID.fromString(duplicatedExistingReport.id.toString())),
+          duplicatedReportId = Optional.of(duplicatedExistingReport.id!!),
         )
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1117,7 +1117,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             null
           },
           duplicatedReportId = if (fieldName == "duplicatedReportId") {
-            Optional.of(UUID.fromString(duplicatedExistingReport.id.toString()))
+            Optional.of(duplicatedExistingReport.id!!)
           } else {
             null
           },
