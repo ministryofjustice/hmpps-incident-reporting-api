@@ -756,7 +756,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "modifiedAt": "2023-12-05T17:34:56",
                 "modifiedBy": "another-user",
                 "createdInNomis": true,
-                "lastModifiedInNomis": true
+                "lastModifiedInNomis": true,
+                "duplicatedReportId": null
               }
               """,
               reportJson,
@@ -1133,7 +1134,8 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "modifiedAt": "2023-12-05T17:34:56",
                 "modifiedBy": "another-user",
                 "createdInNomis": true,
-                "lastModifiedInNomis": true
+                "lastModifiedInNomis": true,
+                "duplicatedReportId": null
               }
               """,
               reportJson,
