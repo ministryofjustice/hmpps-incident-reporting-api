@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.QueryHints
 import org.springframework.stereotype.Repository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.AnalyticalMarkerType
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.util.UUID
 
@@ -28,6 +29,11 @@ interface ReportRepository :
 
   @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyByReportReference(reportReference: String): Report?
+
+  @Query(
+    "SELECT distinct(r) FROM Response res join res.question q join q.report r, AnalyticalMarker am where res.code = am.id.responseCode and am.id.markerType = :analyticalMarker",
+  )
+  fun findAllByAnalyticalMarker(analyticalMarker: AnalyticalMarkerType): List<Report>
 
   @Query(value = "SELECT nextval('report_sequence')", nativeQuery = true)
   fun getNextReportReference(): Long
