@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserType
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 fun buildReport(
   reportReference: String,
@@ -21,6 +22,7 @@ fun buildReport(
   status: Status = Status.DRAFT,
   type: Type = Type.FIND_6,
   reportingUsername: String = "USER1",
+  duplicatedReportId: UUID? = null,
   // all "related objects" are optionally generated:
   generateDescriptionAddendums: Int = 0,
   generateStaffInvolvement: Int = 0,
@@ -46,6 +48,7 @@ fun buildReport(
     modifiedAt = reportTime,
     reportedBy = reportingUsername,
     modifiedBy = reportingUsername,
+    duplicatedReportId = duplicatedReportId,
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)
 

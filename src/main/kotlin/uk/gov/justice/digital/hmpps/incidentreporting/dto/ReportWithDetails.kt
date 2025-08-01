@@ -29,6 +29,7 @@ class ReportWithDetails(
   modifiedBy: String,
   createdInNomis: Boolean,
   lastModifiedInNomis: Boolean,
+  duplicatedReportId: UUID?,
 
   @param:Schema(description = "The question-response pairs that make up this report")
   val questions: List<Question>,
@@ -70,6 +71,7 @@ class ReportWithDetails(
   modifiedBy = modifiedBy,
   createdInNomis = createdInNomis,
   lastModifiedInNomis = lastModifiedInNomis,
+  duplicatedReportId = duplicatedReportId,
 ) {
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
   @Suppress("unused")

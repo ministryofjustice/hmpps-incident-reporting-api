@@ -46,4 +46,9 @@ open class ReportBasic(
   @param:Schema(description = "Last modified in NOMIS as opposed to DPS", example = "false")
   @param:JsonProperty(access = JsonProperty.Access.READ_ONLY)
   val lastModifiedInNomis: Boolean,
+  @param:Schema(
+    description = "ID of the original report of which this report is a duplicate of",
+    nullable = true,
+  )
+  val duplicatedReportId: UUID? = null,
 )
