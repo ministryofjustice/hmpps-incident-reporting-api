@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import java.time.Clock
+import java.util.Optional
 import java.util.UUID
 
 @DisplayName("Report resource")
@@ -494,7 +495,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -583,7 +585,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -654,7 +657,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -743,7 +747,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -895,7 +900,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.LENIENT,
@@ -915,10 +921,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
   @Nested
   inner class UpdateReport {
     private lateinit var url: String
+    lateinit var duplicatedExistingReport: Report
 
     @BeforeEach
     fun setUp() {
       url = "/incident-reports/${existingReport.id}"
+
+      duplicatedExistingReport = reportRepository.save(
+        buildReport(
+          reportReference = "11124144",
+          reportTime = now,
+        ),
+      )
     }
 
     @DisplayName("is secured")
@@ -1011,7 +1025,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(UpdateReportRequest().toJson())
+          .bodyValue("{}")
           .exchange()
           .expectStatus().isOk
           .expectBody().json(
@@ -1032,7 +1046,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "USER1",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null
             }
             """,
             JsonCompareMode.STRICT,
@@ -1048,6 +1063,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           location = "LEI",
           title = "Updated report 11124143",
           description = "Updated incident report of type find of illicit items",
+          duplicatedReportId = Optional.of(duplicatedExistingReport.id!!),
         )
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1073,7 +1089,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": "${duplicatedExistingReport.id}"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1088,7 +1105,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @ParameterizedTest(name = "can update `{0}` of an incident report")
-      @ValueSource(strings = ["incidentDateAndTime", "location", "title", "description"])
+      @ValueSource(strings = ["incidentDateAndTime", "location", "title", "description", "duplicatedReportId"])
       fun `can update an incident report field`(fieldName: String) {
         val updateReportRequest = UpdateReportRequest(
           incidentDateAndTime = if (fieldName == "incidentDateAndTime") now.minusHours(2) else null,
@@ -1096,6 +1113,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           title = if (fieldName == "title") "Updated report 11124143" else null,
           description = if (fieldName == "description") {
             "Updated incident report of type find of illicit items"
+          } else {
+            null
+          },
+          duplicatedReportId = if (fieldName == "duplicatedReportId") {
+            Optional.of(duplicatedExistingReport.id!!)
           } else {
             null
           },
@@ -1119,6 +1141,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           "Updated incident report of type find of illicit items"
         } else {
           "A new incident created in the new service of type find of illicit items"
+        }
+        val expectedDuplicatedReportId = if (fieldName == "duplicatedReportId") {
+          "${duplicatedExistingReport.id}"
+        } else {
+          null
         }
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
@@ -1144,7 +1171,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedAt": "2023-12-05T12:34:56",
               "modifiedBy": "request-user",
               "createdInNomis": false,
-              "lastModifiedInNomis": false
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": $expectedDuplicatedReportId
             }
             """,
             JsonCompareMode.STRICT,
@@ -1363,6 +1391,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
@@ -1409,6 +1438,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
@@ -1612,6 +1642,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "history": [],
               "questions": [
                 {
@@ -1715,6 +1746,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "history": [
                 {
                   "type": "FIND_6",
@@ -1850,6 +1882,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
               "history": [
                 {
                   "type": "ASSAULT_5",
