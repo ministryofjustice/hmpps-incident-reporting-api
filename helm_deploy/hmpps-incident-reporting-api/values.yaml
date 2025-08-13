@@ -9,6 +9,10 @@ generic-service:
 
   replicaCount: 4
 
+  resources:
+    limits:
+      memory: 3.5G
+
   image:
     repository: ghcr.io/ministryofjustice/hmpps-incident-reporting-api
     tag: app_version # override at deployment time
