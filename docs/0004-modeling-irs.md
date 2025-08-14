@@ -83,6 +83,7 @@ classDiagram
     UUID id
     LocalDateTime createdAt
     String description
+    UUID duplicatedReportId
     LocalDateTime incidentDateAndTime
     String location
     LocalDateTime modifiedAt
@@ -126,16 +127,16 @@ classDiagram
     Status status
   }
 
-  CorrectionRequest "0..*" <--> "1" Report
   HistoricalQuestion "1" <--> "1..*" HistoricalResponse
   HistoricalQuestion "0..*" <--> "1" History
-  PrisonerInvolvement "0..*" <--> "1" Report
   Question "0..*" <--> "1" Report
   Question "1" <--> "1..*" Response
+  Report "1" <--> "0..*" CorrectionRequest
   Report "1" <--> "0..*" DescriptionAddendum
   Report "1" <--> "0..*" History
+  Report "1" <--> "0..*" PrisonerInvolvement
   Report "1" <--> "0..*" StaffInvolvement
-  StatusHistory "1..*" <--> "1" Report
+  Report "1" <--> "1..*" StatusHistory
 ```
 
 ### DB Schema
@@ -273,6 +274,7 @@ classDiagram
     varchar(5) modified_in
     boolean staff_involvement_done
     boolean prisoner_involvement_done
+    uuid duplicated_report_id
     uuid id
   }
   class response {
@@ -312,6 +314,7 @@ classDiagram
   history --> report: report_id
   prisoner_involvement --> report: report_id
   question --> report: report_id
+  report --> report: duplicated_report_id
   response --> question: question_id
   staff_involvement --> report: report_id
   status_history --> report: report_id
