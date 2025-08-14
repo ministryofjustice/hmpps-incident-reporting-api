@@ -22,6 +22,9 @@ enum class Status(
   UPDATED("Updated", "INAME"),
   CLOSED("Closed", "CLOSE"),
 
+  // TODO: POST_INCIDENT_UPDATE will be removed
+  POST_INCIDENT_UPDATE("Post-incident update", "PIU"),
+
   DUPLICATE("Duplicate", "DUP"),
   NOT_REPORTABLE("Not reportable", null),
   REOPENED("Reopened", null),
