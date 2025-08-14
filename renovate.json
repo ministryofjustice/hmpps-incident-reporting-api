@@ -3,7 +3,6 @@
   "extends": ["github>ministryofjustice/hmpps-renovate-config:jvm"],
   "assigneesFromCodeOwners": true,
   "prBodyTemplate": "{{{table}}}{{{notes}}}{{{warnings}}}{{{controls}}}",
-  "vulnerabilityAlerts": {"minimumReleaseAge": null},
   "packageRules": [
     {
       "matchManagers": ["gradle"],
@@ -11,7 +10,6 @@
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "swagger-parser",
       "groupSlug": "swagger-parser",
-      "minimumReleaseAge": "3 days"
     },
     {
       "matchManagers": ["gradle"],
@@ -19,14 +17,12 @@
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "hmpps-digital-prison-reporting-lib",
       "groupSlug": "hmpps-digital-prison-reporting-lib",
-      "minimumReleaseAge": "3 days"
     },
     {
       "matchManagers": ["gradle"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non major Gradle dependencies",
-      "groupSlug": "all-gradle-minor-patch",
-      "minimumReleaseAge": "3 days"
+      "groupSlug": "all-gradle-minor-patch"
     }
   ]
 }
