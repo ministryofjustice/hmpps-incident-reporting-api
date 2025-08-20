@@ -168,12 +168,12 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             {
               "id": "incident-report",
               "name": "Incident report summary",
-              "description": "List of all incidents filtered by dates, types, status and locations",
+              "description": "List of all incidents filtered by dates, types, status and locations.",
               "variant": {
                 "id": "summary",
-                "name": "Incident Report Summary",
+                "name": "Incident report summary",
                 "resourceName": "reports/incident-report/summary",
-                "description": "List of all incidents filtered by dates, types, status and locations",
+                "description": "List of all incidents filtered by dates, types, status and locations.",
                 "printable": true
               }
             }

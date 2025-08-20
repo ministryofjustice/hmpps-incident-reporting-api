@@ -1,7 +1,7 @@
 {
   "id": "prisoner-count",
   "name": "Prisoner count reports",
-  "description": "Count of occurrences of incidents by prisoner and type",
+  "description": "Count of occurrences of incidents by prisoner and type.",
   "metadata": {
     "author": "Michael Willis",
     "version": "1.0.0",
@@ -125,8 +125,8 @@
   "report": [
     {
       "id": "per-type",
-      "name": "Count of prisoner incidents by type per month",
-      "description": "Count each prisoner and their incidents by type per month",
+      "name": "Monthly prisoner incidents",
+      "description": "Count each prisoner and the incidents they're involved in per month.",
       "version": "1.0.0",
       "dataset": "$ref:per-type",
       "policy": [],

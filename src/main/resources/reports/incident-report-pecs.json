@@ -1,7 +1,7 @@
 {
   "id": "incident-report-pecs",
-  "name": "PECS Incident reports",
-  "description": "List of all PECS incidents filtered by dates, types, status and locations",
+  "name": "Prisoner Escort and Custody Service (PECS) incident reports",
+  "description": "List of PECS incidents by dates, types, status and locations.",
   "metadata": {
     "author": "Michael Willis",
     "version": "1.0.0",
@@ -151,8 +151,8 @@
   "report": [
     {
       "id": "summary",
-      "name": "PECS incident reports",
-      "description": "List of all PECS incidents filtered by dates, types, status and PECS areas",
+      "name": "PECS incident report",
+      "description": "List of all PECS incidents filtered by dates, types, status and locations.",
       "version": "1.0.0",
       "dataset": "$ref:summary",
       "policy": [],
