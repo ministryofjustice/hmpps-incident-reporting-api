@@ -5,7 +5,7 @@ import uk.gov.justice.digital.hmpps.gradle.PortForwardRedisTask
 import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.5"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.6"
   kotlin("plugin.jpa") version "2.2.10"
   kotlin("plugin.spring") version "2.2.10"
   idea
@@ -24,14 +24,14 @@ dependencies {
 
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.10")
   implementation("io.opentelemetry:opentelemetry-api:1.53.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.18.1")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.19.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.4.3")
 
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.7")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10")
 
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.0")
 
