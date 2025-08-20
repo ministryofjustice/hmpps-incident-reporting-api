@@ -1,7 +1,7 @@
 {
   "id": "incident-with-people",
-  "name": "Incident People reports",
-  "description": "List of incidents where a person is involved",
+  "name": "Incident people reports",
+  "description": "All incident types where a person is involved.",
   "metadata": {
     "author": "Michael Willis",
     "version": "1.0.0",
@@ -357,8 +357,8 @@
   "report": [
     {
       "id": "by-prisoner",
-      "name": "Prisoner involvement in incidents",
-      "description": "Details each prisoner and their involvement in an incident",
+      "name": "Prisoner involvement",
+      "description": "Details of prisoners and their involvement in an incident.",
       "version": "1.0.0",
       "dataset": "$ref:by-prisoner",
       "policy": [],
@@ -467,8 +467,8 @@
     },
     {
       "id": "self-harm",
-      "name": "Deliberate Self Harm Report",
-      "description": "Deliberate Self Harm Report",
+      "name": "Deliberate self-harm reports",
+      "description": "Details of prisoners who are deliberately self-harming.",
       "version": "1.0.0",
       "dataset": "$ref:self-harm",
       "policy": [],
@@ -574,8 +574,8 @@
     },
     {
       "id": "by-staff",
-      "name": "Staff involvement in incidents",
-      "description": "Details each staff and their involvement in an incident",
+      "name": "Staff involved in incidents",
+      "description": "Details each staff member and their involvement in an incident.",
       "version": "1.0.0",
       "dataset": "$ref:by-staff",
       "policy": [],

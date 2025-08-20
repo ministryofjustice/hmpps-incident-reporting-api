@@ -1,7 +1,7 @@
 {
   "id": "incident-count",
-  "name": "Incident Count",
-  "description": "Count of incident types by establishment and status for a given period",
+  "name": "Incident count reports",
+  "description": "Reports showing the count of incident types by establishment and status for a given period.",
   "metadata": {
     "author": "Michael Willis",
     "version": "1.0.0",
@@ -205,8 +205,8 @@
   "report": [
     {
       "id": "by-location-per-day",
-      "name": "Count of incident reports by day and location",
-      "description": "Counts of incidents by type and location for each day",
+      "name": "Day and location reports",
+      "description": "Counts of incidents by type and location for each day.",
       "version": "1.0.0",
       "dataset": "$ref:by-location-per-day",
       "policy": [],
@@ -285,8 +285,8 @@
     },
     {
       "id": "by-location-per-week",
-      "name": "Count of incident reports by week and location",
-      "description": "Counts of incidents by type and location for each week",
+      "name": "Week and location reports",
+      "description": "Counts of incidents by type and location for each week.",
       "version": "1.0.0",
       "dataset": "$ref:by-location-per-week",
       "policy": [],
@@ -365,8 +365,8 @@
     },
     {
       "id": "by-location-per-month",
-      "name": "Count of incident reports by month and location",
-      "description": "Counts of incidents by type and location for each month",
+      "name": "Month and location reports",
+      "description": "Counts of incidents by type and location for each month.",
       "version": "1.0.0",
       "dataset": "$ref:by-location-per-month",
       "policy": [],

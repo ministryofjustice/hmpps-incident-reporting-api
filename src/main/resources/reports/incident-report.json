@@ -1,7 +1,7 @@
 {
   "id": "incident-report",
   "name": "Incident report summary",
-  "description": "List of all incidents filtered by dates, types, status and locations",
+  "description": "List of all incidents filtered by dates, types, status and locations.",
   "metadata": {
     "author": "Michael Willis",
     "version": "1.0.0",
@@ -157,8 +157,8 @@
   "report": [
     {
       "id": "summary",
-      "name": "Incident Report Summary",
-      "description": "List of all incidents filtered by dates, types, status and locations",
+      "name": "Incident report summary",
+      "description": "List of all incidents filtered by dates, types, status and locations.",
       "version": "1.0.0",
       "dataset": "$ref:summary",
       "policy": [],
