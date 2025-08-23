@@ -122,11 +122,13 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
           "code" to "DRAFT",
           "description" to "Draft",
           "nomisCode" to null,
+          "ignoreDownstream" to false,
         ),
         mapOf(
           "code" to "ON_HOLD",
           "description" to "On hold",
           "nomisCode" to "INAN",
+          "ignoreDownstream" to false,
         ),
       ),
     ),
