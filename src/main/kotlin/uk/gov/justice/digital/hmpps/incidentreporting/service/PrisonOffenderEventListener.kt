@@ -2,8 +2,6 @@ package uk.gov.justice.digital.hmpps.incidentreporting.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.annotation.SqsListener
-import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -25,11 +23,11 @@ class PrisonOffenderEventListener(
   }
 
   @SqsListener("incidentreporting", factory = "hmppsQueueContainerFactoryProxy")
-  @WithSpan(value = "hmpps-incident-reporting-prisoner-event-queue", kind = SpanKind.SERVER)
   fun onPrisonOffenderEvent(requestJson: String) {
+    log.info("Received message [$requestJson]")
     val (message, messageAttributes) = mapper.readValue(requestJson, HMPPSMessage::class.java)
     val eventType = messageAttributes.eventType.Value
-    log.info("Received message $message, type $eventType")
+    log.info("Processing message $message, type $eventType")
 
     when (eventType) {
       PRISONER_MERGE_EVENT_TYPE -> {
