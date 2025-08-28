@@ -43,7 +43,7 @@ generic-service:
           return 401;
         }
   env:
-    JAVA_OPTS: "-Xmx4g -Xmx4g -XX:+HeapDumpOnOutOfMemoryError"
+    JAVA_OPTS: "-Xms4g -Xmx4g -XX:+HeapDumpOnOutOfMemoryError"
 
     SERVER_PORT: "8080"
     SPRING_PROFILES_ACTIVE: "logstash"

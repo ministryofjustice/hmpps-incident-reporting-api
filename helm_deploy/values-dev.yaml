@@ -19,7 +19,7 @@ generic-service:
       memory: 4G
 
   env:
-    JAVA_OPTS: "-Xmx2g -Xmx3g -XX:+HeapDumpOnOutOfMemoryError"
+    JAVA_OPTS: "-Xms2g -Xmx3g -XX:+HeapDumpOnOutOfMemoryError"
     SPRING_PROFILES_ACTIVE: "logstash, replica"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
     API_BASE_URL_OAUTH: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
