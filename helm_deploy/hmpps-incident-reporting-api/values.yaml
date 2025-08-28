@@ -10,8 +10,10 @@ generic-service:
   replicaCount: 4
 
   resources:
+    requests:
+      memory: 4G
     limits:
-      memory: 3.5G
+      memory: 6G
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-incident-reporting-api
@@ -41,7 +43,7 @@ generic-service:
           return 401;
         }
   env:
-    JAVA_OPTS: "-Xmx3g"
+    JAVA_OPTS: "-Xmx4g"
     SERVER_PORT: "8080"
     SPRING_PROFILES_ACTIVE: "logstash"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json

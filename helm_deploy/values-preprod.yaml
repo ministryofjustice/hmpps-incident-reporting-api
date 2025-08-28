@@ -10,7 +10,13 @@ generic-service:
   ingress:
     host: incident-reporting-api-preprod.hmpps.service.justice.gov.uk
 
+  resources:
+    requests:
+      memory: 3G
+    limits:
+      memory: 4G
   env:
+    JAVA_OPTS: "-Xmx3g"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
     API_BASE_URL_OAUTH: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth
     API_BASE_URL_PRISONER_SEARCH: https://prisoner-search-preprod.prison.service.justice.gov.uk

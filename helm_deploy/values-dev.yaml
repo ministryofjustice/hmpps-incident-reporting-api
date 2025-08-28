@@ -12,7 +12,14 @@ generic-service:
 
   allowlist: null
 
+  resources:
+    requests:
+      memory: 3G
+    limits:
+      memory: 4G
+
   env:
+    JAVA_OPTS: "-Xmx3g"
     SPRING_PROFILES_ACTIVE: "logstash, replica"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
     API_BASE_URL_OAUTH: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
