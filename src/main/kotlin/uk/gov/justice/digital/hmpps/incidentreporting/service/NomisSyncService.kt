@@ -66,7 +66,7 @@ class NomisSyncService(
     }
     reportToUpdate.updateWith(incidentReport, clock)
 
-    return reportToUpdate.toDtoWithDetails()
+    return reportToUpdate.toDtoWithDetails(includeHistory = true)
   }
 
   private fun createNewReport(incidentReport: NomisReport): ReportWithDetails {
@@ -84,6 +84,6 @@ class NomisSyncService(
         throw e
       }
     }
-    return reportEntity.toDtoWithDetails()
+    return reportEntity.toDtoWithDetails(includeHistory = true)
   }
 }

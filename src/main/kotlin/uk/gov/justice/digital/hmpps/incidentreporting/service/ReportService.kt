@@ -112,14 +112,14 @@ class ReportService(
       ?.toDtoBasic()
   }
 
-  fun getReportWithDetailsById(id: UUID): ReportWithDetails? {
+  fun getReportWithDetailsById(id: UUID, includeHistory: Boolean = false): ReportWithDetails? {
     return reportRepository.findOneEagerlyById(id)
-      ?.toDtoWithDetails()
+      ?.toDtoWithDetails(includeHistory = includeHistory)
   }
 
-  fun getReportWithDetailsByReference(reportReference: String): ReportWithDetails? {
+  fun getReportWithDetailsByReference(reportReference: String, includeHistory: Boolean = false): ReportWithDetails? {
     return reportRepository.findOneEagerlyByReportReference(reportReference)
-      ?.toDtoWithDetails()
+      ?.toDtoWithDetails(includeHistory = includeHistory)
   }
 
   @Transactional
@@ -234,9 +234,9 @@ class ReportService(
         reportEntity.modifiedAt = now
         reportEntity.modifiedBy = user
 
-        MaybeChanged.Changed(reportEntity.toDtoWithDetails())
+        MaybeChanged.Changed(reportEntity.toDtoWithDetails(includeHistory = true))
       } else {
-        MaybeChanged.Unchanged(reportEntity.toDtoWithDetails())
+        MaybeChanged.Unchanged(reportEntity.toDtoWithDetails(includeHistory = true))
       }
 
       maybeChangedReport.alsoIfChanged { reportWithDetails ->
