@@ -33,7 +33,7 @@ class SubjectAccessRequestService(
         (fromDateExclusive == null || modifiedDate.isAfter(fromDateExclusive)) &&
           (toDateExclusive == null || modifiedDate.isBefore(toDateExclusive))
       }
-      .map { it.toDtoWithDetails() }
+      .map { it.toDtoWithDetails(includeHistory = true) }
       .sortedBy { it.incidentDateAndTime }
       .toList()
 

@@ -328,8 +328,14 @@ class ReportResource(
     )
     @PathVariable
     id: UUID,
+    @Schema(
+      description = "Include history",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+    )
+    @RequestParam("includeHistory", required = false, defaultValue = "false")
+    includeHistory: Boolean = false,
   ): ReportWithDetails {
-    return reportService.getReportWithDetailsById(id = id)
+    return reportService.getReportWithDetailsById(id = id, includeHistory = includeHistory)
       ?: throw ReportNotFoundException(id)
   }
 
@@ -410,8 +416,14 @@ class ReportResource(
     )
     @PathVariable
     reportReference: String,
+    @Schema(
+      description = "Include history",
+      requiredMode = Schema.RequiredMode.REQUIRED,
+    )
+    @RequestParam("includeHistory", required = false, defaultValue = "false")
+    includeHistory: Boolean = false,
   ): ReportWithDetails {
-    return reportService.getReportWithDetailsByReference(reportReference)
+    return reportService.getReportWithDetailsByReference(reportReference, includeHistory)
       ?: throw ReportNotFoundException(reportReference)
   }
 

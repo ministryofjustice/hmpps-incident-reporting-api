@@ -667,7 +667,7 @@ class Report(
     duplicatedReportId = duplicatedReportId,
   )
 
-  fun toDtoWithDetails() = ReportWithDetails(
+  fun toDtoWithDetails(includeHistory: Boolean = false) = ReportWithDetails(
     id = id!!,
     reportReference = reportReference,
     incidentDateAndTime = incidentDateAndTime,
@@ -686,7 +686,11 @@ class Report(
     lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
     duplicatedReportId = duplicatedReportId,
     questions = questions.map { it.toDto() },
-    history = history.map { it.toDto() },
+    history = if (includeHistory) {
+      history.map { it.toDto() }
+    } else {
+      emptyList()
+    },
     historyOfStatuses = historyOfStatuses.map { it.toDto() },
     staffInvolved = staffInvolved.map { it.toDto() },
     prisonersInvolved = prisonersInvolved.map { it.toDto() },
