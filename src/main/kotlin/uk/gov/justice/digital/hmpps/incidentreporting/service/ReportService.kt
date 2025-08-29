@@ -234,9 +234,9 @@ class ReportService(
         reportEntity.modifiedAt = now
         reportEntity.modifiedBy = user
 
-        MaybeChanged.Changed(reportEntity.toDtoWithDetails())
+        MaybeChanged.Changed(reportEntity.toDtoWithDetails(includeHistory = true))
       } else {
-        MaybeChanged.Unchanged(reportEntity.toDtoWithDetails())
+        MaybeChanged.Unchanged(reportEntity.toDtoWithDetails(includeHistory = true))
       }
 
       maybeChangedReport.alsoIfChanged { reportWithDetails ->
