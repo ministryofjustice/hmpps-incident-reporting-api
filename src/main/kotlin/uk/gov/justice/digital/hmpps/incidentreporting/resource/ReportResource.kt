@@ -418,7 +418,7 @@ class ReportResource(
     reportReference: String,
     @Schema(
       description = "Include history",
-      requiredMode = Schema.RequiredMode.REQUIRED,
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     )
     @RequestParam("includeHistory", required = false, defaultValue = "false")
     includeHistory: Boolean = false,
