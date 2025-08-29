@@ -9,6 +9,10 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.NamedEntityGraphs
+import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
@@ -22,6 +26,24 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.History as HistoryDto
 
 @Entity
 @EntityOpen
+@NamedEntityGraphs(
+  value = [
+    NamedEntityGraph(
+      name = "History.eager",
+      attributeNodes = [
+        NamedAttributeNode("questions", subgraph = "history.questions.eager.subgraph"),
+      ],
+      subgraphs = [
+        NamedSubgraph(
+          name = "history.questions.eager.subgraph",
+          attributeNodes = [
+            NamedAttributeNode("responses"),
+          ],
+        ),
+      ],
+    ),
+  ],
+)
 class History(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

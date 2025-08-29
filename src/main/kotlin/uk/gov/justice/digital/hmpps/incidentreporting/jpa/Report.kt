@@ -52,23 +52,10 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum as
         NamedAttributeNode("prisonersInvolved"),
         NamedAttributeNode("correctionRequests"),
         NamedAttributeNode("questions", subgraph = "questions.eager.subgraph"),
-        NamedAttributeNode("history", subgraph = "history.eager.subgraph"),
       ],
       subgraphs = [
         NamedSubgraph(
           name = "questions.eager.subgraph",
-          attributeNodes = [
-            NamedAttributeNode("responses"),
-          ],
-        ),
-        NamedSubgraph(
-          name = "history.eager.subgraph",
-          attributeNodes = [
-            NamedAttributeNode("questions", subgraph = "history.responses.eager.subgraph"),
-          ],
-        ),
-        NamedSubgraph(
-          name = "history.responses.eager.subgraph",
           attributeNodes = [
             NamedAttributeNode("responses"),
           ],
