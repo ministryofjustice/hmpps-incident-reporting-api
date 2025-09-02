@@ -51,25 +51,11 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum as
         NamedAttributeNode("staffInvolved"),
         NamedAttributeNode("prisonersInvolved"),
         NamedAttributeNode("correctionRequests"),
-        NamedAttributeNode("historyOfStatuses"),
         NamedAttributeNode("questions", subgraph = "questions.eager.subgraph"),
-        NamedAttributeNode("history", subgraph = "history.eager.subgraph"),
       ],
       subgraphs = [
         NamedSubgraph(
           name = "questions.eager.subgraph",
-          attributeNodes = [
-            NamedAttributeNode("responses"),
-          ],
-        ),
-        NamedSubgraph(
-          name = "history.eager.subgraph",
-          attributeNodes = [
-            NamedAttributeNode("questions", subgraph = "history.responses.eager.subgraph"),
-          ],
-        ),
-        NamedSubgraph(
-          name = "history.responses.eager.subgraph",
           attributeNodes = [
             NamedAttributeNode("responses"),
           ],
@@ -681,7 +667,7 @@ class Report(
     duplicatedReportId = duplicatedReportId,
   )
 
-  fun toDtoWithDetails() = ReportWithDetails(
+  fun toDtoWithDetails(includeHistory: Boolean = false) = ReportWithDetails(
     id = id!!,
     reportReference = reportReference,
     incidentDateAndTime = incidentDateAndTime,
@@ -700,7 +686,11 @@ class Report(
     lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
     duplicatedReportId = duplicatedReportId,
     questions = questions.map { it.toDto() },
-    history = history.map { it.toDto() },
+    history = if (includeHistory) {
+      history.map { it.toDto() }
+    } else {
+      emptyList()
+    },
     historyOfStatuses = historyOfStatuses.map { it.toDto() },
     staffInvolved = staffInvolved.map { it.toDto() },
     prisonersInvolved = prisonersInvolved.map { it.toDto() },

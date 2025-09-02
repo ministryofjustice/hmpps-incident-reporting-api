@@ -10,8 +10,10 @@ generic-service:
   replicaCount: 4
 
   resources:
+    requests:
+      memory: 4G
     limits:
-      memory: 3.5G
+      memory: 6G
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-incident-reporting-api

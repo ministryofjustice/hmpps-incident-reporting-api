@@ -8,14 +8,7 @@ generic-service:
   scheduledDowntime:
     enabled: false
 
-  resources:
-    requests:
-      memory: 4G
-    limits:
-      memory: 6G
-
   env:
-    JAVA_OPTS: "-Xmx3g"
     SPRING_PROFILES_ACTIVE: "logstash, replica"
     API_BASE_URL_OAUTH: https://sign-in.hmpps.service.justice.gov.uk/auth
     API_BASE_URL_PRISONER_SEARCH: https://prisoner-search.prison.service.justice.gov.uk

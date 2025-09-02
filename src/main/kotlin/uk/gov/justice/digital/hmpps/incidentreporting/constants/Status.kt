@@ -14,6 +14,7 @@ import jakarta.validation.ValidationException
 enum class Status(
   val description: String,
   val nomisStatus: String?,
+  val ignoreDownstream: Boolean = false,
 ) {
   DRAFT("Draft", null),
   AWAITING_REVIEW("Awaiting review", "AWAN"),
@@ -22,10 +23,11 @@ enum class Status(
   UPDATED("Updated", "INAME"),
   CLOSED("Closed", "CLOSE"),
 
-  DUPLICATE("Duplicate", "DUP"),
-  NOT_REPORTABLE("Not reportable", null),
-  REOPENED("Reopened", null),
-  WAS_CLOSED("Was closed", null),
+  // following statuses should be ignored downstream for most statistical purposes
+  DUPLICATE("Duplicate", "DUP", true),
+  NOT_REPORTABLE("Not reportable", null, true),
+  REOPENED("Reopened", null, true),
+  WAS_CLOSED("Was closed", null, true),
   ;
 
   companion object {
