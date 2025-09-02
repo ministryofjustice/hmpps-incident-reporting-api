@@ -25,7 +25,7 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.10")
   implementation("io.opentelemetry:opentelemetry-api:1.53.0")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.19.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.4.3")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.4.4")
 
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
@@ -44,7 +44,7 @@ dependencies {
   testImplementation("org.wiremock:wiremock-standalone:3.13.1")
   testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("org.mockito:mockito-inline:5.2.0")
-  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.32") {
+  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.33") {
     exclude(group = "io.swagger.core.v3")
   }
   testImplementation("io.swagger.core.v3:swagger-core-jakarta:2.2.36")

@@ -158,7 +158,7 @@
   "report": [
     {
       "id": "serious-sexual-assault",
-      "name": "INC0020 Serious and Sexual Assault Incident Detail",
+      "name": "Serious and Sexual Assault Incident Detail",
       "description": "Detail for serious and sexual assault incidents",
       "version": "1.0.0",
       "dataset": "$ref:serious-sexual-assault",
