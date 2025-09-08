@@ -25,6 +25,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffender
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisOffenderParty
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisQuestion
@@ -145,7 +146,23 @@ class NomisSyncServiceTest {
           ),
         ),
       ),
-      history = emptyList(),
+      history = listOf(
+        NomisHistory(
+          questionnaireId = 13212,
+          type = Type.SELF_HARM_1.nomisType.toString(),
+          description = "Self harm 1",
+          questions = listOf(),
+          incidentChangeDateTime = now.minusDays(1),
+          incidentChangeStaff = NomisStaff(
+            username = reportedBy,
+            staffId = 42,
+            firstName = "John",
+            lastName = "Doe",
+          ),
+          createDateTime = now.minusDays(2),
+          createdBy = reportedBy,
+        ),
+      ),
     ),
   )
 
@@ -200,22 +217,22 @@ class NomisSyncServiceTest {
     )
   }
 
-  /** compare report entity about to be saved with the mocked response */
+  /** compare the report entity about to be saved with the mocked response */
   private fun isEqualToSampleReport(report: Report, @Suppress("SameParameterValue") expectedId: UUID?): Boolean {
     // NB: cannot compare arg to sampleReport directly
     return report.id == expectedId &&
       report.reportReference == sampleReport.reportReference &&
-      report.incidentDateAndTime == sampleReport.incidentDateAndTime &&
+      report.incidentDateAndTime.isEqual(sampleReport.incidentDateAndTime) &&
       report.type == sampleReport.type &&
       report.title == sampleReport.title &&
       report.description == sampleReport.description &&
       report.location == sampleReport.location &&
       report.reportedBy == sampleReport.reportedBy &&
-      report.reportedAt == sampleReport.reportedAt &&
+      report.reportedAt.isEqual(sampleReport.reportedAt) &&
       report.status == sampleReport.status &&
       report.source == sampleReport.source &&
-      report.createdAt == sampleReport.createdAt &&
-      report.modifiedAt == sampleReport.modifiedAt &&
+      report.createdAt.isEqual(sampleReport.createdAt) &&
+      report.modifiedAt.isEqual(sampleReport.modifiedAt) &&
       report.modifiedBy == sampleReport.modifiedBy
   }
 
@@ -236,7 +253,10 @@ class NomisSyncServiceTest {
     assertThat(report.createdInNomis).isTrue()
     assertThat(report.lastModifiedInNomis).isTrue()
 
-    assertThat(report.history).isEmpty()
+    assertThat(report.history).hasSize(1)
+    assertThat(report.history[0].type).isEqualTo(Type.SELF_HARM_1)
+    assertThat(report.incidentTypeHistory).hasSize(1)
+    assertThat(report.incidentTypeHistory[0].type).isEqualTo(Type.SELF_HARM_1)
     assertThat(report.historyOfStatuses).hasSize(1)
     val status = report.historyOfStatuses[0]
     assertThat(status.status).isEqualTo(Status.AWAITING_REVIEW)
@@ -293,7 +313,7 @@ class NomisSyncServiceTest {
     whenever(reportRepository.save(any())).doAnswer { invocation ->
       val reportBeingSaved = invocation.arguments[0] as Report
 
-      // verify that correct entity was to be saved
+      // verify that the correct entity was to be saved
       assertThat(isEqualToSampleReport(reportBeingSaved, null)).isTrue()
 
       reportBeingSaved.id = sampleReportId
@@ -302,7 +322,7 @@ class NomisSyncServiceTest {
 
     val report = syncService.upsert(syncRequest)
 
-    // verify sampleReport is correctly converted into DTO
+    // verify the sampleReport is correctly converted into DTO
     assertSampleReportConvertedToDto(report)
 
     // verify telemetry is sent
@@ -333,7 +353,7 @@ class NomisSyncServiceTest {
     // TODO: CANNOT verify that correct entity was to be saved,
     //   `reportRepository.save` not explicitly called
 
-    // verify sampleReport is correctly converted into DTO
+    // verify the sampleReport is correctly converted into DTO
     assertSampleReportConvertedToDto(report)
 
     // verify telemetry is sent
@@ -367,7 +387,7 @@ class NomisSyncServiceTest {
     // TODO: CANNOT verify that no entity was saved,
     //   `reportRepository.save` not explicitly called
 
-    // verify entity not saved
+    // verify that the entity is not saved
     verify(reportRepository, never()).save(any())
 
     // verify telemetry not sent
@@ -407,7 +427,7 @@ class NomisSyncServiceTest {
     // TODO: CANNOT verify that no entity was saved,
     //   `reportRepository.save` not explicitly called
 
-    // verify entity not saved
+    // verify the entity not saved
     verify(reportRepository, never()).save(any())
 
     // verify telemetry not sent
@@ -425,7 +445,7 @@ class NomisSyncServiceTest {
       syncService.upsert(syncRequest)
     }.isInstanceOf(ValidationException::class.java)
 
-    // verify entity not even looked up
+    // verify that the entity not even looked up
     verify(reportRepository, never()).findOneEagerlyById(any())
 
     // verify telemetry not sent

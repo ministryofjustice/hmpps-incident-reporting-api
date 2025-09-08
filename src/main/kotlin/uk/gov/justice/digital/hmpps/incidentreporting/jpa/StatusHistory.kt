@@ -47,7 +47,7 @@ class StatusHistory(
     other as StatusHistory
 
     if (report != other.report) return false
-    if (changedAt != other.changedAt) return false
+    if (!changedAt.isEqual(other.changedAt)) return false
     if (status != other.status) return false
 
     return true

@@ -37,7 +37,8 @@ class ReportWithDetails(
   val history: List<History>,
   @param:Schema(description = "Previous statuses the incident report transitioned to")
   val historyOfStatuses: List<StatusHistory>,
-
+  @param:Schema(description = "Previous incident types")
+  val incidentTypeHistory: List<IncidentTypeHistory>,
   @param:Schema(description = "Which members of staff were involved?")
   val staffInvolved: List<StaffInvolvement>,
   @param:Schema(description = "Which prisoners were involved?")
