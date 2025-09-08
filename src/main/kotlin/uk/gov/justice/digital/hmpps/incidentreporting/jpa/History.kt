@@ -80,7 +80,7 @@ class History(
     other as History
 
     if (report != other.report) return false
-    if (changedAt.isEqual(other.changedAt)) return false
+    if (!changedAt.isEqual(other.changedAt)) return false
     if (type != other.type) return false
 
     return true
