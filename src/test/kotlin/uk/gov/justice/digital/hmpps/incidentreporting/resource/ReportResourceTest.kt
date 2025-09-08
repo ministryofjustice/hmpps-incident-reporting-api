@@ -564,6 +564,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [],
               "questions": [],
               "history": [],
+              "incidentTypeHistory":[],
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",
@@ -726,6 +727,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "descriptionAddendums": [],
               "questions": [],
               "history": [],
+              "incidentTypeHistory": [],
               "historyOfStatuses": [
                 {
                   "status": "DRAFT",

@@ -17,6 +17,7 @@ import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentTypeHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistoryQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
@@ -79,7 +80,7 @@ class History(
     other as History
 
     if (report != other.report) return false
-    if (changedAt != other.changedAt) return false
+    if (changedAt.isEqual(other.changedAt)) return false
     if (type != other.type) return false
 
     return true
@@ -147,5 +148,11 @@ class History(
     changedAt = changedAt,
     changedBy = changedBy,
     questions = questions.map { it.toDto() },
+  )
+
+  fun toIncidentTypeHistoryDto() = IncidentTypeHistory(
+    type = type,
+    changedAt = changedAt,
+    changedBy = changedBy,
   )
 }

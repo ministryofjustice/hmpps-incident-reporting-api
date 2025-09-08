@@ -1515,6 +1515,18 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                     "additionalInformation": null
                   }
                 ],
+                "incidentTypeHistory": [
+                   {
+                    "type": "DAMAGE_1",
+                    "changedAt": "2023-12-03T12:34:56",
+                    "changedBy": "user2"
+                  },
+                  {
+                    "type": "BOMB_1",
+                    "changedAt": "2023-12-04T12:34:56",
+                    "changedBy": "user2"
+                  }
+                ],
                 "history": [
                   {
                     "type": "DAMAGE_1",

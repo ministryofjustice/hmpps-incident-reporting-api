@@ -51,6 +51,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.DescriptionAddendum as
         NamedAttributeNode("staffInvolved"),
         NamedAttributeNode("prisonersInvolved"),
         NamedAttributeNode("correctionRequests"),
+        NamedAttributeNode("history"),
         NamedAttributeNode("questions", subgraph = "questions.eager.subgraph"),
       ],
       subgraphs = [
@@ -543,7 +544,7 @@ class Report(
   }
 
   fun findHistory(changedAt: LocalDateTime, type: Type): History? =
-    this.history.firstOrNull { it.changedAt == changedAt && it.type == type }
+    this.history.firstOrNull { it.changedAt.isEqual(changedAt) && it.type == type }
 
   fun addHistory(history: History): History {
     this.history.add(history)
@@ -692,6 +693,7 @@ class Report(
       emptyList()
     },
     historyOfStatuses = historyOfStatuses.map { it.toDto() },
+    incidentTypeHistory = history.map { it.toIncidentTypeHistoryDto() },
     staffInvolved = staffInvolved.map { it.toDto() },
     prisonersInvolved = prisonersInvolved.map { it.toDto() },
     correctionRequests = correctionRequests.map { it.toDto() },
