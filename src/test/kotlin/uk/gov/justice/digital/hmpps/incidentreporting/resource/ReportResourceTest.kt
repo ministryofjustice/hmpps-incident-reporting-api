@@ -18,6 +18,7 @@ import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
@@ -576,6 +577,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
+              "latestUserAction": null,
               "staffInvolvementDone": true,
               "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
@@ -739,6 +741,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
+              "latestUserAction": null,
               "staffInvolvementDone": true,
               "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
@@ -2998,6 +3001,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """,
           JsonCompareMode.LENIENT,
         )
+
+      // assert lastUserAction on the report reflects the most recent correction request
+      val updated = reportRepository.findOneByReportReference("11124143")!!
+      assertThat(updated.lastUserAction).isEqualTo(UserAction.MARK_DUPLICATE)
     }
 
     @DisplayName("PATCH /incident-reports/{reportId}/correction-requests/{index}")
@@ -3073,6 +3080,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """,
           JsonCompareMode.LENIENT,
         )
+
+      // assert lastUserAction is null when the most recent correction request has no userAction
+      val updated = reportRepository.findOneByReportReference("11124143")!!
+      assertThat(updated.lastUserAction).isNull()
     }
 
     @DisplayName("DELETE /incident-reports/{reportId}/correction-requests/{index}")

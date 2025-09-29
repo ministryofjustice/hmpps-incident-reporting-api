@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.Question
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
@@ -31,6 +32,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedPrisoner
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedStaff
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLastUserActions
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLocations
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedBy
@@ -74,6 +76,7 @@ class ReportService(
     reportedByUsername: String? = null,
     involvingStaffUsername: String? = null,
     involvingPrisonerNumber: String? = null,
+    userActions: List<UserAction> = emptyList(),
     pageable: Pageable = PageRequest.of(0, 20, Sort.by("incidentDateAndTime").descending()),
   ): Page<ReportBasic> {
     val specification = Specification.allOf(
@@ -96,6 +99,9 @@ class ReportService(
         reportedByUsername?.let { add(filterByReportedBy(reportedByUsername)) }
         involvingStaffUsername?.let { add(filterByInvolvedStaff(involvingStaffUsername)) }
         involvingPrisonerNumber?.let { add(filterByInvolvedPrisoner(involvingPrisonerNumber)) }
+        if (userActions.isNotEmpty()) {
+          add(filterByLastUserActions(userActions))
+        }
       },
     )
     return reportRepository.findAll(specification, pageable)

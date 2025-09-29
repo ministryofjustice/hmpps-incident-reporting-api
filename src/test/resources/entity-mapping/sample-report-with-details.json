@@ -345,6 +345,7 @@
       "userType": "DATA_WARDEN"
     }
   ],
+  "latestUserAction": "REQUEST_CORRECTION",
   "staffInvolvementDone": true,
   "prisonerInvolvementDone": true
 }
