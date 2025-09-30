@@ -317,30 +317,6 @@
             "defaultsort": false
           },
           {
-            "name": "$ref:type",
-            "display": "Type code",
-            "sortable": false,
-            "visible": "false",
-            "defaultsort": true,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "code",
-                "display": "description"
-              }
-            }
-          },
-          {
-            "name": "$ref:type_description",
-            "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
             "name": "$ref:location",
             "display": "Current location",
             "sortable": true,
@@ -420,7 +396,7 @@
       "summary": [{
         "id": "summaryId",
         "template": "page-header",
-        "dataset": "$ref:per-type"
+        "dataset": "$ref:prisoner-summary"
       }]
     }
   ]
