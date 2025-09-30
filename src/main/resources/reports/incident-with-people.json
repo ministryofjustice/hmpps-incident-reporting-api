@@ -487,7 +487,10 @@
             "sortable": true,
             "formula": "make_url('https://prisoner-${env}.digital.prison.service.justice.gov.uk/prisoner/${prisoner_number}',${prisoner_number},TRUE)",
             "visible": "true",
-            "defaultsort": false
+            "defaultsort": true,
+            "filter": {
+              "type": "text"
+            }
           },
           {
             "name": "$ref:last_name",
