@@ -55,6 +55,7 @@ class ReportService(
   private val reportRepository: ReportRepository,
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository,
   private val prisonerSearchService: PrisonerSearchService,
+  private val correctionRequestService: CorrectionRequestService,
   private val telemetryClient: TelemetryClient,
   private val authenticationHolder: HmppsAuthenticationHolder,
   private val clock: Clock,
@@ -206,6 +207,17 @@ class ReportService(
         reportEntity.modifiedAt = now
         reportEntity.modifiedBy = user
 
+        if (changeStatusRequest.correctionRequest != null) {
+          correctionRequestService.addObject(
+            request = changeStatusRequest.correctionRequest,
+            reportId = id,
+            now = now,
+            requestUsername = user,
+          )
+        } else {
+          // if no correction sent then null out the last user action
+          reportEntity.lastUserAction = null
+        }
         MaybeChanged.Changed(reportEntity.toDtoWithDetails())
       } else {
         MaybeChanged.Unchanged(reportEntity.toDtoWithDetails())

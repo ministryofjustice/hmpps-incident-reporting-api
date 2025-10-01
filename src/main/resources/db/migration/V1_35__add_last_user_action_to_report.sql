@@ -15,7 +15,8 @@ WITH latest AS (
 UPDATE report r
 SET last_user_action = l.user_action
 FROM latest l
-WHERE r.id = l.report_id;
+WHERE r.id = l.report_id
+AND r.status IN ('WAS_CLOSED', 'UPDATED', 'AWAITING_REVIEW');
 
 
 
