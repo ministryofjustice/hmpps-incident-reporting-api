@@ -19,12 +19,14 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.StaffRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLastUserActions
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLocations
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
@@ -351,5 +353,114 @@ class ReportRepositoryTest : IntegrationTestBase() {
     assertThat(report.staffInvolved).hasSize(1)
     assertThat(report.staffInvolved.elementAt(0).lastName).isEqualTo("Jones")
     assertThat(report.prisonersInvolved).isEmpty()
+  }
+
+  @Test
+  fun `can filter reports by last user action`() {
+    val r1 = reportRepository.save(
+      buildReport(
+        reportReference = "20001",
+        reportTime = now.minusDays(1),
+        generateCorrections = 1, // sets lastUserAction = REQUEST_CORRECTION
+      ),
+    )
+
+    val r2 = reportRepository.save(
+      buildReport(
+        reportReference = "20002",
+        reportTime = now.minusDays(1),
+        generateCorrections = 0,
+      ).apply {
+        addCorrectionRequest(
+          sequence = 0,
+          correctionRequestedBy = "qa",
+          correctionRequestedAt = now,
+          descriptionOfChange = "Dup",
+          location = "MDI",
+          userAction = UserAction.MARK_DUPLICATE,
+        )
+      },
+    )
+
+    val r3 = reportRepository.save(
+      buildReport(
+        reportReference = "20003",
+        reportTime = now.minusDays(1),
+        generateCorrections = 0, // lastUserAction = null
+      ),
+    )
+
+    val page = PageRequest.of(0, 20).withSort(Sort.Direction.ASC, "reportReference")
+
+    // Single value filters
+    val corrOnly = reportRepository.findAll(filterByLastUserActions(UserAction.REQUEST_CORRECTION), page)
+    assertThat(corrOnly.content.map { it.id }).containsExactly(r1.id)
+
+    val dupOnly = reportRepository.findAll(filterByLastUserActions(UserAction.MARK_DUPLICATE), page)
+    assertThat(dupOnly.content.map { it.id }).containsExactly(r2.id)
+
+    // Multiple values
+    val both = reportRepository.findAll(
+      filterByLastUserActions(listOf(UserAction.REQUEST_CORRECTION, UserAction.MARK_DUPLICATE)),
+      page,
+    )
+    assertThat(both.content.map { it.id }).containsExactlyInAnyOrder(r1.id, r2.id)
+
+    // Ensure null lastUserAction is not returned when filtering for specific actions
+    val none = reportRepository.findAll(filterByLastUserActions(UserAction.HOLD), page)
+    assertThat(none.content).isEmpty()
+  }
+
+  @Test
+  fun `can combine last user action filter with other specifications`() {
+    val r1 = reportRepository.save(
+      buildReport(
+        reportReference = "30001",
+        reportTime = now.minusDays(2),
+        location = "MDI",
+        source = InformationSource.DPS,
+        status = Status.AWAITING_REVIEW,
+        type = Type.FIND_6,
+        generateCorrections = 1, // REQUEST_CORRECTION
+      ),
+    )
+
+    val r2 = reportRepository.save(
+      buildReport(
+        reportReference = "30002",
+        reportTime = now.minusDays(2),
+        location = "LEI",
+        source = InformationSource.NOMIS,
+        status = Status.DRAFT,
+        type = Type.ASSAULT_5,
+        generateCorrections = 0,
+      ).apply {
+        addCorrectionRequest(
+          sequence = 0,
+          correctionRequestedBy = "qa",
+          correctionRequestedAt = now,
+          descriptionOfChange = "Dup",
+          location = "LEI",
+          userAction = UserAction.MARK_DUPLICATE,
+        )
+      },
+    )
+
+    val page = PageRequest.of(0, 20).withSort(Sort.Direction.ASC, "reportReference")
+
+    // Combine location and lastUserAction
+    val spec1 = filterByLocations("MDI").and(filterByLastUserActions(UserAction.REQUEST_CORRECTION))
+    val res1 = reportRepository.findAll(spec1, page)
+    assertThat(res1.content.map { it.id }).containsExactly(r1.id)
+
+    val spec2 = filterByLocations(
+      "LEI",
+    ).and(filterBySource(InformationSource.NOMIS)).and(filterByLastUserActions(UserAction.MARK_DUPLICATE))
+    val res2 = reportRepository.findAll(spec2, page)
+    assertThat(res2.content.map { it.id }).containsExactly(r2.id)
+
+    val spec3 = filterByStatuses(Status.DRAFT).and(filterByLastUserActions(UserAction.REQUEST_CORRECTION))
+    val res3 = reportRepository.findAll(spec3, page)
+    assertThat(res3.content).isEmpty()
   }
 }

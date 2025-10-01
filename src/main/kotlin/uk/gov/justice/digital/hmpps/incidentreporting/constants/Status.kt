@@ -23,7 +23,7 @@ enum class Status(
   UPDATED("Updated", "INAME"),
   CLOSED("Closed", "CLOSE"),
 
-  // following statuses should be ignored downstream for most statistical purposes
+  // the following statuses should be ignored downstream for most statistical purposes
   DUPLICATE("Duplicate", "DUP", true),
   NOT_REPORTABLE("Not reportable", null, true),
   REOPENED("Reopened", null, true),

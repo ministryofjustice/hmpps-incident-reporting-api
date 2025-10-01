@@ -7,4 +7,9 @@ import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 data class ChangeStatusRequest(
   @param:Schema(description = "The new status", requiredMode = Schema.RequiredMode.REQUIRED, example = "CLOSED")
   val newStatus: Status,
+  @param:Schema(
+    description = "The associated correction request associated with the status change",
+    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+  )
+  val correctionRequest: AddCorrectionRequest? = null,
 )

@@ -278,6 +278,7 @@ class NomisSyncServiceTest {
     assertThat(response.recordedAt).isEqualTo(now)
 
     assertThat(report.prisonerInvolvementDone).isTrue()
+    assertThat(report.latestUserAction).isNull()
     assertThat(report.prisonersInvolved).hasSize(1)
     val prisonerInvolved = report.prisonersInvolved[0]
     assertThat(prisonerInvolved.prisonerNumber).isEqualTo("A1234AA")

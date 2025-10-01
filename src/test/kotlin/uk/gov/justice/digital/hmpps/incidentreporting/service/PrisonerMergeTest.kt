@@ -33,6 +33,7 @@ class PrisonerMergeTest : SqsIntegrationTestBase() {
   private val reportRepository: ReportRepository = mock()
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
+  private val correctionRequestService: CorrectionRequestService = mock()
   private val authenticationHolder: HmppsAuthenticationHolder = mock()
   private val telemetryClient: TelemetryClient = mock()
 
@@ -42,6 +43,7 @@ class PrisonerMergeTest : SqsIntegrationTestBase() {
     prisonerSearchService = prisonerSearchService,
     telemetryClient = telemetryClient,
     authenticationHolder = authenticationHolder,
+    correctionRequestService = correctionRequestService,
     clock = clock,
   )
 

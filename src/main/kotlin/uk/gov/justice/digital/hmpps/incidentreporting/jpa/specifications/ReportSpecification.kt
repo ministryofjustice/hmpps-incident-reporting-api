@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.PrisonerInvolvement
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.StaffInvolvement
@@ -42,3 +43,6 @@ fun filterByInvolvedPrisoner(prisonerNumber: String) =
     PrisonerInvolvement::prisonerNumber,
     prisonerNumber,
   )
+
+fun filterByLastUserActions(userActions: Collection<UserAction>) = Report::lastUserAction.buildSpecForIn(userActions)
+fun filterByLastUserActions(vararg userActions: UserAction) = filterByLastUserActions(userActions.toList())

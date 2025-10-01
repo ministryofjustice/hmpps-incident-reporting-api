@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportBasic
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.ChangeStatusRequest
@@ -225,6 +226,20 @@ class ReportResource(
     @RequestParam(required = false)
     @Size(min = 7, max = 10)
     involvingPrisonerNumber: String? = null,
+    @Parameter(
+      description = "Filter by last user actions derived from the most recent correction request on the report",
+      example = "[SEND_TO_MANAGER,RETURN_TO_REPORTER]",
+      array = ArraySchema(
+        schema = Schema(implementation = UserAction::class),
+        arraySchema = Schema(
+          requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+          nullable = true,
+          defaultValue = "null",
+        ),
+      ),
+    )
+    @RequestParam(required = false)
+    userAction: List<UserAction>? = null,
     @ParameterObject
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
@@ -246,6 +261,7 @@ class ReportResource(
       reportedByUsername = reportedByUsername,
       involvingStaffUsername = involvingStaffUsername,
       involvingPrisonerNumber = involvingPrisonerNumber,
+      userActions = userAction ?: emptyList(),
       pageable = pageable,
     )
       .toSimplePage()
