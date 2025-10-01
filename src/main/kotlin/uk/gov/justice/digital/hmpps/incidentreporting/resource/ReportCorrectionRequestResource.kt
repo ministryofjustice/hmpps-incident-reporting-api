@@ -74,7 +74,7 @@ class ReportCorrectionRequestResource(
   @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
-    summary = "Adds a correction request to this incident report",
+    summary = "Adds a correction request to this incident report, NOTE: DO NOT USED - Generally should use the status update to add a correction request",
     description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope. " +
       "Authentication token must provide a username which is recorded as the correction requester and report modifier.",
     responses = [
