@@ -18,7 +18,7 @@ FROM latest l
 WHERE r.id = l.report_id
 AND r.status IN ('WAS_CLOSED', 'UPDATED', 'AWAITING_REVIEW');
 
-
+CREATE INDEX IF NOT EXISTS report_last_user_action_idx ON report (last_user_action, status);
 
 
 
