@@ -23,6 +23,7 @@ fun buildReport(
   type: Type = Type.FIND_6,
   reportingUsername: String = "USER1",
   duplicatedReportId: UUID? = null,
+  lastUserAction: UserAction? = null,
   // all "related objects" are optionally generated:
   generateDescriptionAddendums: Int = 0,
   generateStaffInvolvement: Int = 0,
@@ -49,6 +50,7 @@ fun buildReport(
     reportedBy = reportingUsername,
     modifiedBy = reportingUsername,
     duplicatedReportId = duplicatedReportId,
+    lastUserAction = lastUserAction,
   )
   report.addStatusHistory(report.status, reportTime, reportingUsername)
 
