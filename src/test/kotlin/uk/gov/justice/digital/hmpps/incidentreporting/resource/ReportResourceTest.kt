@@ -71,6 +71,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       buildReport(
         reportReference = "11124143",
         reportTime = now,
+        lastUserAction = UserAction.REQUEST_NOT_REPORTABLE,
       ),
     )
   }
@@ -497,7 +498,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -577,7 +579,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
-              "latestUserAction": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE",
               "staffInvolvementDone": true,
               "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
@@ -661,7 +663,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -753,7 +756,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1052,7 +1056,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1095,7 +1100,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": "${duplicatedExistingReport.id}"
+              "duplicatedReportId": "${duplicatedExistingReport.id}",
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1177,7 +1183,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": $expectedDuplicatedReportId
+              "duplicatedReportId": $expectedDuplicatedReportId,
+              "latestUserAction":"REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,

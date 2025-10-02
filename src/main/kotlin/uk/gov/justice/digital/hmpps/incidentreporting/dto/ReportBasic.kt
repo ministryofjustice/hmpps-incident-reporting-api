@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -51,4 +52,6 @@ open class ReportBasic(
     nullable = true,
   )
   val duplicatedReportId: UUID? = null,
+  @param:Schema(description = "Latest user action from the most recent correction request", nullable = true)
+  val latestUserAction: UserAction? = null,
 )

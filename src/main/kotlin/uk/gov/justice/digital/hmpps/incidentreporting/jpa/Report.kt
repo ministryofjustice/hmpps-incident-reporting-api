@@ -672,6 +672,7 @@ class Report(
     createdInNomis = source == InformationSource.NOMIS,
     lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
     duplicatedReportId = duplicatedReportId,
+    latestUserAction = lastUserAction,
   )
 
   fun toDtoWithDetails(includeHistory: Boolean = false) = ReportWithDetails(

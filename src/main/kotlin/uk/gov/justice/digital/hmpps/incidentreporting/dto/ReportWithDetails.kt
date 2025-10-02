@@ -31,6 +31,7 @@ class ReportWithDetails(
   createdInNomis: Boolean,
   lastModifiedInNomis: Boolean,
   duplicatedReportId: UUID?,
+  latestUserAction: UserAction?,
 
   @param:Schema(description = "The question-response pairs that make up this report")
   val questions: List<Question>,
@@ -57,9 +58,6 @@ class ReportWithDetails(
       "if false, is used to indicate that addition of prisoner involvements is unfinished",
   )
   val prisonerInvolvementDone: Boolean,
-
-  @param:Schema(description = "Latest user action from the most recent correction request", nullable = true)
-  val latestUserAction: UserAction?,
 ) : ReportBasic(
   id = id,
   reportReference = reportReference,
@@ -77,6 +75,7 @@ class ReportWithDetails(
   createdInNomis = createdInNomis,
   lastModifiedInNomis = lastModifiedInNomis,
   duplicatedReportId = duplicatedReportId,
+  latestUserAction = latestUserAction,
 ) {
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
   @Suppress("unused")
