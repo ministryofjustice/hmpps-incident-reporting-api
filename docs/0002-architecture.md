@@ -19,7 +19,7 @@ High level set of components that would make up the flow of data around the inci
 #### Proposed Architecture
 The proposed architecture for the incident reporting system (IRS) is as follows:
 
-- **Incident Reporting API** - A RESTful API to allow the creation of incidents, viewing and managing existing incidents. 
+- **Incident Reporting API** - A RESTful API to allow the creation of incidents, viewing and managing existing incidents.
 The API models new incident data seperately from the existing migrated IR data from NOMIS.
 The API will receive updates from NOMIS via Syscon APIs when reports are completed.
 
@@ -28,13 +28,13 @@ The API will receive updates from NOMIS via Syscon APIs when reports are complet
 - **Incident database** to store incident reports and all migrated data from NOMIS
 
 #### Other components and interactions with IRS
-- Digital Prison Reporting (DPR) - The DPR system will be the source of truth for reporting incident data.
+- Digital DataHub (DH) - The DH system will eventually be the source of truth for reporting incident data. Initially reporting will be done from NOMIS and also with the incident service.
 - NOMIS - The legacy system that will be replaced by the new IRS.
 - Audit Service - The audit service will receive and record audit events from the IRS.
-- Analytics Platform - The analytics platform will obtain data sets from DPR to provide insights and reporting.
-- Safety Diagnostic Tool - The Safety Diagnostic Tool will obtain data from DPR to provide insights and reporting.
-- Performance Hub - The Performance Hub will obtain data from DPR to provide insights and reporting.
-- SYSCON APIs - These API/systems will migrate all incident data to IRS. 
+- Analytics Platform (AP) - The analytics platform will obtain data sets from DH to provide insights and reporting.
+- Safety Diagnostic Tool (SDT) - The Safety Diagnostic Tool will obtain data from AP to provide insights and reporting.
+- Performance Hub (PH) - The Performance Hub will obtain data from AP to provide insights and reporting.
+- SYSCON Services - These services will migrate all incident data to IRS and synchronise (2 way)
 
 Below illustrate these components and how they interact with each other.
 
@@ -43,12 +43,12 @@ flowchart TB
 
 subgraph prisonStaff[Prison Staff]
     h1[-Person-]:::type
-    d1[Prison Staff \n with NOMIS account]:::description
+    d1[RO, DW, QA staff]:::description
 end
 prisonStaff:::person
 
-prisonStaff--Create Incident Reports -->incidentReportApplication
-prisonStaff--Create Incident Reports -->oracleForms
+prisonStaff--Create/Review Incident Reports -->incidentReportApplication
+prisonStaff--View MIS Reports -->oracleForms
 
 subgraph incidentReportingService[Incident Reporting Service]
     subgraph incidentReportApplication[Incident Reporting Application]
@@ -65,21 +65,31 @@ subgraph incidentReportingService[Incident Reporting Service]
     end
     incidentReportingApi:::internalContainer
 
+    subgraph dataHubApi[Data Hub API]
+        direction LR
+        h25[Container: Kotlin / Node]:::type
+        d25[Reporting from IR database and Redshift]:::description
+    end
+    dataHubApi:::internalContainer
+
     subgraph database[Incident Reporting Database]
         direction LR
         h6[Container: Postgres Database Schema]:::type
-        d6[Stores incidents, \n historical data and history]:::description
+        d6[Stores incidents, historical types, reference data]:::description
     end
     database:::internalContainer
 
     incidentReportApplication--JSON calls -->incidentReportingApi
-    incidentReportingApi--Reads from and \n writes to -->database
+    incidentReportApplication--JSON calls -->dataHubApi
+    dataHubApi--Reads -->database
+    incidentReportingApi--Reads from and writes to -->database
 end
 incidentReportingService:::newSystem
 
-incidentReportingApi--Publishes incidents \n created/updated events -->domainEvents
+incidentReportingApi--Publishes incidents created/updated events -->domainEvents
 incidentReportingApi--Audits changes -->auditService
-incidentReportApplication--Creates reports from -->dpr
+incidentReportApplication--Creates reports from -->dataHubApi
+dataHubApi--Reads -->dataHub
 
 subgraph ap[Analytics Platform]
     subgraph dataIngestion[Data Ingestion and Processing]
@@ -91,75 +101,8 @@ subgraph ap[Analytics Platform]
         apService:::internalContainer
     end
     dataIngestion:::internalSystem
-end
 
-apService-- obtains data sets from -->dpr
-    
-subgraph digitalServices[Digital Services]
-    
-    subgraph auditSystem[Audit Services]
-        subgraph auditService[Audit Service]
-            direction LR
-            h62[Container: Kotlin / Spring Boot]:::type
-            d62[Receives and records audit events]:::description
-        end
-        auditService:::internalContainer
-    end
-    auditSystem:::internalSystem
-
-     subgraph dpr[Digital Prison Reporting]
-         subgraph redshift[AWS Redshift Data warehouse]
-             direction LR
-             h41[Data warehouse]:::type
-             d41[Ingestion and Processing of Data sets]:::description
-         end
-         redshift:::internalContainer
-     end
-     dpr:::internalSystem
-end
-
-dpr-- extracts data from NOMIS-->nomisDb
-dpr-- extracts data from Incident DB-->database
-
-subgraph NOMIS[NOMIS Environment]
-
-    subgraph sysconApis[Syscon Services]
-        direction LR
-        h82[Container: Kotlin / Spring Boot]:::type
-        d82[Migration and Sync Management Services]:::description
-    end
-    sysconApis:::sysconContainer
-    
-    subgraph oracleForms[NOMIS front end]
-        direction LR
-        h91[Container: Weblogic / Oracle Forms]:::type
-        d91[Incident Reports set to Edit only]:::description
-    end
-    oracleForms:::legacyContainer
-    
-    subgraph nomisDb[NOMIS Database]
-        direction LR
-        h92[Container: Oracle 11g Database]:::type
-        d92[Stores core \n information about prisoners, \n prisons, finance, etc]:::description
-    end
-    nomisDb:::legacyContainer
-
-    subgraph nomisMISDb[MIS Database]
-        direction LR
-        h93[Container: Oracle 11g Database]:::type
-        d93[NOMIS Reporting System]:::description
-    end
-    nomisMISDb:::legacyContainer
-    
-    nomisMISDb-- extracts data from -->nomisDb
-    oracleForms-- read/write data to -->nomisDb
-end
-NOMIS:::legacySystem
-sysconApis-- migrates all completed Incident reports  -->database
-
-subgraph otherServices[Other Services]
-
-    subgraph performanceHub[Performance Hub]
+      subgraph performanceHub[Performance Hub]
         direction LR
         h191[Container: python]:::type
         d191[Prison Performance Data]:::description
@@ -172,6 +115,69 @@ subgraph otherServices[Other Services]
         d192[Incident Reports Tool]:::description
     end
     sdt:::legacyContainer
+end
+
+apService-- obtains data sets from -->dataHub
+subgraph digitalServices[Digital Services]
+    subgraph auditSystem[Audit Services]
+        subgraph auditService[Audit Service]
+            direction LR
+            h62[Container: Kotlin / Spring Boot]:::type
+            d62[Receives and records audit events]:::description
+        end
+        auditService:::internalContainer
+    end
+    auditSystem:::internalSystem
+
+     subgraph dataHub[Digital Data hub]
+         subgraph redshift[AWS Redshift Data warehouse]
+             direction LR
+             h41[Data warehouse]:::type
+             d41[Ingestion and Processing of Data sets]:::description
+         end
+         redshift:::internalContainer
+     end
+     dataHub:::internalSystem
+end
+
+dataHub-- extracts data from NOMIS-->nomisDb
+dataHub-- extracts data from Incident DB-->database
+
+subgraph NOMIS[NOMIS Environment]
+
+    subgraph sysconApis[Syscon Services]
+        direction LR
+        h82[Container: Kotlin / Spring Boot]:::type
+        d82[Migration and Sync Management Services]:::description
+    end
+    sysconApis:::sysconContainer
+    subgraph oracleForms[NOMIS front end]
+        direction LR
+        h91[Container: Weblogic / Oracle Forms]:::type
+        d91[Incident Reports - OFF/Not Visible]:::description
+    end
+    oracleForms:::legacyContainer
+    subgraph nomisDb[NOMIS Database]
+        direction LR
+        h92[Container: Oracle 11g Database]:::type
+        d92[Stores core information about prisoners, prisons, finance, etc]:::description
+    end
+    nomisDb:::legacyContainer
+
+    subgraph nomisMISDb[MIS Database]
+        direction LR
+        h93[Container: Oracle 11g Database]:::type
+        d93[NOMIS Reporting System]:::description
+    end
+    nomisMISDb:::legacyContainer
+    nomisMISDb-- extracts data from -->nomisDb
+    oracleForms-- read/write data to -->nomisDb
+end
+NOMIS:::legacySystem
+sysconApis-- 2-way sync for incident reports  -->database
+
+subgraph otherServices[Other Services]
+
 
 
 end
@@ -179,7 +185,6 @@ otherServices:::legacySystem
 
 apService-- sends data to --> sdt
 apService-- sends data to -->performanceHub
-    
 %% Element type definitions
 
 classDef person fill:#90BD90, color:#000
@@ -193,7 +198,7 @@ classDef legacySystem fill:#A890BD, color:#fff
 
 classDef type stroke-width:0px, color:#fff, fill:transparent, font-size:12px
 classDef description stroke-width:0px, color:#fff, fill:transparent, font-size:13px
-
+	style incidentReportingService stroke-width:2px
 ```
 
 [Next >>](0003-migration.md)
