@@ -125,6 +125,10 @@ class Report(
   @SortNatural
   val correctionRequests: SortedSet<CorrectionRequest> = sortedSetOf(),
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "last_user_action", nullable = true)
+  var lastUserAction: UserAction? = null,
+
   @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
   @SortNatural
   val questions: SortedSet<Question> = sortedSetOf(),
@@ -448,6 +452,8 @@ class Report(
 
   private fun addCorrectionRequest(correctionRequest: CorrectionRequest): CorrectionRequest {
     this.correctionRequests.add(correctionRequest)
+    // Update last user action to reflect the most recent correction request added (may be null)
+    this.lastUserAction = correctionRequest.userAction
     return correctionRequest
   }
 
@@ -666,6 +672,7 @@ class Report(
     createdInNomis = source == InformationSource.NOMIS,
     lastModifiedInNomis = modifiedIn == InformationSource.NOMIS,
     duplicatedReportId = duplicatedReportId,
+    latestUserAction = lastUserAction,
   )
 
   fun toDtoWithDetails(includeHistory: Boolean = false) = ReportWithDetails(
@@ -699,5 +706,6 @@ class Report(
     correctionRequests = correctionRequests.map { it.toDto() },
     staffInvolvementDone = staffInvolvementDone,
     prisonerInvolvementDone = prisonerInvolvementDone,
+    latestUserAction = lastUserAction,
   )
 }

@@ -1,6 +1,6 @@
 {
   "id": "incident-report-pecs-v2",
-  "name": "PECS Incident reports (Dev only)",
+  "name": "PECS Incident reports (Beta)",
   "description": "List of all PECS incidents filtered by dates, types, status and locations",
   "metadata": {
     "author": "Michael Willis",
@@ -38,7 +38,7 @@
       "id": "summary",
       "name": "PECS incident report summary",
       "datasource": "replicaDataSource",
-      "query": "SELECT r.id,\n       report_reference,\n       ctf.code                                                                                                     as type,\n       ctf.description                                                                                              as type_description,\n       status,\n       cs.description                                                                                               as status_description,\n       incident_date_and_time,\n       reported_at,\n       reported_by,\n       initcap(s.first_name)       as reporter_first_name,\n       initcap(s.last_name)        as reporter_last_name,\n       title,\n       r.description,\n       location,\n       el.name                                                                      as pecs_region,\n       modified_at\nFROM report r\n         join constant_status cs on r.status = cs.code\n         join constant_type ct on r.type = ct.code\n         join constant_type_family ctf on ctf.code = ct.family_code\n         join external.locations el on el.id = r.location\n         join staff.staff s on s.username = r.reported_by\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')\n  AND el.agency_type = 'PECS'",
+      "query": "SELECT r.id,\n       report_reference,\n       ctf.code                                                                                                     as type,\n       ctf.description                                                                                              as type_description,\n       status,\n       cs.description                                                                                               as status_description,\n       incident_date_and_time,\n       reported_at,\n       reported_by,\n       initcap(s.first_name)       as reporter_first_name,\n       initcap(s.last_name)        as reporter_last_name,\n       title,\n       r.description,\n       location,\n       el.name                                                                      as pecs_region,\n       modified_at\nFROM report r\n         join constant_status cs on r.status = cs.code\n         join constant_type ct on r.type = ct.code\n         join constant_type_family ctf on ctf.code = ct.family_code\n         join establishment.establishment el on el.id = r.location\n         join staff.staff s on s.username = r.reported_by\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')\n  AND el.agency_type = 'PECS'",
       "schema": {
         "field": [
           {
@@ -132,7 +132,7 @@
       "id": "pecsRegions",
       "name": "PECS regions",
       "datasource": "replicaDataSource",
-      "query": "SELECT id, name from external.locations where agency_type = 'PECS' and active = 'Y'",
+      "query": "SELECT id, name from establishment.establishment el where agency_type = 'PECS' and active = 'Y'",
       "schema": {
         "field": [
           {

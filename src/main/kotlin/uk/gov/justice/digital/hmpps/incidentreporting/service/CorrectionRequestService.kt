@@ -53,6 +53,8 @@ class CorrectionRequestService(
         now = now,
         requestUsername = requestUsername,
       )
+      // Ensure lastUserAction reflects the most recent correction request after update
+      report.lastUserAction = report.correctionRequests.maxByOrNull { it.sequence }?.userAction
     }
   }
 
@@ -65,6 +67,8 @@ class CorrectionRequestService(
   ): Pair<ReportBasicDto, List<CorrectionRequest>> {
     return changeReportOrThrowNotFound(reportId, now, requestUsername) { report ->
       report.findCorrectionRequestByIndex(index).let { report.removeCorrectionRequest(it) }
+      // Ensure lastUserAction reflects the most recent correction request after deletion
+      report.lastUserAction = report.correctionRequests.maxByOrNull { it.sequence }?.userAction
     }
   }
 }

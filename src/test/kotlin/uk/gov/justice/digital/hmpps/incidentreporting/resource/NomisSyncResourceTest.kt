@@ -1407,6 +1407,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
                 "location": "FBI",
                 "title": "Updated title",
                 "description": "Original description",
+                "latestUserAction": null,
                 "descriptionAddendums": [
                   {
                     "sequence": 0,

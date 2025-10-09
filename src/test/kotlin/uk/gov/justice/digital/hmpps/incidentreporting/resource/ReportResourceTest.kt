@@ -18,6 +18,7 @@ import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.CreateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
@@ -70,6 +71,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       buildReport(
         reportReference = "11124143",
         reportTime = now,
+        lastUserAction = UserAction.REQUEST_NOT_REPORTABLE,
       ),
     )
   }
@@ -496,7 +498,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -576,6 +579,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
+              "latestUserAction": "REQUEST_NOT_REPORTABLE",
               "staffInvolvementDone": true,
               "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
@@ -659,7 +663,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -739,6 +744,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolved": [],
               "prisonersInvolved": [],
               "correctionRequests": [],
+              "latestUserAction": null,
               "staffInvolvementDone": true,
               "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
@@ -750,7 +756,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1049,7 +1056,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": null
+              "duplicatedReportId": null,
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1092,7 +1100,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": "${duplicatedExistingReport.id}"
+              "duplicatedReportId": "${duplicatedExistingReport.id}",
+              "latestUserAction": "REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1174,7 +1183,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
-              "duplicatedReportId": $expectedDuplicatedReportId
+              "duplicatedReportId": $expectedDuplicatedReportId,
+              "latestUserAction":"REQUEST_NOT_REPORTABLE"
             }
             """,
             JsonCompareMode.STRICT,
@@ -1284,8 +1294,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     private lateinit var url: String
 
     // language=json
-    private val validPayload = """
-      {"newStatus": "AWAITING_REVIEW"}
+    private fun validPayload(newStatus: Status = Status.AWAITING_REVIEW) = """
+      {"newStatus": "${newStatus.name}"}
+    """
+
+    private val validPayloadWithCorrection = """
+      {
+        "newStatus": "AWAITING_REVIEW",
+        "correctionRequest": {
+          "descriptionOfChange": "This report need to be removed as it is not reportable",
+          "userType": "REPORTING_OFFICER",
+          "userAction": "REQUEST_NOT_REPORTABLE"
+        }
+      }
     """
 
     @BeforeEach
@@ -1299,7 +1320,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @DisplayName("by role and scope")
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
-        webTestClient.patch().uri(url).bodyValue(validPayload),
+        webTestClient.patch().uri(url).bodyValue(validPayload()),
         "MAINTAIN_INCIDENT_REPORTS",
         "write",
       )
@@ -1313,7 +1334,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.patch().uri("/incident-reports/11111111-2222-3333-4444-555555555555/status")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(validPayload)
+          .bodyValue(validPayload())
           .exchange()
           .expectStatus().isNotFound
 
@@ -1415,7 +1436,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.patch().uri(url)
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(validPayload)
+          .bodyValue(validPayload())
           .exchange()
           .expectStatus().isOk
           .expectBody().json(
@@ -1469,6 +1490,148 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       }
 
       @Test
+      fun `can change status of a report and include correction request`() {
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayloadWithCorrection)
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """
+            {
+              "id": "${existingReport.id}",
+              "reportReference": "11124143",
+              "type": "FIND_6",
+              "nomisType": "FIND0422",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
+              "title": "Incident Report 11124143",
+              "description": "A new incident created in the new service of type find of illicit items",
+              "descriptionAddendums": [],
+              "latestUserAction": "REQUEST_NOT_REPORTABLE",
+              "correctionRequests": [
+                 {
+                    "descriptionOfChange": "This report need to be removed as it is not reportable",
+                    "correctionRequestedBy": "request-user",
+                    "correctionRequestedAt": "2023-12-05T12:34:56",
+                    "userAction": "REQUEST_NOT_REPORTABLE",
+                    "originalReportReference": null,
+                    "userType": "REPORTING_OFFICER"
+                  }
+              ],
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "AWAITING_REVIEW",
+              "nomisStatus": "AWAN",
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "request-user",
+              "createdInNomis": false,
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "nomisStatus": null,
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
+                },
+                {
+                  "status": "AWAITING_REVIEW",
+                  "nomisStatus": "AWAN",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "request-user"
+                }
+              ]
+            }
+            """,
+            JsonCompareMode.LENIENT,
+          )
+
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "11124143",
+          "MDI",
+          WhatChanged.STATUS,
+        )
+
+        // the DW marks the report as not reportable
+        webTestClient.patch().uri(url)
+          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .header("Content-Type", "application/json")
+          .bodyValue(validPayload(Status.NOT_REPORTABLE))
+          .exchange()
+          .expectStatus().isOk
+          .expectBody().json(
+            // language=json
+            """
+            {
+              "id": "${existingReport.id}",
+              "reportReference": "11124143",
+              "type": "FIND_6",
+              "nomisType": "FIND0422",
+              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "location": "MDI",
+              "title": "Incident Report 11124143",
+              "description": "A new incident created in the new service of type find of illicit items",
+              "descriptionAddendums": [],
+              "latestUserAction": null,
+              "correctionRequests": [
+                 {
+                    "descriptionOfChange": "This report need to be removed as it is not reportable",
+                    "correctionRequestedBy": "request-user",
+                    "correctionRequestedAt": "2023-12-05T12:34:56",
+                    "userAction": "REQUEST_NOT_REPORTABLE",
+                    "originalReportReference": null,
+                    "userType": "REPORTING_OFFICER"
+                  }
+              ],
+              "reportedBy": "USER1",
+              "reportedAt": "2023-12-05T12:34:56",
+              "status": "NOT_REPORTABLE",
+              "nomisStatus": null,
+              "createdAt": "2023-12-05T12:34:56",
+              "modifiedAt": "2023-12-05T12:34:56",
+              "modifiedBy": "request-user",
+              "createdInNomis": false,
+              "lastModifiedInNomis": false,
+              "duplicatedReportId": null,
+              "historyOfStatuses": [
+                {
+                  "status": "DRAFT",
+                  "nomisStatus": null,
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "USER1"
+                },
+                {
+                  "status": "AWAITING_REVIEW",
+                  "nomisStatus": "AWAN",
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "request-user"
+                },
+                 {
+                  "status": "NOT_REPORTABLE",
+                  "nomisStatus": null,
+                  "changedAt": "2023-12-05T12:34:56",
+                  "changedBy": "request-user"
+                }
+              ]
+            }
+            """,
+            JsonCompareMode.LENIENT,
+          )
+
+        assertThatDomainEventWasSent(
+          "incident.report.amended",
+          "11124143",
+          "MDI",
+          WhatChanged.STATUS,
+        )
+      }
+
+      @Test
       fun `can change status of a report first created in NOMIS`() {
         val nomisReport = reportRepository.save(
           buildReport(
@@ -1480,7 +1643,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         webTestClient.patch().uri("/incident-reports/${nomisReport.id}/status")
           .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
-          .bodyValue(validPayload)
+          .bodyValue(validPayload())
           .exchange()
           .expectStatus().isOk
           .expectBody().json(
@@ -2998,6 +3161,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """,
           JsonCompareMode.LENIENT,
         )
+
+      // assert lastUserAction on the report reflects the most recent correction request
+      val updated = reportRepository.findOneByReportReference("11124143")!!
+      assertThat(updated.lastUserAction).isEqualTo(UserAction.MARK_DUPLICATE)
     }
 
     @DisplayName("PATCH /incident-reports/{reportId}/correction-requests/{index}")
@@ -3073,6 +3240,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """,
           JsonCompareMode.LENIENT,
         )
+
+      // assert lastUserAction is null when the most recent correction request has no userAction
+      val updated = reportRepository.findOneByReportReference("11124143")!!
+      assertThat(updated.lastUserAction).isNull()
     }
 
     @DisplayName("DELETE /incident-reports/{reportId}/correction-requests/{index}")

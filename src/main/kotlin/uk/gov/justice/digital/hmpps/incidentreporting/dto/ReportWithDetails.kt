@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -30,6 +31,7 @@ class ReportWithDetails(
   createdInNomis: Boolean,
   lastModifiedInNomis: Boolean,
   duplicatedReportId: UUID?,
+  latestUserAction: UserAction?,
 
   @param:Schema(description = "The question-response pairs that make up this report")
   val questions: List<Question>,
@@ -73,6 +75,7 @@ class ReportWithDetails(
   createdInNomis = createdInNomis,
   lastModifiedInNomis = lastModifiedInNomis,
   duplicatedReportId = duplicatedReportId,
+  latestUserAction = latestUserAction,
 ) {
   // NB: this property can be removed once fully migrated off NOMIS and reconciliation checks are turned off
   @Suppress("unused")
