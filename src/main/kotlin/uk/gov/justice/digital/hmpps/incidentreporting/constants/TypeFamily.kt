@@ -33,7 +33,7 @@ enum class TypeFamily(
   FIND("Find of illicit items"),
   FIRE("Fire"),
   FIREARM("Firearm, ammunition or chemical incapacitant"),
-  FOOD_REFUSAL("Food or liquid refusual"),
+  FOOD_REFUSAL("Food or liquid refusal"),
   HOSTAGE("Hostage incident"),
   INCIDENT_AT_HEIGHT("Incident at height"),
   KEY_OR_LOCK("Key or lock compromise"),
