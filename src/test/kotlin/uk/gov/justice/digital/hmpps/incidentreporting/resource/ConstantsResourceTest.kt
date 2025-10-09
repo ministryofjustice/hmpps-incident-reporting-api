@@ -35,8 +35,8 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
   @ParameterizedTest(name = "can access {0} constants without special roles")
   @ValueSource(
     strings = [
-      "error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses", "types",
-      "user-actions", "user-types",
+      "error-codes", "information-sources", "prisoner-outcomes", "prisoner-roles", "staff-roles", "statuses",
+      "type-families", "types", "user-actions", "user-types",
     ],
   )
   fun `can access without special roles`(endpoint: String) {
@@ -150,6 +150,13 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
           "active" to false,
           "nomisCode" to "ASSAULTS1",
         ),
+        mapOf(
+          "familyCode" to "FOOD_REFUSAL",
+          "code" to "FOOD_REFUSAL_1",
+          "description" to "Food or liquid refusal",
+          "active" to true,
+          "nomisCode" to "FOOD_REF",
+        ),
       ),
     ),
     ConstantsTestCase(
@@ -159,6 +166,10 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
         mapOf(
           "code" to "DISORDER",
           "description" to "Disorder",
+        ),
+        mapOf(
+          "code" to "FOOD_REFUSAL",
+          "description" to "Food or liquid refusal",
         ),
         mapOf(
           "code" to "KEY_OR_LOCK",
