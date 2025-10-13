@@ -55,7 +55,7 @@ dependencies {
 }
 
 kotlin {
-  jvmToolchain(21)
+  jvmToolchain(25)
   compilerOptions {
     freeCompilerArgs = listOf(
       // cannot validate items within lists without this
@@ -63,6 +63,11 @@ kotlin {
       "-Xemit-jvm-type-annotations",
     )
   }
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_24
+  targetCompatibility = JavaVersion.VERSION_24
 }
 
 tasks {
@@ -79,7 +84,7 @@ tasks {
   }
 
   withType<KotlinCompile> {
-    compilerOptions.jvmTarget = JvmTarget.JVM_21
+    compilerOptions.jvmTarget = JvmTarget.JVM_24
   }
 }
 
