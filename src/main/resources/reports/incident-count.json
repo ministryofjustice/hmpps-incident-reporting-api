@@ -226,6 +226,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
+            "defaultsortorder": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-1,months) - today()"
@@ -236,7 +237,7 @@
             "display": "Type code",
             "sortable": true,
             "visible": "false",
-            "defaultsort": true,
+            "defaultsort": false,
             "filter": {
               "type": "multiselect",
               "dynamicoptions": {
@@ -306,6 +307,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
+            "defaultsortorder": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-1,months) - today()"
@@ -316,7 +318,7 @@
             "display": "Type code",
             "sortable": false,
             "visible": "false",
-            "defaultsort": true,
+            "defaultsort": false,
             "filter": {
               "type": "multiselect",
               "dynamicoptions": {
@@ -386,6 +388,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
+            "defaultsortorder": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-3,months) - today()"
@@ -396,7 +399,7 @@
             "display": "Type code",
             "sortable": false,
             "visible": "false",
-            "defaultsort": true,
+            "defaultsort": false,
             "filter": {
               "type": "multiselect",
               "dynamicoptions": {
