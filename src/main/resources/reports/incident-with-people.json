@@ -405,6 +405,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
+            "defaultsortorder": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-1,months) - today()"
@@ -526,6 +527,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
+            "defaultsortorder": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-1,months) - today()"
@@ -624,6 +626,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
+            "defaultsortorder": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-1,months) - today()"
@@ -634,7 +637,7 @@
             "display": "Type code",
             "sortable": false,
             "visible": "false",
-            "defaultsort": true
+            "defaultsort": false
           },
           {
             "name": "$ref:type_description",

@@ -243,7 +243,8 @@
             "sortable": true,
             "type": "datetime",
             "visible": "true",
-            "defaultsort": true,
+            "defaultsort": false,
+            "defaultsortorder": "descending",
             "filter": {
               "mandatory": false,
               "type": "daterange",
