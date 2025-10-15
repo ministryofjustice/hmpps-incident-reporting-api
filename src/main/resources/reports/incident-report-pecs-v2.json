@@ -277,7 +277,7 @@
             "type": "datetime",
             "visible": "true",
             "defaultsort": true,
-            "defaultsortorder": "descending",
+            "sortdirection": "descending",
             "filter": {
               "mandatory": false,
               "type": "daterange",
