@@ -226,7 +226,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
-            "defaultsortorder": "descending",
+            "sortdirection": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-1,months) - today()"
@@ -307,7 +307,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
-            "defaultsortorder": "descending",
+            "sortdirection": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-1,months) - today()"
@@ -388,7 +388,7 @@
             "sortable": true,
             "visible": "true",
             "defaultsort": true,
-            "defaultsortorder": "descending",
+            "sortdirection": "descending",
             "filter": {
               "type": "daterange",
               "default": "today(-3,months) - today()"
