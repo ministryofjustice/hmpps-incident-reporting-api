@@ -248,7 +248,7 @@
             "type": "datetime",
             "visible": "true",
             "defaultsort": true,
-            "sortdirection": "descending",
+            "sortdirection": "desc",
             "filter": {
               "mandatory": false,
               "type": "daterange",
