@@ -27,6 +27,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.UpdateReportRe
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.utils.MaybeChanged
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepositoryCustom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.generateReportReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateFrom
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByIncidentDateUntil
@@ -45,7 +46,7 @@ import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report as ReportEntity
 
@@ -53,6 +54,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report as ReportEntity
 @Transactional(readOnly = true)
 class ReportService(
   private val reportRepository: ReportRepository,
+  private val reportRepositoryCustom: ReportRepositoryCustom,
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository,
   private val prisonerSearchService: PrisonerSearchService,
   private val correctionRequestService: CorrectionRequestService,
@@ -105,8 +107,19 @@ class ReportService(
         }
       },
     )
-    return reportRepository.findAll(specification, pageable)
-      .map { it.toDtoBasic() }
+    val reportReferenceSort = pageable.sort.getOrderFor("reportReference")
+
+    return if (reportReferenceSort != null) {
+      // Use a custom repository method with numeric sort at the database level
+      reportRepositoryCustom.findAllWithNumericReportReferenceSort(
+        specification = specification,
+        ascending = reportReferenceSort.isAscending,
+        pageable = pageable,
+      ).map { it.toDtoBasic() }
+    } else {
+      reportRepository.findAll(specification, pageable)
+        .map { it.toDtoBasic() }
+    }
   }
 
   fun getBasicReportById(id: UUID): ReportBasic? {

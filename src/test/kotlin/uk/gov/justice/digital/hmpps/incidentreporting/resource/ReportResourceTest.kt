@@ -349,8 +349,8 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           val expectedReportReferences = mapOf(
             "incidentDateAndTime,ASC" to listOf("31934", "94728", "11006603", "11017203", "11124143"),
             "incidentDateAndTime,DESC" to listOf("11124143", "11017203", "11006603", "94728", "31934"),
-            "reportReference,ASC" to listOf("11006603", "11017203", "11124143", "31934", "94728"),
-            "reportReference,DESC" to listOf("94728", "31934", "11124143", "11017203", "11006603"),
+            "reportReference,ASC" to listOf("31934", "94728", "11006603", "11017203", "11124143"),
+            "reportReference,DESC" to listOf("11124143", "11017203", "11006603", "94728", "31934"),
             // id, being a UUIDv7, should follow table insertion order (i.e. what setUp methods do above)
             "id,ASC" to listOf("11124143", "11017203", "11006603", "94728", "31934"),
             "id,DESC" to listOf("31934", "94728", "11006603", "11017203", "11124143"),

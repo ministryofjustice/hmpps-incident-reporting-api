@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegration
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.PrisonerInvolvementRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepositoryCustom
 import uk.gov.justice.hmpps.kotlin.auth.HmppsAuthenticationHolder
 import java.time.LocalDateTime
 import java.util.UUID
@@ -31,6 +32,7 @@ import java.util.UUID
 @Transactional
 class PrisonerMergeTest : SqsIntegrationTestBase() {
   private val reportRepository: ReportRepository = mock()
+  private val reportRepositoryCustom: ReportRepositoryCustom = mock()
   private val prisonerInvolvementRepository: PrisonerInvolvementRepository = mock()
   private val prisonerSearchService: PrisonerSearchService = mock()
   private val correctionRequestService: CorrectionRequestService = mock()
@@ -39,6 +41,7 @@ class PrisonerMergeTest : SqsIntegrationTestBase() {
 
   private val reportService = ReportService(
     reportRepository = reportRepository,
+    reportRepositoryCustom = reportRepositoryCustom,
     prisonerInvolvementRepository = prisonerInvolvementRepository,
     prisonerSearchService = prisonerSearchService,
     telemetryClient = telemetryClient,
