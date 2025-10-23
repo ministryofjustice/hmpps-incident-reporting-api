@@ -68,3 +68,13 @@ interface NomisSyncUpdateRequest {
   @get:Schema(description = "Complete incident report payload", requiredMode = Schema.RequiredMode.REQUIRED)
   val incidentReport: NomisReport
 }
+
+@Schema(description = "Incident report deleted in NOMIS", accessMode = Schema.AccessMode.WRITE_ONLY)
+interface NomisSyncDeleteRequest {
+  @get:Schema(
+    description = "Incident report ID",
+    requiredMode = Schema.RequiredMode.REQUIRED,
+    example = "123e4567-e89b-12d3-a456-426614174000",
+  )
+  val id: UUID
+}

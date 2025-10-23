@@ -13,11 +13,14 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncCreateRequest
+import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncDeleteRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncUpdateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncReportId
@@ -100,5 +103,57 @@ class NomisSyncResource(
     }
     log.info("Incident report synchronised: ${report.reportReference}")
     return ResponseEntity(NomisSyncReportId(report.id), status)
+  }
+
+  @DeleteMapping
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @Operation(
+    summary = "Delete a report",
+    description = "Requires role MIGRATE_INCIDENT_REPORTS and write scope",
+    responses = [
+      ApiResponse(
+        responseCode = "204",
+        description = "Incident report deleted",
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "Invalid request",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Missing required role. Requires the MIGRATE_INCIDENT_REPORTS role with write scope.",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Data not found, when id is provided",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
+  )
+  fun deleteIncidentReport(
+    @RequestBodySchema(
+      description = "Incident report deleted in NOMIS",
+      content = [
+        Content(
+          schema = Schema(
+            accessMode = Schema.AccessMode.WRITE_ONLY,
+            oneOf = [NomisSyncDeleteRequest::class],
+          ),
+        ),
+      ],
+    )
+    @RequestBody
+    @Valid
+    syncRequest: NomisSyncDeleteRequest,
+  ) {
+    val report = syncService.delete(syncRequest)
+    log.info("Incident report deleted: ${report.reportReference}")
   }
 }
