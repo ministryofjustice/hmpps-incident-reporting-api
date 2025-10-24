@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.ReportWithDetails
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisReport
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncDeleteRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
 import uk.gov.justice.digital.hmpps.incidentreporting.resource.ReportAlreadyExistsException
@@ -56,8 +55,7 @@ class NomisSyncService(
     return report
   }
 
-  fun delete(syncRequest: NomisSyncDeleteRequest): ReportWithDetails {
-    val id = syncRequest.id
+  fun delete(id: UUID): ReportWithDetails {
     log.info("Request to deletion of incident report with UUID: $id")
 
     val report = reportRepository.findById(id).orElseThrow { ReportNotFoundException(id) }
@@ -69,7 +67,7 @@ class NomisSyncService(
       "Deleted Incident Report: ${deletedReport.reportReference}",
     )
     telemetryClient.trackEvent(
-      "Deleted Incident Report",
+      "Deleted Incident Report ${deletedReport.reportReference}",
       deletedReport,
     )
     return deletedReport

@@ -1988,6 +1988,14 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         .apply(assertions)
     }
 
+    private fun sendAuthorisedSyncDelete(incidentIdToDelete: UUID, assertions: WebTestClient.ResponseSpec.() -> Unit) {
+      webTestClient.delete().uri("/sync/$incidentIdToDelete")
+        .headers(setAuthorisation(roles = listOf("ROLE_MIGRATE_INCIDENT_REPORTS"), scopes = listOf("write")))
+        .header("Content-Type", "application/json")
+        .exchange()
+        .apply(assertions)
+    }
+
     @Test
     fun `can create a report during initial migration`() {
       deleteAllReports() // drop reports from test setup to prevent report reference clashes
@@ -2039,6 +2047,18 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
         // existing report updated
         expectStatus().isOk
       }
+    }
+
+    @Test
+    fun `can delete a report from sync`() {
+      sendAuthorisedSyncDelete(
+        incidentIdToDelete = existingNomisReport.id!!,
+      ) {
+        // existing report deleted
+        expectStatus().isNoContent
+      }
+
+      assertThat(reportRepository.findById(existingNomisReport.id!!)).isEmpty
     }
   }
 }

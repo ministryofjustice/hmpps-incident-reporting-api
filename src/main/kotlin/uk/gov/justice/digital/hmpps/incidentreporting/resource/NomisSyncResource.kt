@@ -14,17 +14,18 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncCreateRequest
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncDeleteRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.request.NomisSyncUpdateRequest
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.response.NomisSyncReportId
 import uk.gov.justice.digital.hmpps.incidentreporting.service.NomisSyncService
+import java.util.UUID
 import io.swagger.v3.oas.annotations.parameters.RequestBody as RequestBodySchema
 
 @RestController
@@ -105,7 +106,7 @@ class NomisSyncResource(
     return ResponseEntity(NomisSyncReportId(report.id), status)
   }
 
-  @DeleteMapping
+  @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @Operation(
     summary = "Delete a report",
@@ -138,22 +139,15 @@ class NomisSyncResource(
     ],
   )
   fun deleteIncidentReport(
-    @RequestBodySchema(
-      description = "Incident report deleted in NOMIS",
-      content = [
-        Content(
-          schema = Schema(
-            accessMode = Schema.AccessMode.WRITE_ONLY,
-            oneOf = [NomisSyncDeleteRequest::class],
-          ),
-        ),
-      ],
+    @Schema(
+      description = "The internal ID of the report to delete",
+      example = "11111111-2222-3333-4444-555555555555",
+      requiredMode = Schema.RequiredMode.REQUIRED,
     )
-    @RequestBody
-    @Valid
-    syncRequest: NomisSyncDeleteRequest,
+    @PathVariable
+    id: UUID,
   ) {
-    val report = syncService.delete(syncRequest)
+    val report = syncService.delete(id)
     log.info("Incident report deleted: ${report.reportReference}")
   }
 }
