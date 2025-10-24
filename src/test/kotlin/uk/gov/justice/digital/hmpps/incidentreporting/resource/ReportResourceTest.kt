@@ -2162,7 +2162,6 @@ class ReportResourceTest : SqsIntegrationTestBase() {
     }
   }
 
-  // TODO: decide if a different role should be used!
   @DisplayName("DELETE /incident-reports/{id}")
   @Nested
   inner class DeleteReport {
@@ -2180,7 +2179,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @TestFactory
       fun endpointRequiresAuthorisation() = endpointRequiresAuthorisation(
         webTestClient.delete().uri(url),
-        "MAINTAIN_INCIDENT_REPORTS",
+        "DELETE_INCIDENT_REPORTS",
         "write",
       )
     }
@@ -2191,7 +2190,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
       @Test
       fun `cannot delete a report by ID if it is not found`() {
         webTestClient.delete().uri("/incident-reports/11111111-2222-3333-4444-555555555555")
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .headers(setAuthorisation(roles = listOf("ROLE_DELETE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isNotFound
@@ -2208,7 +2207,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         val reportId = existingReport.id!!
 
         webTestClient.delete().uri(url)
-          .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_INCIDENT_REPORTS"), scopes = listOf("write")))
+          .headers(setAuthorisation(roles = listOf("ROLE_DELETE_INCIDENT_REPORTS"), scopes = listOf("write")))
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
