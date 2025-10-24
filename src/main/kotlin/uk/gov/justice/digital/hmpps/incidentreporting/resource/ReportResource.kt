@@ -672,13 +672,12 @@ class ReportResource(
     }.value
   }
 
-  // TODO: decide if a different role should be used!
   @DeleteMapping("/{id}")
-  @PreAuthorize("hasRole('ROLE_MAINTAIN_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
+  @PreAuthorize("hasRole('ROLE_DELETE_INCIDENT_REPORTS') and hasAuthority('SCOPE_write')")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Deletes an incident report",
-    description = "Requires role MAINTAIN_INCIDENT_REPORTS and write scope.",
+    description = "Requires role DELETE_INCIDENT_REPORTS and write scope.",
     responses = [
       ApiResponse(
         responseCode = "200",

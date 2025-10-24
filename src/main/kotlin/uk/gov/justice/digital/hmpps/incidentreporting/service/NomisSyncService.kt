@@ -55,6 +55,24 @@ class NomisSyncService(
     return report
   }
 
+  fun delete(id: UUID): ReportWithDetails {
+    log.info("Request to deletion of incident report with UUID: $id")
+
+    val report = reportRepository.findById(id).orElseThrow { ReportNotFoundException(id) }
+    val deletedReport = report.toDtoWithDetails()
+    log.info("Deleting report reference: ${deletedReport.reportReference}")
+    reportRepository.delete(report)
+
+    log.info(
+      "Deleted Incident Report: ${deletedReport.reportReference}",
+    )
+    telemetryClient.trackEvent(
+      "Deleted Incident Report ${deletedReport.reportReference}",
+      deletedReport,
+    )
+    return deletedReport
+  }
+
   private fun updateExistingReport(reportId: UUID, incidentReport: NomisReport): ReportWithDetails {
     log.info("Locking existing report: ${incidentReport.incidentId}")
     reportRepository.findReportByIdAndLockRecord(reportId) // will lock this table row.
