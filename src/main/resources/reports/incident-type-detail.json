@@ -117,7 +117,7 @@
       "id": "status",
       "name": "Incident Status",
       "datasource": "replicaDataSource",
-      "query": "SELECT code, description FROM constant_status where code != 'DUPLICATE'",
+      "query": "SELECT code, description FROM constant_status where code NOT IN ('DUPLICATE', 'NOT_REPORTABLE')",
       "schema": {
         "field": [
           {
