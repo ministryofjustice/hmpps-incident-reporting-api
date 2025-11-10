@@ -92,7 +92,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(8)
+          .expectBody().jsonPath("$.length()").isEqualTo(9)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -103,7 +103,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(8)
+          .expectBody().jsonPath("$.length()").isEqualTo(9)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -117,7 +117,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(8)
+          .jsonPath("$.length()").isEqualTo(9)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
