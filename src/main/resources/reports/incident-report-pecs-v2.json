@@ -311,9 +311,12 @@
           {
             "name": "$ref:reported_by",
             "display": "Reported by",
-            "sortable": false,
+            "sortable": true,
             "visible": "false",
-            "defaultsort": false
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
           },
           {
             "name": "$ref:reporter_last_name",

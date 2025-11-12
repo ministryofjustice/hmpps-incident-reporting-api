@@ -261,7 +261,7 @@
             "display": "Reported on",
             "sortable": true,
             "type": "date",
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
@@ -275,16 +275,19 @@
             "name": "$ref:description",
             "display": "Incident description",
             "sortable": false,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": false,
             "wordwrap": "break-words"
           },
           {
             "name": "$ref:reported_by",
             "display": "Reported by",
-            "sortable": false,
+            "sortable": true,
             "visible": "true",
-            "defaultsort": false
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
           },
           {
             "name": "$ref:modified_at",

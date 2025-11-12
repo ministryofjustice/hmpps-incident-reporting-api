@@ -279,9 +279,12 @@
           {
             "name": "$ref:reported_by",
             "display": "Reported by",
-            "sortable": false,
+            "sortable": true,
             "visible": "true",
-            "defaultsort": false
+            "defaultsort": false,
+            "filter": {
+              "type": "text"
+            }
           },
           {
             "name": "$ref:modified_at",
