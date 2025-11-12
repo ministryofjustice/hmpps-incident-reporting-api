@@ -358,7 +358,7 @@
             "display": "Reported on",
             "sortable": true,
             "type": "date",
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
