@@ -25,6 +25,7 @@ enum class TypeFamily(
   DAMAGE("Deliberate damage"),
   DEATH_PRISONER("Death of prisoner"),
   DEATH_OTHER("Death of other person"),
+  DIRTY_PROTEST("Dirty protest"),
   DISORDER("Disorder"),
   DRONE_SIGHTING("Drone sighting"),
   DRUGS("Drugs"),
