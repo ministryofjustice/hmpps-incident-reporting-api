@@ -33,6 +33,7 @@ enum class Type(
   DAMAGE_1(TypeFamily.DAMAGE, "DAMAGE", active = false),
   DEATH_PRISONER_1(TypeFamily.DEATH_PRISONER, "DEATH"),
   DEATH_OTHER_1(TypeFamily.DEATH_OTHER, "DEATH_NI"),
+  DIRTY_PROTEST_1(TypeFamily.DIRTY_PROTEST, "DIRTYPROTEST", active = true),
   DISORDER_1(TypeFamily.DISORDER, "DISORDER", active = false),
   DISORDER_2(TypeFamily.DISORDER, "DISORDER1"),
   DRONE_SIGHTING_1(TypeFamily.DRONE_SIGHTING, "DRONE", active = false),
