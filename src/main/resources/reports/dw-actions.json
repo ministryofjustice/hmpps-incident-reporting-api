@@ -1,0 +1,397 @@
+{
+  "id": "dw-activity",
+  "name": "Data warden report activities",
+  "description": "Count of incident report actions conducted by each data warden for a given period.",
+  "metadata": {
+    "author": "Josh Jones",
+    "version": "1.0.0",
+    "owner": "Managing Safety"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "replicaDataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+      "id": "access",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "match": [
+                "${role}",
+                "INCIDENT_REPORTS__ADMIN"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "caseloads",
+      "type": "row-level",
+      "action": ["location IN (${caseloads})"],
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "exists": ["${caseloads}"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "by-dw-per-month",
+      "name": "Actions per data warden per month",
+      "datasource": "replicaDataSource",
+      "query": "select cr.*, sf.dw_name\nfrom(\nselect Cast(Date_trunc('day', correction_requested_at) AS DATE) as day, to_char(min(correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(correction_requested_at), 'DD/MM/YYYY') as max_date, correction_requested_by as dw_username,\ncount(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN id END) as sent_back,\ncount(CASE WHEN user_action = 'HOLD' THEN id END) as held,\ncount(CASE WHEN user_action = 'RECALL' THEN id END) as recalled,\ncount(CASE WHEN user_action = 'CLOSE' THEN id END) as closed,\ncount(CASE WHEN user_action = 'MARK_DUPLICATE' THEN id END) as marked_as_duplicate, \ncount(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN id END) as marked_as_np,\ncount(id) as total_actions\nfrom correction_request\nwhere user_type = 'DATA_WARDEN'\ngroup by day, correction_requested_by) as cr\nleft join (select username, concat_ws(' ', INITCAP(first_name), INITCAP(last_name)) as dw_name\nfrom staff.staff) as sf\non cr.dw = sf.username",
+      "schema": {
+        "field": [
+          {
+            "name": "day",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "dw_username",
+            "type": "string"
+          },
+          {
+            "name": "sent_back",
+            "type": "long"
+          },
+          {
+            "name": "held",
+            "type": "long"
+          },
+          {
+            "name": "recalled",
+            "type": "long"
+          },
+          {
+            "name": "closed",
+            "type": "long"
+          },
+          {
+            "name": "marked_as_duplicate",
+            "type": "long"
+          },
+          {
+            "name": "marked_as_np",
+            "type": "long"
+          },
+          {
+            "name": "total_actions",
+            "type": "long"
+          },
+          {
+            "name": "dw_name",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "by-dw-per-month",
+      "name": "Actions per data warden per month",
+      "datasource": "replicaDataSource",
+      "query": "select cr.*, sf.dw_name\nfrom(\nselect Cast(Date_trunc('month', correction_requested_at) AS DATE) as month, to_char(min(correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(correction_requested_at), 'DD/MM/YYYY') as max_date, correction_requested_by as dw_username,\ncount(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN id END) as sent_back,\ncount(CASE WHEN user_action = 'HOLD' THEN id END) as held,\ncount(CASE WHEN user_action = 'RECALL' THEN id END) as recalled,\ncount(CASE WHEN user_action = 'CLOSE' THEN id END) as closed,\ncount(CASE WHEN user_action = 'MARK_DUPLICATE' THEN id END) as marked_as_duplicate, \ncount(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN id END) as marked_as_np,\ncount(id) as total_actions\nfrom correction_request\nwhere user_type = 'DATA_WARDEN'\ngroup by month, correction_requested_by) as cr\nleft join (select username, concat_ws(' ', INITCAP(first_name), INITCAP(last_name)) as dw_name\nfrom staff.staff) as sf\non cr.dw = sf.username",
+      "schema": {
+        "field": [
+          {
+            "name": "month",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "dw_username",
+            "type": "string"
+          },
+          {
+            "name": "sent_back",
+            "type": "long"
+          },
+          {
+            "name": "held",
+            "type": "long"
+          },
+          {
+            "name": "recalled",
+            "type": "long"
+          },
+          {
+            "name": "closed",
+            "type": "long"
+          },
+          {
+            "name": "marked_as_duplicate",
+            "type": "long"
+          },
+          {
+            "name": "marked_as_np",
+            "type": "long"
+          },
+          {
+            "name": "total_actions",
+            "type": "long"
+          },
+          {
+            "name": "dw_name",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "by-dw-per-day",
+      "name": "Day and data warden reports",
+      "description": "Count of incident report actions conducted by each data warden per day.",
+      "version": "1.0.0",
+      "dataset": "$ref:by-dw-per-day",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:day",
+            "display": "Day of incident",
+            "formula": "format_date(${day}, 'dd-MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-14,days) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false,
+              "interactive": true
+            }
+          },
+          {
+            "name": "$ref:dw_username",
+            "display": "Data Warden",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:dw_name",
+            "display": "Data Warden",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:sent_back",
+            "display": "Sent back",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:held",
+            "display": "Put on hold",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:recalled",
+            "display": "Recalls",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:closed",
+            "display": "Closed",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:marked_as_duplicate",
+            "display": "Marked as duplicate",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:marked_as_np",
+            "display": "Marked as not reportable",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:total_actions",
+            "display": "Total number of actions",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-dw-per-day"
+      }]
+    },
+    {
+      "id": "by-dw-per-month",
+      "name": "Month and data warden reports",
+      "description": "Count of incident report actions conducted by each data warden per month.",
+      "version": "1.0.0",
+      "dataset": "$ref:by-dw-per-month",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:month",
+            "display": "Month of incident",
+            "formula": "format_date(${month}, 'MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false,
+              "interactive": true
+            }
+          },
+          {
+            "name": "$ref:dw_username",
+            "display": "Data Warden",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:dw_name",
+            "display": "Data Warden",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:sent_back",
+            "display": "Sent back",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:held",
+            "display": "Put on hold",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:recalled",
+            "display": "Recalls",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:closed",
+            "display": "Closed",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:marked_as_duplicate",
+            "display": "Marked as duplicate",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:marked_as_np",
+            "display": "Marked as not reportable",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:total_actions",
+            "display": "Total number of actions",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-dw-per-month"
+      }]
+    }
+  ]
+}
