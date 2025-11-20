@@ -145,7 +145,7 @@
   "report": [
     {
       "id": "by-location-per-month",
-      "name": "Month and location reports",
+      "name": "% of incident reports returned by location / month",
       "description": "Percentage of incident reports returned to reporting officers by data wardens per location per month.",
       "version": "1.0.0",
       "dataset": "$ref:by-location-per-month",
@@ -180,40 +180,40 @@
             "defaultsort": false,
             "filter": {
               "type": "caseloads",
-              "mandatory": false,
-              "interactive": true
+              "mandatory": false
             }
           },
           {
             "name": "$ref:all_reports",
             "display": "All reports submitted",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:returned",
             "display": "Reports returned by DW",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:dw_not_seen",
             "display": "Reports not yet seen by a DW",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:closed",
             "display": "Reports that have been closed",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:dw_seen_percentage_returned",
+            "formula": "${dw_seen_percentage_returned}%",
             "display": "Percentage of reviewed reports returned",
             "sortable": true,
             "visible": "true",
@@ -230,7 +230,7 @@
     },
     {
       "id": "by-location-per-year",
-      "name": "Year and location reports",
+      "name": "% of incident reports returned by location / year",
       "description": "Percentage of incident reports returned to reporting officers by data wardens per location per year.",
       "version": "1.0.0",
       "dataset": "$ref:by-location-per-year",
@@ -261,40 +261,40 @@
             "defaultsort": false,
             "filter": {
               "type": "caseloads",
-              "mandatory": false,
-              "interactive": true
+              "mandatory": false
             }
           },
           {
             "name": "$ref:all_reports",
             "display": "All reports submitted",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:returned",
             "display": "Reports returned by DW",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:dw_not_seen",
             "display": "Reports not yet seen by a DW",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:closed",
             "display": "Reports that have been closed",
             "sortable": true,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:dw_seen_percentage_returned",
+            "formula": "${dw_seen_percentage_returned}%",
             "display": "Percentage of reviewed reports returned",
             "sortable": true,
             "visible": "true",

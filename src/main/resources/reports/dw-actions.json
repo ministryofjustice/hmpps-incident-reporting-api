@@ -31,29 +31,14 @@
           ]
         }
       ]
-    },
-    {
-      "id": "caseloads",
-      "type": "row-level",
-      "action": ["location IN (${caseloads})"],
-      "rule": [
-        {
-          "effect": "permit",
-          "condition": [
-            {
-              "exists": ["${caseloads}"]
-            }
-          ]
-        }
-      ]
     }
   ],
   "dataset": [
     {
-      "id": "by-dw-per-month",
-      "name": "Actions per data warden per month",
+      "id": "by-dw-per-day",
+      "name": "Actions performed / day",
       "datasource": "replicaDataSource",
-      "query": "select cr.*, sf.dw_name\nfrom(\nselect Cast(Date_trunc('day', correction_requested_at) AS DATE) as day, to_char(min(correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(correction_requested_at), 'DD/MM/YYYY') as max_date, correction_requested_by as dw_username,\ncount(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN id END) as sent_back,\ncount(CASE WHEN user_action = 'HOLD' THEN id END) as held,\ncount(CASE WHEN user_action = 'RECALL' THEN id END) as recalled,\ncount(CASE WHEN user_action = 'CLOSE' THEN id END) as closed,\ncount(CASE WHEN user_action = 'MARK_DUPLICATE' THEN id END) as marked_as_duplicate, \ncount(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN id END) as marked_as_np,\ncount(id) as total_actions\nfrom correction_request\nwhere user_type = 'DATA_WARDEN'\ngroup by day, correction_requested_by) as cr\nleft join (select username, concat_ws(' ', INITCAP(first_name), INITCAP(last_name)) as dw_name\nfrom staff.staff) as sf\non cr.dw = sf.username",
+      "query": "select Cast(Date_trunc('day', correction_requested_at) AS DATE)         as day,\n       to_char(min(correction_requested_at), 'DD/MM/YYYY')              as min_date,\n       to_char(max(correction_requested_at), 'DD/MM/YYYY')              as max_date,\n       correction_requested_by                                          as dw_username,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN id END)  as sent_back,\n       count(CASE WHEN user_action = 'HOLD' THEN id END)                as held,\n       count(CASE WHEN user_action = 'RECALL' THEN id END)              as recalled,\n       count(CASE WHEN user_action = 'CLOSE' THEN id END)               as closed,\n       count(CASE WHEN user_action = 'MARK_DUPLICATE' THEN id END)      as marked_as_duplicate,\n       count(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN id END) as marked_as_np,\n       count(id)                                                        as total_actions\nfrom correction_request cr\nwhere user_type = 'DATA_WARDEN'\ngroup by day, correction_requested_by",
       "schema": {
         "field": [
           {
@@ -99,19 +84,15 @@
           {
             "name": "total_actions",
             "type": "long"
-          },
-          {
-            "name": "dw_name",
-            "type": "string"
           }
         ]
       }
     },
     {
       "id": "by-dw-per-month",
-      "name": "Actions per data warden per month",
+      "name": "Actions performed / month",
       "datasource": "replicaDataSource",
-      "query": "select cr.*, sf.dw_name\nfrom(\nselect Cast(Date_trunc('month', correction_requested_at) AS DATE) as month, to_char(min(correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(correction_requested_at), 'DD/MM/YYYY') as max_date, correction_requested_by as dw_username,\ncount(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN id END) as sent_back,\ncount(CASE WHEN user_action = 'HOLD' THEN id END) as held,\ncount(CASE WHEN user_action = 'RECALL' THEN id END) as recalled,\ncount(CASE WHEN user_action = 'CLOSE' THEN id END) as closed,\ncount(CASE WHEN user_action = 'MARK_DUPLICATE' THEN id END) as marked_as_duplicate, \ncount(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN id END) as marked_as_np,\ncount(id) as total_actions\nfrom correction_request\nwhere user_type = 'DATA_WARDEN'\ngroup by month, correction_requested_by) as cr\nleft join (select username, concat_ws(' ', INITCAP(first_name), INITCAP(last_name)) as dw_name\nfrom staff.staff) as sf\non cr.dw = sf.username",
+      "query": "select Cast(Date_trunc('month', correction_requested_at) AS DATE)       as month,\n       to_char(min(correction_requested_at), 'DD/MM/YYYY')              as min_date,\n       to_char(max(correction_requested_at), 'DD/MM/YYYY')              as max_date,\n       correction_requested_by                                          as dw_username,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN id END)  as sent_back,\n       count(CASE WHEN user_action = 'HOLD' THEN id END)                as held,\n       count(CASE WHEN user_action = 'RECALL' THEN id END)              as recalled,\n       count(CASE WHEN user_action = 'CLOSE' THEN id END)               as closed,\n       count(CASE WHEN user_action = 'MARK_DUPLICATE' THEN id END)      as marked_as_duplicate,\n       count(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN id END) as marked_as_np,\n       count(id)                                                        as total_actions\nfrom correction_request\nwhere user_type = 'DATA_WARDEN'\ngroup by month, correction_requested_by",
       "schema": {
         "field": [
           {
@@ -157,10 +138,6 @@
           {
             "name": "total_actions",
             "type": "long"
-          },
-          {
-            "name": "dw_name",
-            "type": "string"
           }
         ]
       }
@@ -169,7 +146,7 @@
   "report": [
     {
       "id": "by-dw-per-day",
-      "name": "Day and data warden reports",
+      "name": "Actions performed / day",
       "description": "Count of incident report actions conducted by each data warden per day.",
       "version": "1.0.0",
       "dataset": "$ref:by-dw-per-day",
@@ -197,26 +174,7 @@
             }
           },
           {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "caseloads",
-              "mandatory": false,
-              "interactive": true
-            }
-          },
-          {
             "name": "$ref:dw_username",
-            "display": "Data Warden",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:dw_name",
             "display": "Data Warden",
             "sortable": true,
             "visible": "true",
@@ -282,7 +240,7 @@
     },
     {
       "id": "by-dw-per-month",
-      "name": "Month and data warden reports",
+      "name": "Actions performed / month",
       "description": "Count of incident report actions conducted by each data warden per month.",
       "version": "1.0.0",
       "dataset": "$ref:by-dw-per-month",
@@ -310,26 +268,7 @@
             }
           },
           {
-            "name": "$ref:location",
-            "display": "Location of incident",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "caseloads",
-              "mandatory": false,
-              "interactive": true
-            }
-          },
-          {
             "name": "$ref:dw_username",
-            "display": "Data Warden",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:dw_name",
             "display": "Data Warden",
             "sortable": true,
             "visible": "true",
