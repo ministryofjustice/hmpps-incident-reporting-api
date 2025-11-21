@@ -31,7 +31,7 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.8")
 
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0")
 
   implementation("com.fasterxml.uuid:java-uuid-generator:5.1.1")
 
