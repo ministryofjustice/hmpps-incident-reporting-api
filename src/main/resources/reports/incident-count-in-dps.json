@@ -1,0 +1,227 @@
+{
+  "id": "incident-count-in-dps",
+  "name": "Incident counts in DPS",
+  "description": "Counts of incident reports created in DPS.",
+  "metadata": {
+    "author": "Josh Jones",
+    "version": "1.0.0",
+    "owner": "Managing Safety"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "replicaDataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+      "id": "access",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "match": [
+                "${role}",
+                "INCIDENT_REPORTS__ADMIN"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "caseloads",
+      "type": "row-level",
+      "action": ["location IN (${caseloads})"],
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "exists": ["${caseloads}"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "by-location-per-week",
+      "name": "Location / week",
+      "datasource": "replicaDataSource",
+      "query": "select Cast(Date_trunc('week', incident_date_and_time) AS DATE) as week, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, location, count(id) as number_of_reports\nfrom report\nwhere source = 'DPS'\ngroup by week, location",
+      "schema": {
+        "field": [
+          {
+            "name": "week",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "number_of_reports",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "id": "by-location-per-month",
+      "name": "Location / month",
+      "datasource": "replicaDataSource",
+      "query": "select Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(correction_requested_at), 'DD/MM/YYYY') as max_date, location, count(id) as number_of_reports\nfrom report\nwhere source = 'DPS'\ngroup by month, location",
+      "schema": {
+        "field": [
+          {
+            "name": "month",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "number_of_reports",
+            "type": "long"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "by-location-per-week",
+      "name": "Location / week",
+      "description": "Counts of incident reports created in DPS for each location per week.",
+      "version": "1.0.0",
+      "dataset": "$ref:by-location-per-month",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:week",
+            "display": "Week starting date",
+            "formula": "format_date(${week}, 'dd-MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
+            }
+          },
+          {
+            "name": "$ref:number_of_reports",
+            "display": "Number of reports created",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-location-per-week"
+      }]
+    },
+    {
+      "id": "by-location-per-month",
+      "name": "Location / month",
+      "description": "Counts of incident reports created in DPS for each location per month.",
+      "version": "1.0.0",
+      "dataset": "$ref:by-location-per-month",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:month",
+            "display": "Month of incident",
+            "formula": "format_date(${month}, 'MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
+            }
+          },
+          {
+            "name": "$ref:number_of_reports",
+            "display": "Number of reports created",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-location-per-month"
+      }]
+    }
+  ]
+}

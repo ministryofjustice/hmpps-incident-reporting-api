@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(11)
+          .expectBody().jsonPath("$.length()").isEqualTo(12)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -106,7 +106,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(11)
+          .expectBody().jsonPath("$.length()").isEqualTo(12)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -120,7 +120,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(11)
+          .jsonPath("$.length()").isEqualTo(12)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -989,5 +989,53 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         }
       }
     }
+
+    @DisplayName("GET /reports/incident-count-in-dps")
+    @Nested
+    inner class RunDataWardenReports {
+      private val url = "/reports/incident-count-in-dps"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by role and scope per week")
+        @TestFactory
+        fun dwActionByDayEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-location-per-week"),
+          systemRole,
+        )
+
+        @DisplayName("by role and scope per month")
+        @TestFactory
+        fun dwActionByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-location-per-month"),
+          systemRole,
+        )
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns a page of the report counts in dps for locations by week`() {
+          webTestClient.get().uri("$url/by-location-per-week")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns a page of the report counts in dps for locations by month`() {
+          webTestClient.get().uri(url + "/by-location-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+      }
+    }
+
   }
 }
