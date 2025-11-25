@@ -140,6 +140,90 @@
           }
         ]
       }
+    },
+    {
+      "id": "whole-estate-per-month",
+      "name": "Return rate for whole prison estate per month",
+      "datasource": "replicaDataSource",
+      "query": "select month, min_date, max_date, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS'\ngroup by Date_trunc('month', r.incident_date_and_time)",
+      "schema": {
+        "field": [
+          {
+            "name": "month",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "all_reports",
+            "type": "long"
+          },
+          {
+            "name": "returned",
+            "type": "long"
+          },
+          {
+            "name": "dw_not_seen",
+            "type": "long"
+          },
+          {
+            "name": "closed",
+            "type": "long"
+          },
+          {
+            "name": "dw_seen_percentage_returned",
+            "type": "float"
+          }
+        ]
+      }
+    },
+    {
+      "id": "whole-estate-per-year",
+      "name": "Return rate for whole prison estate per year",
+      "datasource": "replicaDataSource",
+      "query": "select year, min_date, max_date, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', incident_date_and_time) AS DATE) as year, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS'\ngroup by Date_trunc('year', r.incident_date_and_time))",
+      "schema": {
+        "field": [
+          {
+            "name": "year",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "all_reports",
+            "type": "long"
+          },
+          {
+            "name": "returned",
+            "type": "long"
+          },
+          {
+            "name": "dw_not_seen",
+            "type": "long"
+          },
+          {
+            "name": "closed",
+            "type": "long"
+          },
+          {
+            "name": "dw_seen_percentage_returned",
+            "type": "float"
+          }
+        ]
+      }
     }
   ],
   "report": [
@@ -307,6 +391,150 @@
         "id": "summaryId",
         "template": "page-header",
         "dataset": "$ref:by-location-per-year"
+      }]
+    },
+    {
+      "id": "whole-estate-per-month",
+      "name": "% of incident reports returned for whole prison estate  / month",
+      "description": "Percentage of incident reports returned to reporting officers by data wardens for whole prison estate per month.",
+      "version": "1.0.0",
+      "dataset": "$ref:whole-estate-per-month",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:month",
+            "display": "Month of incident",
+            "formula": "format_date(${month}, 'MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:all_reports",
+            "display": "All reports submitted",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:returned",
+            "display": "Reports returned by DW",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:dw_not_seen",
+            "display": "Reports not yet seen by a DW",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:closed",
+            "display": "Reports that have been closed",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:dw_seen_percentage_returned",
+            "formula": "${dw_seen_percentage_returned}%",
+            "display": "Percentage of reviewed reports returned",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:whole-estate-per-month"
+      }]
+    },
+    {
+      "id": "whole-estate-per-year",
+      "name": "% of incident reports returned for whole prison estate  / year",
+      "description": "Percentage of incident reports returned to reporting officers by data wardens for whole prison estate per year.",
+      "version": "1.0.0",
+      "dataset": "$ref:whole-estate-per-year",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:year",
+            "display": "Year of incident",
+            "formula": "format_date(${year}, 'yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc"
+          },
+          {
+            "name": "$ref:all_reports",
+            "display": "All reports submitted",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:returned",
+            "display": "Reports returned by DW",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:dw_not_seen",
+            "display": "Reports not yet seen by a DW",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:closed",
+            "display": "Reports that have been closed",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:dw_seen_percentage_returned",
+            "formula": "${dw_seen_percentage_returned}%",
+            "display": "Percentage of reviewed reports returned",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:whole-estate-per-year"
       }]
     }
   ]

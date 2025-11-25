@@ -943,7 +943,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
     }
 
-    @DisplayName("GET /reports/dw-activity")
+    @DisplayName("GET /reports/report-return-rate")
     @Nested
     inner class RunReturnRateReports {
       private val url = "/reports/report-return-rate"
@@ -951,17 +951,31 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @DisplayName("is secured")
       @Nested
       inner class Security {
-        @DisplayName("by role and scope per month")
+        @DisplayName("by location per month")
         @TestFactory
-        fun returnRateByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun returnRateLocationByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri("$url/by-location-per-month"),
           systemRole,
         )
 
-        @DisplayName("by role and scope per year")
+        @DisplayName("by location per year")
         @TestFactory
-        fun returnRateByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun returnRateLocationByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri("$url/by-location-per-year"),
+          systemRole,
+        )
+
+        @DisplayName("whole estate per month")
+        @TestFactory
+        fun returnRateWholeEstateByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/whole-estate-per-month"),
+          systemRole,
+        )
+
+        @DisplayName("whole estate per year")
+        @TestFactory
+        fun returnRateWholeEstateByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/whole-estate-per-year"),
           systemRole,
         )
       }
@@ -971,7 +985,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       inner class HappyPath {
 
         @Test
-        fun `returns rate report for a count by month`() {
+        fun `returns rate report for locations by month`() {
           webTestClient.get().uri("$url/by-location-per-month")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
@@ -980,8 +994,26 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         }
 
         @Test
-        fun `returns rate report for a count by year`() {
+        fun `returns rate report for locations by year`() {
           webTestClient.get().uri(url + "/by-location-per-year")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns rate report for whole estate by month`() {
+          webTestClient.get().uri("$url/whole-estate-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns rate report for whole estate by year`() {
+          webTestClient.get().uri(url + "/whole-estate-per-year")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -1000,14 +1032,14 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       inner class Security {
         @DisplayName("by role and scope per week")
         @TestFactory
-        fun dwActionByDayEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun dpsIncidentCountPerWeekEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri("$url/by-location-per-week"),
           systemRole,
         )
 
         @DisplayName("by role and scope per month")
         @TestFactory
-        fun dwActionByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun dpsIncidentCountPerMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri("$url/by-location-per-month"),
           systemRole,
         )
