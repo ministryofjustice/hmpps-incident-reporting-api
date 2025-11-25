@@ -1,14 +1,14 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.config
 
 import org.springframework.test.context.DynamicPropertyRegistry
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 
-object PostgresTestcontainer : Testcontainer<PostgreSQLContainer<Nothing>>("postgres", 5432) {
-  override fun start(): PostgreSQLContainer<Nothing> {
+object PostgresTestContainer : TestContainer<PostgreSQLContainer>("postgres", 5432) {
+  override fun start(): PostgreSQLContainer {
     log.info("Creating a Postgres database")
-    return PostgreSQLContainer<Nothing>(
+    return PostgreSQLContainer(
       DockerImageName.parse("postgres").withTag("16"),
     ).apply {
       withEnv("HOSTNAME_EXTERNAL", "localhost")
@@ -22,7 +22,7 @@ object PostgresTestcontainer : Testcontainer<PostgreSQLContainer<Nothing>>("post
     }
   }
 
-  override fun setupProperties(instance: PostgreSQLContainer<Nothing>, registry: DynamicPropertyRegistry) {
+  override fun setupProperties(instance: PostgreSQLContainer, registry: DynamicPropertyRegistry) {
     registry.add("spring.datasource.url", instance::getJdbcUrl)
     registry.add("spring.datasource.username", instance::getUsername)
     registry.add("spring.datasource.password", instance::getPassword)
