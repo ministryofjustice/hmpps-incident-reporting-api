@@ -116,7 +116,7 @@
       "name": "Location / week",
       "description": "Counts of incident reports created in DPS for each location per week.",
       "version": "1.0.0",
-      "dataset": "$ref:by-location-per-month",
+      "dataset": "$ref:by-location-per-week",
       "policy": [],
       "render": "HTML",
       "feature": [

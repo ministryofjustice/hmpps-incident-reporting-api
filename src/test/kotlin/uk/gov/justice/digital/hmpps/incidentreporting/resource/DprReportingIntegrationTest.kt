@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(12)
+          .expectBody().jsonPath("$.length()").isEqualTo(13)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -106,7 +106,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(12)
+          .expectBody().jsonPath("$.length()").isEqualTo(13)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -120,7 +120,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(12)
+          .jsonPath("$.length()").isEqualTo(13)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -1024,7 +1024,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
     @DisplayName("GET /reports/incident-count-in-dps")
     @Nested
-    inner class RunDataWardenReports {
+    inner class RunDpsCountReports {
       private val url = "/reports/incident-count-in-dps"
 
       @DisplayName("is secured")
@@ -1069,5 +1069,83 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
     }
 
+    @DisplayName("GET /reports/incident-removal-requests")
+    @Nested
+    inner class RunRemovalRequestReports {
+      private val url = "/reports/incident-removal-requests"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("by location per week")
+        @TestFactory
+        fun removalRequestsLocationByWeekEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-location-per-week"),
+          systemRole,
+        )
+
+        @DisplayName("by location per month")
+        @TestFactory
+        fun removalRequestsLocationByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-location-per-month"),
+          systemRole,
+        )
+
+        @DisplayName("whole estate per month")
+        @TestFactory
+        fun removalRequestsWholeEstateByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/whole-estate-per-week"),
+          systemRole,
+        )
+
+        @DisplayName("whole estate per year")
+        @TestFactory
+        fun removalRequestsWholeEstateByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/whole-estate-per-month"),
+          systemRole,
+        )
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns removal request counts for locations by week`() {
+          webTestClient.get().uri("$url/by-location-per-week")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns removal request counts for locations by month`() {
+          webTestClient.get().uri(url + "/by-location-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns removal request counts for whole estate by week`() {
+          webTestClient.get().uri("$url/whole-estate-per-week")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns removal request counts for whole estate by month`() {
+          webTestClient.get().uri(url + "/whole-estate-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+      }
+    }
   }
 }
