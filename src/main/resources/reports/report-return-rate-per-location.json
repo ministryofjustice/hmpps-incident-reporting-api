@@ -1,7 +1,7 @@
 {
-  "id": "report-return-rate",
-  "name": "Incident report national return rate",
-  "description": "Rate of reports being returned to reporting officers by data wardens for whole prison estate.",
+  "id": "report-return-rate-per-location",
+  "name": "Incident report return rate by location",
+  "description": "Rate of reports being returned to reporting officers by data wardens by location.",
   "metadata": {
     "author": "Josh Jones",
     "version": "1.0.0",
@@ -31,14 +31,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "caseloads",
+      "type": "row-level",
+      "action": ["location IN (${caseloads})"],
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "exists": ["${caseloads}"]
+            }
+          ]
+        }
+      ]
     }
   ],
   "dataset": [
     {
-      "id": "whole-estate-per-month",
-      "name": "Return rate for whole prison estate per month",
+      "id": "by-location-per-month",
+      "name": "Return rate per location per month",
       "datasource": "replicaDataSource",
-      "query": "select month, min_date, max_date, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', r.incident_date_and_time) AS DATE) as month, to_char(min(r.incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(r.incident_date_and_time), 'DD/MM/YYYY') as max_date, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS'\ngroup by Date_trunc('month', r.incident_date_and_time))",
+      "query": "select month, min_date, max_date, location, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, r.location, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS'\ngroup by Date_trunc('month', r.incident_date_and_time), r.location)",
       "schema": {
         "field": [
           {
@@ -52,6 +67,10 @@
           {
             "name": "max_date",
             "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
           },
           {
             "name": "all_reports",
@@ -77,10 +96,10 @@
       }
     },
     {
-      "id": "whole-estate-per-year",
-      "name": "Return rate for whole prison estate per year",
+      "id": "by-location-per-year",
+      "name": "Return rate per location per year",
       "datasource": "replicaDataSource",
-      "query": "select year, min_date, max_date, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', incident_date_and_time) AS DATE) as year, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS'\ngroup by Date_trunc('year', r.incident_date_and_time))",
+      "query": "select year, min_date, max_date, location, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', incident_date_and_time) AS DATE) as year, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, r.location, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS'\ngroup by Date_trunc('year', r.incident_date_and_time), r.location)",
       "schema": {
         "field": [
           {
@@ -96,6 +115,10 @@
             "type": "date"
           },
           {
+            "name": "location",
+            "type": "string"
+          },
+          {
             "name": "all_reports",
             "type": "long"
           },
@@ -119,10 +142,10 @@
       }
     },
     {
-      "id": "by-type-per-month",
-      "name": "Return rate per incident type per month",
+      "id": "per-location-by-type-per-month",
+      "name": "Return rate per location by incident type per month",
       "datasource": "replicaDataSource",
-      "query": "select month, min_date, max_date, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by Date_trunc('month', r.incident_date_and_time), ct.description)",
+      "query": "select month, min_date, max_date, location, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, r.location, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by Date_trunc('month', r.incident_date_and_time), r.location, ct.description)",
       "schema": {
         "field": [
           {
@@ -136,6 +159,10 @@
           {
             "name": "max_date",
             "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
           },
           {
             "name": "incident_type",
@@ -165,10 +192,10 @@
       }
     },
     {
-      "id": "by-type-per-year",
-      "name": "Return rate per incident type per year",
+      "id": "per-location-by-type-per-year",
+      "name": "Return rate per location by incident type per year",
       "datasource": "replicaDataSource",
-      "query": "select year, min_date, max_date, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', incident_date_and_time) AS DATE) as year, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by Date_trunc('year', r.incident_date_and_time), ct.description)",
+      "query": "select year, min_date, max_date, location, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', incident_date_and_time) AS DATE) as year, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, r.location, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by Date_trunc('year', r.incident_date_and_time), r.location, ct.description)",
       "schema": {
         "field": [
           {
@@ -182,6 +209,10 @@
           {
             "name": "max_date",
             "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
           },
           {
             "name": "incident_type",
@@ -228,11 +259,11 @@
   ],
   "report": [
     {
-      "id": "whole-estate-per-month",
-      "name": "% of incident reports returned / month",
-      "description": "Percentage of incident reports returned to reporting officers by data wardens for whole prison estate per month.",
+      "id": "by-location-per-month",
+      "name": "% of incident reports returned by location / month",
+      "description": "Percentage of incident reports returned to reporting officers by data wardens per location per month.",
       "version": "1.0.0",
-      "dataset": "$ref:whole-estate-per-month",
+      "dataset": "$ref:by-location-per-month",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -254,6 +285,17 @@
             "filter": {
               "type": "daterange",
               "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {
@@ -298,15 +340,15 @@
       "summary": [{
         "id": "summaryId",
         "template": "page-header",
-        "dataset": "$ref:whole-estate-per-month"
+        "dataset": "$ref:by-location-per-month"
       }]
     },
     {
-      "id": "whole-estate-per-year",
-      "name": "% of incident reports returned / year",
-      "description": "Percentage of incident reports returned to reporting officers by data wardens for whole prison estate per year.",
+      "id": "by-location-per-year",
+      "name": "% of incident reports returned by location / year",
+      "description": "Percentage of incident reports returned to reporting officers by data wardens per location per year.",
       "version": "1.0.0",
-      "dataset": "$ref:whole-estate-per-year",
+      "dataset": "$ref:by-location-per-year",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -325,6 +367,17 @@
             "visible": "true",
             "defaultsort": true,
             "sortdirection": "desc"
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
+            }
           },
           {
             "name": "$ref:all_reports",
@@ -368,15 +421,15 @@
       "summary": [{
         "id": "summaryId",
         "template": "page-header",
-        "dataset": "$ref:whole-estate-per-year"
+        "dataset": "$ref:by-location-per-year"
       }]
     },
     {
-      "id": "by-type-per-month",
-      "name": "% of incident reports returned by incident type / month",
-      "description": "Percentage of incident reports returned to reporting officers by data wardens per incident type per month.",
+      "id": "per-location-by-type-per-month",
+      "name": "% of incident reports returned per location by incident type / month",
+      "description": "Percentage of incident reports returned to reporting officers by data wardens per location by incident type per month.",
       "version": "1.0.0",
-      "dataset": "$ref:by-type-per-month",
+      "dataset": "$ref:per-location-by-type-per-month",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -398,6 +451,17 @@
             "filter": {
               "type": "daterange",
               "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
             }
           },
           {
@@ -459,15 +523,15 @@
       "summary": [{
         "id": "summaryId",
         "template": "page-header",
-        "dataset": "$ref:by-type-per-month"
+        "dataset": "$ref:per-location-by-type-per-month"
       }]
     },
     {
-      "id": "by-type-per-year",
-      "name": "% of incident reports returned by incident type / year",
-      "description": "Percentage of incident reports returned to reporting officers by data wardens per incident type per year.",
+      "id": "per-location-by-type-per-year",
+      "name": "% of incident reports returned per location by incident type / year",
+      "description": "Percentage of incident reports returned to reporting officers by data wardens per location by incident type per year.",
       "version": "1.0.0",
-      "dataset": "$ref:by-type-per-year",
+      "dataset": "$ref:per-location-by-type-per-year",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -486,6 +550,17 @@
             "visible": "true",
             "defaultsort": true,
             "sortdirection": "desc"
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location of incident",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
+            }
           },
           {
             "name": "$ref:incident_type",
@@ -546,7 +621,7 @@
       "summary": [{
         "id": "summaryId",
         "template": "page-header",
-        "dataset": "$ref:by-type-per-year"
+        "dataset": "$ref:per-location-by-type-per-year"
       }]
     }
   ]
