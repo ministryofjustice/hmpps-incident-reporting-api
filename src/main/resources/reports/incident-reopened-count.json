@@ -1,5 +1,5 @@
 {
-  "id": "incidents-reopened",
+  "id": "incident-reopened-count",
   "name": "Re-opened report counts",
   "description": "Counts of previously completed reports that have been re-opened.",
   "metadata": {

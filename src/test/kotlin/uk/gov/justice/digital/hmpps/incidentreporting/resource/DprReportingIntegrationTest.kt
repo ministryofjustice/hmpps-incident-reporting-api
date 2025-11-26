@@ -1077,7 +1077,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
         @Test
         fun `returns rate report for location and incident type by year`() {
-          webTestClient.get().uri(url + "per-location-by-type-per-year")
+          webTestClient.get().uri(url + "/per-location-by-type-per-year")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
