@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(13)
+          .expectBody().jsonPath("$.length()").isEqualTo(14)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -106,7 +106,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(13)
+          .expectBody().jsonPath("$.length()").isEqualTo(14)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -120,7 +120,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(13)
+          .jsonPath("$.length()").isEqualTo(14)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -978,6 +978,34 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           webTestClient.get().uri("$url/whole-estate-per-year"),
           systemRole,
         )
+
+        @DisplayName("by type per month")
+        @TestFactory
+        fun returnRateTypeByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-type-per-month"),
+          systemRole,
+        )
+
+        @DisplayName("by type per year")
+        @TestFactory
+        fun returnRateTypeByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-type-per-year"),
+          systemRole,
+        )
+
+        @DisplayName("per location by type per month")
+        @TestFactory
+        fun returnRatePerLocationTypeByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/per-location-by-type-per-month"),
+          systemRole,
+        )
+
+        @DisplayName("per location by type per year")
+        @TestFactory
+        fun returnRatePerLocationTypeByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/per-location-by-type-per-year"),
+          systemRole,
+        )
       }
 
       @DisplayName("works")
@@ -1014,6 +1042,42 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         @Test
         fun `returns rate report for whole estate by year`() {
           webTestClient.get().uri(url + "/whole-estate-per-year")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns rate report for incident type by month`() {
+          webTestClient.get().uri("$url/by-type-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns rate report for incident type by year`() {
+          webTestClient.get().uri(url + "/by-type-per-year")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns rate report for location and incident type by month`() {
+          webTestClient.get().uri("$url/per-location-by-type-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns rate report for location and incident type by year`() {
+          webTestClient.get().uri(url + "per-location-by-type-per-year")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
