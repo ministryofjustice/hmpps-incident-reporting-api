@@ -83,7 +83,7 @@
       "id": "by-location-per-month",
       "name": "Location / month",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(correction_requested_at), 'DD/MM/YYYY') as max_date, location, count(id) as number_of_reports\nfrom report\nwhere source = 'DPS'\ngroup by month, location",
+      "query": "select Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, location, count(id) as number_of_reports\nfrom report\nwhere source = 'DPS'\ngroup by month, location",
       "schema": {
         "field": [
           {
