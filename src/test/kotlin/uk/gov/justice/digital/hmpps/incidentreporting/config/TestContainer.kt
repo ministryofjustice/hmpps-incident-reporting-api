@@ -6,7 +6,7 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import java.io.IOException
 import java.net.ServerSocket
 
-abstract class Testcontainer<InstanceType>(
+abstract class TestContainer<InstanceType>(
   val containerName: String,
   val exposedPort: Int,
 ) {

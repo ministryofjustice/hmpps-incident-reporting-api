@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.incidentreporting.integration
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
-import uk.gov.justice.digital.hmpps.incidentreporting.config.PostgresTestcontainer
+import uk.gov.justice.digital.hmpps.incidentreporting.config.PostgresTestContainer
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
@@ -23,13 +23,13 @@ abstract class IntegrationTestBase {
     val now: LocalDateTime = LocalDateTime.now(clock)
     val today: LocalDate = now.toLocalDate()
 
-    private val postgresInstance = PostgresTestcontainer.instance
+    private val postgresInstance = PostgresTestContainer.instance
 
     @Suppress("unused")
     @JvmStatic
     @DynamicPropertySource
     fun postgresProperties(registry: DynamicPropertyRegistry) {
-      postgresInstance?.let { PostgresTestcontainer.setupProperties(postgresInstance, registry) }
+      postgresInstance?.let { PostgresTestContainer.setupProperties(postgresInstance, registry) }
     }
   }
 
