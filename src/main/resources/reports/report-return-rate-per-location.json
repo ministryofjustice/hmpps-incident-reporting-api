@@ -240,21 +240,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "types",
-      "name": "Incident Types",
-      "datasource": "replicaDataSource",
-      "query": "select distinct(description) from constant_type",
-      "schema": {
-        "field": [
-          {
-            "name": "description",
-            "display": "Type description",
-            "type": "string"
-          }
-        ]
-      }
     }
   ],
   "report": [
@@ -469,17 +454,7 @@
             "display": "Incident type",
             "sortable": true,
             "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "description",
-                "display": "Incident type"
-              }
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:all_reports",
@@ -567,17 +542,7 @@
             "display": "Incident type",
             "sortable": true,
             "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "multiselect",
-              "dynamicoptions": {
-                "maximumOptions": 60,
-                "returnAsStaticOptions": true,
-                "dataset": "types",
-                "name": "description",
-                "display": "Incident type"
-              }
-            }
+            "defaultsort": false
           },
           {
             "name": "$ref:all_reports",
