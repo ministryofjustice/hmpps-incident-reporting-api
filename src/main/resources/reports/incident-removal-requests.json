@@ -1,0 +1,182 @@
+{
+  "id": "incident-removal-requests",
+  "name": "Removal request counts",
+  "description": "Counts of removal requests made by reporting officers for whole prison estate.",
+  "metadata": {
+    "author": "Josh Jones",
+    "version": "1.0.0",
+    "owner": "Managing Safety"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "replicaDataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+      "id": "access",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "match": [
+                "${role}",
+                "INCIDENT_REPORTS__ADMIN"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "whole-estate-per-week",
+      "name": "Whole estate / week",
+      "datasource": "replicaDataSource",
+      "query": "select Cast(Date_trunc('week', correction_requested_at) AS DATE) as week, to_char(min(correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(correction_requested_at), 'DD/MM/YYYY') as max_date, count(id) as number_of_removal_requests\nfrom correction_request\nwhere user_action in ('REQUEST_DUPLICATE', 'REQUEST_NOT_REPORTABLE')\ngroup by week",
+      "schema": {
+        "field": [
+          {
+            "name": "week",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "number_of_removal_requests",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "id": "whole-estate-per-month",
+      "name": "Whole estate / month",
+      "datasource": "replicaDataSource",
+      "query": "select Cast(Date_trunc('month', correction_requested_at) AS DATE) as month, to_char(min(correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(correction_requested_at), 'DD/MM/YYYY') as max_date, count(id) as number_of_removal_requests\nfrom correction_request\nwhere user_action in ('REQUEST_DUPLICATE', 'REQUEST_NOT_REPORTABLE')\ngroup by month",
+      "schema": {
+        "field": [
+          {
+            "name": "month",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "number_of_removal_requests",
+            "type": "long"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "whole-estate-per-week",
+      "name": "Whole estate / week",
+      "description": "Count of removal requests made by reporting officers for the whole estate per week",
+      "version": "1.0.0",
+      "dataset": "$ref:whole-estate-per-week",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:week",
+            "display": "Week starting date",
+            "formula": "format_date(${week}, 'dd-MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:number_of_removal_requests",
+            "display": "Number of removal requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:whole-estate-per-week"
+      }]
+    },
+    {
+      "id": "whole-estate-per-month",
+      "name": "Whole estate / month",
+      "description": "Count of removal requests made by reporting officers for the whole estate per month.",
+      "version": "1.0.0",
+      "dataset": "$ref:whole-estate-per-month",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:month",
+            "display": "Month of incident",
+            "formula": "format_date(${month}, 'MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:number_of_removal_requests",
+            "display": "Number of removal requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:whole-estate-per-month"
+      }]
+    }
+  ]
+}
