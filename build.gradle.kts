@@ -22,8 +22,8 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-validation")
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.2")
-  implementation("io.opentelemetry:opentelemetry-api:1.56.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.3")
+  implementation("io.opentelemetry:opentelemetry-api:1.57.0")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.22.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.8.3")
 
@@ -33,7 +33,7 @@ dependencies {
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
 
-  implementation("com.fasterxml.uuid:java-uuid-generator:5.1.1")
+  implementation("com.fasterxml.uuid:java-uuid-generator:5.2.0")
 
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
