@@ -6,8 +6,8 @@ import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.2.0"
-  kotlin("plugin.jpa") version "2.2.21"
-  kotlin("plugin.spring") version "2.2.21"
+  kotlin("plugin.jpa") version "2.3.0"
+  kotlin("plugin.spring") version "2.3.0"
   idea
   id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
@@ -24,8 +24,8 @@ dependencies {
 
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.3")
   implementation("io.opentelemetry:opentelemetry-api:1.57.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.22.0")
-  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.8.3")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.23.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.8.7")
 
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
@@ -50,8 +50,8 @@ dependencies {
   testImplementation("io.swagger.core.v3:swagger-core-jakarta:2.2.41")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
-  testImplementation("org.testcontainers:testcontainers-localstack:2.0.2")
-  testImplementation("org.testcontainers:testcontainers-postgresql:2.0.2")
+  testImplementation("org.testcontainers:testcontainers-localstack:2.0.3")
+  testImplementation("org.testcontainers:testcontainers-postgresql:2.0.3")
 }
 
 kotlin {
