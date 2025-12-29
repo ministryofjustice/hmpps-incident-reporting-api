@@ -1,10 +1,10 @@
 {
   "id": "incident-report-pecs",
-  "name": "Prisoner Escort and Custody Service (PECS) incident reports",
-  "description": "List of PECS incidents by dates, types, status and locations.",
+  "name": "All incident reports (including PECS)",
+  "description": "List of incidents by dates, types, status and locations including PECS incidents.",
   "metadata": {
     "author": "Michael Willis",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "owner": "Managing Safety"
   },
   "datasource": [
@@ -36,9 +36,9 @@
   "dataset": [
     {
       "id": "summary",
-      "name": "PECS incident report summary",
+      "name": "All incident reports (including PECS) summary",
       "datasource": "replicaDataSource",
-      "query": "SELECT id, report_reference, ctf.code as type, ctf.description as type_description, status, cs.description as status_description, incident_date_and_time, reported_at, reported_by, title, r.description, location, (case when location = 'NORTH' then 'PECS Gen4 - North' when location ='SOUTH' then 'PECS Gen4 - South' end) as pecs_region,  modified_at\nFROM report r join constant_status cs on r.status = cs.code join constant_type ct on r.type = ct.code join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE') AND location IN ('NORTH', 'SOUTH')",
+      "query": "SELECT id,\n       report_reference,\n       ctf.code                    as type,\n       ctf.description             as type_description,\n       status,\n       cs.description              as status_description,\n       incident_date_and_time,\n       reported_at,\n       reported_by,\n       title,\n       r.description,\n       location,\n       modified_at,\n       (select STRING_AGG(prisoner_number || ' (' || cr.description || ')', ',')\n        from prisoner_involvement pi\n               join constant_prisoner_role cr on pi.prisoner_role = cr.code\n        where pi.report_id = r.id) as prisoners_involved,\n       (case\n          when location in ('NORTH', 'SOUTH') then 'PECS'\n          else 'Prison' end)       as pecs_or_prison_type\nFROM report r\n       join constant_status cs on r.status = cs.code\n       join constant_type ct on r.type = ct.code\n       join constant_type_family ctf on ctf.code = ct.family_code\nWHERE status NOT IN ('DUPLICATE', 'NOT_REPORTABLE')",
       "schema": {
         "field": [
           {
@@ -70,19 +70,19 @@
             "type": "datetime"
           },
           {
-            "name": "pecs_region",
-            "type": "string"
-          },
-          {
-            "name": "location",
+            "name": "pecs_or_prison_type",
             "type": "string",
             "filter": {
               "type": "multiselect",
               "staticoptions": [
-                {"name": "NORTH","display": "PECS Gen4 - North"},
-                {"name": "SOUTH","display": "PECS Gen4 - South"}
+                {"name": "Prison","display": "Prisons"},
+                {"name": "PECS","display": "PECS"}
               ]
             }
+          },
+          {
+            "name": "location",
+            "type": "string"
           },
           {
             "name": "reported_at",
@@ -103,6 +103,10 @@
           {
             "name": "modified_at",
             "type": "datetime"
+          },
+          {
+            "name": "prisoners_involved",
+            "type": "string"
           }
         ]
       }
@@ -151,8 +155,8 @@
   "report": [
     {
       "id": "summary",
-      "name": "PECS incident report",
-      "description": "List of all PECS incidents filtered by dates, types, status and locations.",
+      "name": "All incident reports",
+      "description": "List of all incidents filtered by dates, types, status and locations.",
       "version": "1.0.0",
       "dataset": "$ref:summary",
       "policy": [],
@@ -174,17 +178,17 @@
             "defaultsort": false
           },
           {
-            "name": "$ref:pecs_region",
-            "display": "PECS Region",
-            "sortable": true,
-            "visible": "true",
+            "name": "$ref:pecs_or_prison_type",
+            "display": "PECS/Prison",
+            "sortable": false,
+            "visible": "false",
             "defaultsort": false
           },
           {
             "name": "$ref:location",
-            "display": "PECS Code",
+            "display": "Location of incident",
             "sortable": false,
-            "visible": "false",
+            "visible": "true",
             "defaultsort": false
           },
           {
@@ -249,7 +253,7 @@
             "filter": {
               "mandatory": false,
               "type": "daterange",
-              "default": "today(-12,months) - today()"
+              "default": "today(-1,months) - today()"
             }
           },
           {
@@ -272,7 +276,7 @@
             "name": "$ref:description",
             "display": "Incident description",
             "sortable": false,
-            "visible": "true",
+            "visible": "false",
             "defaultsort": false,
             "wordwrap": "break-words"
           },
@@ -294,15 +298,17 @@
             "sortable": true,
             "visible": "false",
             "defaultsort": false
+          },
+          {
+            "name": "$ref:prisoners_involved",
+            "display": "Prisoners involved",
+            "sortable": false,
+            "visible": "true",
+            "defaultsort": false
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:summary"
-      }]
+      "destination": []
     }
   ]
 }

@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(17)
+          .expectBody().jsonPath("$.length()").isEqualTo(16)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -106,7 +106,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(17)
+          .expectBody().jsonPath("$.length()").isEqualTo(16)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -120,7 +120,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(17)
+          .jsonPath("$.length()").isEqualTo(16)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -319,11 +319,11 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
               location = "NORTH",
               reportTime = now,
               generateStaffInvolvement = 3,
-              generatePrisonerInvolvement = 2,
+              generatePrisonerInvolvement = 1,
             ),
           )
 
-          webTestClient.get().uri(url)
+          webTestClient.get().uri("$url?filters.pecs_or_prison_type=PECS")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -346,7 +346,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
                   "title": "${pecsReport.title}",
                   "description": "${pecsReport.description}",
                   "location": "${pecsReport.location}",
-                  "pecs_region": "PECS Gen4 - North",
+                  "pecs_or_prison_type": "PECS",
+                  "prisoners_involved": "${pecsReport.prisonersInvolved.first.prisonerNumber} (${pecsReport.prisonersInvolved.first.prisonerRole.description})",
                   "modified_at": "05/12/2023 12:34"
                 }
               ]
