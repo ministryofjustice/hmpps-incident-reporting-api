@@ -63,7 +63,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
 
     manageUsersMockServer.stubLookupUsersRoles(
       "request-user",
-      listOf("INCIDENT_REPORTS__RW", "INCIDENT_REPORTS__ADMIN"),
+      listOf("INCIDENT_REPORTS__RW", "INCIDENT_REPORTS__STATS"),
     )
     manageUsersMockServer.stubLookupUserCaseload("request-user", "LEI", listOf("MDI"))
   }
