@@ -23,13 +23,13 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-validation")
 
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.3")
-  implementation("io.opentelemetry:opentelemetry-api:1.57.0")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.23.0")
+  implementation("io.opentelemetry:opentelemetry-api:1.58.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.24.0")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:9.8.7")
 
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.8")
+  runtimeOnly("org.postgresql:postgresql:42.7.9")
 
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15")
 
