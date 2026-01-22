@@ -25,7 +25,7 @@
             {
               "match": [
                 "${role}",
-                "INCIDENT_REPORTS__ADMIN"
+                "INCIDENT_REPORTS__STATS"
               ]
             }
           ]
