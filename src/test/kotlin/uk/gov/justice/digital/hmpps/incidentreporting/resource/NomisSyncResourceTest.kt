@@ -7,14 +7,10 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpStatus
 import org.springframework.test.json.JsonAssert
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
@@ -35,22 +31,13 @@ import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.Report
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
-import java.time.Clock
 import java.util.UUID
 
 /** NOMIS incident number maps to a report’s reference */
 private const val NOMIS_INCIDENT_NUMBER: Long = 112414323
 
 @DisplayName("NOMIS sync resource")
-@Transactional
 class NomisSyncResourceTest : SqsIntegrationTestBase() {
-
-  @TestConfiguration
-  class FixedClockConfig {
-    @Primary
-    @Bean
-    fun fixedClock(): Clock = clock
-  }
 
   @Autowired
   lateinit var reportRepository: ReportRepository
@@ -460,7 +447,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails(includeHistory = true)
+            val report = reportRepository.findOneEagerlyWithHistoryById(
+              reportId,
+            )!!.toDtoWithDetails(includeHistory = true)
             val reportJson = report.toJson()
             JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
               // language=json
@@ -786,7 +775,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
+            val report = reportRepository.findOneEagerlyWithHistoryById(reportId)!!.toDtoWithDetails()
             val reportJson = report.toJson()
             JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
               // language=json
@@ -838,7 +827,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails(includeHistory = true)
+            val report = reportRepository.findOneEagerlyWithHistoryById(
+              reportId,
+            )!!.toDtoWithDetails(includeHistory = true)
             val reportJson = report.toJson()
             JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
               // language=json
@@ -1393,7 +1384,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails(includeHistory = true)
+            val report = reportRepository.findOneEagerlyWithHistoryById(
+              reportId,
+            )!!.toDtoWithDetails(includeHistory = true)
             val reportJson = report.toJson()
             JsonAssert.comparator(JsonCompareMode.STRICT).assertIsMatch(
               // language=json
