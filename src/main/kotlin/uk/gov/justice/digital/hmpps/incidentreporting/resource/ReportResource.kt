@@ -122,7 +122,6 @@ class ReportResource(
       description = "Filter by given information source",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       example = "DPS",
       implementation = InformationSource::class,
     )
@@ -234,7 +233,6 @@ class ReportResource(
         arraySchema = Schema(
           requiredMode = Schema.RequiredMode.NOT_REQUIRED,
           nullable = true,
-          defaultValue = "null",
         ),
       ),
     )
@@ -348,7 +346,7 @@ class ReportResource(
       description = "Include history",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     )
-    @RequestParam("includeHistory", required = false, defaultValue = "false")
+    @RequestParam("includeHistory", required = false)
     includeHistory: Boolean = false,
   ): ReportWithDetails {
     return reportService.getReportWithDetailsById(id = id, includeHistory = includeHistory)
@@ -436,7 +434,7 @@ class ReportResource(
       description = "Include history",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     )
-    @RequestParam("includeHistory", required = false, defaultValue = "false")
+    @RequestParam("includeHistory", required = false)
     includeHistory: Boolean = false,
   ): ReportWithDetails {
     return reportService.getReportWithDetailsByReference(reportReference, includeHistory)

@@ -75,7 +75,6 @@ data class UpdateReportRequest(
     description = "ID of the original report of which this report is a duplicate of",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
-    defaultValue = "null",
   )
   val duplicatedReportId: Optional<UUID>? = null,
 ) {
