@@ -26,9 +26,9 @@ class OpenApiConfiguration(
       ),
     )
     .info(
-      Info().title("Locations Inside Prison API")
+      Info().title("Incident Reporting API")
         .version(version)
-        .description("API for viewing and managing locations inside a prison")
+        .description("API for viewing and managing incident reports")
         .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk")),
     )
     .tags(
