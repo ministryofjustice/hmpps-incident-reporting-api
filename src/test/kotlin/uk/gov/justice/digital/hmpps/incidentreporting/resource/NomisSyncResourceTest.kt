@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.json.JsonAssert
 import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisCode
@@ -38,7 +37,6 @@ import java.util.UUID
 private const val NOMIS_INCIDENT_NUMBER: Long = 112414323
 
 @DisplayName("NOMIS sync resource")
-@Transactional
 class NomisSyncResourceTest : SqsIntegrationTestBase() {
 
   @Autowired
@@ -449,7 +447,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails(includeHistory = true)
+            val report = reportRepository.findOneEagerlyWithHistoryById(
+              reportId,
+            )!!.toDtoWithDetails(includeHistory = true)
             val reportJson = report.toJson()
             JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
               // language=json
@@ -775,7 +775,7 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails()
+            val report = reportRepository.findOneEagerlyWithHistoryById(reportId)!!.toDtoWithDetails()
             val reportJson = report.toJson()
             JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
               // language=json
@@ -827,7 +827,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isCreated
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails(includeHistory = true)
+            val report = reportRepository.findOneEagerlyWithHistoryById(
+              reportId,
+            )!!.toDtoWithDetails(includeHistory = true)
             val reportJson = report.toJson()
             JsonAssert.comparator(JsonCompareMode.LENIENT).assertIsMatch(
               // language=json
@@ -1382,7 +1384,9 @@ class NomisSyncResourceTest : SqsIntegrationTestBase() {
           .expectStatus().isOk
           .expectBody().jsonPath("id").value<String> {
             val reportId = UUID.fromString(it)
-            val report = reportRepository.findOneEagerlyById(reportId)!!.toDtoWithDetails(includeHistory = true)
+            val report = reportRepository.findOneEagerlyWithHistoryById(
+              reportId,
+            )!!.toDtoWithDetails(includeHistory = true)
             val reportJson = report.toJson()
             JsonAssert.comparator(JsonCompareMode.STRICT).assertIsMatch(
               // language=json

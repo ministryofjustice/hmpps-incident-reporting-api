@@ -16,7 +16,6 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.prisonersearch.Prisoner
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
@@ -29,7 +28,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @DisplayName("Prisoner merging and booking moving")
-@Transactional
 class PrisonerMergeTest : SqsIntegrationTestBase() {
   private val reportRepository: ReportRepository = mock()
   private val reportRepositoryCustom: ReportRepositoryCustom = mock()
