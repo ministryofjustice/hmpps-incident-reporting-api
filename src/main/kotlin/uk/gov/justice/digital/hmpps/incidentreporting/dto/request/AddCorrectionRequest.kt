@@ -24,7 +24,6 @@ data class AddCorrectionRequest(
     description = "Action taken by the user on the report",
     requiredMode = Schema.RequiredMode.REQUIRED,
     nullable = true,
-    defaultValue = "null",
   )
   val userAction: UserAction? = null,
   @param:Schema(
@@ -41,7 +40,6 @@ data class AddCorrectionRequest(
     description = "Type of user that submitted this action on the report",
     requiredMode = Schema.RequiredMode.REQUIRED,
     nullable = true,
-    defaultValue = "null",
   )
   val userType: UserType? = null,
 )
