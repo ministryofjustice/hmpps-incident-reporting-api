@@ -1,6 +1,8 @@
 ALTER TABLE constant_type_family ALTER COLUMN description TYPE varchar(255);
 ALTER TABLE constant_type ALTER COLUMN description TYPE varchar(255);
 
+UPDATE constant_type_family set sequence = 2 where code = 'ATTEMPTED_ESCAPE_FROM_PRISON';
+
 UPDATE constant_type_family
   set sequence = sequence +8
 WHERE sequence >= 5;
