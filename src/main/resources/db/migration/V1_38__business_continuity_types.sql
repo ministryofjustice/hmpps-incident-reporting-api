@@ -2,7 +2,7 @@ ALTER TABLE constant_type_family ALTER COLUMN description TYPE varchar(255);
 ALTER TABLE constant_type ALTER COLUMN description TYPE varchar(255);
 
 UPDATE constant_type_family
-  set sequence = sequence +1
+  set sequence = sequence +8
 WHERE sequence >= 5;
 
 -- add new type
@@ -17,7 +17,7 @@ values (5,  'BC_DISRUPT_3RD_PTY', 'Disruption to 3rd party supplier - Business C
        (12, 'BC_WIDESPREAD_ILLNESS', 'Widespread illness - Business Continuity');
 
 UPDATE constant_type
-set sequence = sequence +1
+set sequence = sequence +8
 WHERE sequence >= 9;
 
 insert into constant_type(sequence, code, description, family_code, active)
