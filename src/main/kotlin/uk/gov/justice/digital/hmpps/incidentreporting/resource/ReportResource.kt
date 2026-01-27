@@ -90,7 +90,6 @@ class ReportResource(
       description = "Filter by given human-readable report reference",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       type = "string",
       pattern = "^\\d+$",
       example = "\"11124143\"",
@@ -199,7 +198,6 @@ class ReportResource(
       description = "Filter for incidents reported by username",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       example = "abc12a",
     )
     @RequestParam(required = false)
@@ -209,7 +207,6 @@ class ReportResource(
       description = "Filter for incidents involving staff identified by username",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       example = "abc12a",
     )
     @RequestParam(required = false)
@@ -219,7 +216,6 @@ class ReportResource(
       description = "Filter for incidents involving prisoners identified by prisoner number",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       example = "A1234AA",
     )
     @RequestParam(required = false)
