@@ -1353,5 +1353,36 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         }
       }
     }
+
+    @DisplayName("GET /reports/response-durations")
+    @Nested
+    inner class RunResponseDurationsReports {
+      private val url = "/reports/response-durations"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("per month")
+        @TestFactory
+        fun responseDurationsByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/per-month"),
+          systemRole,
+        )
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns response duration stats per month`() {
+          webTestClient.get().uri("$url/per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+      }
+    }
   }
 }
