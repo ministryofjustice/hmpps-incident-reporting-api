@@ -84,7 +84,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(16)
+          .expectBody().jsonPath("$.length()").isEqualTo(18)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(16)
+          .expectBody().jsonPath("$.length()").isEqualTo(18)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -109,7 +109,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(16)
+          .jsonPath("$.length()").isEqualTo(18)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -1315,6 +1315,68 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         @Test
         fun `returns reopened report counts for locations by month`() {
           webTestClient.get().uri(url + "/by-location-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+      }
+    }
+
+    @DisplayName("GET /reports/report-submission")
+    @Nested
+    inner class RunReportSubmissionReports {
+      private val url = "/reports/report-submission"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("per month")
+        @TestFactory
+        fun reportSubmissionByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/per-month"),
+          systemRole,
+        )
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns report submission stats per month`() {
+          webTestClient.get().uri("$url/per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+      }
+    }
+
+    @DisplayName("GET /reports/response-durations")
+    @Nested
+    inner class RunResponseDurationsReports {
+      private val url = "/reports/response-durations"
+
+      @DisplayName("is secured")
+      @Nested
+      inner class Security {
+        @DisplayName("per month")
+        @TestFactory
+        fun responseDurationsByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/per-month"),
+          systemRole,
+        )
+      }
+
+      @DisplayName("works")
+      @Nested
+      inner class HappyPath {
+
+        @Test
+        fun `returns response duration stats per month`() {
+          webTestClient.get().uri("$url/per-month")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
