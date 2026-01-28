@@ -103,7 +103,7 @@ management:
 dpr:
   lib:
     definition:
-      locations: "reports/incident-report.json, reports/incident-report-v2.json, reports/incident-report-pecs.json, reports/incident-summary-prisoner.json, reports/incident-count.json, reports/incident-with-people.json, reports/incident-count-by-prisoner.json, reports/incident-type-detail.json, reports/dw-actions.json, reports/report-return-rate.json, reports/report-return-rate-per-location.json, reports/incident-count-in-dps.json, reports/incident-removal-requests.json, reports/incident-removal-requests-per-location.json, reports/incident-reopened-count.json, reports/incident-reopened-count-per-location.json"
+      locations: "reports/incident-report.json, reports/incident-report-v2.json, reports/incident-report-pecs.json, reports/incident-summary-prisoner.json, reports/incident-count.json, reports/incident-with-people.json, reports/incident-count-by-prisoner.json, reports/incident-type-detail.json, reports/dw-actions.json, reports/report-return-rate.json, reports/report-return-rate-per-location.json, reports/incident-count-in-dps.json, reports/incident-removal-requests.json, reports/incident-removal-requests-per-location.json, reports/incident-reopened-count.json, reports/incident-reopened-count-per-location.json, reports/report-submission.json"
     system:
       role: DPR_API_ACCESS
   report:
