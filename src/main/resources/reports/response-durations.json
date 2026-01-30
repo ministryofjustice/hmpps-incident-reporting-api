@@ -55,7 +55,7 @@
           },
           {
             "name": "location",
-            "type": "text"
+            "type": "string"
           },
           {
             "name": "dw_resp_time_days",
@@ -133,12 +133,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:per-month"
-      }]
+      "destination": []
     }
   ]
 }
