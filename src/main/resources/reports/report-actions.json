@@ -181,6 +181,162 @@
           }
         ]
       }
+    },
+    {
+      "id": "whole-estate-per-type-per-week",
+      "name": "Whole estate per type / week",
+      "datasource": "replicaDataSource",
+      "query": "select Cast(Date_trunc('week', cr.correction_requested_at) AS DATE) as week, to_char(min(cr.correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(cr.correction_requested_at), 'DD/MM/YYYY') as max_date, \n\tct.description as incident_type,\n\tcount(DISTINCT(cr.report_id)) as num_reports,\n\tcount(cr.id) as total_actions,\n\tROUND(CAST(count(cr.id) as numeric)/CAST(count(DISTINCT(cr.report_id)) as numeric),1) as avg_actions_per_report,\n\tcount(CASE WHEN user_action = 'REQUEST_REVIEW' THEN cr.id END) as num_req_review,\n\tcount(CASE WHEN user_action = 'REQUEST_DUPLICATE' THEN cr.id END) as num_req_dup,\n\tcount(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' THEN cr.id END) as num_req_nr,\n\tcount(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN cr.id END) as num_sent_back,\n\tcount(CASE WHEN user_action = 'HOLD' THEN cr.id END) as num_held,\n\tcount(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' THEN cr.id END) as num_recalled_ro,\n\tcount(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' THEN cr.id END) as num_recalled_dw,\n\tcount(CASE WHEN user_action = 'CLOSE' THEN cr.id END) as num_closed,\n\tcount(CASE WHEN user_action = 'MARK_DUPLICATE' THEN cr.id END) as num_mark_dup,\n\tcount(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN cr.id END) as num_mark_nr\nfrom correction_request as cr\nleft join (\nselect id, type, source from report\n) as r\non cr.report_id = r.id\nleft join (\n\tselect code, description\n\tfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by week, ct.description",
+      "schema": {
+        "field": [
+          {
+            "name": "week",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "incident_type",
+            "type": "string"
+          },
+          {
+            "name": "num_reports",
+            "type": "long"
+          },
+          {
+            "name": "total_actions",
+            "type": "long"
+          },
+          {
+            "name": "avg_actions_per_report",
+            "type": "float"
+          },
+          {
+            "name": "num_req_review",
+            "type": "long"
+          },
+          {
+            "name": "num_req_dup",
+            "type": "long"
+          },
+          {
+            "name": "num_req_nr",
+            "type": "long"
+          },
+          {
+            "name": "num_sent_back",
+            "type": "long"
+          },
+          {
+            "name": "num_held",
+            "type": "long"
+          },
+          {
+            "name": "num_recalled_ro",
+            "type": "long"
+          },
+          {
+            "name": "num_recalled_dw",
+            "type": "long"
+          },
+          {
+            "name": "num_closed",
+            "type": "long"
+          },
+          {
+            "name": "num_mark_dup",
+            "type": "long"
+          },
+          {
+            "name": "num_mark_nr",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "id": "whole-estate-per-type-per-month",
+      "name": "Whole estate per type / month",
+      "datasource": "replicaDataSource",
+      "query": "select Cast(Date_trunc('month', cr.correction_requested_at) AS DATE) as month, to_char(min(cr.correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(cr.correction_requested_at), 'DD/MM/YYYY') as max_date, \n\tct.description as incident_type,\n\tcount(DISTINCT(cr.report_id)) as num_reports,\n\tcount(cr.id) as total_actions,\n\tROUND(CAST(count(cr.id) as numeric)/CAST(count(DISTINCT(cr.report_id)) as numeric),1) as avg_actions_per_report,\n\tcount(CASE WHEN user_action = 'REQUEST_REVIEW' THEN cr.id END) as num_req_review,\n\tcount(CASE WHEN user_action = 'REQUEST_DUPLICATE' THEN cr.id END) as num_req_dup,\n\tcount(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' THEN cr.id END) as num_req_nr,\n\tcount(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN cr.id END) as num_sent_back,\n\tcount(CASE WHEN user_action = 'HOLD' THEN cr.id END) as num_held,\n\tcount(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' THEN cr.id END) as num_recalled_ro,\n\tcount(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' THEN cr.id END) as num_recalled_dw,\n\tcount(CASE WHEN user_action = 'CLOSE' THEN cr.id END) as num_closed,\n\tcount(CASE WHEN user_action = 'MARK_DUPLICATE' THEN cr.id END) as num_mark_dup,\n\tcount(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN cr.id END) as num_mark_nr\nfrom correction_request as cr\nleft join (\nselect id, type, source from report\n) as r\non cr.report_id = r.id\nleft join (\n\tselect code, description\n\tfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by month, ct.description",
+      "schema": {
+        "field": [
+          {
+            "name": "month",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "incident_type",
+            "type": "string"
+          },
+          {
+            "name": "num_reports",
+            "type": "long"
+          },
+          {
+            "name": "total_actions",
+            "type": "long"
+          },
+          {
+            "name": "avg_actions_per_report",
+            "type": "float"
+          },
+          {
+            "name": "num_req_review",
+            "type": "long"
+          },
+          {
+            "name": "num_req_dup",
+            "type": "long"
+          },
+          {
+            "name": "num_req_nr",
+            "type": "long"
+          },
+          {
+            "name": "num_sent_back",
+            "type": "long"
+          },
+          {
+            "name": "num_held",
+            "type": "long"
+          },
+          {
+            "name": "num_recalled_ro",
+            "type": "long"
+          },
+          {
+            "name": "num_recalled_dw",
+            "type": "long"
+          },
+          {
+            "name": "num_closed",
+            "type": "long"
+          },
+          {
+            "name": "num_mark_dup",
+            "type": "long"
+          },
+          {
+            "name": "num_mark_nr",
+            "type": "long"
+          }
+        ]
+      }
     }
   ],
   "report": [
@@ -441,6 +597,268 @@
         "template": "page-header",
         "dataset": "$ref:whole-estate-per-month"
       }]
+    },
+    {
+      "id": "whole-estate-per-type-per-week",
+      "name": "Whole estate per type / week",
+      "description": "Counts of all user actions for the whole estate per type per week",
+      "version": "1.0.0",
+      "dataset": "$ref:whole-estate-per-type-per-week",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:week",
+            "display": "Week starting date",
+            "formula": "format_date(${week}, 'dd-MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:incident_type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_reports",
+            "display": "Reports actioned",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:total_actions",
+            "display": "Total actions",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:avg_actions_per_report",
+            "display": "Average actions/report",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_review",
+            "display": "Reviews requested",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_dup",
+            "display": "Duplicate requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_nr",
+            "display": "Not reportable requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_sent_back",
+            "display": "Sent back",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_held",
+            "display": "Reports held",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_recalled_ro",
+            "display": "Recalled by RO",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_recalled_dw",
+            "display": "Recalled by DW",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_closed",
+            "display": "Closed",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_mark_dup",
+            "display": "Marked as duplicate",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_mark_nr",
+            "display": "Marked as not reportable",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": []
+    },
+    {
+      "id": "whole-estate-per-type-per-month",
+      "name": "Whole estate per type / month",
+      "description": "Counts of all user actions for the whole estate per type per month.",
+      "version": "1.0.0",
+      "dataset": "$ref:whole-estate-per-type-per-month",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:month",
+            "display": "Month of incident",
+            "formula": "format_date(${month}, 'MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:incident_type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_reports",
+            "display": "Reports actioned",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:total_actions",
+            "display": "Total actions",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:avg_actions_per_report",
+            "display": "Average actions/report",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_review",
+            "display": "Reviews requested",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_dup",
+            "display": "Duplicate requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_nr",
+            "display": "Not reportable requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_sent_back",
+            "display": "Sent back",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_held",
+            "display": "Reports held",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_recalled_ro",
+            "display": "Recalled by RO",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_recalled_dw",
+            "display": "Recalled by DW",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_closed",
+            "display": "Closed",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_mark_dup",
+            "display": "Marked as duplicate",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_mark_nr",
+            "display": "Marked as not reportable",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": []
     }
   ]
 }

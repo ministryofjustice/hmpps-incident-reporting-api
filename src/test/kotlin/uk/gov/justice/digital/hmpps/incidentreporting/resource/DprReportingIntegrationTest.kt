@@ -1158,6 +1158,20 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           webTestClient.get().uri("$url/whole-estate-per-month"),
           systemRole,
         )
+
+        @DisplayName("whole estate per type per month")
+        @TestFactory
+        fun reportActionsWholeEstateByMonthPerTypeEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/whole-estate-per-type-per-week"),
+          systemRole,
+        )
+
+        @DisplayName("whole estate per type per year")
+        @TestFactory
+        fun reportActionsWholeEstateByYearPerTypeEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/whole-estate-per-type-per-month"),
+          systemRole,
+        )
       }
 
       @DisplayName("works")
@@ -1175,6 +1189,24 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         @Test
         fun `returns report actions counts for whole estate by month`() {
           webTestClient.get().uri(url + "/whole-estate-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns report actions counts for whole estate per type by week`() {
+          webTestClient.get().uri("$url/whole-estate-per-type-per-week")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns report actions counts for whole estate per type by month`() {
+          webTestClient.get().uri(url + "/whole-estate-per-type-per-month")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -1204,6 +1236,20 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           webTestClient.get().uri("$url/by-location-per-month"),
           systemRole,
         )
+
+        @DisplayName("by location per type per week")
+        @TestFactory
+        fun reportActionsLocationPerTypeByWeekEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-location-per-type-per-week"),
+          systemRole,
+        )
+
+        @DisplayName("by location per type per month")
+        @TestFactory
+        fun reportActionsLocationPerTypeByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/by-location-per-type-per-month"),
+          systemRole,
+        )
       }
 
       @DisplayName("works")
@@ -1222,6 +1268,24 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         @Test
         fun `returns report actions counts for locations by month`() {
           webTestClient.get().uri(url + "/by-location-per-month")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns report actions counts for locations per type by week`() {
+          webTestClient.get().uri("$url/by-location-per-type-per-week")
+            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
+            .header("Content-Type", "application/json")
+            .exchange()
+            .expectStatus().isOk
+        }
+
+        @Test
+        fun `returns report actions counts for locations per type by month`() {
+          webTestClient.get().uri(url + "/by-location-per-type-per-month")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
