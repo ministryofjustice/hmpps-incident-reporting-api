@@ -9,12 +9,16 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpHeaders
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.reactive.server.WebTestClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
@@ -28,15 +32,23 @@ import uk.gov.justice.digital.hmpps.incidentreporting.service.HMPPSMessage
 import uk.gov.justice.digital.hmpps.incidentreporting.service.WhatChanged
 import uk.gov.justice.hmpps.sqs.HmppsQueue
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
-import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
-import uk.gov.justice.hmpps.sqs.MissingQueueException
-import uk.gov.justice.hmpps.sqs.MissingTopicException
 import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
 import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
+import java.time.Clock
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@AutoConfigureWebTestClient
+@AutoConfigureJson
 class SqsIntegrationTestBase : IntegrationTestBase() {
+
+  @MockitoBean
+  private lateinit var clock: Clock
+
+  @BeforeEach
+  fun setupClock() {
+    whenever(clock.instant()).thenReturn(IntegrationTestBase.clock.instant())
+    whenever(clock.zone).thenReturn(IntegrationTestBase.clock.zone)
+  }
 
   companion object {
     private val localstackInstance = LocalStackTestContainer.instance
@@ -92,18 +104,8 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   @Autowired
   private lateinit var hmppsQueueService: HmppsQueueService
 
-  protected val domainEventsTopic by lazy {
-    hmppsQueueService.findByTopicId("domainevents")
-      ?: throw MissingQueueException("HmppsTopic domainevents not found")
-  }
-  protected val domainEventsTopicSnsClient by lazy { domainEventsTopic.snsClient }
-  protected val domainEventsTopicArn by lazy { domainEventsTopic.arn }
-
   protected val auditQueue by lazy { hmppsQueueService.findByQueueId("audit") as HmppsQueue }
   protected val testDomainEventQueue by lazy { hmppsQueueService.findByQueueId("test") as HmppsQueue }
-
-  fun HmppsSqsProperties.domaineventsTopicConfig() = topics["domainevents"]
-    ?: throw MissingTopicException("domainevents has not been loaded from configuration properties")
 
   @BeforeEach
   fun cleanQueue() {
@@ -117,18 +119,6 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
 
   fun getNumberOfMessagesCurrentlyOnSubscriptionQueue(): Int? =
     testDomainEventQueue.sqsClient.countMessagesOnQueue(testDomainEventQueue.queueUrl).get()
-
-  fun assertDomainEventSent(eventType: String): HMPPSDomainEvent {
-    val sqsClient = testDomainEventQueue.sqsClient
-    val request = ReceiveMessageRequest.builder().queueUrl(testDomainEventQueue.queueUrl).build()
-    val body = sqsClient.receiveMessage(request).get().messages()[0].body()
-    val (message, attributes) = objectMapper.readValue(body, HMPPSMessage::class.java)
-    assertThat(attributes.eventType.Value).isEqualTo(eventType)
-    val domainEvent = objectMapper.readValue(message, HMPPSDomainEvent::class.java)
-    assertThat(domainEvent.eventType).isEqualTo(eventType)
-
-    return domainEvent
-  }
 
   fun assertThatNoDomainEventsWereSent() {
     assertThat(getNumberOfMessagesCurrentlyOnSubscriptionQueue()).isZero
@@ -191,7 +181,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     add(
       DynamicTest.dynamicTest("access forbidden with no authority") {
         request
-          .header(HttpHeaders.AUTHORIZATION, null)
+          .header(HttpHeaders.AUTHORIZATION)
           .exchange()
           .expectStatus().isUnauthorized
       },

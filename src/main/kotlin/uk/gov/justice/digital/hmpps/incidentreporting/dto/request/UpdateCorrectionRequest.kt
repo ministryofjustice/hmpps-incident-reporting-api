@@ -40,7 +40,6 @@ data class UpdateCorrectionRequest(
     description = "Reference number of the original report of which this report is a duplicate of",
     requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     nullable = true,
-    defaultValue = "null",
     minLength = 1,
     maxLength = 25,
   )
@@ -52,7 +51,6 @@ data class UpdateCorrectionRequest(
     description = "Type of user that submitted this action on the report",
     requiredMode = Schema.RequiredMode.REQUIRED,
     nullable = true,
-    defaultValue = "null",
   )
   val userType: Optional<UserType>? = null,
 ) {

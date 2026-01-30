@@ -90,7 +90,6 @@ class ReportResource(
       description = "Filter by given human-readable report reference",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       type = "string",
       pattern = "^\\d+$",
       example = "\"11124143\"",
@@ -122,7 +121,6 @@ class ReportResource(
       description = "Filter by given information source",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       example = "DPS",
       implementation = InformationSource::class,
     )
@@ -200,7 +198,6 @@ class ReportResource(
       description = "Filter for incidents reported by username",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       example = "abc12a",
     )
     @RequestParam(required = false)
@@ -210,7 +207,6 @@ class ReportResource(
       description = "Filter for incidents involving staff identified by username",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       example = "abc12a",
     )
     @RequestParam(required = false)
@@ -220,7 +216,6 @@ class ReportResource(
       description = "Filter for incidents involving prisoners identified by prisoner number",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
       nullable = true,
-      defaultValue = "null",
       example = "A1234AA",
     )
     @RequestParam(required = false)
@@ -234,7 +229,6 @@ class ReportResource(
         arraySchema = Schema(
           requiredMode = Schema.RequiredMode.NOT_REQUIRED,
           nullable = true,
-          defaultValue = "null",
         ),
       ),
     )
@@ -348,7 +342,7 @@ class ReportResource(
       description = "Include history",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     )
-    @RequestParam("includeHistory", required = false, defaultValue = "false")
+    @RequestParam("includeHistory", required = false)
     includeHistory: Boolean = false,
   ): ReportWithDetails {
     return reportService.getReportWithDetailsById(id = id, includeHistory = includeHistory)
@@ -436,7 +430,7 @@ class ReportResource(
       description = "Include history",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
     )
-    @RequestParam("includeHistory", required = false, defaultValue = "false")
+    @RequestParam("includeHistory", required = false)
     includeHistory: Boolean = false,
   ): ReportWithDetails {
     return reportService.getReportWithDetailsByReference(reportReference, includeHistory)

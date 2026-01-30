@@ -20,6 +20,9 @@ interface ReportRepository :
   @EntityGraph(value = "Report.eager", type = EntityGraph.EntityGraphType.LOAD)
   fun findOneEagerlyById(id: UUID): Report?
 
+  @EntityGraph(value = "Report.eager.history", type = EntityGraph.EntityGraphType.LOAD)
+  fun findOneEagerlyWithHistoryById(id: UUID): Report?
+
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @QueryHints(value = [QueryHint(name = "jakarta.persistence.lock.timeout", value = "1000")])
   @Query(value = "SELECT r.id FROM Report r WHERE r.id = :id")
