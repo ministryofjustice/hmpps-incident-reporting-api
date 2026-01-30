@@ -1,0 +1,491 @@
+{
+  "id": "report-actions-per-location",
+  "name": "Report action counts by location",
+  "description": "Counts of all user actions by location.",
+  "metadata": {
+    "author": "Josh Jones",
+    "version": "1.0.0",
+    "owner": "Managing Safety"
+  },
+  "datasource": [
+    {
+      "id": "irs",
+      "name": "replicaDataSource",
+      "connection": "postgres"
+    }
+  ],
+  "policy": [
+    {
+      "id": "access",
+      "type": "access",
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "match": [
+                "${role}",
+                "INCIDENT_REPORTS__STATS"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "caseloads",
+      "type": "row-level",
+      "action": ["location IN (${caseloads})"],
+      "rule": [
+        {
+          "effect": "permit",
+          "condition": [
+            {
+              "exists": ["${caseloads}"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "dataset": [
+    {
+      "id": "by-location-per-week",
+      "name": "Location / week",
+      "datasource": "replicaDataSource",
+      "query": "select Cast(Date_trunc('week', cr.correction_requested_at) AS DATE) as week, to_char(min(cr.correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(cr.correction_requested_at), 'DD/MM/YYYY') as max_date, \n\tr.location, \n\tcount(DISTINCT(cr.report_id)) as num_reports,\n\tcount(cr.id) as total_actions,\n\tROUND(CAST(count(cr.id) as numeric)/CAST(count(DISTINCT(cr.report_id)) as numeric),1) as avg_actions_per_report,\n\tcount(CASE WHEN user_action = 'REQUEST_REVIEW' THEN cr.id END) as num_req_review,\n\tcount(CASE WHEN user_action = 'REQUEST_DUPLICATE' THEN cr.id END) as num_req_dup,\n\tcount(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' THEN cr.id END) as num_req_nr,\n\tcount(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN cr.id END) as num_sent_back,\n\tcount(CASE WHEN user_action = 'HOLD' THEN cr.id END) as num_held,\n\tcount(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' THEN cr.id END) as num_recalled_ro,\n\tcount(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' THEN cr.id END) as num_recalled_dw,\n\tcount(CASE WHEN user_action = 'CLOSE' THEN cr.id END) as num_closed,\n\tcount(CASE WHEN user_action = 'MARK_DUPLICATE' THEN cr.id END) as num_mark_dup,\n\tcount(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN cr.id END) as num_mark_nr\nfrom correction_request as cr\nleft join (\nselect location, id, source from report\n) as r\non cr.report_id = r.id\nwhere r.source = 'DPS'\ngroup by week, r.location",
+      "schema": {
+        "field": [
+          {
+            "name": "week",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "num_reports",
+            "type": "long"
+          },
+          {
+            "name": "total_actions",
+            "type": "long"
+          },
+          {
+            "name": "avg_actions_per_report",
+            "type": "float"
+          },
+          {
+            "name": "num_req_review",
+            "type": "long"
+          },
+          {
+            "name": "num_req_dup",
+            "type": "long"
+          },
+          {
+            "name": "num_req_nr",
+            "type": "long"
+          },
+          {
+            "name": "num_sent_back",
+            "type": "long"
+          },
+          {
+            "name": "num_held",
+            "type": "long"
+          },
+          {
+            "name": "num_recalled_ro",
+            "type": "long"
+          },
+          {
+            "name": "num_recalled_dw",
+            "type": "long"
+          },
+          {
+            "name": "num_closed",
+            "type": "long"
+          },
+          {
+            "name": "num_mark_dup",
+            "type": "long"
+          },
+          {
+            "name": "num_mark_nr",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "id": "by-location-per-month",
+      "name": "Location / month",
+      "datasource": "replicaDataSource",
+      "query": "select Cast(Date_trunc('month', cr.correction_requested_at) AS DATE) as month, to_char(min(cr.correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(cr.correction_requested_at), 'DD/MM/YYYY') as max_date, \n\tr.location, \n\tcount(DISTINCT(cr.report_id)) as num_reports,\n\tcount(cr.id) as total_actions,\n\tROUND(CAST(count(cr.id) as numeric)/CAST(count(DISTINCT(cr.report_id)) as numeric),1) as avg_actions_per_report,\n\tcount(CASE WHEN user_action = 'REQUEST_REVIEW' THEN cr.id END) as num_req_review,\n\tcount(CASE WHEN user_action = 'REQUEST_DUPLICATE' THEN cr.id END) as num_req_dup,\n\tcount(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' THEN cr.id END) as num_req_nr,\n\tcount(CASE WHEN user_action = 'REQUEST_CORRECTION' THEN cr.id END) as num_sent_back,\n\tcount(CASE WHEN user_action = 'HOLD' THEN cr.id END) as num_held,\n\tcount(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' THEN cr.id END) as num_recalled_ro,\n\tcount(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' THEN cr.id END) as num_recalled_dw,\n\tcount(CASE WHEN user_action = 'CLOSE' THEN cr.id END) as num_closed,\n\tcount(CASE WHEN user_action = 'MARK_DUPLICATE' THEN cr.id END) as num_mark_dup,\n\tcount(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN cr.id END) as num_mark_nr\nfrom correction_request as cr\nleft join (\nselect location, id, source from report\n) as r\non cr.report_id = r.id\nwhere r.source = 'DPS'\ngroup by month, r.location\n",
+      "schema": {
+        "field": [
+          {
+            "name": "month",
+            "type": "date"
+          },
+          {
+            "name": "min_date",
+            "type": "date"
+          },
+          {
+            "name": "max_date",
+            "type": "date"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "num_reports",
+            "type": "long"
+          },
+          {
+            "name": "total_actions",
+            "type": "long"
+          },
+          {
+            "name": "avg_actions_per_report",
+            "type": "float"
+          },
+          {
+            "name": "num_req_review",
+            "type": "long"
+          },
+          {
+            "name": "num_req_dup",
+            "type": "long"
+          },
+          {
+            "name": "num_req_nr",
+            "type": "long"
+          },
+          {
+            "name": "num_sent_back",
+            "type": "long"
+          },
+          {
+            "name": "num_held",
+            "type": "long"
+          },
+          {
+            "name": "num_recalled_ro",
+            "type": "long"
+          },
+          {
+            "name": "num_recalled_dw",
+            "type": "long"
+          },
+          {
+            "name": "num_closed",
+            "type": "long"
+          },
+          {
+            "name": "num_mark_dup",
+            "type": "long"
+          },
+          {
+            "name": "num_mark_nr",
+            "type": "long"
+          }
+        ]
+      }
+    }
+  ],
+  "report": [
+    {
+      "id": "by-location-per-week",
+      "name": "Location / week",
+      "description": "Counts of all user actions per location per week",
+      "version": "1.0.0",
+      "dataset": "$ref:by-location-per-week",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:week",
+            "display": "Week starting date",
+            "formula": "format_date(${week}, 'dd-MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
+            }
+          },
+          {
+            "name": "$ref:num_reports",
+            "display": "Reports actioned",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:total_actions",
+            "display": "Total actions",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:avg_actions_per_report",
+            "display": "Average actions/report",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_review",
+            "display": "Reviews requested",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_dup",
+            "display": "Duplicate requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_nr",
+            "display": "Not reportable requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_sent_back",
+            "display": "Sent back",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_held",
+            "display": "Reports held",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_recalled_ro",
+            "display": "Recalled by RO",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_recalled_dw",
+            "display": "Recalled by DW",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_closed",
+            "display": "Closed",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_mark_dup",
+            "display": "Marked as duplicate",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_mark_nr",
+            "display": "Marked as not reportable",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-location-per-week"
+      }]
+    },
+    {
+      "id": "by-location-per-month",
+      "name": "Location / month",
+      "description": "Counts of all user actions per location per month.",
+      "version": "1.0.0",
+      "dataset": "$ref:by-location-per-month",
+      "policy": [],
+      "render": "HTML",
+      "feature": [
+        {
+          "type": "print"
+        }
+      ],
+      "specification": {
+        "template": "list",
+        "field": [
+          {
+            "name": "$ref:month",
+            "display": "Month of incident",
+            "formula": "format_date(${month}, 'MMM-yyyy')",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": true,
+            "sortdirection": "desc",
+            "filter": {
+              "type": "daterange",
+              "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "caseloads",
+              "mandatory": false
+            }
+          },
+          {
+            "name": "$ref:num_reports",
+            "display": "Reports actioned",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:total_actions",
+            "display": "Total actions",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:avg_actions_per_report",
+            "display": "Average actions/report",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_review",
+            "display": "Reviews requested",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_dup",
+            "display": "Duplicate requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_req_nr",
+            "display": "Not reportable requests",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_sent_back",
+            "display": "Sent back",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_held",
+            "display": "Reports held",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_recalled_ro",
+            "display": "Recalled by RO",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_recalled_dw",
+            "display": "Recalled by DW",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_closed",
+            "display": "Closed",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_mark_dup",
+            "display": "Marked as duplicate",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:num_mark_nr",
+            "display": "Marked as not reportable",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          }
+        ]
+      },
+      "destination": [],
+      "summary": [{
+        "id": "summaryId",
+        "template": "page-header",
+        "dataset": "$ref:by-location-per-month"
+      }]
+    }
+  ]
+}

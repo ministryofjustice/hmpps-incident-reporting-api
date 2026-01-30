@@ -1137,24 +1137,24 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
     }
 
-    @DisplayName("GET /reports/incident-removal-requests")
+    @DisplayName("GET /reports/report-actions")
     @Nested
     inner class RunRemovalRequestReports {
-      private val url = "/reports/incident-removal-requests"
+      private val url = "/reports/report-actions"
 
       @DisplayName("is secured")
       @Nested
       inner class Security {
         @DisplayName("whole estate per month")
         @TestFactory
-        fun removalRequestsWholeEstateByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun reportActionsWholeEstateByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri("$url/whole-estate-per-week"),
           systemRole,
         )
 
         @DisplayName("whole estate per year")
         @TestFactory
-        fun removalRequestsWholeEstateByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun reportActionsWholeEstateByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri("$url/whole-estate-per-month"),
           systemRole,
         )
@@ -1164,7 +1164,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Nested
       inner class HappyPath {
         @Test
-        fun `returns removal request counts for whole estate by week`() {
+        fun `returns report actions counts for whole estate by week`() {
           webTestClient.get().uri("$url/whole-estate-per-week")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
@@ -1173,7 +1173,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         }
 
         @Test
-        fun `returns removal request counts for whole estate by month`() {
+        fun `returns report actions counts for whole estate by month`() {
           webTestClient.get().uri(url + "/whole-estate-per-month")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
@@ -1183,24 +1183,24 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
     }
 
-    @DisplayName("GET /reports/incident-removal-requests-per-location")
+    @DisplayName("GET /reports/report-actions-per-location")
     @Nested
     inner class RunRemovalRequestPerLocationReports {
-      private val url = "/reports/incident-removal-requests-per-location"
+      private val url = "/reports/report-actions-per-location"
 
       @DisplayName("is secured")
       @Nested
       inner class Security {
         @DisplayName("by location per week")
         @TestFactory
-        fun removalRequestsLocationByWeekEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun reportActionsLocationByWeekEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri("$url/by-location-per-week"),
           systemRole,
         )
 
         @DisplayName("by location per month")
         @TestFactory
-        fun removalRequestsLocationByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+        fun reportActionsLocationByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
           webTestClient.get().uri("$url/by-location-per-month"),
           systemRole,
         )
@@ -1211,7 +1211,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       inner class HappyPath {
 
         @Test
-        fun `returns removal request counts for locations by week`() {
+        fun `returns report actions counts for locations by week`() {
           webTestClient.get().uri("$url/by-location-per-week")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
@@ -1220,7 +1220,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         }
 
         @Test
-        fun `returns removal request counts for locations by month`() {
+        fun `returns report actions counts for locations by month`() {
           webTestClient.get().uri(url + "/by-location-per-month")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
