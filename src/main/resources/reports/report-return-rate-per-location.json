@@ -53,7 +53,7 @@
       "id": "by-location-per-month",
       "name": "Return rate per location per month",
       "datasource": "replicaDataSource",
-      "query": "select month, min_date, max_date, location, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, r.location, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS'\ngroup by Date_trunc('month', r.incident_date_and_time), r.location)",
+      "query": "select month, min_date, max_date, location, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', created_at) AS DATE) as month, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, r.location, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\ngroup by Date_trunc('month', r.created_at), r.location)",
       "schema": {
         "field": [
           {
@@ -99,7 +99,7 @@
       "id": "by-location-per-year",
       "name": "Return rate per location per year",
       "datasource": "replicaDataSource",
-      "query": "select year, min_date, max_date, location, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', incident_date_and_time) AS DATE) as year, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, r.location, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS'\ngroup by Date_trunc('year', r.incident_date_and_time), r.location)",
+      "query": "select year, min_date, max_date, location, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', created_at) AS DATE) as year, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, r.location, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\ngroup by Date_trunc('year', r.created_at), r.location)",
       "schema": {
         "field": [
           {
@@ -145,7 +145,7 @@
       "id": "per-location-by-type-per-month",
       "name": "Return rate per location by incident type per month",
       "datasource": "replicaDataSource",
-      "query": "select month, min_date, max_date, location, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, r.location, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by Date_trunc('month', r.incident_date_and_time), r.location, ct.description)",
+      "query": "select month, min_date, max_date, location, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', created_at) AS DATE) as month, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, r.location, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\ngroup by Date_trunc('month', r.created_at), r.location, ct.description)",
       "schema": {
         "field": [
           {
@@ -195,7 +195,7 @@
       "id": "per-location-by-type-per-year",
       "name": "Return rate per location by incident type per year",
       "datasource": "replicaDataSource",
-      "query": "select year, min_date, max_date, location, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', incident_date_and_time) AS DATE) as year, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, r.location, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by Date_trunc('year', r.incident_date_and_time), r.location, ct.description)",
+      "query": "select year, min_date, max_date, location, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', created_at) AS DATE) as year, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, r.location, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\ngroup by Date_trunc('year', r.created_at), r.location, ct.description)",
       "schema": {
         "field": [
           {
@@ -261,7 +261,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month when reports created",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -346,7 +346,7 @@
         "field": [
           {
             "name": "$ref:year",
-            "display": "Year of incident",
+            "display": "Year when reports created",
             "formula": "format_date(${year}, 'yyyy')",
             "sortable": true,
             "visible": "true",
@@ -427,7 +427,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month when reports created",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -519,7 +519,7 @@
         "field": [
           {
             "name": "$ref:year",
-            "display": "Year of incident",
+            "display": "Year when reports created",
             "formula": "format_date(${year}, 'yyyy')",
             "sortable": true,
             "visible": "true",

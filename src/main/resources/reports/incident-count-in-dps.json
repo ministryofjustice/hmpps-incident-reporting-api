@@ -53,7 +53,7 @@
       "id": "by-location-per-week",
       "name": "Location / week",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('week', incident_date_and_time) AS DATE) as week, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, location, count(id) as number_of_reports\nfrom report\nwhere source = 'DPS'\ngroup by week, location",
+      "query": "select Cast(Date_trunc('week', created_at) AS DATE) as week, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, location, COALESCE(ct.description, 'All types') as incident_type, count(id) as number_of_reports\nfrom report as r \nleft join (\n\tselect code, description\n\tfrom constant_type\n\t) as ct\non r.type = ct.code\nwhere source = 'DPS'\ngroup by week, location, ROLLUP(ct.description)",
       "schema": {
         "field": [
           {
@@ -73,6 +73,10 @@
             "type": "string"
           },
           {
+            "name": "incident_type",
+            "type": "string"
+          },
+          {
             "name": "number_of_reports",
             "type": "long"
           }
@@ -83,7 +87,7 @@
       "id": "by-location-per-month",
       "name": "Location / month",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('month', incident_date_and_time) AS DATE) as month, to_char(min(incident_date_and_time), 'DD/MM/YYYY') as min_date, to_char(max(incident_date_and_time), 'DD/MM/YYYY') as max_date, location, count(id) as number_of_reports\nfrom report\nwhere source = 'DPS'\ngroup by month, location",
+      "query": "select Cast(Date_trunc('month', created_at) AS DATE) as month, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, location, COALESCE(ct.description, 'All types') as incident_type, count(id) as number_of_reports\nfrom report as r\nleft join (\n\tselect code, description\n\tfrom constant_type\n\t) as ct\non r.type = ct.code\nwhere source = 'DPS'\ngroup by month, location, ROLLUP(ct.description)",
       "schema": {
         "field": [
           {
@@ -103,6 +107,10 @@
             "type": "string"
           },
           {
+            "name": "incident_type",
+            "type": "string"
+          },
+          {
             "name": "number_of_reports",
             "type": "long"
           }
@@ -114,7 +122,7 @@
     {
       "id": "by-location-per-week",
       "name": "Location / week",
-      "description": "Counts of incident reports created in DPS for each location per week.",
+      "description": "Counts of incident reports created in DPS for each location by type per week.",
       "version": "1.0.0",
       "dataset": "$ref:by-location-per-week",
       "policy": [],
@@ -129,7 +137,7 @@
         "field": [
           {
             "name": "$ref:week",
-            "display": "Week starting date",
+            "display": "Week starting date when reports created",
             "formula": "format_date(${week}, 'dd-MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -150,6 +158,13 @@
               "type": "caseloads",
               "mandatory": false
             }
+          },
+          {
+            "name": "$ref:incident_type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
           },
           {
             "name": "$ref:number_of_reports",
@@ -185,7 +200,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month when reports created",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -206,6 +221,13 @@
               "type": "caseloads",
               "mandatory": false
             }
+          },
+          {
+            "name": "$ref:incident_type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
           },
           {
             "name": "$ref:number_of_reports",
