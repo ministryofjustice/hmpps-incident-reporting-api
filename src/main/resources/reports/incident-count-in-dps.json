@@ -137,7 +137,7 @@
         "field": [
           {
             "name": "$ref:week",
-            "display": "Week starting date",
+            "display": "Week starting date when reports created",
             "formula": "format_date(${week}, 'dd-MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -200,7 +200,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month when reports created",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
