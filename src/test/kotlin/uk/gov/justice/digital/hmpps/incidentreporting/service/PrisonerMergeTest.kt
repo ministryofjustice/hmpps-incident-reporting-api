@@ -101,7 +101,7 @@ class PrisonerMergeTest : SqsIntegrationTestBase() {
       val reportsInDateRange = reportService.replacePrisonerNumberInDateRange(
         "A0002AA",
         "A0002BB",
-        LocalDateTime.parse("2023-11-17T12:34:56"),
+        LocalDateTime.parse("2023-11-17T12:34:56.123456"),
         now,
       )
       assertThat(reportsInDateRange).isEmpty()

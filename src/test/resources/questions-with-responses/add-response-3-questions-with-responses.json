@@ -13,7 +13,7 @@
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       },
       {
         "code": "1-2",
@@ -23,7 +23,7 @@
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       }
     ],
     "additionalInformation": "Explanation #1"
@@ -42,7 +42,7 @@
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       },
       {
         "code": "2-2",
@@ -52,7 +52,7 @@
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       }
     ],
     "additionalInformation": "Explanation #2"
@@ -72,7 +72,7 @@
         "responseDate": null,
         "additionalInformation": "020 1111 2222",
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       },
       {
         "code": "2001-2",
@@ -82,7 +82,7 @@
         "responseDate": null,
         "additionalInformation": "Not a smartphone",
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       },
       {
         "code": "2001-3",
@@ -92,7 +92,7 @@
         "responseDate": "2023-11-30",
         "additionalInformation": null,
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       }
     ]
   },
@@ -111,7 +111,7 @@
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       }
     ]
   },
@@ -130,7 +130,7 @@
         "responseDate": "2023-12-01",
         "additionalInformation": null,
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       }
     ]
   }

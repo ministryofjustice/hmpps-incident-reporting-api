@@ -14,7 +14,7 @@
         "responseDate": null,
         "additionalInformation": "020 1111 2222",
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       },
       {
         "code": "2001-2",
@@ -24,7 +24,7 @@
         "responseDate": null,
         "additionalInformation": "Not a smartphone",
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       },
       {
         "code": "2001-3",
@@ -34,7 +34,7 @@
         "responseDate": "2023-11-30",
         "additionalInformation": null,
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       }
     ]
   }

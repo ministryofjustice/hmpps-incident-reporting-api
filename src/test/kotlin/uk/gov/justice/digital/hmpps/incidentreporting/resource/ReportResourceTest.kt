@@ -44,7 +44,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
         """
           {
             "lastModifiedInNomis": false,
-            "modifiedAt": "2023-12-05T12:34:56",
+            "modifiedAt": "2023-12-05T12:34:56.123456",
             "modifiedBy": "request-user"
           }
           """,
@@ -179,7 +179,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "content": [{
                 "id": "${existingReport.id}",
                 "reportReference": "11124143",
-                "incidentDateAndTime": "2023-12-05T11:34:56"
+                "incidentDateAndTime": "2023-12-05T11:34:56.123456"
               }],
               "number": 0,
               "size": 20,
@@ -231,23 +231,23 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "content": [
                   {
                     "reportReference": "11124143",
-                    "incidentDateAndTime": "2023-12-05T11:34:56"
+                    "incidentDateAndTime": "2023-12-05T11:34:56.123456"
                   },
                   {
                     "reportReference": "11017203",
-                    "incidentDateAndTime": "2023-12-04T11:34:56"
+                    "incidentDateAndTime": "2023-12-04T11:34:56.123456"
                   },
                   {
                     "reportReference": "11006603",
-                    "incidentDateAndTime": "2023-12-03T11:34:56"
+                    "incidentDateAndTime": "2023-12-03T11:34:56.123456"
                   },
                   {
                     "reportReference": "94728",
-                    "incidentDateAndTime": "2023-12-02T11:34:56"
+                    "incidentDateAndTime": "2023-12-02T11:34:56.123456"
                   },
                   {
                     "reportReference": "31934",
-                    "incidentDateAndTime": "2023-12-01T11:34:56"
+                    "incidentDateAndTime": "2023-12-01T11:34:56.123456"
                   }
                 ],
                 "number": 0,
@@ -274,11 +274,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "content": [
                   {
                     "reportReference": "11124143",
-                    "incidentDateAndTime": "2023-12-05T11:34:56"
+                    "incidentDateAndTime": "2023-12-05T11:34:56.123456"
                   },
                   {
                     "reportReference": "11017203",
-                    "incidentDateAndTime": "2023-12-04T11:34:56"
+                    "incidentDateAndTime": "2023-12-04T11:34:56.123456"
                   }
                 ],
                 "number": 0,
@@ -305,11 +305,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 "content": [
                   {
                     "reportReference": "11006603",
-                    "incidentDateAndTime": "2023-12-03T11:34:56"
+                    "incidentDateAndTime": "2023-12-03T11:34:56.123456"
                   },
                   {
                     "reportReference": "94728",
-                    "incidentDateAndTime": "2023-12-02T11:34:56"
+                    "incidentDateAndTime": "2023-12-02T11:34:56.123456"
                   }
                 ],
                 "number": 1,
@@ -475,15 +475,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
               "type": "FIND_6",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -549,7 +549,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FIND_6",
               "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
@@ -561,7 +561,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "USER1"
                 }
               ],
@@ -572,11 +572,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolvementDone": true,
               "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
               "nomisStatus": null,
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -640,15 +640,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
               "type": "FIND_6",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -714,7 +714,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FIND_6",
               "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
@@ -726,7 +726,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "USER1"
                 }
               ],
@@ -737,11 +737,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolvementDone": true,
               "prisonerInvolvementDone": true,
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
               "nomisStatus": null,
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -870,7 +870,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             {
               "type": "SELF_HARM_1",
               "nomisType": "SELF_HARM",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "An incident occurred",
               "description": "Longer explanation of incident",
@@ -881,7 +881,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "request-user"
                 }
               ],
@@ -891,11 +891,11 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "staffInvolvementDone": false,
               "prisonerInvolvementDone": false,
               "reportedBy": "request-user",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
               "nomisStatus": null,
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1033,15 +1033,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
               "type": "FIND_6",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1077,15 +1077,15 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "id": "${existingReport.id}",
               "reportReference": "11124143",
               "type": "FIND_6",
-              "incidentDateAndTime": "2023-12-05T10:34:56",
+              "incidentDateAndTime": "2023-12-05T10:34:56.123456",
               "location": "LEI",
               "title": "Updated report 11124143",
               "description": "Updated incident report of type find of illicit items",
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1123,9 +1123,9 @@ class ReportResourceTest : SqsIntegrationTestBase() {
           },
         )
         val expectedIncidentDateAndTime = if (fieldName == "incidentDateAndTime") {
-          "2023-12-05T10:34:56"
+          "2023-12-05T10:34:56.123456"
         } else {
-          "2023-12-05T11:34:56"
+          "2023-12-05T11:34:56.123456"
         }
         val expectedLocation = if (fieldName == "location") {
           "LEI"
@@ -1165,10 +1165,10 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "title": "$expectedTitle",
               "description": "$expectedDescription",
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1389,17 +1389,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FIND_6",
               "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [],
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "DRAFT",
               "nomisStatus": null,
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1408,7 +1408,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "USER1"
                 }
               ]
@@ -1436,17 +1436,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FIND_6",
               "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [],
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1455,13 +1455,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "USER1"
                 },
                 {
                   "status": "AWAITING_REVIEW",
                   "nomisStatus": "AWAN",
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "request-user"
                 }
               ]
@@ -1494,7 +1494,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FIND_6",
               "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
@@ -1504,18 +1504,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                  {
                     "descriptionOfChange": "This report need to be removed as it is not reportable",
                     "correctionRequestedBy": "request-user",
-                    "correctionRequestedAt": "2023-12-05T12:34:56",
+                    "correctionRequestedAt": "2023-12-05T12:34:56.123456",
                     "userAction": "REQUEST_NOT_REPORTABLE",
                     "originalReportReference": null,
                     "userType": "REPORTING_OFFICER"
                   }
               ],
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1524,13 +1524,13 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "USER1"
                 },
                 {
                   "status": "AWAITING_REVIEW",
                   "nomisStatus": "AWAN",
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "request-user"
                 }
               ]
@@ -1561,7 +1561,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124143",
               "type": "FIND_6",
               "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:34:56",
+              "incidentDateAndTime": "2023-12-05T11:34:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124143",
               "description": "A new incident created in the new service of type find of illicit items",
@@ -1571,18 +1571,18 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                  {
                     "descriptionOfChange": "This report need to be removed as it is not reportable",
                     "correctionRequestedBy": "request-user",
-                    "correctionRequestedAt": "2023-12-05T12:34:56",
+                    "correctionRequestedAt": "2023-12-05T12:34:56.123456",
                     "userAction": "REQUEST_NOT_REPORTABLE",
                     "originalReportReference": null,
                     "userType": "REPORTING_OFFICER"
                   }
               ],
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:34:56",
+              "reportedAt": "2023-12-05T12:34:56.123456",
               "status": "NOT_REPORTABLE",
               "nomisStatus": null,
-              "createdAt": "2023-12-05T12:34:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:34:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1591,19 +1591,19 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "DRAFT",
                   "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "USER1"
                 },
                 {
                   "status": "AWAITING_REVIEW",
                   "nomisStatus": "AWAN",
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "request-user"
                 },
                  {
                   "status": "NOT_REPORTABLE",
                   "nomisStatus": null,
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "request-user"
                 }
               ]
@@ -1782,17 +1782,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124146",
               "type": "FIND_6",
               "nomisType": "FIND0422",
-              "incidentDateAndTime": "2023-12-05T11:31:56",
+              "incidentDateAndTime": "2023-12-05T11:31:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124146",
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [],
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:31:56",
+              "reportedAt": "2023-12-05T12:31:56.123456",
               "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
-              "createdAt": "2023-12-05T12:31:56",
-              "modifiedAt": "2023-12-05T12:31:56",
+              "createdAt": "2023-12-05T12:31:56.123456",
+              "modifiedAt": "2023-12-05T12:31:56.123456",
               "modifiedBy": "USER1",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1811,7 +1811,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "responseDate": "2023-12-04",
                       "additionalInformation": "Prose #1",
                       "recordedBy": "some-user",
-                      "recordedAt": "2023-12-05T12:31:56"
+                      "recordedAt": "2023-12-05T12:31:56.123456"
                     },
                     {
                       "code": "1-2",
@@ -1820,7 +1820,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "responseDate": "2023-12-03",
                       "additionalInformation": "Prose #2",
                       "recordedBy": "some-user",
-                      "recordedAt": "2023-12-05T12:31:56"
+                      "recordedAt": "2023-12-05T12:31:56.123456"
                     }
                   ]
                 },
@@ -1836,7 +1836,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "responseDate": "2023-12-04",
                       "additionalInformation": "Prose #1",
                       "recordedBy": "some-user",
-                      "recordedAt": "2023-12-05T12:31:56"
+                      "recordedAt": "2023-12-05T12:31:56.123456"
                     },
                     {
                       "code": "2-2",
@@ -1845,7 +1845,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                       "responseDate": "2023-12-03",
                       "additionalInformation": "Prose #2",
                       "recordedBy": "some-user",
-                      "recordedAt": "2023-12-05T12:31:56"
+                      "recordedAt": "2023-12-05T12:31:56.123456"
                     }
                   ]
                 }
@@ -1886,17 +1886,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124146",
               "type": "FIRE_1",
               "nomisType": "FIRE",
-              "incidentDateAndTime": "2023-12-05T11:31:56",
+              "incidentDateAndTime": "2023-12-05T11:31:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124146",
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [],
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:31:56",
+              "reportedAt": "2023-12-05T12:31:56.123456",
               "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
-              "createdAt": "2023-12-05T12:31:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:31:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -1905,7 +1905,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "type": "FIND_6",
                   "nomisType": "FIND0422",
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "request-user",
                   "questions": [
                     {
@@ -1920,7 +1920,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                           "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
-                          "recordedAt": "2023-12-05T12:31:56"
+                          "recordedAt": "2023-12-05T12:31:56.123456"
                         },
                         {
                           "code": "1-2",
@@ -1929,7 +1929,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                           "responseDate": "2023-12-03",
                           "additionalInformation": "Prose #2",
                           "recordedBy": "some-user",
-                          "recordedAt": "2023-12-05T12:31:56"
+                          "recordedAt": "2023-12-05T12:31:56.123456"
                         }
                       ]
                     },
@@ -1945,7 +1945,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                           "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
-                          "recordedAt": "2023-12-05T12:31:56"
+                          "recordedAt": "2023-12-05T12:31:56.123456"
                         },
                         {
                           "code": "2-2",
@@ -1954,7 +1954,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                           "responseDate": "2023-12-03",
                           "additionalInformation": "Prose #2",
                           "recordedBy": "some-user",
-                          "recordedAt": "2023-12-05T12:31:56"
+                          "recordedAt": "2023-12-05T12:31:56.123456"
                         }
                       ]
                     }
@@ -1966,7 +1966,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "AWAITING_REVIEW",
                   "nomisStatus": "AWAN",
-                  "changedAt": "2023-12-05T12:31:56",
+                  "changedAt": "2023-12-05T12:31:56.123456",
                   "changedBy": "USER1"
                 }
               ],
@@ -2022,17 +2022,17 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               "reportReference": "11124146",
               "type": "FIRE_1",
               "nomisType": "FIRE",
-              "incidentDateAndTime": "2023-12-05T11:31:56",
+              "incidentDateAndTime": "2023-12-05T11:31:56.123456",
               "location": "MDI",
               "title": "Incident Report 11124146",
               "description": "A new incident created in the new service of type find of illicit items",
               "descriptionAddendums": [],
               "reportedBy": "USER1",
-              "reportedAt": "2023-12-05T12:31:56",
+              "reportedAt": "2023-12-05T12:31:56.123456",
               "status": "AWAITING_REVIEW",
               "nomisStatus": "AWAN",
-              "createdAt": "2023-12-05T12:31:56",
-              "modifiedAt": "2023-12-05T12:34:56",
+              "createdAt": "2023-12-05T12:31:56.123456",
+              "modifiedAt": "2023-12-05T12:34:56.123456",
               "modifiedBy": "request-user",
               "createdInNomis": false,
               "lastModifiedInNomis": false,
@@ -2041,7 +2041,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "type": "ASSAULT_5",
                   "nomisType": "ASSAULTS3",
-                  "changedAt": "2023-12-05T12:31:56",
+                  "changedAt": "2023-12-05T12:31:56.123456",
                   "changedBy": "some-past-user",
                   "questions": [
                     {
@@ -2056,7 +2056,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                           "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1 in history #1",
                           "recordedBy": "some-user",
-                          "recordedAt": "2023-12-05T12:31:56"
+                          "recordedAt": "2023-12-05T12:31:56.123456"
                         }
                       ]
                     }
@@ -2065,7 +2065,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "type": "FIND_6",
                   "nomisType": "FIND0422",
-                  "changedAt": "2023-12-05T12:34:56",
+                  "changedAt": "2023-12-05T12:34:56.123456",
                   "changedBy": "request-user",
                   "questions": [
                     {
@@ -2080,7 +2080,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                           "responseDate": "2023-12-04",
                           "additionalInformation": "Prose #1",
                           "recordedBy": "some-user",
-                          "recordedAt": "2023-12-05T12:31:56"
+                          "recordedAt": "2023-12-05T12:31:56.123456"
                         }
                       ]
                     }
@@ -2092,7 +2092,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
                 {
                   "status": "AWAITING_REVIEW",
                   "nomisStatus": "AWAN",
-                  "changedAt": "2023-12-05T12:31:56",
+                  "changedAt": "2023-12-05T12:31:56.123456",
                   "changedBy": "USER1"
                 }
               ],
@@ -2883,7 +2883,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
             """
             [
               {
-                "createdAt": "2023-12-05T12:34:56"
+                "createdAt": "2023-12-05T12:34:56.123456"
               }
             ]
             """,
@@ -3139,7 +3139,7 @@ class ReportResourceTest : SqsIntegrationTestBase() {
               {
                 "descriptionOfChange": "Found to be a duplicate",
                 "correctionRequestedBy": "request-user",
-                "correctionRequestedAt": "2023-12-05T12:34:56",
+                "correctionRequestedAt": "2023-12-05T12:34:56.123456",
                 "location": "MDI",
                 "userAction": "MARK_DUPLICATE",
                 "originalReportReference": "12345678",

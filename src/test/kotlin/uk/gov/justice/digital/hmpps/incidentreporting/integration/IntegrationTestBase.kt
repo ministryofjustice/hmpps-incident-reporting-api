@@ -17,7 +17,7 @@ abstract class IntegrationTestBase {
     // All tests should use a frozen instant for “now”: 12:34:56 on 5 December 2023 in London
     val zoneId: ZoneId = ZoneId.of("Europe/London")
     val clock: Clock = Clock.fixed(
-      Instant.parse("2023-12-05T12:34:56+00:00"),
+      Instant.parse("2023-12-05T12:34:56.123456+00:00"),
       zoneId,
     )
     val now: LocalDateTime = LocalDateTime.now(clock)

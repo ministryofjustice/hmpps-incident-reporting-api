@@ -13,7 +13,7 @@
         "responseDate": "2023-12-04",
         "additionalInformation": "Prose #1",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       },
       {
         "code": "1-2",
@@ -23,7 +23,7 @@
         "responseDate": "2023-12-03",
         "additionalInformation": "Prose #2",
         "recordedBy": "some-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       }
     ],
     "additionalInformation": "Explanation #1"
@@ -42,7 +42,7 @@
         "responseDate": null,
         "additionalInformation": null,
         "recordedBy": "request-user",
-        "recordedAt": "2023-12-05T12:34:56"
+        "recordedAt": "2023-12-05T12:34:56.123456"
       }
     ],
     "additionalInformation": "Updated explanation #2"
