@@ -196,8 +196,8 @@
       ]
     },
     {
-      "type": "ATTEMPTED_ESCAPE_FROM_PRISON_1",
-      "nomisType": "ATT_ESCAPE",
+      "type": "ATTEMPTED_ESCAPE_FROM_ESCORT_1",
+      "nomisType": "ATT_ESC_E",
       "changedAt": "2023-12-05T12:34:56",
       "changedBy": "some-past-user",
       "questions": [
