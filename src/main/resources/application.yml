@@ -29,7 +29,6 @@ spring:
             token-uri: ${api.base.url.oauth}/oauth/token
 
   jackson:
-    date-format: "yyyy-MM-dd'T'HH:mm:ssZ"
     time-zone: "Europe/London"
 
   profiles:
