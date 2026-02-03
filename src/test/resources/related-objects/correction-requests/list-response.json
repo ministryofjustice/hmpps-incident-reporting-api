@@ -2,7 +2,7 @@
   {
     "descriptionOfChange": "Fix request #1",
     "correctionRequestedBy": "qa",
-    "correctionRequestedAt": "2023-12-05T12:34:56",
+    "correctionRequestedAt": "2023-12-05T12:34:56.123456",
     "location": "MDI",
     "sequence": 0,
     "userAction": "REQUEST_CORRECTION",
@@ -12,7 +12,7 @@
   {
     "descriptionOfChange": "Fix request #2",
     "correctionRequestedBy": "qa",
-    "correctionRequestedAt": "2023-12-05T12:34:56",
+    "correctionRequestedAt": "2023-12-05T12:34:56.123456",
     "location": "MDI",
     "sequence": 1,
     "userAction": "REQUEST_CORRECTION",
