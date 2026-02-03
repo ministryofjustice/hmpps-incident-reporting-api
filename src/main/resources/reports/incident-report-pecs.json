@@ -115,7 +115,7 @@
       "id": "types",
       "name": "Incident Types",
       "datasource": "replicaDataSource",
-      "query": "SELECT code, description FROM constant_type_family",
+      "query": "SELECT code, description FROM constant_type_family order by sequence",
       "schema": {
         "field": [
           {
@@ -135,7 +135,7 @@
       "id": "status",
       "name": "Incident Status",
       "datasource": "replicaDataSource",
-      "query": "SELECT code, description FROM constant_status where code NOT IN ('DUPLICATE', 'NOT_REPORTABLE')",
+      "query": "SELECT code, description FROM constant_status where code NOT IN ('DUPLICATE', 'NOT_REPORTABLE') order by sequence",
       "schema": {
         "field": [
           {

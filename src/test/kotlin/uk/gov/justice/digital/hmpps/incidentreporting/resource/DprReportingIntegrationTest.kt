@@ -84,7 +84,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(18)
+          .expectBody().jsonPath("$.length()").isEqualTo(11)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(18)
+          .expectBody().jsonPath("$.length()").isEqualTo(11)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -109,7 +109,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(18)
+          .jsonPath("$.length()").isEqualTo(11)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -159,8 +159,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
             """
             {
               "id": "incident-report",
-              "name": "Incident report summary",
-              "description": "List of all incidents filtered by dates, types, status and locations.",
+              "name": "Incident Reports",
+              "description": "Collection of reports related to incidents.",
               "variant": {
                 "id": "summary",
                 "name": "Incident report summary",
@@ -346,10 +346,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
     }
 
-    @DisplayName("GET /reports/incident-with-people")
+    @DisplayName("GET /reports/incident-report")
     @Nested
     inner class RunReportIncidentWithPeopleByPeople {
-      private val url = "/reports/incident-with-people"
+      private val url = "/reports/incident-report"
 
       @DisplayName("is secured")
       @Nested
@@ -615,10 +615,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
     }
 
-    @DisplayName("GET /reports/incident-count")
+    @DisplayName("GET /reports/incident-report")
     @Nested
     inner class RunReportCountByPeriod {
-      private val url = "/reports/incident-count/"
+      private val url = "/reports/incident-report/"
 
       @DisplayName("is secured")
       @Nested
@@ -717,7 +717,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
     @DisplayName("GET /reports/prisoner-count")
     @Nested
     inner class RunReportPrisonerCount {
-      private val url = "/reports/prisoner-count/"
+      private val url = "/reports/incident-report/"
 
       @DisplayName("is secured")
       @Nested
@@ -790,10 +790,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
     }
 
-    @DisplayName("GET /reports/incident-type-detail")
+    @DisplayName("GET /reports/incident-report")
     @Nested
     inner class RunReportIncidentTypeDetail {
-      private val url = "/reports/incident-type-detail"
+      private val url = "/reports/incident-report"
 
       @DisplayName("is secured")
       @Nested
@@ -1090,10 +1090,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       }
     }
 
-    @DisplayName("GET /reports/incident-count-in-dps")
+    @DisplayName("GET /reports/incident-report")
     @Nested
     inner class RunDpsCountReports {
-      private val url = "/reports/incident-count-in-dps"
+      private val url = "/reports/incident-report"
 
       @DisplayName("is secured")
       @Nested

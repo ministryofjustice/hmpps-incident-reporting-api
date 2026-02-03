@@ -504,12 +504,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-location-per-week"
-      }]
+      "destination": []
     },
     {
       "id": "by-location-per-month",
@@ -644,12 +639,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-location-per-month"
-      }]
+      "destination": []
     },
     {
       "id": "by-location-per-type-per-week",

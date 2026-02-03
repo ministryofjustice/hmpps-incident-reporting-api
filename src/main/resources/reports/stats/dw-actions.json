@@ -231,12 +231,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-dw-per-day"
-      }]
+      "destination": []
     },
     {
       "id": "by-dw-per-month",
@@ -325,12 +320,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-dw-per-month"
-      }]
+      "destination": []
     }
   ]
 }

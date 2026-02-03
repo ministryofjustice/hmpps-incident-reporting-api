@@ -279,12 +279,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:whole-estate-per-month"
-      }]
+      "destination": []
     },
     {
       "id": "whole-estate-per-year",
@@ -349,12 +344,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:whole-estate-per-year"
-      }]
+      "destination": []
     },
     {
       "id": "by-type-per-month",
@@ -430,12 +420,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-type-per-month"
-      }]
+      "destination": []
     },
     {
       "id": "by-type-per-year",
@@ -507,12 +492,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-type-per-year"
-      }]
+      "destination": []
     }
   ]
 }
