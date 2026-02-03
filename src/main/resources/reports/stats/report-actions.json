@@ -462,12 +462,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:whole-estate-per-week"
-      }]
+      "destination": []
     },
     {
       "id": "whole-estate-per-month",
@@ -591,12 +586,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:whole-estate-per-month"
-      }]
+      "destination": []
     },
     {
       "id": "whole-estate-per-type-per-week",

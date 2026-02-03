@@ -1,7 +1,7 @@
 {
-  "id": "incident-reopened-count-per-location",
-  "name": "Re-opened report counts by location",
-  "description": "Counts of previously completed reports that have been re-opened by location.",
+  "id": "incident-reopened-count",
+  "name": "Re-opened report counts",
+  "description": "Counts of previously completed reports that have been re-opened for whole prison estate.",
   "metadata": {
     "author": "Josh Jones",
     "version": "1.0.0",
@@ -31,29 +31,14 @@
           ]
         }
       ]
-    },
-    {
-      "id": "caseloads",
-      "type": "row-level",
-      "action": ["location IN (${caseloads})"],
-      "rule": [
-        {
-          "effect": "permit",
-          "condition": [
-            {
-              "exists": ["${caseloads}"]
-            }
-          ]
-        }
-      ]
     }
   ],
   "dataset": [
     {
-      "id": "by-location-per-week",
-      "name": "Location / week",
+      "id": "whole-estate-per-week",
+      "name": "Whole estate / week",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('week', sh.changed_at) AS DATE) as week, to_char(min(sh.changed_at), 'DD/MM/YYYY') as min_date, to_char(max(sh.changed_at), 'DD/MM/YYYY') as max_date, r.location, count(sh.report_id) as reopened_count\nfrom status_history as sh\nleft join (\nselect location, id from report\n) as r\non sh.report_id = r.id\nwhere status = 'REOPENED'\ngroup by week, r.location",
+      "query": "select Cast(Date_trunc('week', changed_at) AS DATE) as week, to_char(min(changed_at), 'DD/MM/YYYY') as min_date, to_char(max(changed_at), 'DD/MM/YYYY') as max_date, count(report_id) as reopened_count\nfrom status_history\nwhere status = 'REOPENED'\ngroup by week",
       "schema": {
         "field": [
           {
@@ -69,10 +54,6 @@
             "type": "date"
           },
           {
-            "name": "location",
-            "type": "string"
-          },
-          {
             "name": "reopened_count",
             "type": "long"
           }
@@ -80,10 +61,10 @@
       }
     },
     {
-      "id": "by-location-per-month",
-      "name": "Location / month",
+      "id": "whole-estate-per-month",
+      "name": "Whole estate / month",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('month', sh.changed_at) AS DATE) as month, to_char(min(sh.changed_at), 'DD/MM/YYYY') as min_date, to_char(max(sh.changed_at), 'DD/MM/YYYY') as max_date, r.location, count(sh.report_id) as reopened_count\nfrom status_history as sh\nleft join (\nselect location, id from report\n) as r\non sh.report_id = r.id\nwhere status = 'REOPENED'\ngroup by month, r.location",
+      "query": "select Cast(Date_trunc('month', changed_at) AS DATE) as month, to_char(min(changed_at), 'DD/MM/YYYY') as min_date, to_char(max(changed_at), 'DD/MM/YYYY') as max_date, count(report_id) as reopened_count\nfrom status_history\nwhere status = 'REOPENED'\ngroup by month",
       "schema": {
         "field": [
           {
@@ -99,10 +80,6 @@
             "type": "date"
           },
           {
-            "name": "location",
-            "type": "string"
-          },
-          {
             "name": "reopened_count",
             "type": "long"
           }
@@ -112,11 +89,11 @@
   ],
   "report": [
     {
-      "id": "by-location-per-week",
-      "name": "Location / week",
-      "description": "Count of incident reports re-opened per location per week",
+      "id": "whole-estate-per-week",
+      "name": "Whole estate / week",
+      "description": "Count of incident reports re-opened for whole prison estate per week.",
       "version": "1.0.0",
-      "dataset": "$ref:by-location-per-week",
+      "dataset": "$ref:whole-estate-per-week",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -141,17 +118,6 @@
             }
           },
           {
-            "name": "$ref:location",
-            "display": "Location",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "caseloads",
-              "mandatory": false
-            }
-          },
-          {
             "name": "$ref:reopened_count",
             "display": "Number of reports re-opened",
             "sortable": true,
@@ -160,19 +126,14 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-location-per-week"
-      }]
+      "destination": []
     },
     {
-      "id": "by-location-per-month",
-      "name": "Location / month",
-      "description": "Count of incident reports re-opened per location per month.",
+      "id": "whole-estate-per-month",
+      "name": "Whole estate / month",
+      "description": "Count of incident reports re-opened for whole prison estate per month.",
       "version": "1.0.0",
-      "dataset": "$ref:by-location-per-month",
+      "dataset": "$ref:whole-estate-per-month",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -197,17 +158,6 @@
             }
           },
           {
-            "name": "$ref:location",
-            "display": "Location",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false,
-            "filter": {
-              "type": "caseloads",
-              "mandatory": false
-            }
-          },
-          {
             "name": "$ref:reopened_count",
             "display": "Number of reports re-opened",
             "sortable": true,
@@ -216,12 +166,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-location-per-month"
-      }]
+      "destination": []
     }
   ]
 }

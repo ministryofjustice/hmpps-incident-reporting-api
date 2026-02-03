@@ -321,12 +321,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-location-per-month"
-      }]
+      "destination": []
     },
     {
       "id": "by-location-per-year",
@@ -402,12 +397,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:by-location-per-year"
-      }]
+      "destination": []
     },
     {
       "id": "per-location-by-type-per-month",
@@ -494,12 +484,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:per-location-by-type-per-month"
-      }]
+      "destination": []
     },
     {
       "id": "per-location-by-type-per-year",
@@ -582,12 +567,7 @@
           }
         ]
       },
-      "destination": [],
-      "summary": [{
-        "id": "summaryId",
-        "template": "page-header",
-        "dataset": "$ref:per-location-by-type-per-year"
-      }]
+      "destination": []
     }
   ]
 }
