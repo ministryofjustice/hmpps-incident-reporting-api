@@ -129,7 +129,7 @@
         "field": [
           {
             "name": "$ref:week",
-            "display": "Week starting date",
+            "display": "Week starting <br/>date",
             "formula": "format_date(${week}, 'dd-MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -153,7 +153,7 @@
           },
           {
             "name": "$ref:reopened_count",
-            "display": "Number of reports re-opened",
+            "display": "Number of reports <br/>re-opened",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -180,7 +180,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month <br/>of incident",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -204,7 +204,7 @@
           },
           {
             "name": "$ref:reopened_count",
-            "display": "Number of reports re-opened",
+            "display": "Number of reports <br/>re-opened",
             "sortable": true,
             "visible": "true",
             "defaultsort": false

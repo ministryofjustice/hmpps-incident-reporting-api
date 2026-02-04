@@ -92,7 +92,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month <br/>of incident",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -112,21 +112,21 @@
           },
           {
             "name": "$ref:dw_resp_time_days",
-            "display": "Average time for DW to respond to RO submission (days)",
+            "display": "Average time for <br/>DW to respond to<br/> RO submission (days)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:ro_resp_time_days",
-            "display": "Average time for RO to respond to DW submission (days)",
+            "display": "Average time for <br/>RO to respond to <br/>DW submission (days)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:feedback_loop_days",
-            "display": "Average time for another DW action after returning report to RO (days)",
+            "display": "Average time for <br/>another DW action after <br/>returning report to RO (days)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false

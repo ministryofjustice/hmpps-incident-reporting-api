@@ -358,7 +358,7 @@
         "field": [
           {
             "name": "$ref:week",
-            "display": "Week starting date",
+            "display": "Week starting <br/>date",
             "formula": "format_date(${week}, 'dd-MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -371,7 +371,7 @@
           },
           {
             "name": "$ref:num_reports",
-            "display": "Reports actioned",
+            "display": "Reports <br/>actioned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -385,28 +385,28 @@
           },
           {
             "name": "$ref:avg_actions_per_report",
-            "display": "Average actions/report",
+            "display": "Average actions /<br/>report",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_review",
-            "display": "Reviews requested",
+            "display": "Reviews <br/>requested",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_dup",
-            "display": "Duplicate requests",
+            "display": "Duplicate <br/>requests",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_nr",
-            "display": "Not reportable requests",
+            "display": "Not reportable <br/>requests",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -427,14 +427,14 @@
           },
           {
             "name": "$ref:num_recalled_ro",
-            "display": "Recalled by RO",
+            "display": "Recalled <br/> by RO",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_recalled_dw",
-            "display": "Recalled by DW",
+            "display": "Recalled <br/> by DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -448,14 +448,14 @@
           },
           {
             "name": "$ref:num_mark_dup",
-            "display": "Marked as duplicate",
+            "display": "Marked as <br/>duplicate",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_mark_nr",
-            "display": "Marked as not reportable",
+            "display": "Marked as <br/>not reportable",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -482,7 +482,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month <br/>of incident",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -495,7 +495,7 @@
           },
           {
             "name": "$ref:num_reports",
-            "display": "Reports actioned",
+            "display": "Reports <br/>actioned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -509,28 +509,28 @@
           },
           {
             "name": "$ref:avg_actions_per_report",
-            "display": "Average actions/report",
+            "display": "Average actions /<br/>report",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_review",
-            "display": "Reviews requested",
+            "display": "Reviews <br/>requested",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_dup",
-            "display": "Duplicate requests",
+            "display": "Duplicate <br/>requests",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_nr",
-            "display": "Not reportable requests",
+            "display": "Not reportable <br/>requests",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -551,14 +551,14 @@
           },
           {
             "name": "$ref:num_recalled_ro",
-            "display": "Recalled by RO",
+            "display": "Recalled <br/> by RO",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_recalled_dw",
-            "display": "Recalled by DW",
+            "display": "Recalled <br/> by DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -572,14 +572,14 @@
           },
           {
             "name": "$ref:num_mark_dup",
-            "display": "Marked as duplicate",
+            "display": "Marked as <br/>duplicate",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_mark_nr",
-            "display": "Marked as not reportable",
+            "display": "Marked as <br/>not reportable",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -606,7 +606,7 @@
         "field": [
           {
             "name": "$ref:week",
-            "display": "Week starting date",
+            "display": "Week starting <br/>date",
             "formula": "format_date(${week}, 'dd-MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -626,7 +626,7 @@
           },
           {
             "name": "$ref:num_reports",
-            "display": "Reports actioned",
+            "display": "Reports <br/>actioned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -640,28 +640,28 @@
           },
           {
             "name": "$ref:avg_actions_per_report",
-            "display": "Average actions/report",
+            "display": "Average actions /<br/>report",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_review",
-            "display": "Reviews requested",
+            "display": "Reviews <br/>requested",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_dup",
-            "display": "Duplicate requests",
+            "display": "Duplicate <br/>requests",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_nr",
-            "display": "Not reportable requests",
+            "display": "Not reportable <br/>requests",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -682,14 +682,14 @@
           },
           {
             "name": "$ref:num_recalled_ro",
-            "display": "Recalled by RO",
+            "display": "Recalled <br/> by RO",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_recalled_dw",
-            "display": "Recalled by DW",
+            "display": "Recalled <br/> by DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -703,14 +703,14 @@
           },
           {
             "name": "$ref:num_mark_dup",
-            "display": "Marked as duplicate",
+            "display": "Marked as <br/>duplicate",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_mark_nr",
-            "display": "Marked as not reportable",
+            "display": "Marked as <br/>not reportable",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -737,7 +737,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month <br/>of incident",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -757,7 +757,7 @@
           },
           {
             "name": "$ref:num_reports",
-            "display": "Reports actioned",
+            "display": "Reports <br/>actioned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -771,28 +771,28 @@
           },
           {
             "name": "$ref:avg_actions_per_report",
-            "display": "Average actions/report",
+            "display": "Average actions /<br/>report",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_review",
-            "display": "Reviews requested",
+            "display": "Reviews <br/>requested",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_dup",
-            "display": "Duplicate requests",
+            "display": "Duplicate <br/>requests",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_req_nr",
-            "display": "Not reportable requests",
+            "display": "Not reportable <br/>requests",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -813,14 +813,14 @@
           },
           {
             "name": "$ref:num_recalled_ro",
-            "display": "Recalled by RO",
+            "display": "Recalled <br/> by RO",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_recalled_dw",
-            "display": "Recalled by DW",
+            "display": "Recalled <br/> by DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -834,14 +834,14 @@
           },
           {
             "name": "$ref:num_mark_dup",
-            "display": "Marked as duplicate",
+            "display": "Marked as <br/>duplicate",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:num_mark_nr",
-            "display": "Marked as not reportable",
+            "display": "Marked as <br/>not reportable",
             "sortable": true,
             "visible": "true",
             "defaultsort": false

@@ -230,7 +230,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month when reports created",
+            "display": "Month when <br/>reports created",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -243,28 +243,28 @@
           },
           {
             "name": "$ref:all_reports",
-            "display": "All reports submitted",
+            "display": "All reports <br/>submitted",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:returned",
-            "display": "Reports returned by DW",
+            "display": "Reports returned <br/>by DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:dw_not_seen",
-            "display": "Reports not yet seen by a DW",
+            "display": "Reports not yet <br/> seen by a DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:closed",
-            "display": "Reports that have been closed",
+            "display": "Reports that have <br/>been closed",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -272,7 +272,7 @@
           {
             "name": "$ref:dw_seen_percentage_returned",
             "formula": "${dw_seen_percentage_returned}%",
-            "display": "Percentage of reviewed reports returned",
+            "display": "Percentage of <br/>reviewed reports returned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -299,7 +299,7 @@
         "field": [
           {
             "name": "$ref:year",
-            "display": "Year when reports created",
+            "display": "Year when <br/>reports created",
             "formula": "format_date(${year}, 'yyyy')",
             "sortable": true,
             "visible": "true",
@@ -308,28 +308,28 @@
           },
           {
             "name": "$ref:all_reports",
-            "display": "All reports submitted",
+            "display": "All reports <br/>submitted",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:returned",
-            "display": "Reports returned by DW",
+            "display": "Reports returned <br/>by DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:dw_not_seen",
-            "display": "Reports not yet seen by a DW",
+            "display": "Reports not yet <br/> seen by a DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:closed",
-            "display": "Reports that have been closed",
+            "display": "Reports that have <br/>been closed",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -337,7 +337,7 @@
           {
             "name": "$ref:dw_seen_percentage_returned",
             "formula": "${dw_seen_percentage_returned}%",
-            "display": "Percentage of reviewed reports returned",
+            "display": "Percentage of <br/>reviewed reports returned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -364,7 +364,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month when reports created",
+            "display": "Month when <br/>reports created",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -384,28 +384,28 @@
           },
           {
             "name": "$ref:all_reports",
-            "display": "All reports submitted",
+            "display": "All reports <br/>submitted",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:returned",
-            "display": "Reports returned by DW",
+            "display": "Reports returned <br/>by DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:dw_not_seen",
-            "display": "Reports not yet seen by a DW",
+            "display": "Reports not yet <br/> seen by a DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:closed",
-            "display": "Reports that have been closed",
+            "display": "Reports that have <br/>been closed",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -413,7 +413,7 @@
           {
             "name": "$ref:dw_seen_percentage_returned",
             "formula": "${dw_seen_percentage_returned}%",
-            "display": "Percentage of reviewed reports returned",
+            "display": "Percentage of <br/>reviewed reports returned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -440,7 +440,7 @@
         "field": [
           {
             "name": "$ref:year",
-            "display": "Year when reports created",
+            "display": "Year when <br/>reports created",
             "formula": "format_date(${year}, 'yyyy')",
             "sortable": true,
             "visible": "true",
@@ -456,28 +456,28 @@
           },
           {
             "name": "$ref:all_reports",
-            "display": "All reports submitted",
+            "display": "All reports <br/>submitted",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:returned",
-            "display": "Reports returned by DW",
+            "display": "Reports returned <br/>by DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:dw_not_seen",
-            "display": "Reports not yet seen by a DW",
+            "display": "Reports not yet <br/> seen by a DW",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:closed",
-            "display": "Reports that have been closed",
+            "display": "Reports that have <br/>been closed",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -485,7 +485,7 @@
           {
             "name": "$ref:dw_seen_percentage_returned",
             "formula": "${dw_seen_percentage_returned}%",
-            "display": "Percentage of reviewed reports returned",
+            "display": "Percentage of <br/>reviewed reports returned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
