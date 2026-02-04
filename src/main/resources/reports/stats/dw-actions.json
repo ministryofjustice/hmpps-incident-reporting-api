@@ -210,21 +210,21 @@
           },
           {
             "name": "$ref:marked_as_duplicate",
-            "display": "Marked as duplicate",
+            "display": "Marked as <br/>duplicate",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:marked_as_np",
-            "display": "Marked as not reportable",
+            "display": "Marked as <br/>not reportable",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:total_actions",
-            "display": "Total number of actions",
+            "display": "Total number <br/>of actions",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -251,7 +251,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month <br/>of incident",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -299,21 +299,21 @@
           },
           {
             "name": "$ref:marked_as_duplicate",
-            "display": "Marked as duplicate",
+            "display": "Marked as <br/>duplicate",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:marked_as_np",
-            "display": "Marked as not reportable",
+            "display": "Marked as <br/>not reportable",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:total_actions",
-            "display": "Total number of actions",
+            "display": "Total number <br/>of actions",
             "sortable": true,
             "visible": "true",
             "defaultsort": false

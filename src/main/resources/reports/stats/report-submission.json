@@ -120,7 +120,7 @@
         "field": [
           {
             "name": "$ref:month",
-            "display": "Month of incident",
+            "display": "Month <br/>of incident",
             "formula": "format_date(${month}, 'MMM-yyyy')",
             "sortable": true,
             "visible": "true",
@@ -140,35 +140,35 @@
           },
           {
             "name": "$ref:total_reports",
-            "display": "All reports created",
+            "display": "All reports <br/>created",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:avg_mins",
-            "display": "Average time to submit (mins)",
+            "display": "Average time <br/>to submit (mins)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:median_mins",
-            "display": "Median time to submit (mins)",
+            "display": "Median time to <br/>submit (mins)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:longest_submitted_hrs",
-            "display": "Longest time to submit report (hrs)",
+            "display": "Longest time to <br/>submit report (hrs)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:number_took_too_long",
-            "display": "Number of reports submitted after 72 hrs",
+            "display": "Number of reports <br/>submitted after 72 hrs",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
@@ -176,35 +176,35 @@
           {
             "name": "$ref:perc_too_long",
             "formula": "${perc_too_long}%",
-            "display": "Percentage of reports submitted after 72 hrs",
+            "display": "Percentage of <br/>reports submitted after 72 hrs",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:avg_mins_wo_too_long",
-            "display": "Average time to submit within 72 hrs (mins)",
+            "display": "Average time to submit <br/>within 72 hrs (mins)",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:not_yet_actioned",
-            "display": "Reports not yet actioned",
+            "display": "Reports not yet <br/> actioned",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:currently_in_draft",
-            "display": "Reports currently in draft",
+            "display": "Reports currently <br/>in draft",
             "sortable": true,
             "visible": "true",
             "defaultsort": false
           },
           {
             "name": "$ref:number_overdue",
-            "display": "Reports currently overdue",
+            "display": "Reports currently <br/>overdue",
             "sortable": true,
             "visible": "true",
             "defaultsort": false

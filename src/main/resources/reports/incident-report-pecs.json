@@ -171,7 +171,7 @@
         "field": [
           {
             "name": "$ref:report_reference",
-            "display": "Incident number",
+            "display": "Incident<br/>number",
             "formula": "make_url('https://incident-reporting-${env}.hmpps.service.justice.gov.uk/reports/${id}',${report_reference},TRUE)",
             "sortable": true,
             "visible": "true",
@@ -186,7 +186,7 @@
           },
           {
             "name": "$ref:location",
-            "display": "Location of incident",
+            "display": "Location of<br/>incident",
             "sortable": false,
             "visible": "true",
             "defaultsort": false
