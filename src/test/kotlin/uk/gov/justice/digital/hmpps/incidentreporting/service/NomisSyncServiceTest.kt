@@ -311,7 +311,7 @@ class NomisSyncServiceTest {
       initialMigration = initialMigration,
     )
 
-    whenever(reportRepository.save(any())).doAnswer { invocation ->
+    whenever(reportRepository.save(any<Report>())).doAnswer { invocation ->
       val reportBeingSaved = invocation.arguments[0] as Report
 
       // verify that the correct entity was to be saved
@@ -470,7 +470,7 @@ class NomisSyncServiceTest {
         "report_reference",
       ),
     )
-    whenever(reportRepository.save(any())).thenThrow(simulatedDatabaseError)
+    whenever(reportRepository.save(any<Report>())).thenThrow(simulatedDatabaseError)
 
     assertThatThrownBy {
       syncService.upsert(syncRequest)
@@ -485,7 +485,7 @@ class NomisSyncServiceTest {
     )
 
     val simulatedDatabaseError = DataIntegrityViolationException("unknown data integrity violation")
-    whenever(reportRepository.save(any())).thenThrow(simulatedDatabaseError)
+    whenever(reportRepository.save(any<Report>())).thenThrow(simulatedDatabaseError)
 
     assertThatThrownBy {
       syncService.upsert(syncRequest)
