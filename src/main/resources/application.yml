@@ -97,7 +97,7 @@ management:
 dpr:
   lib:
     definition:
-      locations: "reports/incident-report.json, reports/incident-report-pecs.json, reports/stats/dw-actions.json, reports/stats/report-return-rate.json, reports/stats/report-return-rate-per-location.json, reports/stats/report-actions.json, reports/stats/report-actions-per-location.json, reports/stats/incident-reopened-count.json, reports/stats/incident-reopened-count-per-location.json, reports/stats/report-submission.json, reports/stats/response-durations.json"
+      locations: "reports/incident-report.json, reports/incident-report-pecs.json, reports/stats/dw-actions.json, reports/stats/report-return-rate.json, reports/stats/report-return-rate-per-location.json, reports/stats/review-return-rate.json, reports/stats/review-return-rate-per-location.json, reports/stats/report-actions.json, reports/stats/report-actions-per-location.json, reports/stats/incident-reopened-count.json, reports/stats/incident-reopened-count-per-location.json, reports/stats/report-submission.json, reports/stats/response-durations.json"
     system:
       role: DPR_API_ACCESS
   report:
