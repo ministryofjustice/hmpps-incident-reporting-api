@@ -1,7 +1,7 @@
 {
   "id": "report-return-rate",
-  "name": "Incident report national return rate",
-  "description": "Rate of reports being returned to reporting officers by data wardens for whole prison estate.",
+  "name": "Incident report return rate",
+  "description": "Rate of reports being returned to reporting officers by data wardens by location.",
   "metadata": {
     "author": "Josh Jones",
     "version": "1.0.0",
@@ -35,10 +35,10 @@
   ],
   "dataset": [
     {
-      "id": "whole-estate-per-month",
-      "name": "Return rate for whole prison estate per month",
+      "id": "per-month",
+      "name": "Return rate per location by incident type per month",
       "datasource": "replicaDataSource",
-      "query": "select month, min_date, max_date, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', r.created_at) AS DATE) as month, to_char(min(r.created_at), 'DD/MM/YYYY') as min_date, to_char(max(r.created_at), 'DD/MM/YYYY') as max_date, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\ngroup by Date_trunc('month', r.created_at))",
+      "query": "select month, min_date, max_date, location, incident_type, all_reports, returned, dw_not_seen, closed,\n       CASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0\n            ELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1)\n           END as dw_seen_percentage_returned\nfrom (\n         select Cast(Date_trunc('month', created_at) AS DATE) as month, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date,\n                COALESCE(r.location, 'All locations') as location,\n                COALESCE(ct.description, 'All incident types') as incident_type,\n                count(r.id) as all_reports,\n                count(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\n                count(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\n                count(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\n         from report as r\n                  left join (\n             select DISTINCT report_id, '1' as requested_corection\n             from correction_request\n             where user_action = 'REQUEST_CORRECTION') as cr\n                            on r.id = cr.report_id\n                  left join (\n             select code, description\n             from constant_type\n         ) as ct\n                            on r.type = ct.code\n         where r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\n         group by Date_trunc('month', r.created_at), ROLLUP(r.location), ROLLUP(ct.description))",
       "schema": {
         "field": [
           {
@@ -54,88 +54,8 @@
             "type": "date"
           },
           {
-            "name": "all_reports",
-            "type": "long"
-          },
-          {
-            "name": "returned",
-            "type": "long"
-          },
-          {
-            "name": "dw_not_seen",
-            "type": "long"
-          },
-          {
-            "name": "closed",
-            "type": "long"
-          },
-          {
-            "name": "dw_seen_percentage_returned",
-            "type": "float"
-          }
-        ]
-      }
-    },
-    {
-      "id": "whole-estate-per-year",
-      "name": "Return rate for whole prison estate per year",
-      "datasource": "replicaDataSource",
-      "query": "select year, min_date, max_date, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', created_at) AS DATE) as year, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nwhere r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\ngroup by Date_trunc('year', r.created_at))",
-      "schema": {
-        "field": [
-          {
-            "name": "year",
-            "type": "date"
-          },
-          {
-            "name": "min_date",
-            "type": "date"
-          },
-          {
-            "name": "max_date",
-            "type": "date"
-          },
-          {
-            "name": "all_reports",
-            "type": "long"
-          },
-          {
-            "name": "returned",
-            "type": "long"
-          },
-          {
-            "name": "dw_not_seen",
-            "type": "long"
-          },
-          {
-            "name": "closed",
-            "type": "long"
-          },
-          {
-            "name": "dw_seen_percentage_returned",
-            "type": "float"
-          }
-        ]
-      }
-    },
-    {
-      "id": "by-type-per-month",
-      "name": "Return rate per incident type per month",
-      "datasource": "replicaDataSource",
-      "query": "select month, min_date, max_date, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('month', created_at) AS DATE) as month, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\ngroup by Date_trunc('month', r.created_at), ct.description)",
-      "schema": {
-        "field": [
-          {
-            "name": "month",
-            "type": "date"
-          },
-          {
-            "name": "min_date",
-            "type": "date"
-          },
-          {
-            "name": "max_date",
-            "type": "date"
+            "name": "location",
+            "type": "string"
           },
           {
             "name": "incident_type",
@@ -165,47 +85,30 @@
       }
     },
     {
-      "id": "by-type-per-year",
-      "name": "Return rate per incident type per year",
+      "id": "locations",
+      "name": "Locations",
       "datasource": "replicaDataSource",
-      "query": "select year, min_date, max_date, incident_type, all_reports, returned, dw_not_seen, closed, \nCASE WHEN (all_reports-dw_not_seen) = 0 THEN 0.0 \nELSE ROUND((CAST(returned as numeric)/(all_reports-dw_not_seen))*100, 1) \nEND as dw_seen_percentage_returned\nfrom (\nselect Cast(Date_trunc('year', created_at) AS DATE) as year, to_char(min(created_at), 'DD/MM/YYYY') as min_date, to_char(max(created_at), 'DD/MM/YYYY') as max_date, ct.description as incident_type, count(r.id) as all_reports, \ncount(CASE WHEN cr.requested_corection = '1' THEN r.id END) as returned,\ncount(CASE WHEN r.status in ('DRAFT', 'AWAITING_REVIEW') THEN r.id END) as dw_not_seen,\ncount(CASE WHEN r.status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN r.id END) as closed\nfrom report as r\nleft join (\nselect DISTINCT report_id, '1' as requested_corection\nfrom correction_request\nwhere user_action = 'REQUEST_CORRECTION') as cr\non r.id = cr.report_id\nleft join (\nselect code, description\nfrom constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS' and r.location not in ('NORTH', 'SOUTH')\ngroup by Date_trunc('year', r.created_at), ct.description)",
+      "query": "select DISTINCT(location) as location\nfrom report\nwhere source = 'DPS' and location not in ('NORTH', 'SOUTH')\nUNION ALL\nselect 'All locations' as location",
       "schema": {
         "field": [
           {
-            "name": "year",
-            "type": "date"
-          },
-          {
-            "name": "min_date",
-            "type": "date"
-          },
-          {
-            "name": "max_date",
-            "type": "date"
-          },
-          {
-            "name": "incident_type",
+            "name": "location",
             "type": "string"
-          },
+          }
+        ]
+      }
+    },
+    {
+      "id": "types",
+      "name": "Incident Types",
+      "datasource": "replicaDataSource",
+      "query": "SELECT DISTINCT(description) FROM constant_type_family\nUNION ALL\nselect 'All incident types' as description",
+      "schema": {
+        "field": [
           {
-            "name": "all_reports",
-            "type": "long"
-          },
-          {
-            "name": "returned",
-            "type": "long"
-          },
-          {
-            "name": "dw_not_seen",
-            "type": "long"
-          },
-          {
-            "name": "closed",
-            "type": "long"
-          },
-          {
-            "name": "dw_seen_percentage_returned",
-            "type": "float"
+            "name": "description",
+            "display": "Type description",
+            "type": "string"
           }
         ]
       }
@@ -213,11 +116,11 @@
   ],
   "report": [
     {
-      "id": "whole-estate-per-month",
-      "name": "% of incident reports returned / month",
-      "description": "Percentage of incident reports returned to reporting officers by data wardens for whole prison estate per month.",
+      "id": "per-month",
+      "name": "% of incident reports returned per location by incident type / month",
+      "description": "Percentage of incident reports returned to reporting officers by data wardens per location by incident type per month.",
       "version": "1.0.0",
-      "dataset": "$ref:whole-estate-per-month",
+      "dataset": "$ref:per-month",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -242,137 +145,19 @@
             }
           },
           {
-            "name": "$ref:all_reports",
-            "display": "All reports <br/>submitted",
+            "name": "$ref:location",
+            "display": "Location of<br/>incident",
             "sortable": true,
             "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:returned",
-            "display": "Reports returned <br/>by DW",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:dw_not_seen",
-            "display": "Reports not yet <br/> seen by a DW",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:closed",
-            "display": "Reports that have <br/>been closed",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:dw_seen_percentage_returned",
-            "formula": "${dw_seen_percentage_returned}%",
-            "display": "Percentage of <br/>reviewed reports returned",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          }
-        ]
-      },
-      "destination": []
-    },
-    {
-      "id": "whole-estate-per-year",
-      "name": "% of incident reports returned / year",
-      "description": "Percentage of incident reports returned to reporting officers by data wardens for whole prison estate per year.",
-      "version": "1.0.0",
-      "dataset": "$ref:whole-estate-per-year",
-      "policy": [],
-      "render": "HTML",
-      "feature": [
-        {
-          "type": "print"
-        }
-      ],
-      "specification": {
-        "template": "list",
-        "field": [
-          {
-            "name": "$ref:year",
-            "display": "Year when <br/>reports created",
-            "formula": "format_date(${year}, 'yyyy')",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "sortdirection": "desc"
-          },
-          {
-            "name": "$ref:all_reports",
-            "display": "All reports <br/>submitted",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:returned",
-            "display": "Reports returned <br/>by DW",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:dw_not_seen",
-            "display": "Reports not yet <br/> seen by a DW",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:closed",
-            "display": "Reports that have <br/>been closed",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:dw_seen_percentage_returned",
-            "formula": "${dw_seen_percentage_returned}%",
-            "display": "Percentage of <br/>reviewed reports returned",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          }
-        ]
-      },
-      "destination": []
-    },
-    {
-      "id": "by-type-per-month",
-      "name": "% of incident reports returned by incident type / month",
-      "description": "Percentage of incident reports returned to reporting officers by data wardens per incident type per month.",
-      "version": "1.0.0",
-      "dataset": "$ref:by-type-per-month",
-      "policy": [],
-      "render": "HTML",
-      "feature": [
-        {
-          "type": "print"
-        }
-      ],
-      "specification": {
-        "template": "list",
-        "field": [
-          {
-            "name": "$ref:month",
-            "display": "Month when <br/>reports created",
-            "formula": "format_date(${month}, 'MMM-yyyy')",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "sortdirection": "desc",
+            "defaultsort": false,
             "filter": {
-              "type": "daterange",
-              "default": "today(-3,months) - today()"
+              "type": "multiselect",
+              "dynamicoptions": {
+                "returnAsStaticOptions": true,
+                "dataset": "locations",
+                "name": "location",
+                "display": "location"
+              }
             }
           },
           {
@@ -380,79 +165,16 @@
             "display": "Incident type",
             "sortable": true,
             "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:all_reports",
-            "display": "All reports <br/>submitted",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:returned",
-            "display": "Reports returned <br/>by DW",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:dw_not_seen",
-            "display": "Reports not yet <br/> seen by a DW",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:closed",
-            "display": "Reports that have <br/>been closed",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          },
-          {
-            "name": "$ref:dw_seen_percentage_returned",
-            "formula": "${dw_seen_percentage_returned}%",
-            "display": "Percentage of <br/>reviewed reports returned",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
-          }
-        ]
-      },
-      "destination": []
-    },
-    {
-      "id": "by-type-per-year",
-      "name": "% of incident reports returned by incident type / year",
-      "description": "Percentage of incident reports returned to reporting officers by data wardens per incident type per year.",
-      "version": "1.0.0",
-      "dataset": "$ref:by-type-per-year",
-      "policy": [],
-      "render": "HTML",
-      "feature": [
-        {
-          "type": "print"
-        }
-      ],
-      "specification": {
-        "template": "list",
-        "field": [
-          {
-            "name": "$ref:year",
-            "display": "Year when <br/>reports created",
-            "formula": "format_date(${year}, 'yyyy')",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": true,
-            "sortdirection": "desc"
-          },
-          {
-            "name": "$ref:incident_type",
-            "display": "Incident type",
-            "sortable": true,
-            "visible": "true",
-            "defaultsort": false
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "dynamicoptions": {
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "description",
+                "display": "description"
+              }
+            }
           },
           {
             "name": "$ref:all_reports",

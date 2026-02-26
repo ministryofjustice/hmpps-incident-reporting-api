@@ -84,7 +84,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(12)
+          .expectBody().jsonPath("$.length()").isEqualTo(11)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(12)
+          .expectBody().jsonPath("$.length()").isEqualTo(11)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -109,7 +109,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(12)
+          .jsonPath("$.length()").isEqualTo(11)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -941,31 +941,10 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @DisplayName("is secured")
       @Nested
       inner class Security {
-        @DisplayName("whole estate per month")
+        @DisplayName("per month")
         @TestFactory
-        fun returnRateWholeEstateByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/whole-estate-per-month"),
-          systemRole,
-        )
-
-        @DisplayName("whole estate per year")
-        @TestFactory
-        fun returnRateWholeEstateByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/whole-estate-per-year"),
-          systemRole,
-        )
-
-        @DisplayName("by type per month")
-        @TestFactory
-        fun returnRateTypeByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/by-type-per-month"),
-          systemRole,
-        )
-
-        @DisplayName("by type per year")
-        @TestFactory
-        fun returnRateTypeByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/by-type-per-year"),
+        fun returnRateByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/per-month"),
           systemRole,
         )
       }
@@ -974,114 +953,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @Nested
       inner class HappyPath {
         @Test
-        fun `returns rate report for whole estate by month`() {
-          webTestClient.get().uri("$url/whole-estate-per-month")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-
-        @Test
-        fun `returns rate report for whole estate by year`() {
-          webTestClient.get().uri(url + "/whole-estate-per-year")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-
-        @Test
-        fun `returns rate report for incident type by month`() {
-          webTestClient.get().uri("$url/by-type-per-month")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-
-        @Test
-        fun `returns rate report for incident type by year`() {
-          webTestClient.get().uri(url + "/by-type-per-year")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-      }
-    }
-
-    @DisplayName("GET /reports/report-return-rate-per-location")
-    @Nested
-    inner class RunReturnRatePerLocationReports {
-      private val url = "/reports/report-return-rate-per-location"
-
-      @DisplayName("is secured")
-      @Nested
-      inner class Security {
-        @DisplayName("by location per month")
-        @TestFactory
-        fun returnRateLocationByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/by-location-per-month"),
-          systemRole,
-        )
-
-        @DisplayName("by location per year")
-        @TestFactory
-        fun returnRateLocationByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/by-location-per-year"),
-          systemRole,
-        )
-
-        @DisplayName("per location by type per month")
-        @TestFactory
-        fun returnRatePerLocationTypeByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/per-location-by-type-per-month"),
-          systemRole,
-        )
-
-        @DisplayName("per location by type per year")
-        @TestFactory
-        fun returnRatePerLocationTypeByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/per-location-by-type-per-year"),
-          systemRole,
-        )
-      }
-
-      @DisplayName("works")
-      @Nested
-      inner class HappyPath {
-
-        @Test
-        fun `returns rate report for locations by month`() {
-          webTestClient.get().uri("$url/by-location-per-month")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-
-        @Test
-        fun `returns rate report for locations by year`() {
-          webTestClient.get().uri(url + "/by-location-per-year")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-
-        @Test
-        fun `returns rate report for location and incident type by month`() {
-          webTestClient.get().uri("$url/per-location-by-type-per-month")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-
-        @Test
-        fun `returns rate report for location and incident type by year`() {
-          webTestClient.get().uri(url + "/per-location-by-type-per-year")
+        fun `returns rate report for by month`() {
+          webTestClient.get().uri("$url/per-month")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
