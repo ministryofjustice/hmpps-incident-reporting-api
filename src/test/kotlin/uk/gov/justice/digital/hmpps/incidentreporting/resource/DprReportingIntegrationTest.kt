@@ -84,7 +84,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(10)
+          .expectBody().jsonPath("$.length()").isEqualTo(9)
           .jsonPath("$[0].authorised").isEqualTo("true")
       }
 
@@ -95,7 +95,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .header("Content-Type", "application/json")
           .exchange()
           .expectStatus().isOk
-          .expectBody().jsonPath("$.length()").isEqualTo(10)
+          .expectBody().jsonPath("$.length()").isEqualTo(9)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
 
@@ -109,7 +109,7 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
           .exchange()
           .expectStatus().isOk
           .expectBody()
-          .jsonPath("$.length()").isEqualTo(10)
+          .jsonPath("$.length()").isEqualTo(9)
           .jsonPath("$[0].authorised").isEqualTo("false")
       }
     }
@@ -1094,63 +1094,17 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @DisplayName("is secured")
       @Nested
       inner class Security {
-        @DisplayName("whole estate per month")
+        @DisplayName("per week")
         @TestFactory
-        fun reopenedCountWholeEstateByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/whole-estate-per-week"),
+        fun reopenedCountWeekEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/per-week"),
           systemRole,
         )
 
-        @DisplayName("whole estate per year")
+        @DisplayName("per month")
         @TestFactory
-        fun reopenedCountWholeEstateByYearEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/whole-estate-per-month"),
-          systemRole,
-        )
-      }
-
-      @DisplayName("works")
-      @Nested
-      inner class HappyPath {
-        @Test
-        fun `returns reopened report counts for whole estate by week`() {
-          webTestClient.get().uri("$url/whole-estate-per-week")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-
-        @Test
-        fun `returns reopened report counts for whole estate by month`() {
-          webTestClient.get().uri(url + "/whole-estate-per-month")
-            .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
-            .header("Content-Type", "application/json")
-            .exchange()
-            .expectStatus().isOk
-        }
-      }
-    }
-
-    @DisplayName("GET /reports/incident-reopened-count-per-location")
-    @Nested
-    inner class RunReopenedCountPerLocationReports {
-      private val url = "/reports/incident-reopened-count-per-location"
-
-      @DisplayName("is secured")
-      @Nested
-      inner class Security {
-        @DisplayName("by location per week")
-        @TestFactory
-        fun reopenedCountLocationByWeekEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/by-location-per-week"),
-          systemRole,
-        )
-
-        @DisplayName("by location per month")
-        @TestFactory
-        fun reopenedCountLocationByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
-          webTestClient.get().uri("$url/by-location-per-month"),
+        fun reopenedCountByMonthEndpointsRequiresAuthorisation() = endpointRequiresAuthorisation(
+          webTestClient.get().uri("$url/per-month"),
           systemRole,
         )
       }
@@ -1158,10 +1112,9 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
       @DisplayName("works")
       @Nested
       inner class HappyPath {
-
         @Test
-        fun `returns reopened report counts for locations by week`() {
-          webTestClient.get().uri("$url/by-location-per-week")
+        fun `returns reopened report counts by week`() {
+          webTestClient.get().uri("$url/per-week")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()
@@ -1169,8 +1122,8 @@ class DprReportingIntegrationTest : SqsIntegrationTestBase() {
         }
 
         @Test
-        fun `returns reopened report counts for locations by month`() {
-          webTestClient.get().uri(url + "/by-location-per-month")
+        fun `returns reopened report counts by month`() {
+          webTestClient.get().uri(url + "/per-month")
             .headers(setAuthorisation(roles = listOf(systemRole), scopes = listOf("read")))
             .header("Content-Type", "application/json")
             .exchange()

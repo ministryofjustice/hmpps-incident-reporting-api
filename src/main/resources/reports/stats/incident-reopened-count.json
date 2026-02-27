@@ -1,7 +1,7 @@
 {
   "id": "incident-reopened-count",
-  "name": "Re-opened report counts",
-  "description": "Counts of previously completed reports that have been re-opened for whole prison estate.",
+  "name": "Re-opened report counts by location",
+  "description": "Counts of previously completed reports that have been re-opened by location.",
   "metadata": {
     "author": "Josh Jones",
     "version": "1.0.0",
@@ -35,10 +35,10 @@
   ],
   "dataset": [
     {
-      "id": "whole-estate-per-week",
-      "name": "Whole estate / week",
+      "id": "per-week",
+      "name": "Location / week",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('week', changed_at) AS DATE) as week, to_char(min(changed_at), 'DD/MM/YYYY') as min_date, to_char(max(changed_at), 'DD/MM/YYYY') as max_date, count(report_id) as reopened_count\nfrom status_history\nwhere status = 'REOPENED'\ngroup by week",
+      "query": "select Cast(Date_trunc('week', sh.changed_at) AS DATE) as week, to_char(min(sh.changed_at), 'DD/MM/YYYY') as min_date, to_char(max(sh.changed_at), 'DD/MM/YYYY') as max_date,\n       COALESCE(r.location, 'All locations') as location,\n       COALESCE(ct.description, 'All incident types') as incident_type,\n       count(sh.report_id) as reopened_count\nfrom status_history as sh\nleft join (\n    select location, type, id from report\n) as r\non sh.report_id = r.id\nleft join (\n    select code, description\n    from constant_type\n) as ct\non r.type = ct.code\nwhere status = 'REOPENED'\ngroup by week, ROLLUP(r.location), ROLLUP(ct.description)",
       "schema": {
         "field": [
           {
@@ -54,6 +54,14 @@
             "type": "date"
           },
           {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "incident_type",
+            "type": "string"
+          },
+          {
             "name": "reopened_count",
             "type": "long"
           }
@@ -61,10 +69,10 @@
       }
     },
     {
-      "id": "whole-estate-per-month",
-      "name": "Whole estate / month",
+      "id": "per-month",
+      "name": "Location / month",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('month', changed_at) AS DATE) as month, to_char(min(changed_at), 'DD/MM/YYYY') as min_date, to_char(max(changed_at), 'DD/MM/YYYY') as max_date, count(report_id) as reopened_count\nfrom status_history\nwhere status = 'REOPENED'\ngroup by month",
+      "query": "select Cast(Date_trunc('month', sh.changed_at) AS DATE) as month, to_char(min(sh.changed_at), 'DD/MM/YYYY') as min_date, to_char(max(sh.changed_at), 'DD/MM/YYYY') as max_date,\n       COALESCE(r.location, 'All locations') as location,\n       COALESCE(ct.description, 'All incident types') as incident_type,\n       count(sh.report_id) as reopened_count\nfrom status_history as sh\nleft join (\n    select location, type, id from report\n) as r\non sh.report_id = r.id\nleft join (\n    select code, description\n    from constant_type\n) as ct\non r.type = ct.code\nwhere status = 'REOPENED'\ngroup by month, ROLLUP(r.location), ROLLUP(ct.description)",
       "schema": {
         "field": [
           {
@@ -80,8 +88,45 @@
             "type": "date"
           },
           {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "incident_type",
+            "type": "string"
+          },
+          {
             "name": "reopened_count",
             "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "id": "locations",
+      "name": "Locations",
+      "datasource": "replicaDataSource",
+      "query": "select DISTINCT(location) as location\nfrom report\nwhere source = 'DPS' and location not in ('NORTH', 'SOUTH')\nUNION ALL\nselect 'All locations' as location",
+      "schema": {
+        "field": [
+          {
+            "name": "location",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "types",
+      "name": "Incident Types",
+      "datasource": "replicaDataSource",
+      "query": "SELECT DISTINCT(description) FROM constant_type_family\nUNION ALL\nselect 'All incident types' as description",
+      "schema": {
+        "field": [
+          {
+            "name": "description",
+            "display": "Type description",
+            "type": "string"
           }
         ]
       }
@@ -89,11 +134,11 @@
   ],
   "report": [
     {
-      "id": "whole-estate-per-week",
-      "name": "Whole estate / week",
-      "description": "Count of incident reports re-opened for whole prison estate per week.",
+      "id": "per-week",
+      "name": "Location / week",
+      "description": "Count of incident reports re-opened per location per week",
       "version": "1.0.0",
-      "dataset": "$ref:whole-estate-per-week",
+      "dataset": "$ref:per-week",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -118,6 +163,38 @@
             }
           },
           {
+            "name": "$ref:location",
+            "display": "Location",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "dynamicoptions": {
+                "returnAsStaticOptions": true,
+                "dataset": "locations",
+                "name": "location",
+                "display": "location"
+              }
+            }
+          },
+          {
+            "name": "$ref:incident_type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "dynamicoptions": {
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "description",
+                "display": "description"
+              }
+            }
+          },
+          {
             "name": "$ref:reopened_count",
             "display": "Number of reports <br/>re-opened",
             "sortable": true,
@@ -129,11 +206,11 @@
       "destination": []
     },
     {
-      "id": "whole-estate-per-month",
-      "name": "Whole estate / month",
-      "description": "Count of incident reports re-opened for whole prison estate per month.",
+      "id": "per-month",
+      "name": "Location / month",
+      "description": "Count of incident reports re-opened per location per month.",
       "version": "1.0.0",
-      "dataset": "$ref:whole-estate-per-month",
+      "dataset": "$ref:per-month",
       "policy": [],
       "render": "HTML",
       "feature": [
@@ -155,6 +232,38 @@
             "filter": {
               "type": "daterange",
               "default": "today(-3,months) - today()"
+            }
+          },
+          {
+            "name": "$ref:location",
+            "display": "Location",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "dynamicoptions": {
+                "returnAsStaticOptions": true,
+                "dataset": "locations",
+                "name": "location",
+                "display": "location"
+              }
+            }
+          },
+          {
+            "name": "$ref:incident_type",
+            "display": "Incident type",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false,
+            "filter": {
+              "type": "multiselect",
+              "dynamicoptions": {
+                "returnAsStaticOptions": true,
+                "dataset": "types",
+                "name": "description",
+                "display": "description"
+              }
             }
           },
           {
