@@ -29,7 +29,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("uk.gov.justice.service.hmpps:hmpps-digital-prison-reporting-lib:10.0.2")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.25.0")
-  implementation("io.opentelemetry:opentelemetry-extension-kotlin:1.59.0")
+  implementation("io.opentelemetry:opentelemetry-extension-kotlin:1.60.1")
 
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   implementation("com.zaxxer:HikariCP:7.0.2")
