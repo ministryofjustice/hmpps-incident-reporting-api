@@ -649,6 +649,20 @@
       }
     },
     {
+      "id": "all-locations",
+      "name": "Locations",
+      "datasource": "replicaDataSource",
+      "query": "select DISTINCT(location) as location\nfrom report\nwhere source = 'DPS'\nUNION ALL\nselect 'All locations' as location",
+      "schema": {
+        "field": [
+          {
+            "name": "location",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "id": "types",
       "name": "Incident Types",
       "datasource": "replicaDataSource",
@@ -1109,7 +1123,7 @@
               "type": "multiselect",
               "dynamicoptions": {
                 "returnAsStaticOptions": true,
-                "dataset": "locations",
+                "dataset": "all-locations",
                 "name": "location",
                 "display": "location"
               }
@@ -1307,7 +1321,7 @@
               "type": "multiselect",
               "dynamicoptions": {
                 "returnAsStaticOptions": true,
-                "dataset": "locations",
+                "dataset": "all-locations",
                 "name": "location",
                 "display": "location"
               }
@@ -1716,7 +1730,7 @@
               "type": "multiselect",
               "dynamicoptions": {
                 "returnAsStaticOptions": true,
-                "dataset": "locations",
+                "dataset": "all-locations",
                 "name": "location",
                 "display": "location"
               }
@@ -1788,7 +1802,7 @@
               "type": "multiselect",
               "dynamicoptions": {
                 "returnAsStaticOptions": true,
-                "dataset": "locations",
+                "dataset": "all-locations",
                 "name": "location",
                 "display": "location"
               }
