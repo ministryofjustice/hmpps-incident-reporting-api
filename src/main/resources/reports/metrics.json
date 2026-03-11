@@ -242,7 +242,7 @@
       "id": "report-actions-per-week",
       "name": "Report actions / week",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('week', cr.correction_requested_at) AS DATE) as week, to_char(min(cr.correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(cr.correction_requested_at), 'DD/MM/YYYY') as max_date,\n       COALESCE(r.location, 'All locations') as location,\n       COALESCE(ct.description, 'All incident types') as incident_type,\n       count(DISTINCT(cr.report_id)) as num_reports,\n       count(cr.id) as total_actions,\n       ROUND(CAST(count(cr.id) as numeric)/CAST(count(DISTINCT(cr.report_id)) as numeric),1) as avg_actions_per_report,\n       count(CASE WHEN user_action = 'REQUEST_REVIEW' and last_status = 'DRAFT' THEN cr.id END) as num_first_submissions,\n       count(CASE WHEN user_action = 'REQUEST_DUPLICATE' and last_status = 'DRAFT' THEN cr.id END) as num_first_req_dup,\n       count(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' and last_status = 'DRAFT' THEN cr.id END) as num_first_req_nr,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' and last_status = 'DRAFT' THEN cr.id END) as num_sent_back,\n       count(CASE WHEN user_action = 'HOLD' THEN cr.id END) as num_held,\n       count(CASE WHEN user_action = 'REQUEST_REVIEW' and last_status <> 'DRAFT' THEN cr.id END) as num_resubmissions,\n       count(CASE WHEN user_action = 'REQUEST_DUPLICATE' and last_status <> 'DRAFT' THEN cr.id END) as num_add_req_dup,\n       count(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' and last_status <> 'DRAFT' THEN cr.id END) as num_add_req_nr,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' and last_status <> 'DRAFT' THEN cr.id END) as num_sent_back_again,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' and last_status not in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN cr.id END) as num_recalled_ro,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' and last_status not in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE')  THEN cr.id END) as num_recalled_dw,\n       count(CASE WHEN user_action = 'CLOSE' THEN cr.id END) as num_closed,\n       count(CASE WHEN user_action = 'MARK_DUPLICATE' THEN cr.id END) as num_mark_dup,\n       count(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN cr.id END) as num_mark_nr,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' and last_status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN cr.id END) as num_reopened_ro,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' and last_status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE')  THEN cr.id END) as num_reopened_dw\nfrom correction_request as cr\n         left join (\n    select location, id, type, source from report\n) as r\non cr.report_id = r.id\nleft join (\n    select report_id, status as new_status, changed_by, lag(status) OVER (PARTITION by report_id order by changed_at) as last_status, count(status) OVER (PARTITION by report_id order by changed_at) - 2 as sh_sequence\n    from status_history\n) as sh\non cr.report_id = sh.report_id and cr.sequence = sh.sh_sequence and cr.correction_requested_by = sh.changed_by\nleft join (\n    select code, description\n    from constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by week, ROLLUP(r.location), ROLLUP(ct.description)",
+      "query": "select actions.week, actions.location, actions.incident_type, created.reports_created, actions.reports_actioned, actions.total_actions, actions.avg_actions_per_report,\n       actions.num_first_submissions, actions.num_first_req_dup, actions.num_first_req_nr, actions.num_sent_back,\n       actions.num_held, actions.num_resubmissions, actions.num_add_req_dup, actions.num_add_req_nr, actions.num_sent_back_again,\n       actions.num_recalled_ro, actions.num_recalled_dw, actions.num_closed, actions.num_mark_dup, actions.num_mark_nr,\n       actions.num_reopened_ro, actions.num_reopened_dw\nfrom (\nselect Cast(Date_trunc('week', cr.correction_requested_at) AS DATE) as week, to_char(min(cr.correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(cr.correction_requested_at), 'DD/MM/YYYY') as max_date,\n       COALESCE(r.location, 'All locations') as location,\n       COALESCE(ct.description, 'All incident types') as incident_type,\n       count(DISTINCT(cr.report_id)) as reports_actioned,\n       count(cr.id) as total_actions,\n       ROUND(CAST(count(cr.id) as numeric)/CAST(count(DISTINCT(cr.report_id)) as numeric),1) as avg_actions_per_report,\n       count(CASE WHEN user_action = 'REQUEST_REVIEW' and last_status = 'DRAFT' THEN cr.id END) as num_first_submissions,\n       count(CASE WHEN user_action = 'REQUEST_DUPLICATE' and last_status = 'DRAFT' THEN cr.id END) as num_first_req_dup,\n       count(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' and last_status = 'DRAFT' THEN cr.id END) as num_first_req_nr,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' and last_status = 'DRAFT' THEN cr.id END) as num_sent_back,\n       count(CASE WHEN user_action = 'HOLD' THEN cr.id END) as num_held,\n       count(CASE WHEN user_action = 'REQUEST_REVIEW' and last_status <> 'DRAFT' THEN cr.id END) as num_resubmissions,\n       count(CASE WHEN user_action = 'REQUEST_DUPLICATE' and last_status <> 'DRAFT' THEN cr.id END) as num_add_req_dup,\n       count(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' and last_status <> 'DRAFT' THEN cr.id END) as num_add_req_nr,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' and last_status <> 'DRAFT' THEN cr.id END) as num_sent_back_again,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' and last_status not in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN cr.id END) as num_recalled_ro,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' and last_status not in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE')  THEN cr.id END) as num_recalled_dw,\n       count(CASE WHEN user_action = 'CLOSE' THEN cr.id END) as num_closed,\n       count(CASE WHEN user_action = 'MARK_DUPLICATE' THEN cr.id END) as num_mark_dup,\n       count(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN cr.id END) as num_mark_nr,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' and last_status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN cr.id END) as num_reopened_ro,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' and last_status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE')  THEN cr.id END) as num_reopened_dw\nfrom correction_request as cr\nleft join (\n    select location, id, Cast(Date_trunc('week', created_at) AS DATE) as week_created, type, source from report\n) as r\non cr.report_id = r.id\nleft join (\n    select report_id, status as new_status, changed_by, lag(status) OVER (PARTITION by report_id order by changed_at) as last_status, count(status) OVER (PARTITION by report_id order by changed_at) - 2 as sh_sequence\n    from status_history\n) as sh\non cr.report_id = sh.report_id and cr.sequence = sh.sh_sequence and cr.correction_requested_by = sh.changed_by\nleft join (\n    select code, description\n    from constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by week, ROLLUP(r.location), ROLLUP(ct.description)) as actions\njoin (\nselect Cast(Date_trunc('week', created_at) AS DATE) as week,\n       COALESCE(location, 'All locations') as location,\n       COALESCE(type, 'All incident types') as incident_type,\n       COUNT(DISTINCT(id)) as reports_created\nfrom report\nwhere source = 'DPS'\ngroup by week, ROLLUP(location), ROLLUP(type) ) as created\non actions.week = created.week and actions.location = created.location and actions.incident_type = created.incident_type",
       "schema": {
         "field": [
           {
@@ -266,7 +266,11 @@
             "type": "string"
           },
           {
-            "name": "num_reports",
+            "name": "reports_created",
+            "type": "long"
+          },
+          {
+            "name": "reports_actioned",
             "type": "long"
           },
           {
@@ -348,7 +352,7 @@
       "id": "report-actions-per-month",
       "name": "Report actions / month",
       "datasource": "replicaDataSource",
-      "query": "select Cast(Date_trunc('month', cr.correction_requested_at) AS DATE) as month, to_char(min(cr.correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(cr.correction_requested_at), 'DD/MM/YYYY') as max_date,\n       COALESCE(r.location, 'All locations') as location,\n       COALESCE(ct.description, 'All incident types') as incident_type,\n       count(DISTINCT(cr.report_id)) as num_reports,\n       count(cr.id) as total_actions,\n       ROUND(CAST(count(cr.id) as numeric)/CAST(count(DISTINCT(cr.report_id)) as numeric),1) as avg_actions_per_report,\n       count(CASE WHEN user_action = 'REQUEST_REVIEW' and last_status = 'DRAFT' THEN cr.id END) as num_first_submissions,\n       count(CASE WHEN user_action = 'REQUEST_DUPLICATE' and last_status = 'DRAFT' THEN cr.id END) as num_first_req_dup,\n       count(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' and last_status = 'DRAFT' THEN cr.id END) as num_first_req_nr,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' and last_status = 'DRAFT' THEN cr.id END) as num_sent_back,\n       count(CASE WHEN user_action = 'HOLD' THEN cr.id END) as num_held,\n       count(CASE WHEN user_action = 'REQUEST_REVIEW' and last_status <> 'DRAFT' THEN cr.id END) as num_resubmissions,\n       count(CASE WHEN user_action = 'REQUEST_DUPLICATE' and last_status <> 'DRAFT' THEN cr.id END) as num_add_req_dup,\n       count(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' and last_status <> 'DRAFT' THEN cr.id END) as num_add_req_nr,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' and last_status <> 'DRAFT' THEN cr.id END) as num_sent_back_again,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' and last_status not in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN cr.id END) as num_recalled_ro,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' and last_status not in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE')  THEN cr.id END) as num_recalled_dw,\n       count(CASE WHEN user_action = 'CLOSE' THEN cr.id END) as num_closed,\n       count(CASE WHEN user_action = 'MARK_DUPLICATE' THEN cr.id END) as num_mark_dup,\n       count(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN cr.id END) as num_mark_nr,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' and last_status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN cr.id END) as num_reopened_ro,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' and last_status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE')  THEN cr.id END) as num_reopened_dw\nfrom correction_request as cr\n         left join (\n    select location, id, type, source from report\n) as r\non cr.report_id = r.id\nleft join (\n    select report_id, status as new_status, changed_by, lag(status) OVER (PARTITION by report_id order by changed_at) as last_status, count(status) OVER (PARTITION by report_id order by changed_at) - 2 as sh_sequence\n    from status_history\n) as sh\non cr.report_id = sh.report_id and cr.sequence = sh.sh_sequence and cr.correction_requested_by = sh.changed_by\nleft join (\n    select code, description\n    from constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by month, ROLLUP(r.location), ROLLUP(ct.description)",
+      "query": "select actions.month, actions.location, actions.incident_type, created.reports_created, actions.reports_actioned, actions.total_actions, actions.avg_actions_per_report,\n       actions.num_first_submissions, actions.num_first_req_dup, actions.num_first_req_nr, actions.num_sent_back,\n       actions.num_held, actions.num_resubmissions, actions.num_add_req_dup, actions.num_add_req_nr, actions.num_sent_back_again,\n       actions.num_recalled_ro, actions.num_recalled_dw, actions.num_closed, actions.num_mark_dup, actions.num_mark_nr,\n       actions.num_reopened_ro, actions.num_reopened_dw\nfrom (\nselect Cast(Date_trunc('month', cr.correction_requested_at) AS DATE) as month, to_char(min(cr.correction_requested_at), 'DD/MM/YYYY') as min_date, to_char(max(cr.correction_requested_at), 'DD/MM/YYYY') as max_date,\n       COALESCE(r.location, 'All locations') as location,\n       COALESCE(ct.description, 'All incident types') as incident_type,\n       count(DISTINCT(cr.report_id)) as reports_actioned,\n       count(cr.id) as total_actions,\n       ROUND(CAST(count(cr.id) as numeric)/CAST(count(DISTINCT(cr.report_id)) as numeric),1) as avg_actions_per_report,\n       count(CASE WHEN user_action = 'REQUEST_REVIEW' and last_status = 'DRAFT' THEN cr.id END) as num_first_submissions,\n       count(CASE WHEN user_action = 'REQUEST_DUPLICATE' and last_status = 'DRAFT' THEN cr.id END) as num_first_req_dup,\n       count(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' and last_status = 'DRAFT' THEN cr.id END) as num_first_req_nr,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' and last_status = 'DRAFT' THEN cr.id END) as num_sent_back,\n       count(CASE WHEN user_action = 'HOLD' THEN cr.id END) as num_held,\n       count(CASE WHEN user_action = 'REQUEST_REVIEW' and last_status <> 'DRAFT' THEN cr.id END) as num_resubmissions,\n       count(CASE WHEN user_action = 'REQUEST_DUPLICATE' and last_status <> 'DRAFT' THEN cr.id END) as num_add_req_dup,\n       count(CASE WHEN user_action = 'REQUEST_NOT_REPORTABLE' and last_status <> 'DRAFT' THEN cr.id END) as num_add_req_nr,\n       count(CASE WHEN user_action = 'REQUEST_CORRECTION' and last_status <> 'DRAFT' THEN cr.id END) as num_sent_back_again,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' and last_status not in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN cr.id END) as num_recalled_ro,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' and last_status not in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE')  THEN cr.id END) as num_recalled_dw,\n       count(CASE WHEN user_action = 'CLOSE' THEN cr.id END) as num_closed,\n       count(CASE WHEN user_action = 'MARK_DUPLICATE' THEN cr.id END) as num_mark_dup,\n       count(CASE WHEN user_action = 'MARK_NOT_REPORTABLE' THEN cr.id END) as num_mark_nr,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'REPORTING_OFFICER' and last_status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE') THEN cr.id END) as num_reopened_ro,\n       count(CASE WHEN user_action = 'RECALL' AND user_type = 'DATA_WARDEN' and last_status in ('CLOSED', 'DUPLICATE', 'NOT_REPORTABLE')  THEN cr.id END) as num_reopened_dw\nfrom correction_request as cr\nleft join (\n    select location, id, Cast(Date_trunc('month', created_at) AS DATE) as month_created, type, source from report\n) as r\non cr.report_id = r.id\nleft join (\n    select report_id, status as new_status, changed_by, lag(status) OVER (PARTITION by report_id order by changed_at) as last_status, count(status) OVER (PARTITION by report_id order by changed_at) - 2 as sh_sequence\n    from status_history\n) as sh\non cr.report_id = sh.report_id and cr.sequence = sh.sh_sequence and cr.correction_requested_by = sh.changed_by\nleft join (\n    select code, description\n    from constant_type\n) as ct\non r.type = ct.code\nwhere r.source = 'DPS'\ngroup by month, ROLLUP(r.location), ROLLUP(ct.description)) as actions\njoin (\nselect Cast(Date_trunc('month', created_at) AS DATE) as month,\n       COALESCE(location, 'All locations') as location,\n       COALESCE(type, 'All incident types') as incident_type,\n       COUNT(DISTINCT(id)) as reports_created\nfrom report\nwhere source = 'DPS'\ngroup by month, ROLLUP(location), ROLLUP(type) ) as created\non actions.month = created.month and actions.location = created.location and actions.incident_type = created.incident_type",
       "schema": {
         "field": [
           {
@@ -372,7 +376,11 @@
             "type": "string"
           },
           {
-            "name": "num_reports",
+            "name": "reports_created",
+            "type": "long"
+          },
+          {
+            "name": "reports_actioned",
             "type": "long"
           },
           {
@@ -639,6 +647,20 @@
       "name": "Locations",
       "datasource": "replicaDataSource",
       "query": "select DISTINCT(location) as location\nfrom report\nwhere source = 'DPS' and location not in ('NORTH', 'SOUTH')\nUNION ALL\nselect 'All locations' as location",
+      "schema": {
+        "field": [
+          {
+            "name": "location",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all-locations",
+      "name": "Locations",
+      "datasource": "replicaDataSource",
+      "query": "select DISTINCT(location) as location\nfrom report\nwhere source = 'DPS'\nUNION ALL\nselect 'All locations' as location",
       "schema": {
         "field": [
           {
@@ -1109,7 +1131,7 @@
               "type": "multiselect",
               "dynamicoptions": {
                 "returnAsStaticOptions": true,
-                "dataset": "locations",
+                "dataset": "all-locations",
                 "name": "location",
                 "display": "location"
               }
@@ -1132,7 +1154,14 @@
             }
           },
           {
-            "name": "$ref:num_reports",
+            "name": "$ref:reports_created",
+            "display": "Reports <br/>created",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:reports_actioned",
             "display": "Reports <br/>actioned",
             "sortable": true,
             "visible": "true",
@@ -1307,7 +1336,7 @@
               "type": "multiselect",
               "dynamicoptions": {
                 "returnAsStaticOptions": true,
-                "dataset": "locations",
+                "dataset": "all-locations",
                 "name": "location",
                 "display": "location"
               }
@@ -1330,7 +1359,14 @@
             }
           },
           {
-            "name": "$ref:num_reports",
+            "name": "$ref:reports_created",
+            "display": "Reports <br/>created",
+            "sortable": true,
+            "visible": "true",
+            "defaultsort": false
+          },
+          {
+            "name": "$ref:reports_actioned",
             "display": "Reports <br/>actioned",
             "sortable": true,
             "visible": "true",
@@ -1716,7 +1752,7 @@
               "type": "multiselect",
               "dynamicoptions": {
                 "returnAsStaticOptions": true,
-                "dataset": "locations",
+                "dataset": "all-locations",
                 "name": "location",
                 "display": "location"
               }
@@ -1788,7 +1824,7 @@
               "type": "multiselect",
               "dynamicoptions": {
                 "returnAsStaticOptions": true,
-                "dataset": "locations",
+                "dataset": "all-locations",
                 "name": "location",
                 "display": "location"
               }
