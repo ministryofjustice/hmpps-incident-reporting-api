@@ -1,44 +1,3 @@
-# 2. Architecture Overview
-
-[Next >>](0003-migration.md)
-
-
-Date: 2024-02-03
-
-## Status
-
-Accepted
-
-## Context
-
-Incident Reporting System (IRS) is a new system that will be used to record incidents that occur in prisons. This document illustrates where this fits into the wider architecture.
-
-### Components
-High level set of components that would make up the flow of data around the incident reporting service.
-
-#### Proposed Architecture
-The proposed architecture for the incident reporting system (IRS) is as follows:
-
-- **Incident Reporting API** - A RESTful API to allow the creation of incidents, viewing and managing existing incidents.
-The API models new incident data seperately from the existing migrated IR data from NOMIS.
-The API will receive updates from NOMIS via Syscon APIs when reports are completed.
-
-- **Front end application** to allow staff to create, updated and view historical incident reports. Each incident type will be delivered in phases. For each support incident report that type will be removed from NOMIS, meaning that no new reports of that type can be created in NOMIS.
-
-- **Incident database** to store incident reports and all migrated data from NOMIS
-
-#### Other components and interactions with IRS
-- Digital DataHub (DH) - The DH system will eventually be the source of truth for reporting incident data. Initially reporting will be done from NOMIS and also with the incident service.
-- NOMIS - The legacy system that will be replaced by the new IRS.
-- Audit Service - The audit service will receive and record audit events from the IRS.
-- Analytics Platform (AP) - The analytics platform will obtain data sets from DH to provide insights and reporting.
-- Safety Diagnostic Tool (SDT) - The Safety Diagnostic Tool will obtain data from AP to provide insights and reporting.
-- Performance Hub (PH) - The Performance Hub will obtain data from AP to provide insights and reporting.
-- SYSCON Services - These services will migrate all incident data to IRS and synchronise (2 way)
-
-Below illustrate these components and how they interact with each other.
-
-```mermaid
 flowchart TB
 
   subgraph prisonStaff[Prison Staff]
@@ -189,6 +148,3 @@ flowchart TB
   classDef type stroke-width:0px, color:#fff, fill:transparent, font-size:12px
   classDef description stroke-width:0px, color:#fff, fill:transparent, font-size:13px
   style incidentReportingService stroke-width:2px
-```
-
-[Next >>](0003-migration.md)

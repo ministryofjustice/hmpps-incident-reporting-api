@@ -1,0 +1,71 @@
+graph TD
+    subgraph ClientLayer [Client Layer]
+        HMPPSUI[HMPPS Incident Reporting UI]
+        ExternalSystems[External Systems / API Clients]
+    end
+
+    subgraph HMppsIncidentReportingAPI [HMPPS Incident Reporting API]
+        subgraph CoreTech [Core Technologies]
+            Kotlin[Kotlin 2.1+]
+            SpringBoot[Spring Boot 3.x]
+            SpringDataJPA[Spring Data JPA]
+            SpringSecurity[Spring Security / OAuth2]
+            Flyway[Flyway Database Migrations]
+            Gradle[Gradle 8.x / Kotlin DSL]
+        end
+
+        APIControllers[REST Controllers]
+        Services[Business Services]
+        Repositories[JPA Repositories]
+        NomisSync[Nomis Sync Service]
+        EventService[Event & Audit Service]
+
+        APIControllers --> Services
+        Services --> Repositories
+        Services --> EventService
+        NomisSync --> Repositories
+    end
+
+    subgraph Infrastructure [Infrastructure & Persistence]
+        Postgres[(PostgreSQL Database)]
+        SNS[AWS SNS - Domain Events]
+        SQS[AWS SQS - Incoming Events]
+        AppInsights[Azure Application Insights]
+    end
+
+    subgraph ExternalServices [External HMPPS Services]
+        HMPPSAuth[HMPPS Auth - OAuth2]
+        PrisonerSearch[Prisoner Search API]
+        ManageUsers[Manage Users API]
+        AuditService[HMPPS Audit Service]
+        NOMIS[NOMIS / Syscon]
+    end
+
+  %% API calls
+  HMPPSUI --> APIControllers
+  ExternalSystems --> APIControllers
+
+    %% Internal API Flow
+    Repositories --> Postgres
+
+    %% External Communications
+    APIControllers -- OAuth2 / JWT --- HMPPSAuth
+    Services -- WebClient --> PrisonerSearch
+    Services -- WebClient --> ManageUsers
+    EventService -- SNS --> SNS
+    EventService -- Audit Client --> AuditService
+    NomisSync -- Sync --> NOMIS
+
+    %% Observability
+    HMppsIncidentReportingAPI -- Telemetry --> AppInsights
+
+    %% Styling
+    classDef tech fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef internal fill:#d5eaf6,stroke:#333,stroke-width:2px;
+    classDef external fill:#a8b5bd,stroke:#333,stroke-width:2px;
+    classDef infra fill:#fff2cc,stroke:#d6b656,stroke-width:2px;
+
+    class Kotlin,SpringBoot,SpringDataJPA,SpringSecurity,Flyway,Gradle tech;
+    class APIControllers,Services,Repositories,NomisSync,EventService internal;
+    class HMPPSAuth,PrisonerSearch,ManageUsers,AuditService,NOMIS external;
+    class Postgres,Redis,SNS,SQS,AppInsights infra;
