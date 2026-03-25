@@ -101,4 +101,4 @@ dpr:
     system:
       role: DPR_API_ACCESS
   report:
-    views: self_harm_summary_view,serious_sexual_assault_summary_view
+    views:
