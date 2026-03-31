@@ -97,8 +97,6 @@ management:
 dpr:
   lib:
     definition:
-      locations: "reports/incident-report.json, reports/incident-report-pecs.json, reports/metrics.json"
+      locations: "reports/metrics.json"
     system:
       role: DPR_API_ACCESS
-  report:
-    views:
