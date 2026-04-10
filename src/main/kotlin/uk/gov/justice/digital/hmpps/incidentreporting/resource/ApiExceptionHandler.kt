@@ -16,13 +16,11 @@ import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.resource.NoResourceFoundException
-import uk.gov.justice.digital.hmpps.digitalprisonreportinglib.exception.UserAuthorisationException
 import uk.gov.justice.digital.hmpps.incidentreporting.service.PrisonersNotFoundException
 import java.util.UUID
 import kotlin.reflect.KClass
@@ -71,21 +69,6 @@ class ApiExceptionHandler {
         ErrorResponse(
           status = HttpStatus.UNSUPPORTED_MEDIA_TYPE,
           userMessage = "Validation failure: Request format not supported: ${e.message}",
-          developerMessage = e.message,
-        ),
-      )
-  }
-
-  @ExceptionHandler(UserAuthorisationException::class)
-  @ResponseStatus(FORBIDDEN)
-  fun handleUserAuthorisationException(e: UserAuthorisationException): ResponseEntity<ErrorResponse> {
-    log.error("Access denied exception: {}", e.message)
-    return ResponseEntity
-      .status(FORBIDDEN)
-      .body(
-        ErrorResponse(
-          status = FORBIDDEN,
-          userMessage = "User authorisation failure: ${e.message}",
           developerMessage = e.message,
         ),
       )
