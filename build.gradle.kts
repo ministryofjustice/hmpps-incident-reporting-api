@@ -86,7 +86,7 @@ tasks {
   }
 
   withType<KotlinCompile> {
-    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
+    compilerOptions.jvmTarget = JvmTarget.JVM_25
   }
 }
 

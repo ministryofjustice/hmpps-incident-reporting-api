@@ -16,8 +16,6 @@ class WebClientConfiguration(
   private val authBaseUri: String,
   @param:Value($$"${api.base.url.prisoner-search}")
   private val prisonerSearchUri: String,
-  @param:Value($$"${api.base.url.manage.users}")
-  private val manageUsersApiUri: String,
   @param:Value($$"${api.timeout:20s}")
   private val healthTimeout: Duration,
 ) {
@@ -36,21 +34,6 @@ class WebClientConfiguration(
     authorizedClientManager,
     registrationId = SYSTEM_USERNAME,
     url = prisonerSearchUri,
-    healthTimeout,
-  )
-
-  @Bean
-  fun manageUsersHealthWebClient(builder: WebClient.Builder): WebClient =
-    builder.healthWebClient(manageUsersApiUri, healthTimeout)
-
-  @Bean
-  fun manageUsersWebClient(
-    authorizedClientManager: OAuth2AuthorizedClientManager,
-    builder: WebClient.Builder,
-  ): WebClient = builder.authorisedWebClient(
-    authorizedClientManager,
-    registrationId = SYSTEM_USERNAME,
-    url = manageUsersApiUri,
     healthTimeout,
   )
 }
