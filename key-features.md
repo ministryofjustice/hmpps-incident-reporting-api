@@ -102,7 +102,6 @@ graph TD
     subgraph ExternalServices [External HMPPS Services]
         HMPPSAuth[HMPPS Auth - OAuth2]
         PrisonerSearch[Prisoner Search API]
-        ManageUsers[Manage Users API]
         AuditService[HMPPS Audit Service]
         NOMIS[NOMIS / Syscon]
     end
@@ -117,7 +116,6 @@ graph TD
     %% External Communications
     APIControllers -- OAuth2 / JWT --- HMPPSAuth
     Services -- WebClient --> PrisonerSearch
-    Services -- WebClient --> ManageUsers
     EventService -- SNS --> SNS
     EventService -- Audit Client --> AuditService
     NomisSync -- Sync --> NOMIS
@@ -133,7 +131,7 @@ graph TD
 
     class Kotlin,SpringBoot,SpringDataJPA,SpringSecurity,Flyway,Gradle tech;
     class APIControllers,Services,Repositories,NomisSync,EventService internal;
-    class HMPPSAuth,PrisonerSearch,ManageUsers,AuditService,NOMIS external;
+    class HMPPSAuth,PrisonerSearch,AuditService,NOMIS external;
     class Postgres,Redis,SNS,SQS,AppInsights infra;
 
 ```
