@@ -31,10 +31,9 @@ data class CreateReportRequest(
   @param:Schema(
     description = "Brief title describing the incident",
     requiredMode = Schema.RequiredMode.REQUIRED,
-    minLength = 5,
-    maxLength = 255,
+    minLength = 5
   )
-  @field:Size(min = 5, max = 255)
+  @field:Size(min = 5)
   val title: String,
   @param:Schema(
     description = "Longer summary of the incident",

@@ -41,9 +41,8 @@ data class UpdateReportRequest(
     nullable = true,
     defaultValue = "null",
     minLength = 5,
-    maxLength = 255,
   )
-  @field:Size(min = 5, max = 255)
+  @field:Size(min = 5)
   val title: String? = null,
   @param:Schema(
     description = "Longer summary of the incident",
