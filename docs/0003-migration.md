@@ -19,7 +19,7 @@ There will be a one-off migration of all completed incidents from NOMIS to the n
 
 The proposed approach will be :-
 * Migrate all incident reporting data from NOMIS to the new service in a one of process. These records will be role protected (mainly read-only for most users) and will be used for historical reporting and analysis. Records will be read only and can only be "edited" in NOMIS.
-* In NOMIS, switch off the ability to create new incidents of agreed types. E.g. Self harm, Assaults and Finds. No new incidents of these types will be able to be created in NOMIS. Existing records can still be edited.
+* In NOMIS, switch off the ability to create new incidents of agreed types. E.g. Self-harm, Assaults and Finds. No new incidents of these types will be able to be created in NOMIS. Existing records can still be edited.
 * Incident types can be removed on a per prison basis if needed (although not recommended), for example a set of prisons can only create new incidents (of certain types) in the new service (IRS). Other prisons can continue to use NOMIS for these types.
 * SYSCON will need to modify the incident reporting screens in NOMIS to be "edit only" for certain incident types on a per-prison basis. Config to drive this process from a screen will be required.
 * Existing reports created in NOMIS in progress it will be kept in sync to the new IRS.
