@@ -150,7 +150,7 @@ class NomisSyncServiceTest {
         NomisHistory(
           questionnaireId = 13212,
           type = Type.SELF_HARM_1.nomisType.toString(),
-          description = "Self harm 1",
+          description = "Self-harm 1",
           questions = listOf(),
           incidentChangeDateTime = now.minusDays(1),
           incidentChangeStaff = NomisStaff(

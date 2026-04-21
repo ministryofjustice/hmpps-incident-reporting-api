@@ -50,7 +50,7 @@ enum class TypeFamily(
   MOBILE_PHONE("Mobile phone"),
   RADIO_COMPROMISE("Radio compromise"),
   RELEASE_IN_ERROR("Release in error"),
-  SELF_HARM("Self harm"),
+  SELF_HARM("Self-harm"),
   TEMPORARY_RELEASE_FAILURE("Temporary release failure"),
   TOOL_LOSS("Tool or implement loss"),
 }
