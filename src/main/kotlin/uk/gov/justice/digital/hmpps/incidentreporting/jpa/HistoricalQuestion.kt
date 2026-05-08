@@ -10,7 +10,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistoryResponse
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -87,38 +86,6 @@ class HistoricalQuestion(
   override fun toString(): String {
     return "HistoricalQuestion(id=$id, historyId=${history.id}, sequence=$sequence, code=$code)"
   }
-
-  fun updateResponses(nomisResponses: List<NomisHistoryResponse>, reportedAt: LocalDateTime) {
-    this.responses.retainAll(
-      nomisResponses.map { nomisResponse ->
-        val newResponse = createResponse(nomisResponse, reportedAt)
-        newResponse?.let { newVersion ->
-          this.responses.find { it == newVersion }?.apply {
-            response = newVersion.response
-            responseDate = newVersion.responseDate
-            additionalInformation = newVersion.additionalInformation
-            recordedBy = newVersion.recordedBy
-            recordedAt = newVersion.recordedAt
-          } ?: addResponse(newVersion)
-        }
-      }.toSet(),
-    )
-  }
-
-  fun createResponse(nomisResponse: NomisHistoryResponse, recordedAt: LocalDateTime): HistoricalResponse? =
-    nomisResponse.answer?.let {
-      HistoricalResponse(
-        historicalQuestion = this,
-        code = nomisResponse.questionResponseId.toString(),
-        response = it,
-        label = it,
-        sequence = nomisResponse.responseSequence,
-        responseDate = nomisResponse.responseDate,
-        additionalInformation = nomisResponse.comment,
-        recordedBy = nomisResponse.recordingStaff.username,
-        recordedAt = recordedAt,
-      )
-    }
 
   fun addResponse(response: HistoricalResponse): HistoricalResponse {
     this.responses.add(response)
