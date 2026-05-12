@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
-import jakarta.validation.ValidationException
-
 /**
  * The role of a staff member in an incident.
  *
@@ -33,10 +31,4 @@ enum class StaffRole(
   SUSPECTED_INVOLVEMENT("Suspected involvement", "SUSIN"),
   VICTIM("Victim", "VICT"),
   WITNESS("Witness", "WIT"),
-  ;
-
-  companion object {
-    fun fromNomisCode(code: String): StaffRole = entries.find { it.nomisCodes.contains(code) }
-      ?: throw ValidationException("Unknown NOMIS staff role code: $code")
-  }
 }

@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
-import jakarta.validation.ValidationException
-
 /**
  * The role of a prisoner in an incident.
  *
@@ -33,10 +31,5 @@ enum class PrisonerRole(
   SUSPECTED_INVOLVED("Suspected involved", "SUSINV"),
   TEMPORARY_RELEASE_FAILURE("Temporary release failure", "TRF"),
   VICTIM("Victim", "VICT"),
-  ;
-
-  companion object {
-    fun fromNomisCode(code: String): PrisonerRole = entries.find { it.nomisCode == code }
-      ?: throw ValidationException("Unknown NOMIS prisoner role code: $code")
-  }
+  UNLAWFUL_DETENTION("Unlawful detention", "UNLAWF"),
 }

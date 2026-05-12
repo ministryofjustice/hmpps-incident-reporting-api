@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
-import jakarta.validation.ValidationException
-
 /**
  * The outcome of a prisoner’s involvement in an incident.
  *
@@ -32,10 +30,4 @@ enum class PrisonerOutcome(
   SEEN_OUTSIDE_HOSP("Seen by outside hospital", "OUTH"),
   TRANSFER("Transfer", "TRN"),
   TRIAL("Trial", "TRL"),
-  ;
-
-  companion object {
-    fun fromNomisCode(code: String): PrisonerOutcome = entries.find { it.nomisCode == code }
-      ?: throw ValidationException("Unknown NOMIS prisoner outcome code: $code")
-  }
 }

@@ -53,4 +53,5 @@ enum class TypeFamily(
   SELF_HARM("Self-harm"),
   TEMPORARY_RELEASE_FAILURE("Temporary release failure"),
   TOOL_LOSS("Tool or implement loss"),
+  UNLAWFUL_DETENTION("Unlawful detention"),
 }
