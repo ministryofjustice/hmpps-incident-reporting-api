@@ -31,5 +31,5 @@ enum class PrisonerRole(
   SUSPECTED_INVOLVED("Suspected involved", "SUSINV"),
   TEMPORARY_RELEASE_FAILURE("Temporary release failure", "TRF"),
   VICTIM("Victim", "VICT"),
-  UNLAWFUL_DETENTION("Unlawful detention", "UNLAWF"),
+  UNLAWFULLY_DETAINED("Unlawfully detained", "UNLAWF"),
 }
