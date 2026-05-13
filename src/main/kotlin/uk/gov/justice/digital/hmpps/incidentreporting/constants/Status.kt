@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
-import jakarta.validation.ValidationException
-
 /**
  * The status of an incident report.
  *
@@ -28,10 +26,4 @@ enum class Status(
   NOT_REPORTABLE("Not reportable", null, true),
   REOPENED("Reopened", null, true),
   WAS_CLOSED("Was closed", null, true),
-  ;
-
-  companion object {
-    fun fromNomisCode(status: String): Status = Status.entries.find { it.nomisStatus == status }
-      ?: throw ValidationException("Unknown NOMIS incident status: $status")
-  }
 }
