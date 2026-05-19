@@ -253,8 +253,8 @@ class ReportResource(
     @PageableDefault(page = 0, size = 20, sort = ["incidentDateAndTime"], direction = Sort.Direction.DESC)
     pageable: Pageable,
   ): SimplePage<ReportBasic> {
-    if (pageable.pageSize > 50) {
-      throw ValidationException("Page size must be 50 or less")
+    if (pageable.pageSize > 1000) {
+      throw ValidationException("Page size must be 1000 or less")
     }
     val locations = location ?: emptyList()
     return reportService.getBasicReports(
