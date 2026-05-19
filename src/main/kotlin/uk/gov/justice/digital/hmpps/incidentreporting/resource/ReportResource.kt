@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
@@ -212,6 +213,20 @@ class ReportResource(
     @RequestParam(required = false)
     @Size(min = 3)
     involvingStaffUsername: String? = null,
+    @Parameter(
+      description = "Filter by given prisoner role",
+      example = "[PERPETRATOR]",
+      array = ArraySchema(
+        schema = Schema(implementation = PrisonerRole::class),
+        arraySchema = Schema(
+          requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+          nullable = true,
+          defaultValue = "null",
+        ),
+      ),
+    )
+    @RequestParam(required = false)
+    involvingPrisonerRole: List<PrisonerRole>? = null,
     @Schema(
       description = "Filter for incidents involving prisoners identified by prisoner number",
       requiredMode = Schema.RequiredMode.NOT_REQUIRED,
@@ -255,6 +270,7 @@ class ReportResource(
       reportedByUsername = reportedByUsername,
       involvingStaffUsername = involvingStaffUsername,
       involvingPrisonerNumber = involvingPrisonerNumber,
+      involvingPrisonerRoles = involvingPrisonerRole ?: emptyList(),
       userActions = userAction ?: emptyList(),
       pageable = pageable,
     )
