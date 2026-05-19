@@ -41,3 +41,14 @@ fun <T : Any, R, V> KProperty1<T, Collection<R>>.buildSpecForRelatedEntityProper
     criteriaBuilder.equal(relatedEntities.get<V>(property.name), value)
   }
 }
+
+/** Build «in» specification joining to a related entity (via a collection property) */
+fun <T : Any, R, V> KProperty1<T, Collection<R>>.buildSpecForRelatedEntityPropertyIn(
+  property: KProperty1<R, V>,
+  values: Collection<V>,
+): Specification<T> {
+  return Specification { root, _, criteriaBuilder ->
+    val relatedEntities: Join<R, T> = root.join(name)
+    criteriaBuilder.and(relatedEntities.get<V>(property.name).`in`(values))
+  }
+}

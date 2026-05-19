@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications
 
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
@@ -42,6 +43,12 @@ fun filterByInvolvedPrisoner(prisonerNumber: String) =
   Report::prisonersInvolved.buildSpecForRelatedEntityPropertyEqualTo(
     PrisonerInvolvement::prisonerNumber,
     prisonerNumber,
+  )
+
+fun filterByPrisonerRoles(prisonerRoles: Collection<PrisonerRole>) =
+  Report::prisonersInvolved.buildSpecForRelatedEntityPropertyIn(
+    PrisonerInvolvement::prisonerRole,
+    prisonerRoles,
   )
 
 fun filterByLastUserActions(userActions: Collection<UserAction>) = Report::lastUserAction.buildSpecForIn(userActions)
