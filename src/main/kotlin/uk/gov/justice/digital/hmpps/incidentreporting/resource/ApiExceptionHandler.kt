@@ -250,21 +250,6 @@ class ApiExceptionHandler {
       )
   }
 
-  @ExceptionHandler(ReportModifiedInDpsException::class)
-  fun handleReportModifedInDps(e: ReportModifiedInDpsException): ResponseEntity<ErrorResponse> {
-    log.debug(e.message)
-    return ResponseEntity
-      .status(HttpStatus.CONFLICT)
-      .body(
-        ErrorResponse(
-          status = HttpStatus.CONFLICT,
-          errorCode = ErrorCode.ReportModifedInDps,
-          userMessage = "${e.message}",
-          developerMessage = e.message,
-        ),
-      )
-  }
-
   @ExceptionHandler(QuestionsNotFoundException::class)
   fun handleQuestionsNotFound(e: QuestionsNotFoundException): ResponseEntity<ErrorResponse> {
     log.debug(e.message)
@@ -333,12 +318,6 @@ class ReportAlreadyExistsException(
   description: String,
 ) : Exception("Report already exists: $description") {
   @Suppress("unused")
-  constructor(id: UUID) : this(id.toString())
-}
-
-class ReportModifiedInDpsException(
-  description: String,
-) : Exception("Report last modified in DPS: $description") {
   constructor(id: UUID) : this(id.toString())
 }
 

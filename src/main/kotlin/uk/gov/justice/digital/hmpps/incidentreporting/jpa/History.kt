@@ -18,8 +18,6 @@ import org.hibernate.Hibernate
 import org.hibernate.annotations.SortNatural
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.dto.IncidentTypeHistory
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistory
-import uk.gov.justice.digital.hmpps.incidentreporting.dto.nomis.NomisHistoryQuestion
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.helper.EntityOpen
 import java.time.LocalDateTime
 import java.util.SortedSet
@@ -97,28 +95,6 @@ class History(
     return "History(id=$id, reportReference=${report.reportReference}, changedAt=$changedAt, type=$type)"
   }
 
-  fun findQuestion(code: String, sequence: Int): HistoricalQuestion? =
-    this.questions.firstOrNull { it.code == code && it.sequence == sequence }
-
-  fun updateQuestionAndResponses(nomisHistory: NomisHistory, recordedAt: LocalDateTime) {
-    this.questions.retainAll(
-      nomisHistory.questions.map { nomisQuestion ->
-        val question = this.updateOrAddQuestion(nomisQuestion)
-        question.updateResponses(nomisQuestion.answers, recordedAt)
-        question
-      }.toSet(),
-    )
-  }
-
-  private fun updateOrAddQuestion(nomisQuestion: NomisHistoryQuestion): HistoricalQuestion = findQuestion(
-    code = nomisQuestion.questionId.toString(),
-    sequence = nomisQuestion.sequence,
-  )?.apply {
-    question = nomisQuestion.question
-  } ?: addQuestion(nomisQuestion).also { newQuestion ->
-    questions.add(newQuestion)
-  }
-
   fun addQuestion(
     code: String,
     question: String,
@@ -135,13 +111,6 @@ class History(
       additionalInformation = additionalInformation,
     ).also { questions.add(it) }
   }
-
-  fun addQuestion(historyQuestion: NomisHistoryQuestion): HistoricalQuestion = this.addQuestion(
-    code = historyQuestion.questionId.toString(),
-    sequence = historyQuestion.sequence,
-    question = historyQuestion.question,
-    label = historyQuestion.question,
-  )
 
   fun toDto() = HistoryDto(
     type = type,

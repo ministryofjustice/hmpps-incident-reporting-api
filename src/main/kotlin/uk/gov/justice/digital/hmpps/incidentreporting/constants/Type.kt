@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.incidentreporting.constants
 
-import jakarta.validation.ValidationException
-
 /**
  * The type of reportable incident.
  *
@@ -73,12 +71,8 @@ enum class Type(
   TEMPORARY_RELEASE_FAILURE_3(TypeFamily.TEMPORARY_RELEASE_FAILURE, "TRF2", active = false),
   TEMPORARY_RELEASE_FAILURE_4(TypeFamily.TEMPORARY_RELEASE_FAILURE, "TRF3"),
   TOOL_LOSS_1(TypeFamily.TOOL_LOSS, "TOOL_LOSS"),
+  UNLAWFUL_DETENTION_1(TypeFamily.UNLAWFUL_DETENTION, "UNLAW_DET"),
   ;
 
   val description = typeFamily.description
-
-  companion object {
-    fun fromNomisCode(type: String): Type = entries.find { it.nomisType == type }
-      ?: throw ValidationException("Unknown NOMIS incident type: $type")
-  }
 }
