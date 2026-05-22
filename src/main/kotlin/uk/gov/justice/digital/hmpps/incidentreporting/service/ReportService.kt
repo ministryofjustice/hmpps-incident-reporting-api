@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.incidentreporting.SYSTEM_USERNAME
 import uk.gov.justice.digital.hmpps.incidentreporting.config.trackEvent
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.InformationSource
+import uk.gov.justice.digital.hmpps.incidentreporting.constants.PrisonerRole
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Status
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.Type
 import uk.gov.justice.digital.hmpps.incidentreporting.constants.UserAction
@@ -35,6 +36,7 @@ import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterB
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByInvolvedStaff
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLastUserActions
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByLocations
+import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByPrisonerRoles
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReference
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedBy
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.specifications.filterByReportedDateFrom
@@ -79,6 +81,7 @@ class ReportService(
     reportedByUsername: String? = null,
     involvingStaffUsername: String? = null,
     involvingPrisonerNumber: String? = null,
+    involvingPrisonerRoles: List<PrisonerRole> = emptyList(),
     userActions: List<UserAction> = emptyList(),
     pageable: Pageable = PageRequest.of(0, 20, Sort.by("incidentDateAndTime").descending()),
   ): Page<ReportBasic> {
@@ -102,6 +105,9 @@ class ReportService(
         reportedByUsername?.let { add(filterByReportedBy(reportedByUsername)) }
         involvingStaffUsername?.let { add(filterByInvolvedStaff(involvingStaffUsername)) }
         involvingPrisonerNumber?.let { add(filterByInvolvedPrisoner(involvingPrisonerNumber)) }
+        if (involvingPrisonerRoles.isNotEmpty()) {
+          add(filterByPrisonerRoles(involvingPrisonerRoles))
+        }
         if (userActions.isNotEmpty()) {
           add(filterByLastUserActions(userActions))
         }

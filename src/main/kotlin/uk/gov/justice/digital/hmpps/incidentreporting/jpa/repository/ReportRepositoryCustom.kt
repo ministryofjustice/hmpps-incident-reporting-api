@@ -64,10 +64,13 @@ class ReportRepositoryCustomImpl(
     // Count query
     val countQuery = cb.createQuery(Long::class.java)
     val countRoot = countQuery.from(Report::class.java)
-    countQuery.select(cb.count(countRoot))
     specification?.let {
       countQuery.where(it.toPredicate(countRoot, countQuery, cb))
     }
+    // mirror Spring Data's SimpleJpaRepository: if the spec marked the query distinct
+    // (e.g. via a join to a collection), use COUNT(DISTINCT root) so duplicate joined rows
+    // don't inflate totalElements
+    countQuery.select(if (countQuery.isDistinct) cb.countDistinct(countRoot) else cb.count(countRoot))
     val total = entityManager.createQuery(countQuery).singleResult
 
     return PageImpl(results, pageable, total)

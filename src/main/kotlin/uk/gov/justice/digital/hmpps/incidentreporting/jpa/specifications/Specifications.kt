@@ -36,8 +36,23 @@ fun <T : Any, R, V> KProperty1<T, Collection<R>>.buildSpecForRelatedEntityProper
   property: KProperty1<R, V>,
   value: V,
 ): Specification<T> {
-  return Specification { root, _, criteriaBuilder ->
+  return Specification { root, query, criteriaBuilder ->
     val relatedEntities: Join<R, T> = root.join(name)
+    // join may produce duplicate root rows; deduplicate so pagination and COUNT are correct
+    query.distinct(true)
     criteriaBuilder.equal(relatedEntities.get<V>(property.name), value)
+  }
+}
+
+/** Build «in» specification joining to a related entity (via a collection property) */
+fun <T : Any, R, V> KProperty1<T, Collection<R>>.buildSpecForRelatedEntityPropertyIn(
+  property: KProperty1<R, V>,
+  values: Collection<V>,
+): Specification<T> {
+  return Specification { root, query, criteriaBuilder ->
+    val relatedEntities: Join<R, T> = root.join(name)
+    // join may produce duplicate root rows; deduplicate so pagination and COUNT are correct
+    query.distinct(true)
+    criteriaBuilder.and(relatedEntities.get<V>(property.name).`in`(values))
   }
 }
