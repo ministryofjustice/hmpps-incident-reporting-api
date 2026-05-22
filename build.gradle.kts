@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.gradle.PortForwardRedisTask
 import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.2.5"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.3.1"
   kotlin("plugin.jpa") version "2.3.21"
   kotlin("plugin.spring") version "2.3.21"
   idea
@@ -45,7 +45,7 @@ dependencies {
   testImplementation("com.pauldijou:jwt-core_2.11:5.0.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("org.mockito:mockito-inline:5.2.0")
-  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.41") {
+  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.42") {
     exclude(group = "io.swagger.core.v3")
   }
   testImplementation("org.springframework.security:spring-security-test")
