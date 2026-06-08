@@ -56,6 +56,7 @@ enum class Type(
   FIRE_1(TypeFamily.FIRE, "FIRE"),
   FIREARM_1(TypeFamily.FIREARM, "FIREARM_ETC", active = false),
   FOOD_REFUSAL_1(TypeFamily.FOOD_REFUSAL, "FOOD_REF"),
+  FOOD_REFUSAL_2(TypeFamily.FOOD_REFUSAL, "FOOD_REF2"),
   HOSTAGE_1(TypeFamily.HOSTAGE, "HOSTAGE", active = false),
   INCIDENT_AT_HEIGHT_1(TypeFamily.INCIDENT_AT_HEIGHT, "ROOF_CLIMB", active = false),
   CONCERTED_INDISCIPLINE_1(TypeFamily.CONCERTED_INDISCIPLINE, "CON_INDISC", active = false),
