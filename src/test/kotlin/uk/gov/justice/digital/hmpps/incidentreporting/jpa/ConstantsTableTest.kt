@@ -87,12 +87,14 @@ class ConstantsTableTest : IntegrationTestBase() {
       mapOf(
         "code" to it.name,
         "description" to it.description,
+        "definition" to it.definition,
+        "ignore_downstream" to it.ignoreDownstream,
       )
     }
     val actual = listAllConstants(
       // language=postgresql
       """
-      SELECT code, description FROM constant_status
+      SELECT code, description, definition, ignore_downstream FROM constant_status
       """,
     )
     assertThat(actual).isEqualTo(expected)

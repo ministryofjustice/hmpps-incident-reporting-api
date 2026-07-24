@@ -162,6 +162,8 @@ classDiagram
   class constant_status {
     integer sequence
     varchar(60) description
+    varchar(255) definition
+    boolean ignore_downstream
     varchar(60) code
   }
   class constant_type {
