@@ -11,6 +11,11 @@ data class StatusConstantDescription(
   @param:Schema(description = "Human-readable description of this value", example = "On hold")
   val description: String,
   @param:Schema(
+    description = "Human-readable definition explaining what this value means",
+    example = "The report has been set aside for investigation and cannot be edited at this time.",
+  )
+  val definition: String,
+  @param:Schema(
     description = "Whether reports with this status should be ignored downstream for most statistical purposes",
     example = "false",
   )
