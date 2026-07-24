@@ -121,12 +121,14 @@ class ConstantsResourceTest : SqsIntegrationTestBase() {
         mapOf(
           "code" to "DRAFT",
           "description" to "Draft",
+          "definition" to "A report that has been created but not yet submitted.",
           "nomisCode" to null,
           "ignoreDownstream" to false,
         ),
         mapOf(
           "code" to "ON_HOLD",
           "description" to "On hold",
+          "definition" to "The report has been set aside for investigation and cannot be edited at this time.",
           "nomisCode" to "INAN",
           "ignoreDownstream" to false,
         ),
