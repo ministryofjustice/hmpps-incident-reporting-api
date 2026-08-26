@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?><database name="incident_reporting" schema="public" type="PostgreSQL - 16.15 (Debian 16.15-1.pgdg13+2)">
+   <sequences>
+      <sequence increment="1" name="correction_request_id_seq" startValue="1"/>
+      <sequence increment="1" name="description_addendum_id_seq" startValue="1"/>
+      <sequence increment="1" name="historical_question_id_seq" startValue="1"/>
+      <sequence increment="1" name="historical_response_id_seq" startValue="1"/>
+      <sequence increment="1" name="history_id_seq" startValue="1"/>
+      <sequence increment="1" name="prisoner_involvement_id_seq" startValue="1"/>
+      <sequence increment="1" name="question_id_seq" startValue="1"/>
+      <sequence increment="1" name="report_sequence" startValue="10000000"/>
+      <sequence increment="1" name="response_id_seq" startValue="1"/>
+      <sequence increment="1" name="staff_involvement_id_seq" startValue="1"/>
+      <sequence increment="1" name="status_history_id_seq" startValue="1"/>
+   </sequences>
+   <tables>
+      <table name="analytical_marker" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="response_code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="marker_type" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="response_code" sequenceNumberInPK="1"/>
+         <primaryKey column="marker_type" sequenceNumberInPK="2"/>
+         <index name="analytical_marker_type_pk" unique="true">
+            <column ascending="true" name="response_code"/>
+            <column ascending="true" name="marker_type"/>
+         </index>
+      </table>
+      <table name="constant_prisoner_outcome" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="code" sequenceNumberInPK="1"/>
+         <index name="constant_prisoner_outcome_pkey" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="constant_prisoner_role" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="code" sequenceNumberInPK="1"/>
+         <index name="constant_prisoner_role_pkey" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="constant_staff_role" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="code" sequenceNumberInPK="1"/>
+         <index name="constant_staff_role_pkey" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="constant_status" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="3" name="ignore_downstream" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="definition" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="code" sequenceNumberInPK="1"/>
+         <index name="constant_status_pkey" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="constant_type" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="family_code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="code" sequenceNumberInPK="1"/>
+         <index name="constant_type_pkey" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="constant_type_family" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="code" sequenceNumberInPK="1"/>
+         <index name="constant_type_family_pkey" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="constant_user_action" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="code" sequenceNumberInPK="1"/>
+         <index name="constant_user_action_pkey" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="constant_user_type" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="code" sequenceNumberInPK="1"/>
+         <index name="constant_user_type_pkey" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="correction_request" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('correction_request_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="correction_request_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description_of_change" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="correction_requested_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="correction_requested_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="5" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="location" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="user_action" nullable="true" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="original_report_reference" nullable="true" remarks="" size="25" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="user_type" nullable="true" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="correction_request_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="correction_request_correction_requested_at_idx" unique="false">
+            <column ascending="true" name="correction_requested_at"/>
+         </index>
+         <index name="correction_request_report_id_fk_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+         </index>
+         <index name="correction_request_report_sequence_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+            <column ascending="true" name="sequence"/>
+         </index>
+      </table>
+      <table name="description_addendum" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('description_addendum_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="description_addendum_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="text" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="created_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="created_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="first_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="last_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="description_addendum_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="description_addendum_report_id_fk_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+         </index>
+         <index name="description_addendum_report_sequence_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+            <column ascending="true" name="sequence"/>
+         </index>
+      </table>
+      <table name="flyway_schema_history" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="installed_rank" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="version" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="200" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="type" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="script" nullable="false" remarks="" size="1000" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="checksum" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="installed_by" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="7" name="installed_on" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="execution_time" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="success" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <primaryKey column="installed_rank" sequenceNumberInPK="1"/>
+         <index name="flyway_schema_history_pk" unique="true">
+            <column ascending="true" name="installed_rank"/>
+         </index>
+         <index name="flyway_schema_history_s_idx" unique="false">
+            <column ascending="true" name="success"/>
+         </index>
+      </table>
+      <table name="historical_question" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('historical_question_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="historical_question_id" foreignKey="historical_response_historical_question_fk" implied="false" onDeleteCascade="true" schema="public" table="historical_response"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="history_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="historical_question_history_fk" implied="false" onDeleteCascade="true" schema="public" table="history"/>
+         </column>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="question" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="label" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="historical_question_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="historical_question_code_idx" unique="false">
+            <column ascending="true" name="code"/>
+         </index>
+         <index name="historical_question_history_and_code_idx" unique="false">
+            <column ascending="true" name="history_id"/>
+            <column ascending="true" name="code"/>
+         </index>
+         <index name="historical_question_history_id_fk_idx" unique="false">
+            <column ascending="true" name="history_id"/>
+         </index>
+         <index name="historical_question_sequence_at_idx" unique="false">
+            <column ascending="true" name="sequence"/>
+         </index>
+      </table>
+      <table name="historical_response" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('historical_response_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="historical_question_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="historical_response_historical_question_fk" implied="false" onDeleteCascade="true" schema="public" table="historical_question"/>
+         </column>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="response" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="response_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="recorded_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="recorded_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="label" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="historical_response_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="historical_response_historical_question_id_fk_idx" unique="false">
+            <column ascending="true" name="historical_question_id"/>
+         </index>
+         <index name="historical_response_sequence_at_idx" unique="false">
+            <column ascending="true" name="sequence"/>
+         </index>
+      </table>
+      <table name="history" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('history_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="history_id" foreignKey="historical_question_history_fk" implied="false" onDeleteCascade="true" schema="public" table="historical_question"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="history_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="type" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="changed_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="changed_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="history_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="history_changed_at_idx" unique="false">
+            <column ascending="true" name="changed_at"/>
+         </index>
+         <index name="history_report_id_fk_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+         </index>
+      </table>
+      <table name="prisoner_involvement" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('prisoner_involvement_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="prisoner_involvement_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="prisoner_number" nullable="false" remarks="" size="7" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="prisoner_role" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="outcome" nullable="true" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="comment" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="6" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="first_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="last_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="prisoner_involvement_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="prisoner_involvement_prisoner_number_idx" unique="false">
+            <column ascending="true" name="prisoner_number"/>
+         </index>
+         <index name="prisoner_involvement_report_id_fk_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+         </index>
+         <index name="prisoner_involvement_report_sequence_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+            <column ascending="true" name="sequence"/>
+         </index>
+      </table>
+      <table name="question" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('question_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="question_id" foreignKey="response_question_fk" implied="false" onDeleteCascade="true" schema="public" table="response"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="question_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
+         </column>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="question" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="label" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="question_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="question_code_idx" unique="false">
+            <column ascending="true" name="code"/>
+         </index>
+         <index name="question_report_and_code_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+            <column ascending="true" name="code"/>
+         </index>
+         <index name="question_report_id_fk_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+         </index>
+         <index name="question_sequence_at_idx" unique="false">
+            <column ascending="true" name="sequence"/>
+         </index>
+      </table>
+      <table name="report" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="report_id" foreignKey="correction_request_report_fk" implied="false" onDeleteCascade="true" schema="public" table="correction_request"/>
+            <child column="report_id" foreignKey="description_addendum_report_fk" implied="false" onDeleteCascade="true" schema="public" table="description_addendum"/>
+            <child column="report_id" foreignKey="history_report_fk" implied="false" onDeleteCascade="true" schema="public" table="history"/>
+            <child column="report_id" foreignKey="prisoner_involvement_report_fk" implied="false" onDeleteCascade="true" schema="public" table="prisoner_involvement"/>
+            <child column="report_id" foreignKey="question_report_fk" implied="false" onDeleteCascade="true" schema="public" table="question"/>
+            <child column="duplicated_report_id" foreignKey="original_report_fk" implied="false" onDeleteCascade="false" schema="public" table="report"/>
+            <child column="report_id" foreignKey="staff_involvement_report_fk" implied="false" onDeleteCascade="true" schema="public" table="staff_involvement"/>
+            <child column="report_id" foreignKey="status_history_report_fk" implied="false" onDeleteCascade="true" schema="public" table="status_history"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_reference" nullable="false" remarks="" size="25" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="title" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="location" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="type" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="'DPS'::character varying" digits="0" id="6" name="source" nullable="false" remarks="" size="5" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="status" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="incident_date_and_time" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="reported_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="reported_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="question_set_id" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="12" name="created_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="modified_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="14" name="modified_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="'DPS'::character varying" digits="0" id="15" name="modified_in" nullable="false" remarks="" size="5" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="16" name="staff_involvement_done" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="17" name="prisoner_involvement_done" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="duplicated_report_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="original_report_fk" implied="false" onDeleteCascade="false" schema="public" table="report"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="last_user_action" nullable="true" remarks="" size="60" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="report_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="report_created_at_idx" unique="false">
+            <column ascending="true" name="created_at"/>
+         </index>
+         <index name="report_incident_date_and_time_idx" unique="false">
+            <column ascending="true" name="incident_date_and_time"/>
+         </index>
+         <index name="report_last_user_action_idx" unique="false">
+            <column ascending="true" name="last_user_action"/>
+            <column ascending="true" name="status"/>
+         </index>
+         <index name="report_location_idx" unique="false">
+            <column ascending="true" name="location"/>
+         </index>
+         <index name="report_reference" unique="true">
+            <column ascending="true" name="report_reference"/>
+         </index>
+         <index name="report_reported_at_idx" unique="false">
+            <column ascending="true" name="reported_at"/>
+         </index>
+         <index name="report_reported_by_idx" unique="false">
+            <column ascending="true" name="reported_by"/>
+         </index>
+         <index name="report_source_idx" unique="false">
+            <column ascending="true" name="source"/>
+         </index>
+         <index name="report_status_idx" unique="false">
+            <column ascending="true" name="status"/>
+         </index>
+         <index name="report_type_idx" unique="false">
+            <column ascending="true" name="type"/>
+         </index>
+      </table>
+      <table name="response" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('response_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="question_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="response_question_fk" implied="false" onDeleteCascade="true" schema="public" table="question"/>
+         </column>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="response" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="response_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="recorded_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="recorded_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="label" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="response_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="response_code_idx" unique="false">
+            <column ascending="true" name="question_id"/>
+            <column ascending="true" name="code"/>
+         </index>
+         <index name="response_question_id_fk_idx" unique="false">
+            <column ascending="true" name="question_id"/>
+         </index>
+         <index name="response_sequence_at_idx" unique="false">
+            <column ascending="true" name="sequence"/>
+         </index>
+      </table>
+      <table name="staff_involvement" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('staff_involvement_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="staff_involvement_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="staff_username" nullable="true" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="staff_role" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="comment" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="5" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="first_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="last_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="staff_involvement_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="staff_involvement_report_id_fk_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+         </index>
+         <index name="staff_involvement_report_sequence_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+            <column ascending="true" name="sequence"/>
+         </index>
+         <index name="staff_involvement_staff_username_idx" unique="false">
+            <column ascending="true" name="staff_username"/>
+         </index>
+      </table>
+      <table name="status_history" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('status_history_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="status_history_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="status" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="3" name="changed_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="changed_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="status_history_pk" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="status_history_changed_at_idx" unique="false">
+            <column ascending="true" name="changed_at"/>
+         </index>
+         <index name="status_history_report_id_fk_idx" unique="false">
+            <column ascending="true" name="report_id"/>
+         </index>
+      </table>
+   </tables>
+</database>
