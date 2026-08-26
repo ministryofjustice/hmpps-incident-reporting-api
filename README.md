@@ -83,6 +83,48 @@ docker run --rm --network host -v /tmp/schemaspy:/output schemaspy/schemaspy:6.2
   -u incident_reporting -p incident_reporting -vizjs
 ```
 
+If you change `V1_48__schema_comments.sql` while the compose database is still up, Flyway will refuse to
+start with a checksum mismatch — the container persists between runs. Recreate it with
+`docker compose -f docker-compose-schema-spy.yml down -v` before re-running.
+
+### Table and column descriptions
+
+Descriptions live in the database as `COMMENT ON` statements, applied by
+`db/migration/V1_48__schema_comments.sql`, so SchemaSpy and any Glue crawl read the same source of
+truth. Each column description ends with a sensitivity classification:
+
+| Tag | Meaning |
+| --- | --- |
+| `[Sensitivity: NONE]` | Not personal data in itself |
+| `[Sensitivity: PERSONAL]` | Personal data about a prisoner — identifies or locates them |
+| `[Sensitivity: STAFF]` | Personal data about a member of staff, typically the username that acted |
+| `[Sensitivity: SPECIAL-CATEGORY]` | UK GDPR Article 9 data, or offence data under Article 10 |
+| `[Sensitivity: OFFICIAL-SENSITIVE]` | Not personal data, but damaging if disclosed |
+
+`STAFF` is still personal data and still in scope for a staff member's own subject access request. It
+is separated from `PERSONAL` so an extract about prisoners can be reasoned about without staff columns
+inflating the count.
+
+The tags describe **the column's own content, not the row's**. Almost every report names prisoners
+through `prisoner_involvement`, so the record as a whole is personal data about them whatever an
+individual column is marked.
+
+**This is the most sensitive schema in the Manage Safety set.** Reports cover self-harm, deaths in
+custody, assaults, sexual assaults and drug finds, so `report.type` alone is Article 9 or Article 10
+data about everyone named on the report, whichever type it is. Every free-text column should be assumed
+to contain more than its question asks. Of 129 columns: 22 are special category, 15 staff, 4 personal.
+
+Two things worth knowing when reading the tags:
+
+- Question *wording* (`question.question`, `question.label`) is form text, identical for every report of
+  a type and derivable from `report.type`, so it is `NONE`. What was *answered* — `response.code`,
+  `response.label`, `response.response` and any additional information — is `SPECIAL-CATEGORY`.
+- Anything analysing answers over time must read `historical_question` and `historical_response` as well
+  as `question` and `response`, or it silently misses every report whose type has been changed.
+
+**Any new table or column needs a `COMMENT ON`** in a migration — `SchemaCommentsTest` fails the build
+otherwise. A later migration can add to or replace any comment at any time.
+
 Note that the compose database binds host port 5432 deliberately: `TestContainer.isRunning()` defers to
 an already-running database, so `InitialiseDatabase` migrates that container and SchemaSpy can read the
 same schema afterwards. Left to Testcontainers the schema would die with the JVM.
