@@ -66,7 +66,13 @@ Both also accept the `--port` argument to choose a different local port, other t
 ## Database schema
 
 A browsable schema report is published from `main` to
-[ministryofjustice.github.io/hmpps-incident-reporting-api/schema-spy-report](https://ministryofjustice.github.io/hmpps-incident-reporting-api/schema-spy-report/).
+[ministryofjustice.github.io/hmpps-incident-reporting-api/schema-spy-report](https://ministryofjustice.github.io/hmpps-incident-reporting-api/schema-spy-report/),
+along with two CSV exports for the MOJ Data Catalogue:
+
+| File | Contents |
+|------|----------|
+| `data-dictionary.csv` | Every table and column, with its description, sensitivity classification, type, nullability, PK and FK |
+| `reference-data.csv` | The two code lists with no table behind them. Most reference data here is already queryable from the `constant_*` tables and the constants endpoints |
 
 The report shows every table and column, with types, nullability, primary and foreign keys, and ER
 diagrams. Share it rather than a hand-written description when explaining the schema — to the Data Hub
@@ -77,10 +83,11 @@ it locally:
 
 ```shell
 docker compose -f docker-compose-schema-spy.yml up -d --wait
-./gradlew -Pinit-db=true test --tests '*InitialiseDatabase'
+./gradlew -Pinit-db=true test --tests '*InitialiseDatabase' --tests '*ExportReferenceData'
 docker run --rm --network host -v /tmp/schemaspy:/output schemaspy/schemaspy:6.2.4 \
   -t pgsql -host localhost -port 5432 -db incident_reporting -s public \
   -u incident_reporting -p incident_reporting -vizjs
+scripts/generate-data-dictionary.sh
 ```
 
 If you change `V1_48__schema_comments.sql` while the compose database is still up, Flyway will refuse to
@@ -122,8 +129,14 @@ Two things worth knowing when reading the tags:
 - Anything analysing answers over time must read `historical_question` and `historical_response` as well
   as `question` and `response`, or it silently misses every report whose type has been changed.
 
+The tag is split into its own `sensitivity` column in `data-dictionary.csv`, and stripped from the
+description there so the text reads cleanly.
+
 **Any new table or column needs a `COMMENT ON`** in a migration — `SchemaCommentsTest` fails the build
-otherwise. A later migration can add to or replace any comment at any time.
+otherwise. A later migration can add to or replace any comment at any time. Likewise a new
+`InformationSource` or `AnalyticalMarkerType` value needs a description in `ExportReferenceData`, which
+fails rather than exporting a blank row — and remember that any change to the enumerations behind the
+`constant_*` tables needs its own migration, as `V1_14` records.
 
 Note that the compose database binds host port 5432 deliberately: `TestContainer.isRunning()` defers to
 an already-running database, so `InitialiseDatabase` migrates that container and SchemaSpy can read the
