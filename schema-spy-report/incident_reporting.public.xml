@@ -13,9 +13,9 @@
       <sequence increment="1" name="status_history_id_seq" startValue="1"/>
    </sequences>
    <tables>
-      <table name="analytical_marker" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="response_code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="marker_type" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+      <table name="analytical_marker" remarks="Maps answer codes to the kinds of serious harm they indicate, so reporting can count incidents involving, say, a hospital admission without hard-coding a list of answer codes. Reference data derived from the AnalyticalMarkerType enumeration - it is about the question set, not about any person, and contains no personal data. One answer can carry several markers, hence the composite key." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="response_code" nullable="false" remarks="Answer code this marker applies to. Matches response.code and historical_response.code. Deliberately not a foreign key - see the note in V1_14 about the reference tables. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="marker_type" nullable="false" remarks="What the answer indicates: SERIOUS_INJURY, SEXUAL_ASSAULT, MEDICAL_TREATMENT_REQUIRED, HOSPITAL_ADMISSION, TRANSMITTABLE_INFECTIOUS_DISEASE, SALIVA_HIT_BODY, HIT_NECK_OR_ABOVE or WEAPON_URINE. Note that this table says which answers are serious, not which reports were - joining it to response is what makes a report's content special category, not this table on its own. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="response_code" sequenceNumberInPK="1"/>
          <primaryKey column="marker_type" sequenceNumberInPK="2"/>
          <index name="analytical_marker_type_pk" unique="true">
@@ -23,95 +23,95 @@
             <column ascending="true" name="marker_type"/>
          </index>
       </table>
-      <table name="constant_prisoner_outcome" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+      <table name="constant_prisoner_outcome" remarks="The outcomes that can follow for a prisoner involved in an incident, for reporting. Copy of the PrisonerOutcome enumeration." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="The outcome code as stored in prisoner_involvement.outcome. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="Display order for the outcome. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="Human-readable name of the outcome. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="code" sequenceNumberInPK="1"/>
          <index name="constant_prisoner_outcome_pkey" unique="true">
             <column ascending="true" name="code"/>
          </index>
       </table>
-      <table name="constant_prisoner_role" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+      <table name="constant_prisoner_role" remarks="The ways a prisoner can be involved in an incident, for reporting. Copy of the PrisonerRole enumeration." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="The role code as stored in prisoner_involvement.prisoner_role. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="Display order for the role. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="Human-readable name of the role. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="code" sequenceNumberInPK="1"/>
          <index name="constant_prisoner_role_pkey" unique="true">
             <column ascending="true" name="code"/>
          </index>
       </table>
-      <table name="constant_staff_role" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+      <table name="constant_staff_role" remarks="The ways a member of staff can be involved in an incident, for reporting. Copy of the StaffRole enumeration." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="The role code as stored in staff_involvement.staff_role. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="Display order for the role. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="Human-readable name of the role. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="code" sequenceNumberInPK="1"/>
          <index name="constant_staff_role_pkey" unique="true">
             <column ascending="true" name="code"/>
          </index>
       </table>
-      <table name="constant_status" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="false" digits="0" id="3" name="ignore_downstream" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="definition" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+      <table name="constant_status" remarks="The statuses a report can hold, for reporting. Copy of the Status enumeration, with the plain-English definition shown to users and a flag for the statuses downstream consumers should skip." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="The status code as stored in report.status and status_history.status, for example DRAFT or AWAITING_REVIEW. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="Display order for the status. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="Short human-readable name of the status. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="3" name="ignore_downstream" nullable="false" remarks="Whether downstream consumers should skip reports in this status. True for DUPLICATE, NOT_REPORTABLE, REOPENED and WAS_CLOSED - reports that would otherwise be double-counted or counted when they should not be. Anything aggregating reports should honour this. [Sensitivity: NONE]" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="definition" nullable="false" remarks="Fuller plain-English explanation of what the status means, shown to users and useful when interpreting a status trail. Added in V1_46. [Sensitivity: NONE]" size="255" type="varchar" typeCode="12"/>
          <primaryKey column="code" sequenceNumberInPK="1"/>
          <index name="constant_status_pkey" unique="true">
             <column ascending="true" name="code"/>
          </index>
       </table>
-      <table name="constant_type" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="family_code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+      <table name="constant_type" numRows="60" remarks="The incident types a report can have, for reporting. Copy of the Type enumeration. Types are retired rather than deleted, because existing reports still reference them." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="The type code as stored in report.type and history.type, for example SELF_HARM or ASSAULT. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="Display order for the type. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="Human-readable name of the type. [Sensitivity: NONE]" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="active" nullable="true" remarks="Whether the type can be chosen for new reports. Retired types stay in the table so existing reports still decode. [Sensitivity: NONE]" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="family_code" nullable="false" remarks="The family this type belongs to, matching constant_type_family.code. Types were regrouped into families in V1_16 and their codes renamed to match, so codes on old and new reports differ. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="code" sequenceNumberInPK="1"/>
          <index name="constant_type_pkey" unique="true">
             <column ascending="true" name="code"/>
          </index>
       </table>
-      <table name="constant_type_family" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+      <table name="constant_type_family" numRows="41" remarks="The families incident types are grouped into, for reporting. Copy of the TypeFamily enumeration. Introduced in V1_16, which also renamed type codes to match." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="The family code, as referenced by constant_type.family_code. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="Display order for the family. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="Human-readable name of the family. [Sensitivity: NONE]" size="255" type="varchar" typeCode="12"/>
          <primaryKey column="code" sequenceNumberInPK="1"/>
          <index name="constant_type_family_pkey" unique="true">
             <column ascending="true" name="code"/>
          </index>
       </table>
-      <table name="constant_user_action" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+      <table name="constant_user_action" remarks="The actions a user can take on a report, for reporting. Copy of the UserAction enumeration." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="The action code as stored in correction_request.user_action and report.last_user_action. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="Display order for the action. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="Human-readable name of the action. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="code" sequenceNumberInPK="1"/>
          <index name="constant_user_action_pkey" unique="true">
             <column ascending="true" name="code"/>
          </index>
       </table>
-      <table name="constant_user_type" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
+      <table name="constant_user_type" remarks="The kinds of user who can act on a report, for reporting. Copy of the UserType enumeration - a capacity someone acted in, not a job title." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="code" nullable="false" remarks="The user type code as stored in correction_request.user_type: REPORTING_OFFICER or DATA_WARDEN. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="sequence" nullable="false" remarks="Display order for the user type. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="false" remarks="Human-readable name of the user type. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="code" sequenceNumberInPK="1"/>
          <index name="constant_user_type_pkey" unique="true">
             <column ascending="true" name="code"/>
          </index>
       </table>
-      <table name="correction_request" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('correction_request_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+      <table name="correction_request" remarks="One request to change a report, or one recorded action taken on it. Despite the name this is the general trail of what people have asked for and done - a data warden sending a report back for more detail, a reporter resubmitting it, a report being marked as a duplicate. The newest row's user_action is mirrored onto report.last_user_action." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('correction_request_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="The report this request concerns. Foreign key to report.id. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <parent column="id" foreignKey="correction_request_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description_of_change" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="correction_requested_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="correction_requested_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="0" digits="0" id="5" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="location" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="user_action" nullable="true" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="original_report_reference" nullable="true" remarks="" size="25" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="user_type" nullable="true" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description_of_change" nullable="false" remarks="Free-text description of what was asked for or done, written by hand. Quotes and summarises the report's content, so assume it carries the same health, offending and third-party detail as the description itself. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="correction_requested_at" nullable="false" remarks="When the request was made or the action recorded. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="correction_requested_by" nullable="false" remarks="Username of the member of staff who made the request or took the action. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="5" name="sequence" nullable="false" remarks="Order of this request within the report's trail. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="location" nullable="true" remarks="Agency (prison) code or PECS region the requester was working in. Read with correction_requested_by it indicates where that member of staff was based. Nullable on older rows written before the column existed. [Sensitivity: STAFF]" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="user_action" nullable="true" remarks="What the user did, for example REQUEST_REVIEW, REQUEST_CORRECTION, RECALL or CLOSE. Values are in constant_user_action. Null on rows written before the column existed. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="original_report_reference" nullable="true" remarks="Reference of the report this one was found to duplicate, recorded when it is marked as a duplicate. A report_reference rather than an id, and null on every other row. [Sensitivity: NONE]" size="25" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="user_type" nullable="true" remarks="Which kind of user acted: REPORTING_OFFICER or DATA_WARDEN. The two have different permissions, so this records the capacity someone acted in rather than their job title. Values are in constant_user_type. Null on rows written before the column existed. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="correction_request_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -127,17 +127,17 @@
             <column ascending="true" name="sequence"/>
          </index>
       </table>
-      <table name="description_addendum" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('description_addendum_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+      <table name="description_addendum" remarks="Text added to a report after it was first submitted, in an ordered list. The original description is never edited: additions are appended here instead, so the record of what was said when is preserved. Read report.description followed by these rows in sequence to get the full account." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('description_addendum_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="The report this addendum belongs to. Foreign key to report.id. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <parent column="id" foreignKey="description_addendum_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="text" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="created_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="created_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="first_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="last_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="sequence" nullable="false" remarks="Order of this addendum within the report. Read in this order after report.description. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="text" nullable="false" remarks="The added text. Carries the same sensitivity as report.description - written by hand, and in practice describing injuries, health, offending and named third parties. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="created_at" nullable="false" remarks="When the addendum was added. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="created_by" nullable="false" remarks="Username of the member of staff who added it. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="first_name" nullable="false" remarks="First name of the member of staff who added it, snapshotted at the time. [Sensitivity: STAFF]" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="last_name" nullable="false" remarks="Last name of the member of staff who added it, snapshotted at the time. [Sensitivity: STAFF]" size="255" type="varchar" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="description_addendum_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -169,18 +169,18 @@
             <column ascending="true" name="success"/>
          </index>
       </table>
-      <table name="historical_question" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('historical_question_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+      <table name="historical_question" remarks="A question from a question set the report no longer uses, preserved when its type was changed. Identical in shape to question except that it hangs off history rather than report. Anything analysing answers over time needs to read both tables, or it will silently miss every report that has been retyped." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('historical_question_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4">
             <child column="historical_question_id" foreignKey="historical_response_historical_question_fk" implied="false" onDeleteCascade="true" schema="public" table="historical_response"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="history_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="history_id" nullable="false" remarks="The type-change snapshot this question belongs to. Foreign key to history.id - the equivalent of question.report_id one level removed. [Sensitivity: NONE]" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="historical_question_history_fk" implied="false" onDeleteCascade="true" schema="public" table="history"/>
          </column>
-         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="question" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="label" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="Order the question was asked in. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="code" nullable="false" remarks="Stable code for the question within the question set that applied at the time. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="question" nullable="false" remarks="The question as worded at the time. Form wording rather than an answer - see question.question. [Sensitivity: NONE]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="Free text the reporter added against the question. Written by hand, so assume it carries health, offending and third-party detail. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="label" nullable="false" remarks="Display label for the question, as worded at the time. Form wording rather than an answer. [Sensitivity: NONE]" size="2147483647" type="text" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="historical_question_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -199,19 +199,19 @@
             <column ascending="true" name="sequence"/>
          </index>
       </table>
-      <table name="historical_response" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('historical_response_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="historical_question_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+      <table name="historical_response" remarks="An answer to a question from a question set the report no longer uses, preserved when its type was changed. Identical in shape to response except that it hangs off historical_question. As sensitive as response, and as easy to miss: an extract that reads only response understates what a report contains." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('historical_response_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="historical_question_id" nullable="false" remarks="The historical question this answers. Foreign key to historical_question.id. [Sensitivity: NONE]" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="historical_response_historical_question_fk" implied="false" onDeleteCascade="true" schema="public" table="historical_question"/>
          </column>
-         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="response" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="response_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="recorded_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="recorded_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="label" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="Order of this answer within the question's answers. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="response" nullable="false" remarks="The answer as worded at the time. Records what happened in the incident about the people named on the report - see response.response. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="response_date" nullable="true" remarks="Date given as the answer, where the question asked for one. Null on answers that are not dates. [Sensitivity: SPECIAL-CATEGORY]" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="Free text the reporter added against this answer. Written by hand, so assume it carries health, offending and third-party detail. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="recorded_at" nullable="false" remarks="When the answer was recorded - the original recording, not the snapshot. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="recorded_by" nullable="false" remarks="Username of the member of staff who recorded the answer. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="code" nullable="false" remarks="Stable code for the answer within the option set that applied at the time. Discloses what was answered. [Sensitivity: SPECIAL-CATEGORY]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="label" nullable="false" remarks="Display label for the answer, as worded at the time. Discloses what was answered. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="historical_response_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -223,16 +223,16 @@
             <column ascending="true" name="sequence"/>
          </index>
       </table>
-      <table name="history" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('history_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+      <table name="history" remarks="A snapshot of the question and answer set as it stood before the report's type was changed. Changing the type changes which questions apply, so the previous set is preserved here with its answers in historical_question and historical_response rather than being deleted. One row per type change, so a report retyped twice has two." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('history_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4">
             <child column="history_id" foreignKey="historical_question_history_fk" implied="false" onDeleteCascade="true" schema="public" table="historical_question"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="The report this snapshot belongs to. Foreign key to report.id. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <parent column="id" foreignKey="history_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="type" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="changed_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="changed_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="type" nullable="false" remarks="The incident type the report held before it was changed - so a report now typed ASSAULT may have a history row typed SELF_HARM. Carries the same sensitivity as report.type, and note that it discloses what the incident was once believed to be. Values are in constant_type. [Sensitivity: SPECIAL-CATEGORY]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="changed_at" nullable="false" remarks="When the type was changed, and therefore when this snapshot was taken. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="changed_by" nullable="false" remarks="Username of the member of staff who changed the type. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="history_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -244,18 +244,18 @@
             <column ascending="true" name="report_id"/>
          </index>
       </table>
-      <table name="prisoner_involvement" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('prisoner_involvement_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+      <table name="prisoner_involvement" remarks="One prisoner named on a report, with how they were involved and what happened to them afterwards. Names are copied in at the time of writing rather than resolved live, so they are a snapshot and may differ from the prisoner's current record. A report may name several prisoners in different roles, and the whole row is personal data about the prisoner it names." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('prisoner_involvement_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="The report this involvement belongs to. Foreign key to report.id. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <parent column="id" foreignKey="prisoner_involvement_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="prisoner_number" nullable="false" remarks="" size="7" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="prisoner_role" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="outcome" nullable="true" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="comment" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="0" digits="0" id="6" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="first_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="last_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="prisoner_number" nullable="false" remarks="NOMIS offender number (noms id) of the prisoner. The link that makes this row, and much of the report, personal data about that prisoner. [Sensitivity: PERSONAL]" size="7" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="prisoner_role" nullable="false" remarks="How the prisoner was involved, for example VICTIM, SUSPECTED_PERPETRATOR, ACTIVE_INVOLVEMENT or PRESENT_AT_SCENE. On an assault or a find of illicit items, recording someone as a suspected perpetrator is an allegation of offending in custody against a named person - criminal offence data under Article 10, which DPA 2018 s.11(2) extends to alleged offences. Values are in constant_prisoner_role. [Sensitivity: SPECIAL-CATEGORY]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="outcome" nullable="true" remarks="What happened to the prisoner as a result, for example PLACED_ON_REPORT, CHARGED_BY_POLICE, LOCAL_INVESTIGATION or TRANSFER. Records criminal or disciplinary proceedings against a named person. Null where no outcome has been recorded. Values are in constant_prisoner_outcome. [Sensitivity: SPECIAL-CATEGORY]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="comment" nullable="true" remarks="Free-text note on this prisoner's involvement. Unstructured and written by hand - in practice describes injuries, behaviour, health and other people, so treat as special category regardless of what any individual comment happens to say. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="6" name="sequence" nullable="false" remarks="Order of this prisoner within the report's list. Display order only. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="first_name" nullable="false" remarks="Prisoner's first name as at the time the report was written. A snapshot copied from the prisoner search API, not kept in step afterwards. [Sensitivity: PERSONAL]" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="last_name" nullable="false" remarks="Prisoner's last name as at the time the report was written. A snapshot copied from the prisoner search API, not kept in step afterwards. [Sensitivity: PERSONAL]" size="255" type="varchar" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="prisoner_involvement_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -271,18 +271,18 @@
             <column ascending="true" name="sequence"/>
          </index>
       </table>
-      <table name="question" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('question_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+      <table name="question" remarks="One question asked on a report, in the order it was asked. Which questions apply is decided by report.type; the wording is copied in at the time so a later change to the question set does not rewrite existing reports. Answers hang off this in response - a question with no response rows was asked but not answered." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('question_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4">
             <child column="question_id" foreignKey="response_question_fk" implied="false" onDeleteCascade="true" schema="public" table="response"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="The report this question belongs to. Foreign key to report.id, and unique with code - a question is asked at most once per report. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <parent column="id" foreignKey="question_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
          </column>
-         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="question" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="label" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="Order the question was asked in. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="code" nullable="false" remarks="Stable code for the question within the incident type's question set. The join key for anyone analysing answers across reports - the wording changes, the code does not. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="question" nullable="false" remarks="The question as worded when the report was written. Form wording, identical for every report of that type and derivable from report.type, so not personal data in itself - what was answered is in response. [Sensitivity: NONE]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="Free text the reporter added against the question rather than against a specific answer. Written by hand, so assume it carries health, offending and third-party detail. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="label" nullable="false" remarks="Display label for the question, as worded when the report was written. Form wording rather than an answer - see question.question. [Sensitivity: NONE]" size="2147483647" type="text" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="question_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -301,8 +301,8 @@
             <column ascending="true" name="sequence"/>
          </index>
       </table>
-      <table name="report" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+      <table name="report" remarks="One incident report. The aggregate root: the people involved, the structured question and answer set, the correction requests and the status trail all hang off it. Reports are created in DPS or synchronised from NOMIS, and move through a status workflow from DRAFT to CLOSED. Changing a report's type snapshots the previous question set into history rather than discarding it." schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Time-ordered UUID v7, so insert order matches id order. Internal - the reference people quote is report_reference. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <child column="report_id" foreignKey="correction_request_report_fk" implied="false" onDeleteCascade="true" schema="public" table="correction_request"/>
             <child column="report_id" foreignKey="description_addendum_report_fk" implied="false" onDeleteCascade="true" schema="public" table="description_addendum"/>
             <child column="report_id" foreignKey="history_report_fk" implied="false" onDeleteCascade="true" schema="public" table="history"/>
@@ -312,27 +312,27 @@
             <child column="report_id" foreignKey="staff_involvement_report_fk" implied="false" onDeleteCascade="true" schema="public" table="staff_involvement"/>
             <child column="report_id" foreignKey="status_history_report_fk" implied="false" onDeleteCascade="true" schema="public" table="status_history"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_reference" nullable="false" remarks="" size="25" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="title" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="location" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="type" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="'DPS'::character varying" digits="0" id="6" name="source" nullable="false" remarks="" size="5" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="status" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="incident_date_and_time" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="reported_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="reported_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="question_set_id" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="12" name="created_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="modified_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="14" name="modified_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="'DPS'::character varying" digits="0" id="15" name="modified_in" nullable="false" remarks="" size="5" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="true" digits="0" id="16" name="staff_involvement_done" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="true" digits="0" id="17" name="prisoner_involvement_done" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="duplicated_report_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_reference" nullable="false" remarks="Human-readable reference for the report, unique across the service. Known as the &quot;incident number&quot; in NOMIS, and the identifier staff quote to each other. Identifies an incident, not a person. [Sensitivity: NONE]" size="25" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="title" nullable="false" remarks="Short title for the incident, written by the reporter. Free text, and in practice often names people or summarises what happened, so it carries the same sensitivity as the description despite being short. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="false" remarks="The reporter's account of what happened. Unstructured and unbounded, and the single richest source of sensitive data in the schema - it routinely describes injuries, self-harm, health treatment, offending and third parties by name. Later additions are appended as rows in description_addendum rather than edited into this column. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="location" nullable="false" remarks="Agency (prison) code where the incident happened. Read with prisoner_involvement it indicates where those prisoners were held at the time. Renamed from prison_id in V1_2 and widened, because PECS regions are also valid values here - a report is not always tied to an establishment. [Sensitivity: PERSONAL]" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="type" nullable="false" remarks="What kind of incident this is, for example SELF_HARM, DEATH_OTHER, ASSAULT or FIND_OF_ILLICIT_ITEMS. Drives which questions are asked. This is Article 9 or Article 10 data about everyone named on the report whichever value it holds - that a report exists and is typed SELF_HARM discloses health data about the prisoner it concerns. Values are listed in constant_type and grouped by constant_type_family. [Sensitivity: SPECIAL-CATEGORY]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="'DPS'::character varying" digits="0" id="6" name="source" nullable="false" remarks="Where the report was first created: DPS or NOMIS. Reports migrated or synchronised from NOMIS carry NOMIS. [Sensitivity: NONE]" size="5" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="status" nullable="false" remarks="Where the report has got to in the workflow, for example DRAFT, AWAITING_REVIEW, ON_HOLD, NEEDS_UPDATING, CLOSED or DUPLICATE. Values and their meanings are in constant_status, which also records which statuses downstream consumers should ignore. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="incident_date_and_time" nullable="false" remarks="When the incident happened, as reported. Distinct from reported_at, which is when someone wrote it up - the gap between the two is often days. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="reported_at" nullable="false" remarks="When the incident was reported. For reports synchronised from NOMIS this is the original NOMIS value, not the sync. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="reported_by" nullable="false" remarks="Username of the member of staff who reported the incident. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="question_set_id" nullable="true" remarks="Legacy NOMIS question set identifier, carried over in the original schema and never used since - no Kotlin code reads or writes it, and it is not exposed by the API. Treat as dead. [Sensitivity: NONE]" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="12" name="created_at" nullable="false" remarks="When the row was created in this service. For reports synchronised from NOMIS this is the sync, not the incident or the original report - use incident_date_and_time or reported_at for those. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="modified_by" nullable="false" remarks="Username of the member of staff who last changed the report, or the system user for changes made by the NOMIS sync. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="14" name="modified_at" nullable="false" remarks="When the report was last changed. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="'DPS'::character varying" digits="0" id="15" name="modified_in" nullable="false" remarks="Which system made the last change: DPS or NOMIS. A report can be created in one and edited in the other, so this is not the same as source. [Sensitivity: NONE]" size="5" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="16" name="staff_involvement_done" nullable="true" remarks="Whether the reporter has finished recording staff involvement. Distinguishes &quot;no staff were involved&quot; from &quot;not yet filled in&quot;, which an empty staff_involvement cannot do on its own. [Sensitivity: NONE]" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="17" name="prisoner_involvement_done" nullable="true" remarks="Whether the reporter has finished recording prisoner involvement. Distinguishes &quot;no prisoners were involved&quot; from &quot;not yet filled in&quot;, which an empty prisoner_involvement cannot do on its own. [Sensitivity: NONE]" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="duplicated_report_id" nullable="true" remarks="The report this one duplicates, set when it is marked DUPLICATE. Points at report.id, not report_reference. Null on every report that is not a duplicate. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <parent column="id" foreignKey="original_report_fk" implied="false" onDeleteCascade="false" schema="public" table="report"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="last_user_action" nullable="true" remarks="" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="last_user_action" nullable="true" remarks="The most recent action taken on the report through a correction request, denormalised here so a list of reports can show it without joining. Mirrors the newest correction_request.user_action and is null until the first one. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="report_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -369,19 +369,19 @@
             <column ascending="true" name="type"/>
          </index>
       </table>
-      <table name="response" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('response_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="question_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+      <table name="response" remarks="One answer given to a question. A question can have several responses where more than one option applies, which is why this is a table rather than a column on question. The answer is what makes this schema sensitive: responses record injuries, weapons, methods of self-harm, whether police were involved and what was found." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('response_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="question_id" nullable="false" remarks="The question this answers. Foreign key to question.id. [Sensitivity: NONE]" size="10" type="int4" typeCode="4">
             <parent column="id" foreignKey="response_question_fk" implied="false" onDeleteCascade="true" schema="public" table="question"/>
          </column>
-         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="response" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="response_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="recorded_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="recorded_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="code" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="label" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="2" name="sequence" nullable="false" remarks="Order of this answer within the question's answers. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="response" nullable="false" remarks="The answer as worded when the report was written. Records what actually happened in the incident - injuries, weapons, methods, whether the police attended - about the people named on the report. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="response_date" nullable="true" remarks="Date given as the answer, where the question asks for one - for example when a death occurred or when treatment was given. Null on answers that are not dates. [Sensitivity: SPECIAL-CATEGORY]" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="additional_information" nullable="true" remarks="Free text the reporter added against this answer. Written by hand, so assume it carries health, offending and third-party detail. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="recorded_at" nullable="false" remarks="When the answer was recorded. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="recorded_by" nullable="false" remarks="Username of the member of staff who recorded the answer. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="code" nullable="false" remarks="Stable code for the answer within the question's option set. The join key for analysing answers across reports, and the key analytical_marker uses to flag answers that indicate serious harm. Discloses what was answered, so it is as sensitive as the wording. [Sensitivity: SPECIAL-CATEGORY]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="label" nullable="false" remarks="Display label for the answer, as worded when the report was written. Discloses what was answered - see response.response. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="response_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -397,17 +397,17 @@
             <column ascending="true" name="sequence"/>
          </index>
       </table>
-      <table name="staff_involvement" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('staff_involvement_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+      <table name="staff_involvement" remarks="One member of staff named on a report, with how they were involved. Names are copied in at the time of writing rather than resolved live. Staff can be named as witnesses, as first on scene, as injured, or as suspected of involvement themselves - so this table is not only an audit of who did the paperwork." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('staff_involvement_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="The report this involvement belongs to. Foreign key to report.id. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <parent column="id" foreignKey="staff_involvement_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="staff_username" nullable="true" remarks="" size="120" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="staff_role" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="comment" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="0" digits="0" id="5" name="sequence" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="first_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="last_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="staff_username" nullable="true" remarks="DPS username of the member of staff. Nullable since V1_15: staff can be named on a report without having a DPS account, in which case only the names are recorded. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="staff_role" nullable="false" remarks="How the member of staff was involved, for example WITNESS, FIRST_ON_SCENE, ACTIVELY_INVOLVED or SUSPECTED_INVOLVEMENT. Note that SUSPECTED_INVOLVEMENT is an allegation against a named member of staff and is sensitive well beyond an ordinary audit field - tagged STAFF rather than SPECIAL-CATEGORY so staff data stays separable, but handle it accordingly. Values are in constant_staff_role. [Sensitivity: STAFF]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="comment" nullable="true" remarks="Free-text note on this member of staff's involvement. Unstructured and written by hand - describes what they did or what happened to them, and routinely names prisoners and describes injuries, so treat as special category. [Sensitivity: SPECIAL-CATEGORY]" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="5" name="sequence" nullable="false" remarks="Order of this member of staff within the report's list. Display order only. [Sensitivity: NONE]" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="first_name" nullable="false" remarks="Member of staff's first name as at the time the report was written. A snapshot, not kept in step afterwards. [Sensitivity: STAFF]" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="last_name" nullable="false" remarks="Member of staff's last name as at the time the report was written. A snapshot, not kept in step afterwards. [Sensitivity: STAFF]" size="255" type="varchar" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="staff_involvement_pk" unique="true">
             <column ascending="true" name="id"/>
@@ -423,14 +423,14 @@
             <column ascending="true" name="staff_username"/>
          </index>
       </table>
-      <table name="status_history" remarks="" schema="public" type="TABLE">
-         <column autoUpdated="true" defaultValue="nextval('status_history_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+      <table name="status_history" remarks="Every status the report has held, in order, with who changed it and when. Append-only: the current status is on report.status and this is how it got there. Note that a report can be reopened, so a status can appear more than once for the same report." schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('status_history_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="Primary key. Surrogate sequence value. [Sensitivity: NONE]" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="report_id" nullable="false" remarks="The report whose status changed. Foreign key to report.id. [Sensitivity: NONE]" size="2147483647" type="uuid" typeCode="1111">
             <parent column="id" foreignKey="status_history_report_fk" implied="false" onDeleteCascade="true" schema="public" table="report"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="status" nullable="false" remarks="" size="60" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="3" name="changed_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="changed_by" nullable="false" remarks="" size="120" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="status" nullable="false" remarks="The status the report moved into. Values and their meanings are in constant_status. [Sensitivity: NONE]" size="60" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="3" name="changed_at" nullable="false" remarks="When the status changed. [Sensitivity: NONE]" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="changed_by" nullable="false" remarks="Username of the member of staff who changed it, or the system user for automatic transitions. Identifies a member of staff. [Sensitivity: STAFF]" size="120" type="varchar" typeCode="12"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="status_history_pk" unique="true">
             <column ascending="true" name="id"/>

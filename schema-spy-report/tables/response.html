@@ -74,6 +74,19 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>response</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>One answer given to a question. A question can have several responses where more than one option applies, which is why this is a table rather than a column on question. The answer is what makes this schema sensitive: responses record injuries, weapons, methods of self-harm, whether police were involved and what was found.</p>
+                        </div><!-- /.box-body -->
+                    </div>
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -123,7 +136,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Primary key. Surrogate sequence value. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="question_id">question_id</span></td>
@@ -145,7 +158,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The question this answers. Foreign key to question.id. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="sequence">sequence</span></td>
@@ -162,7 +175,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Order of this answer within the question&rsquo;s answers. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="response">response</span></td>
@@ -179,7 +192,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The answer as worded when the report was written. Records what actually happened in the incident - injuries, weapons, methods, whether the police attended - about the people named on the report. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="response_date">response_date</span></td>
@@ -196,7 +209,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Date given as the answer, where the question asks for one - for example when a death occurred or when treatment was given. Null on answers that are not dates. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="additional_information">additional_information</span></td>
@@ -213,7 +226,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Free text the reporter added against this answer. Written by hand, so assume it carries health, offending and third-party detail. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="recorded_at">recorded_at</span></td>
@@ -230,7 +243,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>When the answer was recorded. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="recorded_by">recorded_by</span></td>
@@ -247,7 +260,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Username of the member of staff who recorded the answer. Identifies a member of staff. <a href="./../null">Sensitivity: STAFF</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="code">code</span></td>
@@ -264,7 +277,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Stable code for the answer within the question&rsquo;s option set. The join key for analysing answers across reports, and the key analytical_marker uses to flag answers that indicate serious harm. Discloses what was answered, so it is as sensitive as the wording. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="label">label</span></td>
@@ -281,7 +294,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Display label for the answer, as worded when the report was written. Discloses what was answered - see response.response. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 </tbody>
                             </table>

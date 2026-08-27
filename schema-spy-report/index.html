@@ -78,7 +78,7 @@
                         <div class="col-md-12">
                             <div class="callout callout-info">
                                 <h4>SchemaSpy Analysis of incident_reporting.public</h4>
-                                <p>Generated on Wed Aug 26 14:50 UTC 2026</p>
+                                <p>Generated on Thu Aug 27 07:20 UTC 2026</p>
                             </div>
                         </div>
                     </div>
@@ -212,7 +212,7 @@
                                         <td class="detail" align="right">3</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>The outcomes that can follow for a prisoner involved in an incident, for reporting. Copy of the PrisonerOutcome enumeration.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/description_addendum.html">description_addendum</a></td>
@@ -221,7 +221,7 @@
                                         <td class="detail" align="right">8</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>Text added to a report after it was first submitted, in an ordered list. The original description is never edited: additions are appended here instead, so the record of what was said when is preserved. Read report.description followed by these rows in sequence to get the full account.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/constant_user_action.html">constant_user_action</a></td>
@@ -230,7 +230,7 @@
                                         <td class="detail" align="right">3</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>The actions a user can take on a report, for reporting. Copy of the UserAction enumeration.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/historical_question.html">historical_question</a></td>
@@ -239,7 +239,7 @@
                                         <td class="detail" align="right">7</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>A question from a question set the report no longer uses, preserved when its type was changed. Identical in shape to question except that it hangs off history rather than report. Anything analysing answers over time needs to read both tables, or it will silently miss every report that has been retyped.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/historical_response.html">historical_response</a></td>
@@ -248,16 +248,16 @@
                                         <td class="detail" align="right">10</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>An answer to a question from a question set the report no longer uses, preserved when its type was changed. Identical in shape to response except that it hangs off historical_question. As sensitive as response, and as easy to miss: an extract that reads only response understates what a report contains.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/constant_type_family.html">constant_type_family</a></td>
                                         <td class="detail" align="right">0</td>
                                         <td class="detail" align="right">0</td>
                                         <td class="detail" align="right">3</td>
-                                        <td class="detail" align="right">-1</td>
+                                        <td class="detail" align="right">41</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>The families incident types are grouped into, for reporting. Copy of the TypeFamily enumeration. Introduced in V1_16, which also renamed type codes to match.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/flyway_schema_history.html">flyway_schema_history</a></td>
@@ -275,7 +275,7 @@
                                         <td class="detail" align="right">20</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>One incident report. The aggregate root: the people involved, the structured question and answer set, the correction requests and the status trail all hang off it. Reports are created in DPS or synchronised from NOMIS, and move through a status workflow from DRAFT to CLOSED. Changing a report&rsquo;s type snapshots the previous question set into history rather than discarding it.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/prisoner_involvement.html">prisoner_involvement</a></td>
@@ -284,7 +284,7 @@
                                         <td class="detail" align="right">9</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>One prisoner named on a report, with how they were involved and what happened to them afterwards. Names are copied in at the time of writing rather than resolved live, so they are a snapshot and may differ from the prisoner&rsquo;s current record. A report may name several prisoners in different roles, and the whole row is personal data about the prisoner it names.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/constant_status.html">constant_status</a></td>
@@ -293,16 +293,16 @@
                                         <td class="detail" align="right">5</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>The statuses a report can hold, for reporting. Copy of the Status enumeration, with the plain-English definition shown to users and a flag for the statuses downstream consumers should skip.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/constant_type.html">constant_type</a></td>
                                         <td class="detail" align="right">0</td>
                                         <td class="detail" align="right">0</td>
                                         <td class="detail" align="right">5</td>
-                                        <td class="detail" align="right">-1</td>
+                                        <td class="detail" align="right">60</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>The incident types a report can have, for reporting. Copy of the Type enumeration. Types are retired rather than deleted, because existing reports still reference them.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/constant_user_type.html">constant_user_type</a></td>
@@ -311,7 +311,7 @@
                                         <td class="detail" align="right">3</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>The kinds of user who can act on a report, for reporting. Copy of the UserType enumeration - a capacity someone acted in, not a job title.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/question.html">question</a></td>
@@ -320,7 +320,7 @@
                                         <td class="detail" align="right">7</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>One question asked on a report, in the order it was asked. Which questions apply is decided by report.type; the wording is copied in at the time so a later change to the question set does not rewrite existing reports. Answers hang off this in response - a question with no response rows was asked but not answered.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/analytical_marker.html">analytical_marker</a></td>
@@ -329,7 +329,7 @@
                                         <td class="detail" align="right">2</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>Maps answer codes to the kinds of serious harm they indicate, so reporting can count incidents involving, say, a hospital admission without hard-coding a list of answer codes. Reference data derived from the AnalyticalMarkerType enumeration - it is about the question set, not about any person, and contains no personal data. One answer can carry several markers, hence the composite key.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/constant_staff_role.html">constant_staff_role</a></td>
@@ -338,7 +338,7 @@
                                         <td class="detail" align="right">3</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>The ways a member of staff can be involved in an incident, for reporting. Copy of the StaffRole enumeration.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/correction_request.html">correction_request</a></td>
@@ -347,7 +347,7 @@
                                         <td class="detail" align="right">10</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>One request to change a report, or one recorded action taken on it. Despite the name this is the general trail of what people have asked for and done - a data warden sending a report back for more detail, a reporter resubmitting it, a report being marked as a duplicate. The newest row&rsquo;s user_action is mirrored onto report.last_user_action.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/constant_prisoner_role.html">constant_prisoner_role</a></td>
@@ -356,7 +356,7 @@
                                         <td class="detail" align="right">3</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>The ways a prisoner can be involved in an incident, for reporting. Copy of the PrisonerRole enumeration.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/staff_involvement.html">staff_involvement</a></td>
@@ -365,7 +365,7 @@
                                         <td class="detail" align="right">8</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>One member of staff named on a report, with how they were involved. Names are copied in at the time of writing rather than resolved live. Staff can be named as witnesses, as first on scene, as injured, or as suspected of involvement themselves - so this table is not only an audit of who did the paperwork.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/response.html">response</a></td>
@@ -374,7 +374,7 @@
                                         <td class="detail" align="right">10</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>One answer given to a question. A question can have several responses where more than one option applies, which is why this is a table rather than a column on question. The answer is what makes this schema sensitive: responses record injuries, weapons, methods of self-harm, whether police were involved and what was found.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/status_history.html">status_history</a></td>
@@ -383,7 +383,7 @@
                                         <td class="detail" align="right">5</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>Every status the report has held, in order, with who changed it and when. Append-only: the current status is on report.status and this is how it got there. Note that a report can be reopened, so a status can appear more than once for the same report.</p></td>
                                     </tr>
                                     <tr class="tbl even" valign="top">
                                         <td class="detail"><a href="tables/history.html">history</a></td>
@@ -392,7 +392,7 @@
                                         <td class="detail" align="right">5</td>
                                         <td class="detail" align="right">-1</td>
                                         <td class="detail" align="right">Table</td>
-                                        <td class="comment detail" style="display: table-cell;"></td>
+                                        <td class="comment detail" style="display: table-cell;"><p>A snapshot of the question and answer set as it stood before the report&rsquo;s type was changed. Changing the type changes which questions apply, so the previous set is preserved here with its answers in historical_question and historical_response rather than being deleted. One row per type change, so a report retyped twice has two.</p></td>
                                     </tr>
                             </table>
                         </div>

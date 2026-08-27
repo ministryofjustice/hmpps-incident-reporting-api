@@ -74,6 +74,19 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>question</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>One question asked on a report, in the order it was asked. Which questions apply is decided by report.type; the wording is copied in at the time so a later change to the question set does not rewrite existing reports. Answers hang off this in response - a question with no response rows was asked but not answered.</p>
+                        </div><!-- /.box-body -->
+                    </div>
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -128,7 +141,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Primary key. Surrogate sequence value. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="report_id">report_id</span></td>
@@ -150,7 +163,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The report this question belongs to. Foreign key to report.id, and unique with code - a question is asked at most once per report. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="sequence">sequence</span></td>
@@ -167,7 +180,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Order the question was asked in. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="code">code</span></td>
@@ -184,7 +197,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Stable code for the question within the incident type&rsquo;s question set. The join key for anyone analysing answers across reports - the wording changes, the code does not. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="question">question</span></td>
@@ -201,7 +214,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The question as worded when the report was written. Form wording, identical for every report of that type and derivable from report.type, so not personal data in itself - what was answered is in response. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="additional_information">additional_information</span></td>
@@ -218,7 +231,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Free text the reporter added against the question rather than against a specific answer. Written by hand, so assume it carries health, offending and third-party detail. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="label">label</span></td>
@@ -235,7 +248,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Display label for the question, as worded when the report was written. Form wording rather than an answer - see question.question. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 </tbody>
                             </table>

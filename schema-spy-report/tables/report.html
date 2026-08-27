@@ -74,6 +74,19 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>report</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>One incident report. The aggregate root: the people involved, the structured question and answer set, the correction requests and the status trail all hang off it. Reports are created in DPS or synchronised from NOMIS, and move through a status workflow from DRAFT to CLOSED. Changing a report&rsquo;s type snapshots the previous question set into history rather than discarding it.</p>
+                        </div><!-- /.box-body -->
+                    </div>
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -163,7 +176,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Primary key. Time-ordered UUID v7, so insert order matches id order. Internal - the reference people quote is report_reference. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="report_reference">report_reference</span></td>
@@ -180,7 +193,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Human-readable reference for the report, unique across the service. Known as the &ldquo;incident number&rdquo; in NOMIS, and the identifier staff quote to each other. Identifies an incident, not a person. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="title">title</span></td>
@@ -197,7 +210,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Short title for the incident, written by the reporter. Free text, and in practice often names people or summarises what happened, so it carries the same sensitivity as the description despite being short. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="description">description</span></td>
@@ -214,7 +227,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The reporter&rsquo;s account of what happened. Unstructured and unbounded, and the single richest source of sensitive data in the schema - it routinely describes injuries, self-harm, health treatment, offending and third parties by name. Later additions are appended as rows in description_addendum rather than edited into this column. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="location">location</span></td>
@@ -231,7 +244,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Agency (prison) code where the incident happened. Read with prisoner_involvement it indicates where those prisoners were held at the time. Renamed from prison_id in V1_2 and widened, because PECS regions are also valid values here - a report is not always tied to an establishment. <a href="./../null">Sensitivity: PERSONAL</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="type">type</span></td>
@@ -248,7 +261,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>What kind of incident this is, for example SELF_HARM, DEATH_OTHER, ASSAULT or FIND_OF_ILLICIT_ITEMS. Drives which questions are asked. This is Article 9 or Article 10 data about everyone named on the report whichever value it holds - that a report exists and is typed SELF_HARM discloses health data about the prisoner it concerns. Values are listed in constant_type and grouped by constant_type_family. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="source">source</span></td>
@@ -265,7 +278,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Where the report was first created: DPS or NOMIS. Reports migrated or synchronised from NOMIS carry NOMIS. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="status">status</span></td>
@@ -282,7 +295,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Where the report has got to in the workflow, for example DRAFT, AWAITING_REVIEW, ON_HOLD, NEEDS_UPDATING, CLOSED or DUPLICATE. Values and their meanings are in constant_status, which also records which statuses downstream consumers should ignore. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="incident_date_and_time">incident_date_and_time</span></td>
@@ -299,7 +312,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>When the incident happened, as reported. Distinct from reported_at, which is when someone wrote it up - the gap between the two is often days. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="reported_at">reported_at</span></td>
@@ -316,7 +329,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>When the incident was reported. For reports synchronised from NOMIS this is the original NOMIS value, not the sync. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="reported_by">reported_by</span></td>
@@ -333,7 +346,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Username of the member of staff who reported the incident. Identifies a member of staff. <a href="./../null">Sensitivity: STAFF</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="question_set_id">question_set_id</span></td>
@@ -350,7 +363,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Legacy NOMIS question set identifier, carried over in the original schema and never used since - no Kotlin code reads or writes it, and it is not exposed by the API. Treat as dead. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="created_at">created_at</span></td>
@@ -367,7 +380,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>When the row was created in this service. For reports synchronised from NOMIS this is the sync, not the incident or the original report - use incident_date_and_time or reported_at for those. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="modified_by">modified_by</span></td>
@@ -384,7 +397,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Username of the member of staff who last changed the report, or the system user for changes made by the NOMIS sync. Identifies a member of staff. <a href="./../null">Sensitivity: STAFF</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="modified_at">modified_at</span></td>
@@ -401,7 +414,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>When the report was last changed. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="modified_in">modified_in</span></td>
@@ -418,7 +431,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Which system made the last change: DPS or NOMIS. A report can be created in one and edited in the other, so this is not the same as source. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="staff_involvement_done">staff_involvement_done</span></td>
@@ -435,7 +448,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Whether the reporter has finished recording staff involvement. Distinguishes &ldquo;no staff were involved&rdquo; from &ldquo;not yet filled in&rdquo;, which an empty staff_involvement cannot do on its own. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="prisoner_involvement_done">prisoner_involvement_done</span></td>
@@ -452,7 +465,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Whether the reporter has finished recording prisoner involvement. Distinguishes &ldquo;no prisoners were involved&rdquo; from &ldquo;not yet filled in&rdquo;, which an empty prisoner_involvement cannot do on its own. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="duplicated_report_id">duplicated_report_id</span></td>
@@ -474,7 +487,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The report this one duplicates, set when it is marked DUPLICATE. Points at report.id, not report_reference. Null on every report that is not a duplicate. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="last_user_action">last_user_action</span></td>
@@ -491,7 +504,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The most recent action taken on the report through a correction request, denormalised here so a list of reports can show it without joining. Mirrors the newest correction_request.user_action and is null until the first one. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 </tbody>
                             </table>

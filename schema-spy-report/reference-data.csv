@@ -1,0 +1,11 @@
+column_ref,code,description,notes
+"report.source / report.modified_in","DPS","The DPS incident reporting service. On source, the report was created here; on modified_in, it was last changed here.",""
+"report.source / report.modified_in","NOMIS","NOMIS. On source, the report was migrated or synchronised in from NOMIS; on modified_in, the last change came from NOMIS rather than DPS. The two can differ - a report created in one system can be edited in the other.",""
+"analytical_marker.marker_type","SERIOUS_INJURY","Serious injury sustained","flags an answer code as indicating this kind of serious harm"
+"analytical_marker.marker_type","SEXUAL_ASSAULT","Sexual assault","flags an answer code as indicating this kind of serious harm"
+"analytical_marker.marker_type","MEDICAL_TREATMENT_REQUIRED","Medical treatment required","flags an answer code as indicating this kind of serious harm"
+"analytical_marker.marker_type","HOSPITAL_ADMISSION","Hospital admission","flags an answer code as indicating this kind of serious harm"
+"analytical_marker.marker_type","TRANSMITTABLE_INFECTIOUS_DISEASE","Transmittable infectious disease","flags an answer code as indicating this kind of serious harm"
+"analytical_marker.marker_type","SALIVA_HIT_BODY","Saliva hit body","flags an answer code as indicating this kind of serious harm"
+"analytical_marker.marker_type","HIT_NECK_OR_ABOVE","Hit neck or above","flags an answer code as indicating this kind of serious harm"
+"analytical_marker.marker_type","WEAPON_URINE","Urine","flags an answer code as indicating this kind of serious harm"

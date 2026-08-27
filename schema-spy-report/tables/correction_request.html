@@ -74,6 +74,19 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>correction_request</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>One request to change a report, or one recorded action taken on it. Despite the name this is the general trail of what people have asked for and done - a data warden sending a report back for more detail, a reporter resubmitting it, a report being marked as a duplicate. The newest row&rsquo;s user_action is mirrored onto report.last_user_action.</p>
+                        </div><!-- /.box-body -->
+                    </div>
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -123,7 +136,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Primary key. Surrogate sequence value. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="report_id">report_id</span></td>
@@ -145,7 +158,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>The report this request concerns. Foreign key to report.id. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="description_of_change">description_of_change</span></td>
@@ -162,7 +175,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Free-text description of what was asked for or done, written by hand. Quotes and summarises the report&rsquo;s content, so assume it carries the same health, offending and third-party detail as the description itself. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="correction_requested_at">correction_requested_at</span></td>
@@ -179,7 +192,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>When the request was made or the action recorded. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="correction_requested_by">correction_requested_by</span></td>
@@ -196,7 +209,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Username of the member of staff who made the request or took the action. Identifies a member of staff. <a href="./../null">Sensitivity: STAFF</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="sequence">sequence</span></td>
@@ -213,7 +226,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Order of this request within the report&rsquo;s trail. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="location">location</span></td>
@@ -230,7 +243,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Agency (prison) code or PECS region the requester was working in. Read with correction_requested_by it indicates where that member of staff was based. Nullable on older rows written before the column existed. <a href="./../null">Sensitivity: STAFF</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="user_action">user_action</span></td>
@@ -247,7 +260,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>What the user did, for example REQUEST_REVIEW, REQUEST_CORRECTION, RECALL or CLOSE. Values are in constant_user_action. Null on rows written before the column existed. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="original_report_reference">original_report_reference</span></td>
@@ -264,7 +277,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Reference of the report this one was found to duplicate, recorded when it is marked as a duplicate. A report_reference rather than an id, and null on every other row. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="user_type">user_type</span></td>
@@ -281,7 +294,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td></td>
+                                    <td><p>Which kind of user acted: REPORTING_OFFICER or DATA_WARDEN. The two have different permissions, so this records the capacity someone acted in rather than their job title. Values are in constant_user_type. Null on rows written before the column existed. <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 </tbody>
                             </table>
