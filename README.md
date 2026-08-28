@@ -63,6 +63,85 @@ or prompt for user input when run.
 
 Both also accept the `--port` argument to choose a different local port, other than the resource’s default.
 
+## Database schema
+
+A browsable schema report is published from `main` to
+[ministryofjustice.github.io/hmpps-incident-reporting-api/schema-spy-report](https://ministryofjustice.github.io/hmpps-incident-reporting-api/schema-spy-report/),
+along with two CSV exports for the MOJ Data Catalogue:
+
+| File | Contents |
+|------|----------|
+| `data-dictionary.csv` | Every table and column, with its description, sensitivity classification, type, nullability, PK and FK |
+| `reference-data.csv` | The two code lists with no table behind them. Most reference data here is already queryable from the `constant_*` tables and the constants endpoints |
+
+The report shows every table and column, with types, nullability, primary and foreign keys, and ER
+diagrams. Share it rather than a hand-written description when explaining the schema — to the Data Hub
+transition team, or when working out what a subject access request covers.
+
+It is generated from a database built by Flyway, so it cannot drift from the migrations. To regenerate
+it locally:
+
+```shell
+docker compose -f docker-compose-schema-spy.yml up -d --wait
+./gradlew -Pinit-db=true test --tests '*InitialiseDatabase' --tests '*ExportReferenceData'
+docker run --rm --network host -v /tmp/schemaspy:/output schemaspy/schemaspy:6.2.4 \
+  -t pgsql -host localhost -port 5432 -db incident_reporting -s public \
+  -u incident_reporting -p incident_reporting -vizjs
+scripts/generate-data-dictionary.sh
+```
+
+If you change `V1_48__schema_comments.sql` while the compose database is still up, Flyway will refuse to
+start with a checksum mismatch — the container persists between runs. Recreate it with
+`docker compose -f docker-compose-schema-spy.yml down -v` before re-running.
+
+### Table and column descriptions
+
+Descriptions live in the database as `COMMENT ON` statements, applied by
+`db/migration/V1_48__schema_comments.sql`, so SchemaSpy and any Glue crawl read the same source of
+truth. Each column description ends with a sensitivity classification:
+
+| Tag | Meaning |
+| --- | --- |
+| `[Sensitivity: NONE]` | Not personal data in itself |
+| `[Sensitivity: PERSONAL]` | Personal data about a prisoner — identifies or locates them |
+| `[Sensitivity: STAFF]` | Personal data about a member of staff, typically the username that acted |
+| `[Sensitivity: SPECIAL-CATEGORY]` | UK GDPR Article 9 data, or offence data under Article 10 |
+| `[Sensitivity: OFFICIAL-SENSITIVE]` | Not personal data, but damaging if disclosed |
+
+`STAFF` is still personal data and still in scope for a staff member's own subject access request. It
+is separated from `PERSONAL` so an extract about prisoners can be reasoned about without staff columns
+inflating the count.
+
+The tags describe **the column's own content, not the row's**. Almost every report names prisoners
+through `prisoner_involvement`, so the record as a whole is personal data about them whatever an
+individual column is marked.
+
+**This is the most sensitive schema in the Manage Safety set.** Reports cover self-harm, deaths in
+custody, assaults, sexual assaults and drug finds, so `report.type` alone is Article 9 or Article 10
+data about everyone named on the report, whichever type it is. Every free-text column should be assumed
+to contain more than its question asks. Of 129 columns: 22 are special category, 15 staff, 4 personal.
+
+Two things worth knowing when reading the tags:
+
+- Question *wording* (`question.question`, `question.label`) is form text, identical for every report of
+  a type and derivable from `report.type`, so it is `NONE`. What was *answered* — `response.code`,
+  `response.label`, `response.response` and any additional information — is `SPECIAL-CATEGORY`.
+- Anything analysing answers over time must read `historical_question` and `historical_response` as well
+  as `question` and `response`, or it silently misses every report whose type has been changed.
+
+The tag is split into its own `sensitivity` column in `data-dictionary.csv`, and stripped from the
+description there so the text reads cleanly.
+
+**Any new table or column needs a `COMMENT ON`** in a migration — `SchemaCommentsTest` fails the build
+otherwise. A later migration can add to or replace any comment at any time. Likewise a new
+`InformationSource` or `AnalyticalMarkerType` value needs a description in `ExportReferenceData`, which
+fails rather than exporting a blank row — and remember that any change to the enumerations behind the
+`constant_*` tables needs its own migration, as `V1_14` records.
+
+Note that the compose database binds host port 5432 deliberately: `TestContainer.isRunning()` defers to
+an already-running database, so `InitialiseDatabase` migrates that container and SchemaSpy can read the
+same schema afterwards. Left to Testcontainers the schema would die with the JVM.
+
 ## Architecture
 
 Architecture decision records start [here](docs/0001-use-adr.md)

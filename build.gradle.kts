@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.gradle.PortForwardRedisTask
 import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.1"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.6"
   kotlin("plugin.jpa") version "2.4.10"
   kotlin("plugin.spring") version "2.4.10"
   idea
@@ -28,13 +28,13 @@ dependencies {
   implementation("org.springframework.security:spring-security-access")
   implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.30.0")
-  implementation("io.opentelemetry:opentelemetry-extension-kotlin:1.64.0")
+  implementation("io.opentelemetry:opentelemetry-extension-kotlin:1.65.0")
 
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   implementation("com.zaxxer:HikariCP:7.1.0")
   runtimeOnly("org.postgresql:postgresql:42.7.13")
   implementation("com.fasterxml.uuid:java-uuid-generator:5.2.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
 
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.0")
   testImplementation("org.springframework.boot:spring-boot-starter-webclient-test")
@@ -45,7 +45,7 @@ dependencies {
   testImplementation("com.pauldijou:jwt-core_2.11:5.0.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("org.mockito:mockito-inline:5.2.0")
-  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.45") {
+  testImplementation("io.swagger.parser.v3:swagger-parser:2.1.47") {
     exclude(group = "io.swagger.core.v3")
   }
   testImplementation("org.springframework.security:spring-security-test")
@@ -87,6 +87,17 @@ tasks {
 
   withType<KotlinCompile> {
     compilerOptions.jvmTarget = JvmTarget.JVM_25
+  }
+
+  // Schema documentation helpers - see .github/workflows/schema-spy.yml. These build the database and
+  // export the reference data for the data dictionary, and are not part of the normal suite.
+  test {
+    if (project.hasProperty("init-db")) {
+      include("**/InitialiseDatabase.class", "**/ExportReferenceData.class")
+      systemProperty("referenceDataOutput", project.findProperty("referenceDataOutput") ?: "reference-data.csv")
+    } else {
+      exclude("**/InitialiseDatabase.class", "**/ExportReferenceData.class")
+    }
   }
 }
 
