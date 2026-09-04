@@ -6,7 +6,7 @@ import uk.gov.justice.digital.hmpps.gradle.PortForwardRedisTask
 import uk.gov.justice.digital.hmpps.gradle.RevealSecretsTask
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.5"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.6"
   kotlin("plugin.jpa") version "2.4.10"
   kotlin("plugin.spring") version "2.4.10"
   idea
@@ -89,13 +89,14 @@ tasks {
     compilerOptions.jvmTarget = JvmTarget.JVM_25
   }
 
-  // Schema documentation helper - see .github/workflows/schema-spy.yml. This builds the database the
-  // SchemaSpy report is generated from, and is not part of the normal suite.
+  // Schema documentation helpers - see .github/workflows/schema-spy.yml. These build the database and
+  // export the reference data for the data dictionary, and are not part of the normal suite.
   test {
     if (project.hasProperty("init-db")) {
-      include("**/InitialiseDatabase.class")
+      include("**/InitialiseDatabase.class", "**/ExportReferenceData.class")
+      systemProperty("referenceDataOutput", project.findProperty("referenceDataOutput") ?: "reference-data.csv")
     } else {
-      exclude("**/InitialiseDatabase.class")
+      exclude("**/InitialiseDatabase.class", "**/ExportReferenceData.class")
     }
   }
 }
