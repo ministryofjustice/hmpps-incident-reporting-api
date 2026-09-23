@@ -153,32 +153,32 @@
         "comments": "<p>Username of the member of staff who changed the type. Identifies a member of staff. <a href=\"./null\">Sensitivity: STAFF<\/a><\/p>"
     },
     {
-        "tableName": "historical_question",
-        "tableFileName": "historical_question",
+        "tableName": "historical_response",
+        "tableFileName": "historical_response",
         "tableType": "Table",
         "keyClass": "foreignKey",
         "keyTitle": "Foreign Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>history_id",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>historical_question_id",
         "type": "int4",
         "length": 10,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>The type-change snapshot this question belongs to. Foreign key to history.id - the equivalent of question.report_id one level removed. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "comments": "<p>The historical question this answers. Foreign key to historical_question.id. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_response",
-        "tableFileName": "historical_response",
+        "tableName": "historical_question",
+        "tableFileName": "historical_question",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "response",
-        "type": "text",
-        "length": 2147483647,
+        "keyClass": "primaryKey",
+        "keyTitle": "Primary Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
+        "type": "serial",
+        "length": 10,
         "nullable": "",
-        "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>The answer as worded at the time. Records what happened in the incident about the people named on the report - see response.response. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
+        "autoUpdated": "√",
+        "defaultValue": "nextval('historical_question_id_seq'::regclass)",
+        "comments": "<p>Primary key. Surrogate sequence value. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
         "tableName": "constant_user_type",
@@ -195,18 +195,18 @@
         "comments": "<p>Human-readable name of the user type. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_question",
-        "tableFileName": "historical_question",
+        "tableName": "historical_response",
+        "tableFileName": "historical_response",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "question",
-        "type": "text",
-        "length": 2147483647,
-        "nullable": "",
+        "name": "response_date",
+        "type": "date",
+        "length": 13,
+        "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>The question as worded at the time. Form wording rather than an answer - see question.question. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "comments": "<p>Date given as the answer, where the question asked for one. Null on answers that are not dates. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
     },
     {
         "tableName": "question",
@@ -293,18 +293,18 @@
         "comments": "<p>Free-text description of what was asked for or done, written by hand. Quotes and summarises the report&rsquo;s content, so assume it carries the same health, offending and third-party detail as the description itself. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
     },
     {
-        "tableName": "historical_question",
-        "tableFileName": "historical_question",
+        "tableName": "historical_response",
+        "tableFileName": "historical_response",
         "tableType": "Table",
-        "keyClass": "indexedColumn",
-        "keyTitle": "Indexed",
-        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>code",
-        "type": "varchar",
-        "length": 60,
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "response",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>Stable code for the question within the question set that applied at the time. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "comments": "<p>The answer as worded at the time. Records what happened in the incident about the people named on the report - see response.response. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
     },
     {
         "tableName": "staff_involvement",
@@ -349,18 +349,18 @@
         "comments": "<p>Primary key. Time-ordered UUID v7, so insert order matches id order. Internal - the reference people quote is report_reference. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_response",
-        "tableFileName": "historical_response",
+        "tableName": "historical_question",
+        "tableFileName": "historical_question",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "response_date",
-        "type": "date",
-        "length": 13,
-        "nullable": "√",
+        "keyClass": "foreignKey",
+        "keyTitle": "Foreign Key",
+        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>history_id",
+        "type": "int4",
+        "length": 10,
+        "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>Date given as the answer, where the question asked for one. Null on answers that are not dates. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
+        "comments": "<p>The type-change snapshot this question belongs to. Foreign key to history.id - the equivalent of question.report_id one level removed. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
         "tableName": "flyway_schema_history",
@@ -377,18 +377,18 @@
         "comments": ""
     },
     {
-        "tableName": "historical_response",
-        "tableFileName": "historical_response",
+        "tableName": "historical_question",
+        "tableFileName": "historical_question",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "additional_information",
-        "type": "text",
-        "length": 2147483647,
-        "nullable": "√",
+        "keyClass": "indexedColumn",
+        "keyTitle": "Indexed",
+        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>sequence",
+        "type": "int4",
+        "length": 10,
+        "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>Free text the reporter added against this answer. Written by hand, so assume it carries health, offending and third-party detail. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
+        "defaultValue": "0",
+        "comments": "<p>Order the question was asked in. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
         "tableName": "response",
@@ -548,15 +548,15 @@
         "tableName": "historical_response",
         "tableFileName": "historical_response",
         "tableType": "Table",
-        "keyClass": "foreignKey",
-        "keyTitle": "Foreign Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>historical_question_id",
-        "type": "int4",
-        "length": 10,
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "code",
+        "type": "varchar",
+        "length": 60,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>The historical question this answers. Foreign key to historical_question.id. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "comments": "<p>Stable code for the answer within the option set that applied at the time. Discloses what was answered. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
     },
     {
         "tableName": "constant_type",
@@ -699,18 +699,18 @@
         "comments": "<p>Display order for the role. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_response",
-        "tableFileName": "historical_response",
+        "tableName": "historical_question",
+        "tableFileName": "historical_question",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "recorded_by",
-        "type": "varchar",
-        "length": 120,
+        "name": "question",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>Username of the member of staff who recorded the answer. Identifies a member of staff. <a href=\"./null\">Sensitivity: STAFF<\/a><\/p>"
+        "comments": "<p>The question as worded at the time. Form wording rather than an answer - see question.question. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
         "tableName": "staff_involvement",
@@ -755,18 +755,18 @@
         "comments": "<p>Stable code for the question within the incident type&rsquo;s question set. The join key for anyone analysing answers across reports - the wording changes, the code does not. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_response",
-        "tableFileName": "historical_response",
+        "tableName": "historical_question",
+        "tableFileName": "historical_question",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "code",
-        "type": "varchar",
-        "length": 60,
-        "nullable": "",
+        "name": "additional_information",
+        "type": "text",
+        "length": 2147483647,
+        "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>Stable code for the answer within the option set that applied at the time. Discloses what was answered. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
+        "comments": "<p>Free text the reporter added against the question. Written by hand, so assume it carries health, offending and third-party detail. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
     },
     {
         "tableName": "report",
@@ -965,8 +965,8 @@
         "comments": "<p>The report this snapshot belongs to. Foreign key to report.id. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_question",
-        "tableFileName": "historical_question",
+        "tableName": "historical_response",
+        "tableFileName": "historical_response",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -976,7 +976,7 @@
         "nullable": "√",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>Free text the reporter added against the question. Written by hand, so assume it carries health, offending and third-party detail. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
+        "comments": "<p>Free text the reporter added against this answer. Written by hand, so assume it carries health, offending and third-party detail. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
     },
     {
         "tableName": "prisoner_involvement",
@@ -1164,15 +1164,15 @@
         "tableName": "historical_response",
         "tableFileName": "historical_response",
         "tableType": "Table",
-        "keyClass": "indexedColumn",
-        "keyTitle": "Indexed",
-        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>sequence",
-        "type": "int4",
-        "length": 10,
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "label",
+        "type": "text",
+        "length": 2147483647,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "0",
-        "comments": "<p>Order of this answer within the question&rsquo;s answers. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "defaultValue": "null",
+        "comments": "<p>Display label for the answer, as worded at the time. Discloses what was answered. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
     },
     {
         "tableName": "flyway_schema_history",
@@ -1385,18 +1385,18 @@
         "comments": "<p>Primary key. Surrogate sequence value. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_response",
-        "tableFileName": "historical_response",
+        "tableName": "historical_question",
+        "tableFileName": "historical_question",
         "tableType": "Table",
-        "keyClass": "",
-        "keyTitle": "",
-        "name": "recorded_at",
-        "type": "timestamp",
-        "length": 29,
+        "keyClass": "indexedColumn",
+        "keyTitle": "Indexed",
+        "name": "<i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'><\/i>code",
+        "type": "varchar",
+        "length": 60,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "CURRENT_TIMESTAMP",
-        "comments": "<p>When the answer was recorded - the original recording, not the snapshot. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "defaultValue": "null",
+        "comments": "<p>Stable code for the question within the question set that applied at the time. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
         "tableName": "status_history",
@@ -1581,8 +1581,8 @@
         "comments": "<p>Answer code this marker applies to. Matches response.code and historical_response.code. Deliberately not a foreign key - see the note in V1_14 about the reference tables. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_question",
-        "tableFileName": "historical_question",
+        "tableName": "historical_response",
+        "tableFileName": "historical_response",
         "tableType": "Table",
         "keyClass": "indexedColumn",
         "keyTitle": "Indexed",
@@ -1592,11 +1592,11 @@
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "0",
-        "comments": "<p>Order the question was asked in. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "comments": "<p>Order of this answer within the question&rsquo;s answers. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_response",
-        "tableFileName": "historical_response",
+        "tableName": "historical_question",
+        "tableFileName": "historical_question",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
@@ -1606,7 +1606,7 @@
         "nullable": "",
         "autoUpdated": "",
         "defaultValue": "null",
-        "comments": "<p>Display label for the answer, as worded at the time. Discloses what was answered. <a href=\"./null\">Sensitivity: SPECIAL-CATEGORY<\/a><\/p>"
+        "comments": "<p>Display label for the question, as worded at the time. Form wording rather than an answer. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
         "tableName": "report",
@@ -1892,15 +1892,15 @@
         "tableName": "historical_response",
         "tableFileName": "historical_response",
         "tableType": "Table",
-        "keyClass": "primaryKey",
-        "keyTitle": "Primary Key",
-        "name": "<i class='icon ion-key iconkey' style='padding-left: 5px;'><\/i>id",
-        "type": "serial",
-        "length": 10,
+        "keyClass": "",
+        "keyTitle": "",
+        "name": "recorded_by",
+        "type": "varchar",
+        "length": 120,
         "nullable": "",
-        "autoUpdated": "√",
-        "defaultValue": "nextval('historical_response_id_seq'::regclass)",
-        "comments": "<p>Primary key. Surrogate sequence value. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "autoUpdated": "",
+        "defaultValue": "null",
+        "comments": "<p>Username of the member of staff who recorded the answer. Identifies a member of staff. <a href=\"./null\">Sensitivity: STAFF<\/a><\/p>"
     },
     {
         "tableName": "constant_prisoner_role",
@@ -1987,8 +1987,8 @@
         "comments": "<p>Whether the reporter has finished recording staff involvement. Distinguishes &ldquo;no staff were involved&rdquo; from &ldquo;not yet filled in&rdquo;, which an empty staff_involvement cannot do on its own. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_question",
-        "tableFileName": "historical_question",
+        "tableName": "historical_response",
+        "tableFileName": "historical_response",
         "tableType": "Table",
         "keyClass": "primaryKey",
         "keyTitle": "Primary Key",
@@ -1997,7 +1997,7 @@
         "length": 10,
         "nullable": "",
         "autoUpdated": "√",
-        "defaultValue": "nextval('historical_question_id_seq'::regclass)",
+        "defaultValue": "nextval('historical_response_id_seq'::regclass)",
         "comments": "<p>Primary key. Surrogate sequence value. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
@@ -2015,18 +2015,18 @@
         "comments": "<p>The user type code as stored in correction_request.user_type: REPORTING_OFFICER or DATA_WARDEN. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
-        "tableName": "historical_question",
-        "tableFileName": "historical_question",
+        "tableName": "historical_response",
+        "tableFileName": "historical_response",
         "tableType": "Table",
         "keyClass": "",
         "keyTitle": "",
-        "name": "label",
-        "type": "text",
-        "length": 2147483647,
+        "name": "recorded_at",
+        "type": "timestamp",
+        "length": 29,
         "nullable": "",
         "autoUpdated": "",
-        "defaultValue": "null",
-        "comments": "<p>Display label for the question, as worded at the time. Form wording rather than an answer. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
+        "defaultValue": "CURRENT_TIMESTAMP",
+        "comments": "<p>When the answer was recorded - the original recording, not the snapshot. <a href=\"./null\">Sensitivity: NONE<\/a><\/p>"
     },
     {
         "tableName": "correction_request",
