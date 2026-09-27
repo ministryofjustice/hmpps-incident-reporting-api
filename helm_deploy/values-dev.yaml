@@ -13,14 +13,10 @@ generic-service:
   allowlist: null
 
   env:
-    SPRING_PROFILES_ACTIVE: "logstash, replica"
+    SPRING_PROFILES_ACTIVE: "logstash"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
     API_BASE_URL_OAUTH: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
     API_BASE_URL_PRISONER_SEARCH: https://prisoner-search-dev.prison.service.justice.gov.uk
-
-  namespace_secrets:
-    dps-rds-read-replica-output:
-      REPLICA_DATABASE_ENDPOINT: "rds_instance_endpoint"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-incident-reporting-dev
