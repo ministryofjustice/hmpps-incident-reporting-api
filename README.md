@@ -63,16 +63,41 @@ or prompt for user input when run.
 
 Both also accept the `--port` argument to choose a different local port, other than the resource’s default.
 
+## Subject access requests
+
+Incident reporting is going through the
+[Central SAR Change Control Process](https://dsdmoj.atlassian.net/wiki/spaces/NDSS/pages/6057492803) as a
+New Product (epic IR-2036). Reports are still synchronised to NOMIS, so for now they also appear in the
+NOMIS section of a prisoner's SAR report, but DPS holds data NOMIS cannot represent.
+
+`scripts/generate-sar-data-requirements.sh` produces the SAR Data Requirements extract the Offender SAR team
+review at the data review checkpoint, and it is published with the schema report. It is generated from the
+column comments, so it cannot drift from the schema: every column carries an example value and a SAR
+classification as well as its sensitivity, and `SchemaCommentsTest` fails the build if a new column is
+missing any of them.
+
+`[SAR: Y]` means the value reaches the report under the response proposed for the data review, `[SAR: N]`
+that it does not. It is set deliberately per column in `V1_49__sar_data_requirements.sql` and is not derived
+from the sensitivity tag, which answers a different question. The outcome of the Offender SAR team's review
+goes in a later migration, and any new column needs the same decision.
+
+Two ordering rules apply to every change that affects the SAR response or template:
+
+1. No code or template reaches preprod or prod until the Offender SAR team have signed off the test report.
+2. The template must be registered with the SAR tool in an environment **before** the code deploys there,
+   or the product is suspended. Ask the HAA team on `#haa-sar-functionality-change-request`.
+
 ## Database schema
 
 A browsable schema report is published from `main` to
 [ministryofjustice.github.io/hmpps-incident-reporting-api/schema-spy-report](https://ministryofjustice.github.io/hmpps-incident-reporting-api/schema-spy-report/),
-along with two CSV exports for the MOJ Data Catalogue:
+along with three CSV exports:
 
 | File | Contents |
 |------|----------|
-| `data-dictionary.csv` | Every table and column, with its description, sensitivity classification, type, nullability, PK and FK |
+| `data-dictionary.csv` | Every table and column, with its description, sensitivity classification, type, nullability, PK and FK, example value and SAR classification. For the MOJ Data Catalogue |
 | `reference-data.csv` | The two code lists with no table behind them. Most reference data here is already queryable from the `constant_*` tables and the constants endpoints |
+| `sar-data-requirements.csv` | The SAR Data Requirements extract the Offender SAR team review — see [Subject access requests](#subject-access-requests) |
 
 The report shows every table and column, with types, nullability, primary and foreign keys, and ER
 diagrams. Share it rather than a hand-written description when explaining the schema — to the Data Hub
@@ -88,6 +113,7 @@ docker run --rm --network host -v /tmp/schemaspy:/output schemaspy/schemaspy:6.2
   -t pgsql -host localhost -port 5432 -db incident_reporting -s public \
   -u incident_reporting -p incident_reporting -vizjs
 scripts/generate-data-dictionary.sh
+scripts/generate-sar-data-requirements.sh
 ```
 
 If you change `V1_48__schema_comments.sql` while the compose database is still up, Flyway will refuse to
@@ -129,8 +155,10 @@ Two things worth knowing when reading the tags:
 - Anything analysing answers over time must read `historical_question` and `historical_response` as well
   as `question` and `response`, or it silently misses every report whose type has been changed.
 
-The tag is split into its own `sensitivity` column in `data-dictionary.csv`, and stripped from the
-description there so the text reads cleanly.
+Two more tags sit between the description and the sensitivity tag: an example value
+(`[Example: SELF_HARM_1]`) and whether the column's value reaches a prisoner's subject access request
+report (`[SAR: Y]` or `[SAR: N]`), both added in `V1_49`. Each tag is split into its own column in
+`data-dictionary.csv`, and stripped from the description there so the text reads cleanly.
 
 **Any new table or column needs a `COMMENT ON`** in a migration — `SchemaCommentsTest` fails the build
 otherwise. A later migration can add to or replace any comment at any time. Likewise a new
