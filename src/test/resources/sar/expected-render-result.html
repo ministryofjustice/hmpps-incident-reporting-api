@@ -1,0 +1,455 @@
+<style>
+    * {
+        font-family: "HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif;
+        font-size: 12pt;
+        color: #0b0c0c;
+    }
+    /* --- HEADINGS --- */
+
+    .title {
+        font-size: 20pt;
+        text-align: center;
+    }
+
+    h1, h2, h3 {
+        color: #0b0c0c;
+        font-weight: 700;
+        display: block;
+        margin-top: 0;
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+    }
+
+    h1 {
+        font-size: 18pt;
+        line-height: 1.09375;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        margin-block-start: 0.67em;
+        margin-block-end: 0.67em;
+    }
+
+    h2 {
+        font-size: 17pt;
+        line-height: 1.0416666667;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        margin-block-start: 0.83em;
+        margin-block-end: 0.83em;
+    }
+
+    h3 {
+        font-size: 16pt;
+        line-height: 1.0416666667;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        margin-block-start: 0.83em;
+        margin-block-end: 0.83em;
+    }
+
+    h4 {
+        font-size: 15pt;
+        line-height: 1.0416666667;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        margin-block-start: 0.83em;
+        margin-block-end: 0.83em;
+    }
+
+    h5 {
+        font-size: 14pt;
+        line-height: 1.0416666667;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        margin-block-start: 0.83em;
+        margin-block-end: 0.83em;
+    }
+
+    /* --- SUMMARY LIST --- */
+
+    table.summary-list {
+        display: table;
+        width: 700px;
+        table-layout: fixed;
+        border-collapse: collapse;
+        margin: 0 0 5px;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+    }
+
+    table.summary-list tr {
+        display: table-row;
+        margin: 0 0 20px;
+    }
+
+    table.summary-list tr td {
+        border-bottom: 1px solid #b1b4b6;
+        /*margin-bottom: 5px;*/
+        overflow-wrap: break-word;
+        display: table-cell;
+        /*padding-top: 2px;*/
+        /*padding-bottom: 2px;*/
+        /*padding-right: 0;*/
+        margin-inline-start: 40px;
+        width: 70%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        line-height: 1.25;
+        font-weight: 400;
+        white-space: normal;
+        vertical-align: top;
+    }
+
+    table.summary-list tr td:first-child {
+        font-size: 12pt;
+        width: 30%;
+        font-weight: 700;
+        padding-right: 20px;
+        vertical-align: top;
+    }
+
+    /* --- DATA TABLE --- */
+
+    table.data-table {
+        display: table;
+        width: 700px;
+        table-layout: fixed;
+        border-collapse: collapse;
+        margin: 0 0 5px;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+    }
+
+    table.data-table tr {
+        display: table-row;
+        margin: 0 0 20px;
+    }
+
+    table.data-table tr td {
+        border-bottom: 1px solid #b1b4b6;
+        margin-bottom: 5px;
+        overflow-wrap: break-word;
+        display: table-cell;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-right: 0;
+        margin-inline-start: 40px;
+        table-layout: fixed;
+        border-collapse: collapse;
+        line-height: 1.25;
+        font-weight: 400;
+        white-space: pre-wrap;
+        vertical-align: top;
+    }
+
+    table.data-table tr:first-child td {
+        font-size: 12pt;
+        width: 30%;
+        font-weight: 700;
+        padding-right: 20px;
+        border-bottom: none;
+        vertical-align: top;
+    }
+
+    table.data-table tr td.data-column-5 { width: 5% }
+    table.data-table tr td.data-column-10 { width: 10% }
+    table.data-table tr td.data-column-15 { width: 15% }
+    table.data-table tr td.data-column-20 { width: 20% }
+    table.data-table tr td.data-column-25 { width: 25% }
+    table.data-table tr td.data-column-30 { width: 30% }
+    table.data-table tr td.data-column-35 { width: 35% }
+    table.data-table tr td.data-column-40 { width: 40% }
+    table.data-table tr td.data-column-45 { width: 45% }
+    table.data-table tr td.data-column-50 { width: 50% }
+    table.data-table tr td.data-column-55 { width: 55% }
+    table.data-table tr td.data-column-60 { width: 60% }
+    table.data-table tr td.data-column-65 { width: 65% }
+    table.data-table tr td.data-column-70 { width: 70% }
+    table.data-table tr td.data-column-75 { width: 75% }
+    table.data-table tr td.data-column-80 { width: 80% }
+    table.data-table tr td.data-column-85 { width: 85% }
+    table.data-table tr td.data-column-90 { width: 90% }
+    table.data-table tr td.data-column-95 { width: 95% }
+
+    table tr td.data-column-5 { width: 5% }
+    table tr td.data-column-10 { width: 10% }
+    table tr td.data-column-15 { width: 15% }
+    table tr td.data-column-20 { width: 20% }
+    table tr td.data-column-25 { width: 25% }
+    table tr td.data-column-30 { width: 30% }
+    table tr td.data-column-35 { width: 35% }
+    table tr td.data-column-40 { width: 40% }
+    table tr td.data-column-45 { width: 45% }
+    table tr td.data-column-50 { width: 50% }
+    table tr td.data-column-55 { width: 55% }
+    table tr td.data-column-60 { width: 60% }
+    table tr td.data-column-65 { width: 65% }
+    table tr td.data-column-70 { width: 70% }
+    table tr td.data-column-75 { width: 75% }
+    table tr td.data-column-80 { width: 80% }
+    table tr td.data-column-85 { width: 85% }
+    table tr td.data-column-90 { width: 90% }
+    table tr td.data-column-95 { width: 95% }
+
+    table.summary-list tr td.data-column-5 { width: 5% }
+    table.summary-list tr td.data-column-10 { width: 10% }
+    table.summary-list tr td.data-column-15 { width: 15% }
+    table.summary-list tr td.data-column-20 { width: 20% }
+    table.summary-list tr td.data-column-25 { width: 25% }
+    table.summary-list tr td.data-column-30 { width: 30% }
+    table.summary-list tr td.data-column-35 { width: 35% }
+    table.summary-list tr td.data-column-40 { width: 40% }
+    table.summary-list tr td.data-column-45 { width: 45% }
+    table.summary-list tr td.data-column-50 { width: 50% }
+    table.summary-list tr td.data-column-55 { width: 55% }
+    table.summary-list tr td.data-column-60 { width: 60% }
+    table.summary-list tr td.data-column-65 { width: 65% }
+    table.summary-list tr td.data-column-70 { width: 70% }
+    table.summary-list tr td.data-column-75 { width: 75% }
+    table.summary-list tr td.data-column-80 { width: 80% }
+    table.summary-list tr td.data-column-85 { width: 85% }
+    table.summary-list tr td.data-column-90 { width: 90% }
+    table.summary-list tr td.data-column-95 { width: 95% }
+
+    ul {
+        padding: 0 0 0 10px;
+    }
+
+</style>
+
+<h1 class="title">Incident Reporting</h1>
+
+
+<h2>Incident report 1000101</h2>
+<table class="summary-list">
+<tr><td>Type of incident</td><td>Assault</td></tr>
+<tr><td>Title</td><td>Assault: A1234SR Smith, B2345SR Jones (MDI)</td></tr>
+<tr><td>Date and time of incident</td><td>14 March 2025, 9:30:00 am</td></tr>
+<tr><td>Establishment</td><td>Moorland (HMP &amp; YOI)</td></tr>
+<tr><td>Status</td><td>Updated</td></tr>
+<tr><td>Reported by</td><td>Johnson</td></tr>
+<tr><td>Date and time reported</td><td>14 March 2025, 11:05:00 am</td></tr>
+<tr><td>Description</td><td>Officer found the prisoner in their cell with a cut to the forearm. Healthcare attended.</td></tr>
+</table>
+<h3>Additions to the description</h3>
+
+
+<table class="summary-list">
+<tr><td>Added by</td><td>Alex Brown</td></tr>
+<tr><td>Date and time added</td><td>16 March 2025, 8:55:00 am</td></tr>
+<tr><td>Addition</td><td>The other prisoner was seen leaving the cell shortly before.</td></tr>
+</table>
+
+<h3>Prisoners involved</h3>
+
+
+<table class="summary-list">
+<tr><td>Name</td><td>Sam Smith</td></tr>
+
+<tr><td>How they were involved</td><td>Victim</td></tr>
+<tr><td>Outcome</td><td>Seen by Healthcare</td></tr>
+<tr><td>Comment</td><td>Cut to the forearm, cleaned and dressed.</td></tr>
+</table>
+
+<table class="summary-list">
+<tr><td>Name</td><td>Joe Jones</td></tr>
+<tr><td>Prison number</td><td>B2345SR</td></tr>
+<tr><td>How they were involved</td><td>Suspected assailant</td></tr>
+<tr><td>Outcome</td><td>Placed on report</td></tr>
+<tr><td>Comment</td><td>No Data Held</td></tr>
+</table>
+
+<h3>Staff involved</h3>
+
+
+<table class="summary-list">
+<tr><td>Name</td><td>Jane Doe</td></tr>
+<tr><td>How they were involved</td><td>First on scene</td></tr>
+<tr><td>Comment</td><td>First to arrive and called for healthcare.</td></tr>
+</table>
+
+<table class="summary-list">
+<tr><td>Name</td><td>Pat Green</td></tr>
+<tr><td>How they were involved</td><td>Witness</td></tr>
+<tr><td>Comment</td><td>No Data Held</td></tr>
+</table>
+
+<h3>Questions and answers</h3>
+
+
+<h4>Was a weapon used?</h4>
+<table class="summary-list">
+
+
+<tr><td>Answer</td><td>No</td></tr>
+
+
+<tr><td>Recorded by</td><td>Johnson</td></tr>
+<tr><td>Date and time recorded</td><td>14 March 2025, 11:10:00 am</td></tr>
+
+
+</table>
+
+<h4>What injuries were sustained?</h4>
+<table class="summary-list">
+
+
+<tr><td>Answer</td><td>Cut</td></tr>
+
+<tr><td>Further information</td><td>Cut to the left forearm.</td></tr>
+<tr><td>Recorded by</td><td>Johnson</td></tr>
+<tr><td>Date and time recorded</td><td>14 March 2025, 11:10:00 am</td></tr>
+
+<tr><td>Answer</td><td>Bruising</td></tr>
+
+
+<tr><td>Recorded by</td><td>Johnson</td></tr>
+<tr><td>Date and time recorded</td><td>14 March 2025, 11:10:00 am</td></tr>
+
+<tr><td>Further information about the question</td><td>Injuries were photographed.</td></tr>
+</table>
+
+<h4>When was the prisoner seen by healthcare?</h4>
+<table class="summary-list">
+
+
+<tr><td>Answer</td><td>Date seen</td></tr>
+<tr><td>Date given</td><td>14 March 2025</td></tr>
+
+<tr><td>Recorded by</td><td>Johnson</td></tr>
+<tr><td>Date and time recorded</td><td>16 March 2025, 9:00:00 am</td></tr>
+
+
+</table>
+
+<h3>Requests to correct or change the report</h3>
+
+
+<table class="summary-list">
+<tr><td>Requested by</td><td>Johnson</td></tr>
+<tr><td>Their role</td><td>Data warden</td></tr>
+<tr><td>Date and time requested</td><td>15 March 2025, 2:20:00 pm</td></tr>
+<tr><td>Establishment</td><td>Moorland (HMP &amp; YOI)</td></tr>
+<tr><td>Action</td><td>Request correction</td></tr>
+<tr><td>Details</td><td>Please add the names of the staff who attended.</td></tr>
+
+</table>
+
+<h3>Status history</h3>
+
+
+<table class="summary-list">
+<tr><td>Status</td><td>Draft</td></tr>
+<tr><td>Date and time</td><td>14 March 2025, 11:05:00 am</td></tr>
+<tr><td>Changed by</td><td>Johnson</td></tr>
+</table>
+
+<table class="summary-list">
+<tr><td>Status</td><td>Awaiting review</td></tr>
+<tr><td>Date and time</td><td>14 March 2025, 11:20:00 am</td></tr>
+<tr><td>Changed by</td><td>Johnson</td></tr>
+</table>
+
+<table class="summary-list">
+<tr><td>Status</td><td>Needs updating</td></tr>
+<tr><td>Date and time</td><td>15 March 2025, 2:20:00 pm</td></tr>
+<tr><td>Changed by</td><td>Johnson</td></tr>
+</table>
+
+<table class="summary-list">
+<tr><td>Status</td><td>Updated</td></tr>
+<tr><td>Date and time</td><td>16 March 2025, 9:00:00 am</td></tr>
+<tr><td>Changed by</td><td>Johnson</td></tr>
+</table>
+
+<h3>Earlier types of incident</h3>
+
+
+<table class="summary-list">
+<tr><td>Type of incident</td><td>Self-harm</td></tr>
+<tr><td>Date and time changed</td><td>14 March 2025, 11:15:00 am</td></tr>
+<tr><td>Changed by</td><td>Johnson</td></tr>
+</table>
+
+<h4>Treatment required following cut scratch</h4>
+<table class="summary-list">
+
+
+<tr><td>Answer</td><td>Cleaned and dressed</td></tr>
+
+
+<tr><td>Recorded by</td><td>Johnson</td></tr>
+<tr><td>Date and time recorded</td><td>14 March 2025, 11:10:00 am</td></tr>
+
+
+</table>
+
+
+
+<h2>Incident report 1000050</h2>
+<table class="summary-list">
+<tr><td>Type of incident</td><td>Find of illicit items</td></tr>
+<tr><td>Title</td><td>Find of illicit items</td></tr>
+<tr><td>Date and time of incident</td><td>02 November 2024, 8:15:00 pm</td></tr>
+<tr><td>Establishment</td><td>Moorland (HMP &amp; YOI)</td></tr>
+<tr><td>Status</td><td>Duplicate</td></tr>
+<tr><td>Reported by</td><td>Johnson</td></tr>
+<tr><td>Date and time reported</td><td>02 November 2024, 9:00:00 pm</td></tr>
+<tr><td>Description</td><td>Search of cell found a mobile phone.</td></tr>
+</table>
+<h3>Additions to the description</h3>
+<p>No Data Held</p>
+
+<h3>Prisoners involved</h3>
+
+
+<table class="summary-list">
+<tr><td>Name</td><td>Sam Smith</td></tr>
+
+<tr><td>How they were involved</td><td>In possession</td></tr>
+<tr><td>Outcome</td><td>No Data Held</td></tr>
+<tr><td>Comment</td><td>No Data Held</td></tr>
+</table>
+
+<h3>Staff involved</h3>
+<p>No Data Held</p>
+
+<h3>Questions and answers</h3>
+<p>No Data Held</p>
+
+<h3>Requests to correct or change the report</h3>
+
+
+<table class="summary-list">
+<tr><td>Requested by</td><td>Johnson</td></tr>
+<tr><td>Their role</td><td>Reporting officer</td></tr>
+<tr><td>Date and time requested</td><td>03 November 2024, 8:30:00 am</td></tr>
+<tr><td>Establishment</td><td>No Data Held</td></tr>
+<tr><td>Action</td><td>Request to mark duplicate</td></tr>
+<tr><td>Details</td><td>Already reported by another officer.</td></tr>
+<tr><td>Report this one duplicates</td><td>1000049</td></tr>
+</table>
+
+<h3>Status history</h3>
+
+
+<table class="summary-list">
+<tr><td>Status</td><td>Awaiting review</td></tr>
+<tr><td>Date and time</td><td>02 November 2024, 9:00:00 pm</td></tr>
+<tr><td>Changed by</td><td>Johnson</td></tr>
+</table>
+
+<table class="summary-list">
+<tr><td>Status</td><td>Duplicate</td></tr>
+<tr><td>Date and time</td><td>04 November 2024, 10:00:00 am</td></tr>
+<tr><td>Changed by</td><td>Johnson</td></tr>
+</table>
+
+<h3>Earlier types of incident</h3>
+<p>No Data Held</p>
+
+

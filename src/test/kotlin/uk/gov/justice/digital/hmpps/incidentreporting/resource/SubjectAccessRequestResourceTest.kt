@@ -12,6 +12,7 @@ import org.springframework.test.json.JsonCompareMode
 import uk.gov.justice.digital.hmpps.incidentreporting.helper.buildReport
 import uk.gov.justice.digital.hmpps.incidentreporting.integration.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.incidentreporting.jpa.repository.ReportRepository
+import java.time.LocalDateTime
 
 @DisplayName("SAR resource")
 class SubjectAccessRequestResourceTest : SqsIntegrationTestBase() {
@@ -97,6 +98,74 @@ class SubjectAccessRequestResourceTest : SqsIntegrationTestBase() {
       .header("Content-Type", "application/json")
       .exchange()
       .expectStatus().isNoContent
+  }
+
+  @ParameterizedTest(name = "SAR date range {0} to {1} selects on the incident date, not when last changed: {2}")
+  @CsvSource(
+    value = [
+      "2023-11-01 | 2023-11-01 | true",
+      "2023-10-31 | 2023-11-02 | true",
+      "2023-12-05 | 2023-12-05 | false",
+      "2023-12-01 |            | false",
+    ],
+    delimiter = '|',
+  )
+  fun `SAR date range selects on the incident date`(
+    fromDate: String,
+    toDate: String?,
+    expectReportReturned: Boolean,
+  ) {
+    // reported, created and last changed today, but about an incident a month earlier
+    reportRepository.deleteAll()
+    reportRepository.save(
+      buildReport(
+        reportReference = "1000003",
+        reportTime = now,
+        generatePrisonerInvolvement = 1,
+      ).apply { incidentDateAndTime = LocalDateTime.parse("2023-11-01T23:30:00") },
+    )
+
+    val url = "/subject-access-request?prn=A0001AA&fromDate=$fromDate" + (toDate?.let { "&toDate=$it" } ?: "")
+    webTestClient.get()
+      .uri(url)
+      .headers(setAuthorisation(roles = listOf("ROLE_SAR_DATA_ACCESS")))
+      .header("Content-Type", "application/json")
+      .exchange()
+      .expectStatus().run {
+        if (expectReportReturned) {
+          isOk
+            .expectBody().jsonPath("content[0].reportReference").isEqualTo("1000003")
+        } else {
+          isNoContent
+        }
+      }
+  }
+
+  @Test
+  fun `SAR endpoint marks which prisoner the request is about`() {
+    webTestClient.get()
+      .uri("/subject-access-request?prn=A0002AA")
+      .headers(setAuthorisation(roles = listOf("ROLE_SAR_DATA_ACCESS")))
+      .header("Content-Type", "application/json")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody().json(
+        // language=json
+        """
+        {
+          "content": [
+            {
+              "reportReference": "1000002",
+              "prisonersInvolved": [
+                {"prisonerNumber": "A0001AA", "subjectOfRequest": false},
+                {"prisonerNumber": "A0002AA", "subjectOfRequest": true}
+              ]
+            }
+          ]
+        }
+        """,
+        JsonCompareMode.LENIENT,
+      )
   }
 
   @ParameterizedTest(name = "SAR endpoint for date range {0} to {1} should return reports? {2}")
