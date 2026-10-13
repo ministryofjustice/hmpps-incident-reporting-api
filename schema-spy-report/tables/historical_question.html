@@ -141,7 +141,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Primary key. Surrogate sequence value. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Primary key. Surrogate sequence value. <a href="./../null">Example: 901</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="history_id">history_id</span></td>
@@ -163,7 +163,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    <td><p>The type-change snapshot this question belongs to. Foreign key to history.id - the equivalent of question.report_id one level removed. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>The type-change snapshot this question belongs to. Foreign key to history.id - the equivalent of question.report_id one level removed. <a href="./../null">Example: 601</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="sequence">sequence</span></td>
@@ -180,7 +180,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Order the question was asked in. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Order the question was asked in. <a href="./../null">Example: 0</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="code">code</span></td>
@@ -197,7 +197,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Stable code for the question within the question set that applied at the time. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>The business key for the question in the question set that applied before the report&rsquo;s type was changed. As question.code: says which question was asked, and does not change when the wording is corrected. <a href="./../null">Example: 44155</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="question">question</span></td>
@@ -214,7 +214,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The question as worded at the time. Form wording rather than an answer - see question.question. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>The question in the legacy form NOMIS held, as it stood before the report&rsquo;s type was changed. As question.question: often in capitals or misspelt, or a key such as lock_type for some newer incident types. Not for display - label is the wording the user saw. Expected to be removed once NOMIS is switched off. Form wording rather than an answer. <a href="./../null">Example: TREATMENT REQUIRED FOLLOWING CUT SCRATCH</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="additional_information">additional_information</span></td>
@@ -231,7 +231,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Free text the reporter added against the question. Written by hand, so assume it carries health, offending and third-party detail. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
+                                    <td><p>Free text the reporter added against the question. Written by hand, so assume it carries health, offending and third-party detail. <a href="./../null">Example: Treatment refused at first, accepted later.</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="label">label</span></td>
@@ -248,7 +248,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Display label for the question, as worded at the time. Form wording rather than an answer. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>The question exactly as it was shown to the user, before the report&rsquo;s type was changed. As question.label: the wording to display, stored so the form can be reconstructed as it was presented. Form wording rather than an answer. <a href="./../null">Example: Treatment required following cut scratch</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 </tbody>
                             </table>

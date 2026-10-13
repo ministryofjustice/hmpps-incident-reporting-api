@@ -176,7 +176,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Primary key. Time-ordered UUID v7, so insert order matches id order. Internal - the reference people quote is report_reference. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Primary key. Time-ordered UUID v7, so insert order matches id order. Internal - the reference people quote is report_reference. <a href="./../null">Example: 0192a3b4-c5d6-7e8f-9a0b-1c2d3e4f5a6b</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="report_reference">report_reference</span></td>
@@ -193,7 +193,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Human-readable reference for the report, unique across the service. Known as the &ldquo;incident number&rdquo; in NOMIS, and the identifier staff quote to each other. Identifies an incident, not a person. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Human-readable reference for the report, unique across the service. Known as the &ldquo;incident number&rdquo; in NOMIS, and the identifier staff quote to each other. Identifies an incident, not a person. <a href="./../null">Example: 1234567</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="title">title</span></td>
@@ -210,7 +210,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Short title for the incident, written by the reporter. Free text, and in practice often names people or summarises what happened, so it carries the same sensitivity as the description despite being short. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
+                                    <td><p>Short title for the incident. For reports created in DPS it is generated automatically from the incident type, the prison number and surname of every prisoner involved and the prison, so it names everyone on the report. Reports that came from NOMIS carry the title the reporter wrote, which in practice often names people or summarises what happened. <a href="./../null">Example: Self-harm: A1234BC Smith (MDI)</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="description">description</span></td>
@@ -227,7 +227,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The reporter&rsquo;s account of what happened. Unstructured and unbounded, and the single richest source of sensitive data in the schema - it routinely describes injuries, self-harm, health treatment, offending and third parties by name. Later additions are appended as rows in description_addendum rather than edited into this column. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
+                                    <td><p>The reporter&rsquo;s account of what happened. Unstructured and unbounded, and the single richest source of sensitive data in the schema - it routinely describes injuries, self-harm, health treatment, offending and third parties by name. Later additions are appended as rows in description_addendum rather than edited into this column. <a href="./../null">Example: Officer found the prisoner in their cell with a cut to the forearm. Healthcare attended.</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="location">location</span></td>
@@ -244,7 +244,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Agency (prison) code where the incident happened. Read with prisoner_involvement it indicates where those prisoners were held at the time. Renamed from prison_id in V1_2 and widened, because PECS regions are also valid values here - a report is not always tied to an establishment. <a href="./../null">Sensitivity: PERSONAL</a></p></td>
+                                    <td><p>Agency (prison) code where the incident happened. Read with prisoner_involvement it indicates where those prisoners were held at the time. Renamed from prison_id in V1_2 and widened, because PECS regions are also valid values here - a report is not always tied to an establishment. <a href="./../null">Example: MDI</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: PERSONAL</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="type">type</span></td>
@@ -261,7 +261,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>What kind of incident this is, for example SELF_HARM, DEATH_OTHER, ASSAULT or FIND_OF_ILLICIT_ITEMS. Drives which questions are asked. This is Article 9 or Article 10 data about everyone named on the report whichever value it holds - that a report exists and is typed SELF_HARM discloses health data about the prisoner it concerns. Values are listed in constant_type and grouped by constant_type_family. <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
+                                    <td><p>What kind of incident this is, for example SELF_HARM_1, DEATH_OTHER_1, ASSAULT_5 or FIND_6. Drives which questions are asked. This is Article 9 or Article 10 data about everyone named on the report whichever value it holds - that a report exists and is a self-harm report discloses health data about the prisoner it concerns. Values are listed in constant_type and grouped by constant_type_family. <a href="./../null">Example: SELF_HARM_1</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: SPECIAL-CATEGORY</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="source">source</span></td>
@@ -278,7 +278,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Where the report was first created: DPS or NOMIS. Reports migrated or synchronised from NOMIS carry NOMIS. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Where the report was first created: DPS or NOMIS. Reports migrated or synchronised from NOMIS carry NOMIS. <a href="./../null">Example: DPS</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="status">status</span></td>
@@ -295,7 +295,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Where the report has got to in the workflow, for example DRAFT, AWAITING_REVIEW, ON_HOLD, NEEDS_UPDATING, CLOSED or DUPLICATE. Values and their meanings are in constant_status, which also records which statuses downstream consumers should ignore. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Where the report has got to in the workflow, for example DRAFT, AWAITING_REVIEW, ON_HOLD, NEEDS_UPDATING, CLOSED or DUPLICATE. Values and their meanings are in constant_status, which also records which statuses downstream consumers should ignore. <a href="./../null">Example: AWAITING_REVIEW</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="incident_date_and_time">incident_date_and_time</span></td>
@@ -312,7 +312,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>When the incident happened, as reported. Distinct from reported_at, which is when someone wrote it up - the gap between the two is often days. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>When the incident happened, as reported. Distinct from reported_at, which is when someone wrote it up - the gap between the two is often days. <a href="./../null">Example: 2026-03-14T09:30:00</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="reported_at">reported_at</span></td>
@@ -329,7 +329,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>When the incident was reported. For reports synchronised from NOMIS this is the original NOMIS value, not the sync. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>When the incident was reported. For reports synchronised from NOMIS this is the original NOMIS value, not the sync. <a href="./../null">Example: 2026-03-14T11:05:00</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="reported_by">reported_by</span></td>
@@ -346,7 +346,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Username of the member of staff who reported the incident. Identifies a member of staff. <a href="./../null">Sensitivity: STAFF</a></p></td>
+                                    <td><p>Username of the member of staff who reported the incident. Identifies a member of staff. <a href="./../null">Example: AUSER_GEN</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: STAFF</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="question_set_id">question_set_id</span></td>
@@ -363,7 +363,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Legacy NOMIS question set identifier, carried over in the original schema and never used since - no Kotlin code reads or writes it, and it is not exposed by the API. Treat as dead. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Legacy NOMIS question set identifier, carried over in the original schema and never used since - no Kotlin code reads or writes it, and it is not exposed by the API. Treat as dead. <a href="./../null">Example: Never set</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="created_at">created_at</span></td>
@@ -380,7 +380,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>When the row was created in this service. For reports synchronised from NOMIS this is the sync, not the incident or the original report - use incident_date_and_time or reported_at for those. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>When the row was created in this service. For reports synchronised from NOMIS this is the sync, not the incident or the original report - use incident_date_and_time or reported_at for those. <a href="./../null">Example: 2026-03-14T11:05:12</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="modified_by">modified_by</span></td>
@@ -397,7 +397,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Username of the member of staff who last changed the report, or the system user for changes made by the NOMIS sync. Identifies a member of staff. <a href="./../null">Sensitivity: STAFF</a></p></td>
+                                    <td><p>Username of the member of staff who last changed the report, or the system user for changes made by the NOMIS sync. Identifies a member of staff. <a href="./../null">Example: AUSER_GEN</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: STAFF</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="modified_at">modified_at</span></td>
@@ -414,7 +414,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>When the report was last changed. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>When the report was last changed. <a href="./../null">Example: 2026-03-15T08:40:00</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="modified_in">modified_in</span></td>
@@ -431,7 +431,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Which system made the last change: DPS or NOMIS. A report can be created in one and edited in the other, so this is not the same as source. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Which system made the last change: DPS or NOMIS. A report can be created in one and edited in the other, so this is not the same as source. <a href="./../null">Example: DPS</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="staff_involvement_done">staff_involvement_done</span></td>
@@ -448,7 +448,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Whether the reporter has finished recording staff involvement. Distinguishes &ldquo;no staff were involved&rdquo; from &ldquo;not yet filled in&rdquo;, which an empty staff_involvement cannot do on its own. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Whether the reporter has finished recording staff involvement. Distinguishes &ldquo;no staff were involved&rdquo; from &ldquo;not yet filled in&rdquo;, which an empty staff_involvement cannot do on its own. <a href="./../null">Example: true</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="prisoner_involvement_done">prisoner_involvement_done</span></td>
@@ -465,7 +465,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>Whether the reporter has finished recording prisoner involvement. Distinguishes &ldquo;no prisoners were involved&rdquo; from &ldquo;not yet filled in&rdquo;, which an empty prisoner_involvement cannot do on its own. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>Whether the reporter has finished recording prisoner involvement. Distinguishes &ldquo;no prisoners were involved&rdquo; from &ldquo;not yet filled in&rdquo;, which an empty prisoner_involvement cannot do on its own. <a href="./../null">Example: true</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="duplicated_report_id">duplicated_report_id</span></td>
@@ -487,7 +487,7 @@
                                             </tr>
                                         </table>
                                     </td>
-                                    <td><p>The report this one duplicates, set when it is marked DUPLICATE. Points at report.id, not report_reference. Null on every report that is not a duplicate. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>The report this one duplicates, set when it is marked DUPLICATE. Points at report.id, not report_reference. Null on every report that is not a duplicate. <a href="./../null">Example: 0192a3b4-0000-7e8f-9a0b-1c2d3e4f5a6b</a> <a href="./../null">SAR: N</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 <tr>
                                     <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="last_user_action">last_user_action</span></td>
@@ -504,7 +504,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The most recent action taken on the report through a correction request, denormalised here so a list of reports can show it without joining. Mirrors the newest correction_request.user_action and is null until the first one. <a href="./../null">Sensitivity: NONE</a></p></td>
+                                    <td><p>The most recent action taken on the report through a correction request, denormalised here so a list of reports can show it without joining. Mirrors the newest correction_request.user_action and is null until the first one. <a href="./../null">Example: REQUEST_REVIEW</a> <a href="./../null">SAR: Y</a> <a href="./../null">Sensitivity: NONE</a></p></td>
                                 </tr>
                                 </tbody>
                             </table>
