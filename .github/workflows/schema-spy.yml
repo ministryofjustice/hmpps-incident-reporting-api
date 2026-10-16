@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup Java
-        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         with:
           distribution: temurin
           java-version: ${{ inputs.java_version }}
@@ -73,14 +73,14 @@ jobs:
             --tests uk.gov.justice.digital.hmpps.incidentreporting.integration.ExportReferenceData
 
       - name: Generate database schema report
-        uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@cd6fbead3223fc36e047987f45af2ffacfd41c70 # v1.1.6
+        uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@38a8e31c789777d02669f8b2de309d66ebf00f55 # v1.1.8
         with:
           database_name: ${{ inputs.database_name }}
           schema: ${{ inputs.database_schema }}
           user: ${{ inputs.database_user }}
           password: ${{ inputs.database_password }}
 
-      - name: Generate CSV data dictionary
+      - name: Generate CSV data dictionary and SAR data requirements
         shell: bash
         env:
           DB_NAME: ${{ inputs.database_name }}
@@ -89,6 +89,7 @@ jobs:
           DB_SCHEMA: ${{ inputs.database_schema }}
         run: |
           scripts/generate-data-dictionary.sh /tmp/schemaspy/data-dictionary.csv
+          scripts/generate-sar-data-requirements.sh /tmp/schemaspy/sar-data-requirements.csv
           cp reference-data.csv /tmp/schemaspy/reference-data.csv
 
       # After the first run, enable GitHub Pages on the repo (Settings > Pages, deploy from the gh-pages

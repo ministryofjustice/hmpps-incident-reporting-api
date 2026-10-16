@@ -20,7 +20,6 @@ generic-service:
     HMPPS_SAR_TEMPLATE_PATH: "/sar/templates/V1__sar_template.mustache"
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-incident-reporting-dev
   businessHoursOnly: true
   rdsAlertsDatabases:
     cloud-platform-357b6fd216e4b0ae: incident-reporting-api
