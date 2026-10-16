@@ -123,17 +123,17 @@ data class SarDescriptionAddendum(
   val text: String,
   @Schema(description = "When it was added")
   val createdAt: LocalDateTime,
-  @Schema(description = "First name of the member of staff who added it, as recorded on the report")
-  val firstName: String,
-  @Schema(description = "Last name of the member of staff who added it, as recorded on the report")
-  val lastName: String,
+  @Schema(
+    description = "Username of the member of staff who added it, which the template resolves to their surname " +
+      "like every other member of staff on the report",
+  )
+  val addedBy: String,
 ) {
   companion object {
     fun from(addendum: DescriptionAddendum) = SarDescriptionAddendum(
       text = addendum.text,
       createdAt = addendum.createdAt,
-      firstName = addendum.firstName,
-      lastName = addendum.lastName,
+      addedBy = addendum.createdBy,
     )
   }
 }

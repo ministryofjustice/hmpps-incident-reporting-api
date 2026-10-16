@@ -16,7 +16,7 @@
 {{^this.descriptionAddendums}}<p>No Data Held</p>{{/this.descriptionAddendums}}
 {{#this.descriptionAddendums}}
 <table class="summary-list">
-<tr><td>Added by</td><td>{{ this.firstName }} {{ this.lastName }}</td></tr>
+<tr><td>Added by</td><td>{{ getUserLastName this.addedBy }}</td></tr>
 <tr><td>Date and time added</td><td>{{ optionalValue (formatDate this.createdAt) }}</td></tr>
 <tr><td>Addition</td><td>{{ optionalValue this.text }}</td></tr>
 </table>
