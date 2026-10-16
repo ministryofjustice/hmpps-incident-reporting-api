@@ -279,20 +279,6 @@ class ApiExceptionHandler {
       )
   }
 
-  @ExceptionHandler(SubjectAccessRequestNoReports::class)
-  fun handleSarNoReports(e: SubjectAccessRequestNoReports): ResponseEntity<ErrorResponse> {
-    log.debug(e.message)
-    return ResponseEntity
-      .status(HttpStatus.NO_CONTENT)
-      .body(
-        ErrorResponse(
-          status = HttpStatus.NO_CONTENT,
-          userMessage = "${e.message}",
-          developerMessage = e.message,
-        ),
-      )
-  }
-
   @ExceptionHandler(PrisonersNotFoundException::class)
   fun handlePrisonerSearchNotFound(e: PrisonersNotFoundException): ResponseEntity<ErrorResponse> {
     log.debug(e.message)
@@ -329,5 +315,3 @@ class ObjectAtIndexNotFoundException(
 class QuestionsNotFoundException(
   questionCodes: Set<String>,
 ) : Exception("Questions codes not found: ${questionCodes.sorted().joinToString()}")
-
-class SubjectAccessRequestNoReports : Exception("No reports found for given SAR filters")
