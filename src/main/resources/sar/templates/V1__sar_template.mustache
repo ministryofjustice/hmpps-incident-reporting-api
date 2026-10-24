@@ -16,7 +16,7 @@
 {{^this.descriptionAddendums}}<p>No Data Held</p>{{/this.descriptionAddendums}}
 {{#this.descriptionAddendums}}
 <table class="summary-list">
-<tr><td>Added by</td><td>{{ getUserLastName this.addedBy }}</td></tr>
+<tr><td>Added by</td><td>{{ this.addedByLastName }}</td></tr>
 <tr><td>Date and time added</td><td>{{ optionalValue (formatDate this.createdAt) }}</td></tr>
 <tr><td>Addition</td><td>{{ optionalValue this.text }}</td></tr>
 </table>
@@ -36,7 +36,7 @@
 {{^this.staffInvolved}}<p>No Data Held</p>{{/this.staffInvolved}}
 {{#this.staffInvolved}}
 <table class="summary-list">
-<tr><td>Name</td><td>{{ this.firstName }} {{ this.lastName }}</td></tr>
+<tr><td>Name</td><td>{{ this.lastName }}</td></tr>
 <tr><td>How they were involved</td><td>{{ optionalValue this.role }}</td></tr>
 <tr><td>Comment</td><td>{{ optionalValue this.comment }}</td></tr>
 </table>
@@ -62,9 +62,7 @@
 {{#this.correctionRequests}}
 <table class="summary-list">
 <tr><td>Requested by</td><td>{{ getUserLastName this.correctionRequestedBy }}</td></tr>
-<tr><td>Their role</td><td>{{ optionalValue this.userType }}</td></tr>
 <tr><td>Date and time requested</td><td>{{ optionalValue (formatDate this.correctionRequestedAt) }}</td></tr>
-<tr><td>Establishment</td><td>{{ optionalValue (getPrisonName this.location) }}</td></tr>
 <tr><td>Action</td><td>{{ optionalValue this.userAction }}</td></tr>
 <tr><td>Details</td><td>{{ optionalValue this.descriptionOfChange }}</td></tr>
 {{#if this.originalReportReference}}<tr><td>Report this one duplicates</td><td>{{ this.originalReportReference }}</td></tr>{{/if}}

@@ -18,8 +18,8 @@ import java.time.LocalDateTime
 /**
  * One incident report a prisoner is named on, as it appears in a subject access request response.
  *
- * This is the response proposed to the Offender SAR team for the data review (IR-1461), and follows the
- * `[SAR: Y|N]` tags on the column comments (V1_49). What is left out is as deliberate as what is included, and
+ * This is the response the Offender SAR team signed off at the data review (IR-1461), and follows the
+ * `[SAR: Y|N]` tags on the column comments (V1_49, with their changes in V1_50). What is left out is as deliberate as what is included, and
  * follows the SAR integration guiding principles:
  *  - internal identifiers are excluded - the report's UUID, every child row's id and sequence, and the id of a
  *    duplicated report. The report reference is the number people actually quote;
@@ -33,11 +33,14 @@ import java.time.LocalDateTime
  *  - prison codes and usernames travel raw, in attributes of their own, so the template resolves them with
  *    `getPrisonName` and `getUserLastName`;
  *  - nothing owned by another service is fetched. The names of prisoners and staff are those recorded on the
- *    report itself.
+ *    report itself;
+ *  - a member of staff appears by surname only, with nothing else about them - not their first name, the
+ *    capacity they acted in or the prison they were working at. That is the Offender SAR team's rule from the
+ *    data review.
  *
  * Other people named on a report - other prisoners and staff - are included, with what is recorded about them.
  * Redacting third-party data is the Offender SAR team's job, so the default is to return it and let them
- * redact; that is one of the questions put to them at the data review, and the answer may change this.
+ * redact, as they agreed at the data review.
  */
 @Schema(description = "An incident report the prisoner is named on, for a subject access request")
 data class SarIncidentReport(
@@ -123,17 +126,14 @@ data class SarDescriptionAddendum(
   val text: String,
   @Schema(description = "When it was added")
   val createdAt: LocalDateTime,
-  @Schema(
-    description = "Username of the member of staff who added it, which the template resolves to their surname " +
-      "like every other member of staff on the report",
-  )
-  val addedBy: String,
+  @Schema(description = "Surname of the member of staff who added it, as recorded at the time", example = "Brown")
+  val addedByLastName: String,
 ) {
   companion object {
     fun from(addendum: DescriptionAddendum) = SarDescriptionAddendum(
       text = addendum.text,
       createdAt = addendum.createdAt,
-      addedBy = addendum.createdBy,
+      addedByLastName = addendum.lastName,
     )
   }
 }
@@ -175,8 +175,6 @@ data class SarPrisonerInvolvement(
 
 @Schema(description = "A member of staff named on an incident report")
 data class SarStaffInvolvement(
-  @Schema(description = "First name, as recorded on the report")
-  val firstName: String,
   @Schema(description = "Last name, as recorded on the report")
   val lastName: String,
   @Schema(description = "How the member of staff was involved", example = "First on scene")
@@ -186,7 +184,6 @@ data class SarStaffInvolvement(
 ) {
   companion object {
     fun from(involvement: StaffInvolvement) = SarStaffInvolvement(
-      firstName = involvement.firstName,
       lastName = involvement.lastName,
       role = involvement.staffRole.description,
       comment = involvement.comment,
@@ -258,12 +255,8 @@ data class SarCorrectionRequest(
   val correctionRequestedAt: LocalDateTime,
   @Schema(description = "Username of the member of staff who made the request", example = "CWARDEN_GEN")
   val correctionRequestedBy: String,
-  @Schema(description = "Role of the member of staff who made the request", example = "Data warden", nullable = true)
-  val userType: String?,
   @Schema(description = "What the member of staff asked for or did", example = "Request correction", nullable = true)
   val userAction: String?,
-  @Schema(description = "Prison the request was made from", example = "MDI", nullable = true)
-  val location: String?,
   @Schema(
     description = "Report number of the report this one duplicates, on a request to mark it as a duplicate",
     nullable = true,
@@ -275,9 +268,7 @@ data class SarCorrectionRequest(
       descriptionOfChange = correctionRequest.descriptionOfChange,
       correctionRequestedAt = correctionRequest.correctionRequestedAt,
       correctionRequestedBy = correctionRequest.correctionRequestedBy,
-      userType = correctionRequest.userType?.description,
       userAction = correctionRequest.userAction?.description,
-      location = correctionRequest.location,
       originalReportReference = correctionRequest.originalReportReference,
     )
   }
