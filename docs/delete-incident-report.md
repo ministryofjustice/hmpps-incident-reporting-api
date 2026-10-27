@@ -125,8 +125,9 @@ It is written to guard against deleting the wrong report, but still check the lo
 
 - It clears any id left over from an earlier run first. IntelliJ keeps these values for the whole session,
   so without this a failed look-up would leave the delete pointing at a previous report.
-- It only passes the id on if the report belongs to the expected prison. Otherwise the delete is sent
-  without a valid id and the API rejects it.
+- It only passes the id on if the report belongs to the expected prison. Otherwise IntelliJ refuses to
+  send the delete, reporting an "unsubstituted variable 'reportId'". If you see that, read the look-up's
+  log: either the look-up failed or the prison did not match. Check that `{prisonId}` has been replaced.
 - It logs only the reference, prison, type, incident date and status, which is enough to check it is the
   right report without showing any of its content.
 - The delete clears the id afterwards, so running it a second time does nothing.
