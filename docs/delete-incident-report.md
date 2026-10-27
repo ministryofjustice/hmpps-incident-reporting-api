@@ -121,7 +121,7 @@ Authorization: Bearer {{$auth.token("auth-config")}}
 ```
 
 The script after the look-up passes the report's id to the delete, so it never has to be copied by hand.
-It is written so that a mistake cannot delete the wrong report:
+It is written to guard against deleting the wrong report, but still check the logged details before running the delete:
 
 - It clears any id left over from an earlier run first. IntelliJ keeps these values for the whole session,
   so without this a failed look-up would leave the delete pointing at a previous report.
