@@ -89,17 +89,47 @@ Steps 1 to 3 can be run from an IntelliJ `.http` file. `auth-config` is an authe
 your private environment file (`http-client.private.env.json`). It must sign you in with your own HMPPS
 Auth account and ask for the `write` scope, not use the service's client login.
 
+Replace `{reportReference}` with the reference and `{prisonId}` with the prison code from the request,
+for example `MDI`.
+
 ```
 ### Look up the incident report by reference
 # @no-log
 GET {{incident-report-api-url}}/incident-reports/reference/{reportReference}
 Authorization: Bearer {{$auth.token("auth-config")}}
 
+> {%
+  client.global.clear("reportId")
+  const report = response.body
+  client.log(`${report.reportReference} ${report.location} ${report.type} ${report.incidentDateAndTime} ${report.status}`)
+  if (response.status === 200 && report.location === "{prisonId}") {
+    client.global.set("reportId", report.id)
+  } else {
+    client.log("reportId not set - check the reference and prison")
+  }
+%}
+
 ### Delete the incident report
 # @no-log
-DELETE {{incident-report-api-url}}/incident-reports/{id}
+DELETE {{incident-report-api-url}}/incident-reports/{{reportId}}
 Authorization: Bearer {{$auth.token("auth-config")}}
+
+> {%
+  client.log(`Delete returned ${response.status}`)
+  client.global.clear("reportId")
+%}
 ```
+
+The script after the look-up passes the report's id to the delete, so it never has to be copied by hand.
+It is written so that a mistake cannot delete the wrong report:
+
+- It clears any id left over from an earlier run first. IntelliJ keeps these values for the whole session,
+  so without this a failed look-up would leave the delete pointing at a previous report.
+- It only passes the id on if the report belongs to the expected prison. Otherwise the delete is sent
+  without a valid id and the API rejects it.
+- It logs only the reference, prison, type, incident date and status, which is enough to check it is the
+  right report without showing any of its content.
+- The delete clears the id afterwards, so running it a second time does nothing.
 
 Keep `# @no-log` on both requests. Without it IntelliJ saves each response to its request history in the
 project's `.idea/httpRequests` folder, leaving a copy of the report you are deleting on your machine. If a
