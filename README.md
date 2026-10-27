@@ -87,6 +87,12 @@ Two ordering rules apply to every change that affects the SAR response or templa
 2. The template must be registered with the SAR tool in an environment **before** the code deploys there,
    or the product is suspended. Ask the HAA team on `#haa-sar-functionality-change-request`.
 
+## Permanently deleting a report
+
+There is no screen for deleting a report, and the API endpoint needs a role no user normally holds. See
+[docs/delete-incident-report.md](docs/delete-incident-report.md) for when and how to do it, and what it
+leaves behind.
+
 ## Database schema
 
 A browsable schema report is published from `main` to
