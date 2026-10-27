@@ -83,6 +83,30 @@ All calls go to the production API, `https://incident-reporting-api.hmpps.servic
 5. Update the ticket with the date and time of the delete and the outcome of step 4, and let the prison
    know it is done, including the copies listed above that remain.
 
+### Using the IntelliJ HTTP client
+
+Steps 1 to 3 can be run from an IntelliJ `.http` file. `auth-config` is an authentication configuration in
+your private environment file (`http-client.private.env.json`). It must sign you in with your own HMPPS
+Auth account and ask for the `write` scope, not use the service's client login.
+
+```
+### Look up the incident report by reference
+# @no-log
+GET {{incident-report-api-url}}/incident-reports/reference/{reportReference}
+Authorization: Bearer {{$auth.token("auth-config")}}
+
+### Delete the incident report
+# @no-log
+DELETE {{incident-report-api-url}}/incident-reports/{id}
+Authorization: Bearer {{$auth.token("auth-config")}}
+```
+
+Keep `# @no-log` on both requests. Without it IntelliJ saves each response to its request history in the
+project's `.idea/httpRequests` folder, leaving a copy of the report you are deleting on your machine. If a
+request has already been run without it, delete that entry from the history.
+
+Do not commit the `.http` file with a real reference or id in it.
+
 ## If something goes wrong
 
 - **403 Forbidden**: the token is missing the role or the `write` scope.
