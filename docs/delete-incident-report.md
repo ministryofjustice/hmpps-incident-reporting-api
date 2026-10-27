@@ -10,7 +10,15 @@ the API directly. Treat every request as exceptional and get it confirmed in wri
 
 ## Before you start
 
-- The request needs a ticket in the IR project that records who asked, which report and why.
+The request needs a ticket in the IR project. Get the following from the person asking and record it there:
+
+- the report reference and the prison
+- why the report needs to be deleted
+- confirmation that a manager at the prison has authorised the request
+
+Also:
+
+- Tell them which copies will remain (see [What it does not remove](#what-it-does-not-remove)).
 - The prison will need to submit a new report without the sensitive information, if the incident still
   needs reporting. Tell them this before the report is deleted.
 - **There is no undo.** Once deleted, the report cannot be recovered from the service. Check the reference
@@ -47,7 +55,7 @@ Tell the person who asked that the following copies remain:
 
 | Where | What is kept | Who to ask |
 |---|---|---|
-| HMPPS Audit | The full content of the report from every create and amend, and again from the delete itself. Access is restricted. | HMPPS Audit team |
+| HMPPS Audit | The full content of the report from every create and amend, and again from the delete itself. Access is restricted. | HMPPS Auth and Audit team |
 | Reporting (DPR) | The delete should reach the current reporting data. Older copies held in the data lake may remain. | DPR team |
 | NOMIS change logs | Any history NOMIS keeps of its own incident tables. | Syscon |
 | Database backups | The report stays in backups until they expire. | Cloud Platform |
@@ -64,7 +72,8 @@ All calls go to the production API, `https://incident-reporting-api.hmpps.servic
    GET /incident-reports/reference/{reportReference}
    ```
 
-   Check that the prison (`location`), type and incident date match the request.
+   Check that the prison (`location`), type and incident date match the request. Check the prison code
+   against the response, not from memory.
 
 2. Delete it using the `id` from step 1:
 
@@ -76,9 +85,8 @@ All calls go to the production API, `https://incident-reporting-api.hmpps.servic
 
 3. Repeat the call in step 1. It should now return 404.
 
-4. Confirm the NOMIS side. The NOMIS update service records an `incident-delete-success` event with the
-   NOMIS incident number (`nomisIncidentId`). If NOMIS no longer holds the incident, the message fails
-   and ends up on the incidents dead-letter queue instead. Check with Syscon if in doubt.
+4. Confirm the NOMIS side in Application Insights, as described in
+   [Checking it worked](#checking-it-worked).
 
 5. Update the ticket with the date and time of the delete and the outcome of step 4, and let the prison
    know it is done, including the copies listed above that remain.
@@ -138,9 +146,43 @@ request has already been run without it, delete that entry from the history.
 
 Do not commit the `.http` file with a real reference or id in it.
 
+## Checking it worked
+
+Query the `nomisapi-prod` Application Insights workspace. Logs can arrive up to five minutes late, so wait
+at least that long before relying on the result. Replace `<reportReference>` and `<id>`:
+
+```
+union
+ (AppEvents
+   | where AppRoleName in ("hmpps-incident-reporting-api", "hmpps-prisoner-to-nomis-update", "hmpps-prisoner-events")
+   | where tostring(Properties) has "<reportReference>" or tostring(Properties) has "<id>"
+   | project TimeGenerated, AppRoleName, Name),
+ (AppRequests
+   | where Url has "<reportReference>" or Url has "<id>"
+   | project TimeGenerated, AppRoleName, Name = strcat(Name, " ", ResultCode))
+| where TimeGenerated > ago(1h)
+| order by TimeGenerated asc
+```
+
+A successful delete shows these entries within a couple of seconds of each other:
+
+| Service | Entry |
+|---|---|
+| hmpps-incident-reporting-api | `DELETE /incident-reports/{id} 200` and `Deleted incident report` |
+| hmpps-incident-reporting-api | `INCIDENT_REPORT_DELETED` (the audit message) |
+| hmpps-nomis-prisoner-api | `DELETE /incidents/{incidentId} 204` |
+| hmpps-prisoner-to-nomis-update | `incident-delete-success` with the NOMIS incident number (`nomisIncidentId`) |
+| hmpps-prisoner-events | `INCIDENT-DELETED-CASES` and related entries, with `auditModuleName` `DPS_SYNCHRONISATION` |
+
 ## If something goes wrong
 
 - **403 Forbidden**: the token is missing the role or the `write` scope.
 - **404 Not Found** on the delete: the report has already gone, or the id is wrong. Check step 1 again.
-- **NOMIS delete failed**: the report is gone from this service but not from NOMIS. Ask Syscon to remove
-  the NOMIS incident by hand, quoting the incident number.
+- **No `incident-delete-success`, or the NOMIS delete failed**: the report is gone from this service but
+  not from NOMIS. The message will be on the incidents dead-letter queue of the NOMIS update service. Ask
+  Syscon to remove the NOMIS incident by hand, quoting the incident number.
+
+## Related
+
+The same process is kept in Confluence, in
+[IRS Runbooks](https://dsdmoj.atlassian.net/wiki/spaces/4546331377/pages/6347522460). Update both together.
