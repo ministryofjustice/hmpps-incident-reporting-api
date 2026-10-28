@@ -12,6 +12,11 @@
 --   * correction_request.location - read with correction_requested_by it says where that member of staff was
 --     based.
 --
+-- One more column moves to [SAR: N] under the same rule, although it was not on their list:
+--
+--   * staff_involvement.staff_username - V1_49 proposed it as shown, but the report names staff involved by
+--     the snapshotted last_name and never reads the username, so the tag did not match the report.
+--
 -- Comments only - no schema or data change. The rest of each comment, including its example, is left as it is.
 
 DO $$
@@ -24,6 +29,7 @@ BEGIN
       FROM (
         VALUES
           ('staff_involvement', 'first_name'),
+          ('staff_involvement', 'staff_username'),
           ('description_addendum', 'first_name'),
           ('description_addendum', 'created_by'),
           ('correction_request', 'user_type'),
