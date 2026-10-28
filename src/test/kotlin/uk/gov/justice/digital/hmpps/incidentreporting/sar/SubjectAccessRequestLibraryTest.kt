@@ -89,7 +89,9 @@ class SubjectAccessRequestLibraryTest :
    *  - a DPS report with everything: two prisoners (one of them the requester, whose prison number must not be
    *    printed), two staff, an addition to the description, questions with several answers, a date and further
    *    information, a correction request, a status trail, and an earlier incident type with its own answers;
-   *  - an older NOMIS report with only the minimum, marked as a duplicate, so every empty section shows;
+   *  - an older NOMIS report with only the minimum, marked as a duplicate, so every empty section shows. Its
+   *    prisoner is recorded in capitals, as NOMIS did, as is one member of staff on the DPS report, so the
+   *    approved report shows names are given ordinary capitalisation;
    *  - a report the requester is not on, which must not appear at all.
    *
    * The legacy `question` and `response` columns are deliberately given different wording from the labels, so
@@ -163,8 +165,8 @@ class SubjectAccessRequestLibraryTest :
       sequence = 1,
       staffRole = StaffRole.WITNESS,
       staffUsername = null,
-      firstName = "Pat",
-      lastName = "Green",
+      firstName = "PAT",
+      lastName = "SCOTT-GREEN",
     )
 
     report.addQuestion(code = "61279", question = "WAS A WEAPON USED", label = "Was a weapon used?", sequence = 0)
@@ -212,6 +214,7 @@ class SubjectAccessRequestLibraryTest :
       label = "Date seen",
       responseDate = LocalDate.parse("2025-03-14"),
       sequence = 0,
+      additionalInformation = "Seen in the cell, then on the healthcare wing.",
       recordedBy = "SAR_USER1",
       recordedAt = LocalDateTime.parse("2025-03-16T09:00:00"),
     )
@@ -268,8 +271,8 @@ class SubjectAccessRequestLibraryTest :
     report.addPrisonerInvolved(
       sequence = 0,
       prisonerNumber = PRISONER,
-      firstName = "Sam",
-      lastName = "Smith",
+      firstName = "SAM",
+      lastName = "SMITH",
       prisonerRole = PrisonerRole.IN_POSSESSION,
     )
     report.addCorrectionRequest(
