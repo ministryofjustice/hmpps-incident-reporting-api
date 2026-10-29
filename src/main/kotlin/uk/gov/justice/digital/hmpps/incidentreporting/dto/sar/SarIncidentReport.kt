@@ -33,7 +33,7 @@ import java.time.LocalDateTime
  *  - prison codes and usernames travel raw, in attributes of their own, so the template resolves them with
  *    `getPrisonName` and `getUserLastName`;
  *  - nothing owned by another service is fetched. The names of prisoners and staff are those recorded on the
- *    report itself;
+ *    report itself, with names NOMIS recorded in capitals given ordinary capitalisation - see [displayName];
  *  - a member of staff appears by surname only, with nothing else about them - not their first name, the
  *    capacity they acted in or the prison they were working at. That is the Offender SAR team's rule from the
  *    data review.
@@ -120,6 +120,19 @@ data class SarIncidentReport(
   }
 }
 
+/**
+ * A name as it should read in the report. NOMIS recorded names in capitals, and so do some DPS records copied from
+ * it, which reads as shouting next to the surnames the SAR tool looks up for itself (`getUserLastName`). A name
+ * that is all capitals, or all lower case, has each part capitalised - "SCOTT-TRIMBLE" becomes "Scott-Trimble" and
+ * "O'NEILL" becomes "O'Neill". A name with any mix of cases was typed that way deliberately, so it is left as it is.
+ */
+internal fun displayName(name: String): String {
+  if (name.any { it.isUpperCase() } && name.any { it.isLowerCase() }) {
+    return name
+  }
+  return name.lowercase().replace(Regex("""(^|[\s'-])(\p{L})""")) { it.value.uppercase() }
+}
+
 @Schema(description = "An addition made to the description of an incident after the report was submitted")
 data class SarDescriptionAddendum(
   @Schema(description = "What was added")
@@ -133,7 +146,7 @@ data class SarDescriptionAddendum(
     fun from(addendum: DescriptionAddendum) = SarDescriptionAddendum(
       text = addendum.text,
       createdAt = addendum.createdAt,
-      addedByLastName = addendum.lastName,
+      addedByLastName = displayName(addendum.lastName),
     )
   }
 }
@@ -164,8 +177,8 @@ data class SarPrisonerInvolvement(
     fun from(involvement: PrisonerInvolvement, subjectPrisonerNumber: String) = SarPrisonerInvolvement(
       prisonerNumber = involvement.prisonerNumber,
       subjectOfRequest = involvement.prisonerNumber == subjectPrisonerNumber,
-      firstName = involvement.firstName,
-      lastName = involvement.lastName,
+      firstName = displayName(involvement.firstName),
+      lastName = displayName(involvement.lastName),
       role = involvement.prisonerRole.description,
       outcome = involvement.outcome?.description,
       comment = involvement.comment,
@@ -184,7 +197,7 @@ data class SarStaffInvolvement(
 ) {
   companion object {
     fun from(involvement: StaffInvolvement) = SarStaffInvolvement(
-      lastName = involvement.lastName,
+      lastName = displayName(involvement.lastName),
       role = involvement.staffRole.description,
       comment = involvement.comment,
     )

@@ -1,0 +1,99 @@
+<h1 class="title">Incident Reporting</h1>
+{{^.}}<p>No Data Held</p>{{/.}}
+{{#.}}
+<h2>Incident report {{ this.reportReference }}</h2>
+<table class="summary-list">
+<tr><td>Type of incident</td><td>{{ optionalValue this.type }}</td></tr>
+<tr><td>Title</td><td>{{ optionalValue this.title }}</td></tr>
+<tr><td>Date and time of incident</td><td>{{ optionalValue (formatDate this.incidentDateAndTime) }}</td></tr>
+<tr><td>Establishment</td><td>{{ optionalValue (getPrisonName this.location) }}</td></tr>
+<tr><td>Status</td><td>{{ optionalValue this.status }}</td></tr>
+<tr><td>Reported by</td><td>{{ getUserLastName this.reportedBy }}</td></tr>
+<tr><td>Date and time reported</td><td>{{ optionalValue (formatDate this.reportedAt) }}</td></tr>
+<tr><td>Description</td><td>{{ optionalValue this.description }}</td></tr>
+</table>
+<h3>Additions to the description</h3>
+{{^this.descriptionAddendums}}<p>No Data Held</p>{{/this.descriptionAddendums}}
+{{#this.descriptionAddendums}}
+<table class="summary-list">
+<tr><td>Added by</td><td>{{ this.addedByLastName }}</td></tr>
+<tr><td>Date and time added</td><td>{{ optionalValue (formatDate this.createdAt) }}</td></tr>
+<tr><td>Addition</td><td>{{ optionalValue this.text }}</td></tr>
+</table>
+{{/this.descriptionAddendums}}
+<h3>Prisoners involved</h3>
+{{^this.prisonersInvolved}}<p>No Data Held</p>{{/this.prisonersInvolved}}
+{{#this.prisonersInvolved}}
+<table class="summary-list">
+<tr><td>Name</td><td>{{ this.firstName }} {{ this.lastName }}</td></tr>
+{{#unless this.subjectOfRequest}}<tr><td>Prison number</td><td>{{ optionalValue this.prisonerNumber }}</td></tr>{{/unless}}
+<tr><td>How they were involved</td><td>{{ optionalValue this.role }}</td></tr>
+<tr><td>Outcome</td><td>{{ optionalValue this.outcome }}</td></tr>
+<tr><td>Comment</td><td>{{ optionalValue this.comment }}</td></tr>
+</table>
+{{/this.prisonersInvolved}}
+<h3>Staff involved</h3>
+{{^this.staffInvolved}}<p>No Data Held</p>{{/this.staffInvolved}}
+{{#this.staffInvolved}}
+<table class="summary-list">
+<tr><td>Name</td><td>{{ this.lastName }}</td></tr>
+<tr><td>How they were involved</td><td>{{ optionalValue this.role }}</td></tr>
+<tr><td>Comment</td><td>{{ optionalValue this.comment }}</td></tr>
+</table>
+{{/this.staffInvolved}}
+<h3>Questions and answers</h3>
+{{^this.questions}}<p>No Data Held</p>{{/this.questions}}
+{{#this.questions}}
+<h4>{{ this.question }}</h4>
+<table class="summary-list">
+{{^this.responses}}<tr><td>Answer</td><td>No Data Held</td></tr>{{/this.responses}}
+{{#this.responses}}
+<tr><td>Answer</td><td>{{ optionalValue this.response }}{{#if this.responseDate}}:<br>{{ formatDate this.responseDate }}{{/if}}{{#if this.additionalInformation}}{{#unless this.responseDate}}:{{/unless}}<br>{{ this.additionalInformation }}{{/if}}</td></tr>
+<tr><td>Recorded by</td><td>{{ getUserLastName this.recordedBy }}</td></tr>
+<tr><td>Date and time recorded</td><td>{{ optionalValue (formatDate this.recordedAt) }}</td></tr>
+{{/this.responses}}
+{{#if this.additionalInformation}}<tr><td>Further information about the question</td><td>{{ this.additionalInformation }}</td></tr>{{/if}}
+</table>
+{{/this.questions}}
+<h3>Requests to correct or change the report</h3>
+{{^this.correctionRequests}}<p>No Data Held</p>{{/this.correctionRequests}}
+{{#this.correctionRequests}}
+<table class="summary-list">
+<tr><td>Requested by</td><td>{{ getUserLastName this.correctionRequestedBy }}</td></tr>
+<tr><td>Date and time requested</td><td>{{ optionalValue (formatDate this.correctionRequestedAt) }}</td></tr>
+<tr><td>Action</td><td>{{ optionalValue this.userAction }}</td></tr>
+<tr><td>Details</td><td>{{ optionalValue this.descriptionOfChange }}</td></tr>
+{{#if this.originalReportReference}}<tr><td>Report this one duplicates</td><td>{{ this.originalReportReference }}</td></tr>{{/if}}
+</table>
+{{/this.correctionRequests}}
+<h3>Status history</h3>
+{{^this.statusHistory}}<p>No Data Held</p>{{/this.statusHistory}}
+{{#this.statusHistory}}
+<table class="summary-list">
+<tr><td>Status</td><td>{{ optionalValue this.status }}</td></tr>
+<tr><td>Date and time</td><td>{{ optionalValue (formatDate this.changedAt) }}</td></tr>
+<tr><td>Changed by</td><td>{{ getUserLastName this.changedBy }}</td></tr>
+</table>
+{{/this.statusHistory}}
+<h3>Earlier types of incident</h3>
+{{^this.typeHistory}}<p>No Data Held</p>{{/this.typeHistory}}
+{{#this.typeHistory}}
+<table class="summary-list">
+<tr><td>Type of incident</td><td>{{ optionalValue this.previousType }}</td></tr>
+<tr><td>Date and time changed</td><td>{{ optionalValue (formatDate this.changedAt) }}</td></tr>
+<tr><td>Changed by</td><td>{{ getUserLastName this.changedBy }}</td></tr>
+</table>
+{{#this.questions}}
+<h4>{{ this.question }}</h4>
+<table class="summary-list">
+{{^this.responses}}<tr><td>Answer</td><td>No Data Held</td></tr>{{/this.responses}}
+{{#this.responses}}
+<tr><td>Answer</td><td>{{ optionalValue this.response }}{{#if this.responseDate}}:<br>{{ formatDate this.responseDate }}{{/if}}{{#if this.additionalInformation}}{{#unless this.responseDate}}:{{/unless}}<br>{{ this.additionalInformation }}{{/if}}</td></tr>
+<tr><td>Recorded by</td><td>{{ getUserLastName this.recordedBy }}</td></tr>
+<tr><td>Date and time recorded</td><td>{{ optionalValue (formatDate this.recordedAt) }}</td></tr>
+{{/this.responses}}
+{{#if this.additionalInformation}}<tr><td>Further information about the question</td><td>{{ this.additionalInformation }}</td></tr>{{/if}}
+</table>
+{{/this.questions}}
+{{/this.typeHistory}}
+{{/.}}

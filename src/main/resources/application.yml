@@ -107,4 +107,4 @@ management:
 hmpps.sar:
   template:
     enabled: true
-    path: ${HMPPS_SAR_TEMPLATE_PATH:/sar/templates/V1__sar_template.mustache}
+    path: ${HMPPS_SAR_TEMPLATE_PATH:/sar/templates/V2__sar_template.mustache}
