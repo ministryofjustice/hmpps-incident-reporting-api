@@ -10,7 +10,7 @@ plugins {
   kotlin("plugin.jpa") version "2.4.21"
   kotlin("plugin.spring") version "2.4.21"
   idea
-  id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
+  id("org.springdoc.openapi-gradle-plugin") version "2.1.0"
 }
 
 extra["logback.version"] = "1.6.3"
