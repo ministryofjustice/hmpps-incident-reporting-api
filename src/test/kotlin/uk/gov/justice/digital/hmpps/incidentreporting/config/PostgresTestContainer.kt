@@ -9,7 +9,7 @@ object PostgresTestContainer : TestContainer<PostgreSQLContainer>("postgres", 54
   override fun start(): PostgreSQLContainer {
     log.info("Creating a Postgres database")
     return PostgreSQLContainer(
-      DockerImageName.parse("postgres").withTag("16"),
+      DockerImageName.parse("postgres").withTag("18"),
     ).apply {
       withEnv("HOSTNAME_EXTERNAL", "localhost")
       withDatabaseName("incident_reporting")
