@@ -29,7 +29,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-webclient")
   implementation("org.springframework.security:spring-security-access")
   implementation("org.springframework.boot:spring-boot-starter-validation")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.33.1")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.34.0")
   implementation("io.opentelemetry:opentelemetry-extension-kotlin:1.68.0")
 
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
